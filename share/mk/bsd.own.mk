@@ -25,7 +25,7 @@ INFOGRP?=	operator
 DOCGRP?=	operator
 
 MKBINUTILS?=	no
-MKGDB:=		no
+MKGDB?=		no
 MKGCC?=		no
 MKGCCCMDS?=	no
 

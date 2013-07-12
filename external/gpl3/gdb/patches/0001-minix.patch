@@ -1,0 +1,171 @@
+diff -rNU3 dist.nbsd/bfd/config.bfd dist/bfd/config.bfd
+--- dist.nbsd/bfd/config.bfd	2013-07-11 13:41:56.121102691 +0200
++++ dist/bfd/config.bfd	2013-07-16 11:30:55.601246718 +0200
+@@ -281,7 +281,7 @@
+     ;;
+   arm-*-elf | arm-*-freebsd* | arm*-*-linux-* | arm*-*-conix* | \
+   arm*-*-uclinux* | arm-*-kfreebsd*-gnu | \
+-  arm*-*-eabi* )
++  arm*-*-eabi* | arm*-*-minix*)
+     targ_defvec=bfd_elf32_littlearm_vec
+     targ_selvecs=bfd_elf32_bigarm_vec
+     ;;
+@@ -697,6 +697,9 @@
+   i[3-7]86-none-*)
+     targ_defvec=i386coff_vec
+     ;;
++  i[3-7]86-*-minix)
++    targ_defvec=bfd_elf32_i386_minix_vec
++    ;;
+   i[3-7]86-*-aout* | i[3-7]86*-*-vsta*)
+     targ_defvec=i386aout_vec
+     ;;
+diff -rNU3 dist.nbsd/bfd/configure dist/bfd/configure
+--- dist.nbsd/bfd/configure	2013-07-11 13:41:56.127769490 +0200
++++ dist/bfd/configure	2013-07-16 11:30:56.631267320 +0200
+@@ -15062,6 +15062,7 @@
+     bfd_elf32_i370_vec)		tb="$tb elf32-i370.lo elf32.lo $elf" ;;
+     bfd_elf32_i386_sol2_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-vxworks.lo elf32.lo $elf" ;;
+     bfd_elf32_i386_freebsd_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-vxworks.lo elf32.lo $elf" ;;
++    bfd_elf32_i386_minix_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-vxworks.lo elf32.lo $elf" ;;
+     bfd_elf32_i386_vxworks_vec)	tb="$tb elf32-i386.lo elf-ifunc.lo elf-vxworks.lo elf32.lo $elf" ;;
+     bfd_elf32_i386_vec)		tb="$tb elf32-i386.lo elf-ifunc.lo elf-vxworks.lo elf32.lo $elf" ;;
+     bfd_elf32_i860_little_vec)	tb="$tb elf32-i860.lo elf32.lo $elf" ;;
+diff -rNU3 dist.nbsd/bfd/elf32-i386.c dist/bfd/elf32-i386.c
+--- dist.nbsd/bfd/elf32-i386.c	2013-07-11 13:41:56.101102290 +0200
++++ dist/bfd/elf32-i386.c	2013-07-16 11:30:56.727935920 +0200
+@@ -4757,6 +4757,18 @@
+ 
+ #include "elf32-target.h"
+ 
++/* MINIX3 support.  */
++
++#undef	TARGET_LITTLE_SYM
++#define	TARGET_LITTLE_SYM		bfd_elf32_i386_minix_vec
++#undef	TARGET_LITTLE_NAME
++#define	TARGET_LITTLE_NAME		"elf32-i386-minix"
++
++#undef	elf32_bed
++#define	elf32_bed			elf32_i386_minix_bed
++
++#include "elf32-target.h"
++
+ /* FreeBSD support.  */
+ 
+ #undef	TARGET_LITTLE_SYM
+diff -rNU3 dist.nbsd/bfd/targets.c dist/bfd/targets.c
+--- dist.nbsd/bfd/targets.c	2013-07-11 13:41:56.134436290 +0200
++++ dist/bfd/targets.c	2013-07-16 11:30:56.797937321 +0200
+@@ -605,6 +605,7 @@
+ extern const bfd_target bfd_elf32_hppa_vec;
+ extern const bfd_target bfd_elf32_i370_vec;
+ extern const bfd_target bfd_elf32_i386_freebsd_vec;
++extern const bfd_target bfd_elf32_i386_minix_vec;
+ extern const bfd_target bfd_elf32_i386_sol2_vec;
+ extern const bfd_target bfd_elf32_i386_vxworks_vec;
+ extern const bfd_target bfd_elf32_i386_vec;
+diff -rNU3 dist.nbsd/config.guess dist/config.guess
+--- dist.nbsd/config.guess	2013-07-11 13:41:56.144436490 +0200
++++ dist/config.guess	2013-07-16 11:30:56.844604920 +0200
+@@ -858,8 +858,8 @@
+ 	# other systems with GNU libc and userland
+ 	echo ${UNAME_MACHINE}-unknown-`echo ${UNAME_SYSTEM} | sed 's,^[^/]*/,,' | tr '[A-Z]' '[a-z]'``echo ${UNAME_RELEASE}|sed -e 's/[-(].*//'`-gnu
+ 	exit ;;
+-    i*86:Minix:*:*)
+-	echo ${UNAME_MACHINE}-pc-minix
++    *:Minix:*:*)
++	echo ${UNAME_MACHINE}-elf32-minix
+ 	exit ;;
+     alpha:Linux:*:*)
+ 	case `sed -n '/^cpu model/s/^.*: \(.*\)/\1/p' < /proc/cpuinfo` in
+diff -rNU3 dist.nbsd/gdb/configure.host dist/gdb/configure.host
+--- dist.nbsd/gdb/configure.host	2013-07-11 13:41:55.517757289 +0200
++++ dist/gdb/configure.host	2013-07-16 11:48:31.095691652 +0200
+@@ -73,6 +73,7 @@
+ alpha*-*-openbsd*)	gdb_host=nbsd ;;
+ 
+ arm*-*-linux*)		gdb_host=linux ;;
++arm*-*-minix*)		gdb_host=minix ;;
+ arm*-*-netbsdelf* | arm*-*-knetbsd*-gnu)
+ 			gdb_host=nbsdelf ;;
+ arm*-*-netbsd*)		gdb_host=nbsdaout ;;
+@@ -94,6 +95,7 @@
+ 			gdb_host_obs=mingw-hdep.o
+ 			;;
+ i[34567]86-*-msdosdjgpp*) gdb_host=go32 ;;
++i[34567]86-*-minix*)	gdb_host=minix ;;
+ i[34567]86-*-linux*)	gdb_host=linux ;;
+ i[34567]86-*-gnu*)	gdb_host=i386gnu ;;
+ i[3456]86-*-nto*) 	gdb_host=nto ;;
+diff -rNU3 dist.nbsd/gdb/configure.tgt dist/gdb/configure.tgt
+--- dist.nbsd/gdb/configure.tgt	2013-07-11 13:41:55.564424890 +0200
++++ dist/gdb/configure.tgt	2013-07-16 13:10:40.620956816 +0200
+@@ -81,6 +81,11 @@
+ 			solib.o solib-svr4.o symfile-mem.o corelow.o linux-tdep.o"
+ 	build_gdbserver=yes
+ 	;;
++arm*-*-minix*)
++	# Target: MINIX3/arm
++	#gdb_target_obs="arm-tdep.o armminix-tdep.o solib.o solib-svr4.o"
++	gdb_target_obs="arm-tdep.o solib.o solib-svr4.o"
++	;;
+ arm*-*-netbsd* | arm*-*-knetbsd*-gnu)
+ 	# Target: NetBSD/arm
+ 	gdb_target_obs="arm-tdep.o armnbsd-tdep.o solib.o solib-svr4.o"
+@@ -186,6 +191,11 @@
+ 	gdb_target_obs="i386-tdep.o i387-tdep.o i386bsd-tdep.o i386fbsd-tdep.o \
+ 			bsd-uthread.o corelow.o solib.o solib-svr4.o"
+ 	;;
++i[34567]86-*-minix*)
++	# Target: MINIX3/i386
++	gdb_target_obs="i386-tdep.o i387-tdep.o i386minix-tdep.o \
++			corelow.o solib.o solib-svr4.o"
++	;;
+ i[34567]86-*-netbsd* | i[34567]86-*-knetbsd*-gnu)
+ 	# Target: NetBSD/i386
+ 	gdb_target_obs="i386-tdep.o i387-tdep.o i386bsd-tdep.o i386nbsd-tdep.o \
+diff -rNU3 dist.nbsd/gdb/defs.h dist/gdb/defs.h
+--- dist.nbsd/gdb/defs.h	2013-07-11 13:41:55.594425489 +0200
++++ dist/gdb/defs.h	2013-07-16 11:48:49.359390289 +0200
+@@ -978,6 +978,7 @@
+   GDB_OSABI_HURD,
+   GDB_OSABI_SOLARIS,
+   GDB_OSABI_OSF1,
++  GDB_OSABI_MINIX,
+   GDB_OSABI_LINUX,
+   GDB_OSABI_FREEBSD_AOUT,
+   GDB_OSABI_FREEBSD_ELF,
+diff -rNU3 dist.nbsd/gdb/osabi.c dist/gdb/osabi.c
+--- dist.nbsd/gdb/osabi.c	2013-07-11 13:41:55.387754688 +0200
++++ dist/gdb/osabi.c	2013-07-16 11:48:57.746224706 +0200
+@@ -55,6 +55,7 @@
+   "GNU/Hurd",
+   "Solaris",
+   "OSF/1",
++  "MINIX",
+   "GNU/Linux",
+   "FreeBSD a.out",
+   "FreeBSD ELF",
+diff -rNU3 dist.nbsd/gdb/ser-tcp.c dist/gdb/ser-tcp.c
+--- dist.nbsd/gdb/ser-tcp.c	2013-07-11 13:41:55.391088089 +0200
++++ dist/gdb/ser-tcp.c	2013-07-16 14:48:48.948732921 +0200
+@@ -215,7 +215,9 @@
+   
+   /* Set socket nonblocking.  */
+   ioarg = 1;
++#if !defined(FIONBIO) && !defined(__minix)
+   ioctl (scb->fd, FIONBIO, &ioarg);
++#endif /* !defined(FIONBIO) && !defined(__minix) */
+ 
+   /* Use Non-blocking connect.  connect() will return 0 if connected
+      already.  */
+@@ -305,7 +307,9 @@
+ 
+   /* Turn off nonblocking.  */
+   ioarg = 0;
++#if !defined(FIONBIO) && !defined(__minix)
+   ioctl (scb->fd, FIONBIO, &ioarg);
++#endif /* !defined(FIONBIO) && !defined(__minix) */
+ 
+   if (use_udp == 0)
+     {

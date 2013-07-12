@@ -1,0 +1,5140 @@
+diff -rNU3 dist.orig/bfd/bfdio.c dist.nbsd/bfd/bfdio.c
+--- dist.orig/bfd/bfdio.c	2010-06-09 15:28:31.000000000 +0200
++++ dist.nbsd/bfd/bfdio.c	2013-07-11 13:41:56.107769090 +0200
+@@ -577,7 +577,7 @@
+ {
+   struct bfd_in_memory *bim = (struct bfd_in_memory *) abfd->iostream;
+ 
+-  memset (statbuf, 0, sizeof (statbuf));
++  memset (statbuf, 0, sizeof (*statbuf));
+   statbuf->st_size = bim->size;
+ 
+   return 0;
+diff -rNU3 dist.orig/bfd/config.bfd dist.nbsd/bfd/config.bfd
+--- dist.orig/bfd/config.bfd	2011-03-31 10:58:20.000000000 +0200
++++ dist.nbsd/bfd/config.bfd	2013-07-11 13:41:56.121102691 +0200
+@@ -910,6 +910,16 @@
+     targ_defvec=ecoff_big_vec
+     targ_selvecs=ecoff_little_vec
+     ;;
++#ifdef BFD64
++  mips64*el-*-netbsd*)
++    targ_defvec=bfd_elf32_ntradlittlemips_vec
++    targ_selvecs="bfd_elf64_tradbigmips_vec bfd_elf64_tradlittlemips_vec bfd_elf32_ntradbigmips_vec bfd_elf32_tradlittlemips_vec bfd_elf32_tradbigmips_vec"
++    ;;
++  mips64*-*-netbsd*)
++    targ_defvec=bfd_elf32_ntradbigmips_vec
++    targ_selvecs="bfd_elf64_tradbigmips_vec bfd_elf64_tradlittlemips_vec bfd_elf32_ntradlittlemips_vec bfd_elf32_tradlittlemips_vec bfd_elf32_tradbigmips_vec"
++    ;;
++#endif
+   mips*el-*-netbsd*)
+     targ_defvec=bfd_elf32_tradlittlemips_vec
+     targ_selvecs="bfd_elf32_tradbigmips_vec bfd_elf64_tradbigmips_vec bfd_elf64_tradlittlemips_vec ecoff_little_vec ecoff_big_vec"
+diff -rNU3 dist.orig/bfd/doc/Makefile.in dist.nbsd/bfd/doc/Makefile.in
+--- dist.orig/bfd/doc/Makefile.in	2010-05-25 12:14:16.000000000 +0200
++++ dist.nbsd/bfd/doc/Makefile.in	2013-07-11 13:41:56.124436090 +0200
+@@ -418,6 +418,8 @@
+ 	-rm -rf .libs _libs
+ 
+ bfd.info: bfd.texinfo $(bfd_TEXINFOS)
++	@echo "NOT REBUILDING $@"
++NetBSD_DISABLED_bfd.info:
+ 	restore=: && backupdir="$(am__leading_dot)am$$$$" && \
+ 	rm -rf $$backupdir && mkdir $$backupdir && \
+ 	if ($(MAKEINFO) --version) >/dev/null 2>&1; then \
+diff -rNU3 dist.orig/bfd/elf32-i386.c dist.nbsd/bfd/elf32-i386.c
+--- dist.orig/bfd/elf32-i386.c	2011-03-06 19:22:36.000000000 +0100
++++ dist.nbsd/bfd/elf32-i386.c	2013-07-11 13:41:56.101102290 +0200
+@@ -323,7 +323,7 @@
+ 
+     case BFD_RELOC_386_IRELATIVE:
+       TRACE ("BFD_RELOC_386_IRELATIVE");
+-      return &elf_howto_table[R_386_IRELATIVE];
++      return &elf_howto_table[R_386_IRELATIVE - R_386_tls_offset];
+ 
+     case BFD_RELOC_VTABLE_INHERIT:
+       TRACE ("BFD_RELOC_VTABLE_INHERIT");
+diff -rNU3 dist.orig/bfd/elf.c dist.nbsd/bfd/elf.c
+--- dist.orig/bfd/elf.c	2011-03-14 16:54:58.000000000 +0100
++++ dist.nbsd/bfd/elf.c	2013-07-11 13:41:56.121102691 +0200
+@@ -8495,6 +8495,23 @@
+ 	  return TRUE;
+ 	}
+ 
++      /* On SuperH, PT_GETREGS == mach+3 and PT_GETFPREGS == mach+5.
++	 There's also old PT___GETREGS40 == mach + 1 for old reg
++	 structure which lacks GBR.  */
++
++    case bfd_arch_sh:
++      switch (note->type)
++	{
++	case NT_NETBSDCORE_FIRSTMACH+3:
++	  return elfcore_make_note_pseudosection (abfd, ".reg", note);
++
++	case NT_NETBSDCORE_FIRSTMACH+5:
++	  return elfcore_make_note_pseudosection (abfd, ".reg2", note);
++
++	default:
++	  return TRUE;
++	}
++
+       /* On all other arch's, PT_GETREGS == mach+1 and
+ 	 PT_GETFPREGS == mach+3.  */
+ 
+diff -rNU3 dist.orig/bfd/.gitignore dist.nbsd/bfd/.gitignore
+--- dist.orig/bfd/.gitignore	2010-12-09 10:03:12.000000000 +0100
++++ dist.nbsd/bfd/.gitignore	1970-01-01 01:00:00.000000000 +0100
+@@ -1,40 +0,0 @@
+-/bfd-in3.h
+-/bfd.h
+-/bfd_stdint.h
+-/bfdver.h
+-/elf32-ia64.c
+-/elf32-target.h
+-/elf64-ia64.c
+-/elf64-target.h
+-/libtool-soversion
+-/ofiles
+-/peigen.c
+-/pepigen.c
+-/pex64igen.c
+-/stmp-bfd-h
+-/targmatch.h
+-
+-/doc/aoutx.texi
+-/doc/archive.texi
+-/doc/archures.texi
+-/doc/bfdio.texi
+-/doc/bfdt.texi
+-/doc/bfdver.texi
+-/doc/bfdwin.texi
+-/doc/cache.texi
+-/doc/chew
+-/doc/coffcode.texi
+-/doc/core.texi
+-/doc/elf.texi
+-/doc/elfcode.texi
+-/doc/format.texi
+-/doc/hash.texi
+-/doc/init.texi
+-/doc/libbfd.texi
+-/doc/linker.texi
+-/doc/mmo.texi
+-/doc/opncls.texi
+-/doc/reloc.texi
+-/doc/section.texi
+-/doc/syms.texi
+-/doc/targets.texi
+diff -rNU3 dist.orig/bfd/netbsd-core.c dist.nbsd/bfd/netbsd-core.c
+--- dist.orig/bfd/netbsd-core.c	2011-08-18 22:39:20.000000000 +0200
++++ dist.nbsd/bfd/netbsd-core.c	2013-07-11 13:41:56.114435889 +0200
+@@ -281,7 +281,6 @@
+     0,				/* Symbol prefix.  */
+     ' ',			/* ar_pad_char.  */
+     16,				/* ar_max_namelen.  */
+-    0,				/* Match priority.  */
+     NO_GET64, NO_GETS64, NO_PUT64,	/* 64 bit data.  */
+     NO_GET, NO_GETS, NO_PUT,		/* 32 bit data.  */
+     NO_GET, NO_GETS, NO_PUT,		/* 16 bit data.  */
+diff -rNU3 dist.orig/config.sub dist.nbsd/config.sub
+--- dist.orig/config.sub	2011-03-24 12:13:32.000000000 +0100
++++ dist.nbsd/config.sub	2013-07-11 13:41:56.134436290 +0200
+@@ -126,7 +126,7 @@
+ case $maybe_os in
+   nto-qnx* | linux-gnu* | linux-android* | linux-dietlibc | linux-newlib* | \
+   linux-uclibc* | uclinux-uclibc* | uclinux-gnu* | kfreebsd*-gnu* | \
+-  knetbsd*-gnu* | netbsd*-gnu* | \
++  knetbsd*-gnu* | netbsd*-gnu* | netbsd*-eabi* | \
+   kopensolaris*-gnu* | \
+   storm-chaos* | os2-emx* | rtmk-nova*)
+     os=-$maybe_os
+diff -rNU3 dist.orig/gdb/ada-lex.c dist.nbsd/gdb/ada-lex.c
+--- dist.orig/gdb/ada-lex.c	2011-09-04 19:56:05.000000000 +0200
++++ dist.nbsd/gdb/ada-lex.c	2013-07-11 13:41:55.497756888 +0200
+@@ -2,7 +2,7 @@
+ /* A lexical scanner generated by flex */
+ 
+ /* Scanner skeleton version:
+- * $Header: /home/daffy/u0/vern/flex/RCS/flex.skl,v 2.91 96/09/10 16:58:48 vern Exp $
++ * Header: /home/daffy/u0/vern/flex/RCS/flex.skl,v 2.91 96/09/10 16:58:48 vern Exp
+  */
+ 
+ #define FLEX_SCANNER
+diff -rNU3 dist.orig/gdb/alphabsd-nat.c dist.nbsd/gdb/alphabsd-nat.c
+--- dist.orig/gdb/alphabsd-nat.c	2011-01-07 20:36:15.000000000 +0100
++++ dist.nbsd/gdb/alphabsd-nat.c	2013-07-11 13:41:55.394421489 +0200
+@@ -24,6 +24,7 @@
+ 
+ #include "alpha-tdep.h"
+ #include "alphabsd-tdep.h"
++#include "nbsd-nat.h"
+ #include "inf-ptrace.h"
+ 
+ #include <sys/types.h>
+@@ -200,6 +201,7 @@
+   t = inf_ptrace_target ();
+   t->to_fetch_registers = alphabsd_fetch_inferior_registers;
+   t->to_store_registers = alphabsd_store_inferior_registers;
++  t->to_pid_to_exec_file = nbsd_pid_to_exec_file;
+   add_target (t);
+ 
+   /* Support debugging kernel virtual memory images.  */
+diff -rNU3 dist.orig/gdb/alphanbsd-tdep.c dist.nbsd/gdb/alphanbsd-tdep.c
+--- dist.orig/gdb/alphanbsd-tdep.c	2011-01-01 16:32:56.000000000 +0100
++++ dist.nbsd/gdb/alphanbsd-tdep.c	2013-07-11 13:41:55.394421489 +0200
+@@ -35,6 +35,9 @@
+ #include "alphabsd-tdep.h"
+ #include "nbsd-tdep.h"
+ #include "solib-svr4.h"
++#include "trad-frame.h"
++#include "frame-unwind.h"
++#include "tramp-frame.h"
+ #include "target.h"
+ 
+ /* Core file support.  */
+@@ -184,79 +187,90 @@
+ 
+ /* Signal trampolines.  */
+ 
++static void
++alphanbsd_sigtramp_cache_init (const struct tramp_frame *,
++			       struct frame_info *,
++			       struct trad_frame_cache *,
++			       CORE_ADDR);
+ /* Under NetBSD/alpha, signal handler invocations can be identified by the
+    designated code sequence that is used to return from a signal handler.
+    In particular, the return address of a signal handler points to the
+-   following code sequence:
++   following code sequences: */
++static const struct tramp_frame alphanbsd_sigtramp_sc1 = {
++  SIGTRAMP_FRAME,
++  4,
++  {
++    { 0xa61e0000, 0xffffffff },		/* ldq a0, 0(sp) */
++    { 0x23de0010, 0xffffffff },		/* lda sp, 16(sp) */
++    { 0x201f0127, 0xffffffff },		/* lda v0, 295 */
++    { 0x00000083, 0xffffffff },		/* call_pal callsys */
++    { TRAMP_SENTINEL_INSN, -1 }
++  },
++  alphanbsd_sigtramp_cache_init
++};
+ 
+-	ldq	a0, 0(sp)
+-	lda	sp, 16(sp)
+-	lda	v0, 295(zero)	# __sigreturn14
+-	call_pal callsys
+-
+-   Each instruction has a unique encoding, so we simply attempt to match
+-   the instruction the PC is pointing to with any of the above instructions.
+-   If there is a hit, we know the offset to the start of the designated
+-   sequence and can then check whether we really are executing in the
+-   signal trampoline.  If not, -1 is returned, otherwise the offset from the
+-   start of the return sequence is returned.  */
+-static const unsigned char sigtramp_retcode[] =
+-{
+-  0x00, 0x00, 0x1e, 0xa6,	/* ldq a0, 0(sp) */
+-  0x10, 0x00, 0xde, 0x23,	/* lda sp, 16(sp) */
+-  0x27, 0x01, 0x1f, 0x20,	/* lda v0, 295(zero) */
+-  0x83, 0x00, 0x00, 0x00,	/* call_pal callsys */
++/* The siginfo signal trampoline for NetBSD/alpha introduced in 2.0 */
++static const struct tramp_frame alphanbsd_sigtramp_si2 =
++{
++  SIGTRAMP_FRAME,
++  4,
++  {
++    { 0x221e0080, -1 },		/* lda	a0,128(sp) */
++    { 0x201f0134, -1 },		/* lda	v0,308 */
++    { 0x00000083, -1 },		/* callsys */
++    { 0x47e00410, -1 },		/* mov	v0,a0 */
++    { 0x201f0001, -1 },		/* lda	v0,1 */
++    { 0x00000083, -1 },		/* callsys */
++    { TRAMP_SENTINEL_INSN, -1 }
++  },
++  alphanbsd_sigtramp_cache_init
++};
++/* The siginfo signal trampoline for NetBSD/alpha introduced in 4.0 */
++static const struct tramp_frame alphanbsd_sigtramp_si4 =
++{
++  SIGTRAMP_FRAME,
++  4,
++  {
++    { 0x27ba0000, 0xffff0000 },
++    { 0x23bd0000, 0xffff0000 },	/* ldgp	gp,0(ra) */
++    { 0x221e0080, -1 },		/* lda	a0,128(sp) */
++    { 0x201f0134, -1 },		/* lda	v0,308 */
++    { 0x00000083, -1 },		/* callsys */
++    { 0x221fffff, -1 },		/* lda	a0,-1 */
++    { 0x201f0001, -1 },		/* lda	v0,1 */
++    { 0x00000083, -1 },		/* callsys */
++    { TRAMP_SENTINEL_INSN, -1 }
++  },
++  alphanbsd_sigtramp_cache_init
+ };
+-#define RETCODE_NWORDS		4
+-#define RETCODE_SIZE		(RETCODE_NWORDS * 4)
+ 
+-static LONGEST
+-alphanbsd_sigtramp_offset (struct gdbarch *gdbarch, CORE_ADDR pc)
++static void
++alphanbsd_sigtramp_cache_init (const struct tramp_frame *self,
++			       struct frame_info *this_frame,
++			       struct trad_frame_cache *this_cache,
++			       CORE_ADDR func)
+ {
+-  unsigned char ret[RETCODE_SIZE], w[4];
+-  LONGEST off;
++  struct gdbarch *gdbarch = get_frame_arch (this_frame);
++  struct gdbarch_tdep *tdep = gdbarch_tdep (gdbarch);
++  CORE_ADDR addr, sp;
+   int i;
+ 
+-  if (target_read_memory (pc, (char *) w, 4) != 0)
+-    return -1;
++  sp = get_frame_register_unsigned (this_frame, ALPHA_SP_REGNUM);
+ 
+-  for (i = 0; i < RETCODE_NWORDS; i++)
++  if (self == &alphanbsd_sigtramp_sc1) {
++    addr = sp;
++  } else {
++    addr = sp + 128 + 56;
++  }
++ 
++  for (i = 0; i < 32; i++, addr += ALPHA_REGISTER_SIZE)
+     {
+-      if (memcmp (w, sigtramp_retcode + (i * 4), 4) == 0)
+-	break;
++      trad_frame_set_reg_addr (this_cache, i, addr);
+     }
+-  if (i == RETCODE_NWORDS)
+-    return (-1);
+-
+-  off = i * 4;
+-  pc -= off;
++  trad_frame_set_reg_addr (this_cache, ALPHA_PC_REGNUM, addr);
+ 
+-  if (target_read_memory (pc, (char *) ret, sizeof (ret)) != 0)
+-    return -1;
+-
+-  if (memcmp (ret, sigtramp_retcode, RETCODE_SIZE) == 0)
+-    return off;
+-
+-  return -1;
+-}
+-
+-static int
+-alphanbsd_pc_in_sigtramp (struct gdbarch *gdbarch,
+-		 	  CORE_ADDR pc, char *func_name)
+-{
+-  return (nbsd_pc_in_sigtramp (pc, func_name)
+-	  || alphanbsd_sigtramp_offset (gdbarch, pc) >= 0);
+-}
+-
+-static CORE_ADDR
+-alphanbsd_sigcontext_addr (struct frame_info *frame)
+-{
+-  /* FIXME: This is not correct for all versions of NetBSD/alpha.
+-     We will probably need to disassemble the trampoline to figure
+-     out which trampoline frame type we have.  */
+-  if (!get_next_frame (frame))
+-    return 0;
+-  return get_frame_base (get_next_frame (frame));
++  /* Construct the frame ID using the function start.  */
++  trad_frame_set_id (this_cache, frame_id_build (sp, func));
+ }
+ 
+ 
+@@ -275,20 +289,25 @@
+   /* NetBSD/alpha does not provide single step support via ptrace(2); we
+      must use software single-stepping.  */
+   set_gdbarch_software_single_step (gdbarch, alpha_software_single_step);
+-
+   /* NetBSD/alpha has SVR4-style shared libraries.  */
+   set_solib_svr4_fetch_link_map_offsets
+     (gdbarch, svr4_lp64_fetch_link_map_offsets);
+ 
++#ifdef notyet
+   tdep->dynamic_sigtramp_offset = alphanbsd_sigtramp_offset;
+   tdep->pc_in_sigtramp = alphanbsd_pc_in_sigtramp;
+   tdep->sigcontext_addr = alphanbsd_sigcontext_addr;
++#endif
+ 
+   tdep->jb_pc = 2;
+   tdep->jb_elt_size = 8;
+ 
+   set_gdbarch_regset_from_core_section
+     (gdbarch, alphanbsd_regset_from_core_section);
++
++  tramp_frame_prepend_unwinder (gdbarch, &alphanbsd_sigtramp_sc1);
++  tramp_frame_prepend_unwinder (gdbarch, &alphanbsd_sigtramp_si2);
++  tramp_frame_prepend_unwinder (gdbarch, &alphanbsd_sigtramp_si4);
+ }
+ 
+ 
+diff -rNU3 dist.orig/gdb/amd64bsd-nat.c dist.nbsd/gdb/amd64bsd-nat.c
+--- dist.orig/gdb/amd64bsd-nat.c	2011-01-01 16:32:57.000000000 +0100
++++ dist.nbsd/gdb/amd64bsd-nat.c	2013-07-11 13:41:55.387754688 +0200
+@@ -50,7 +50,7 @@
+       struct reg regs;
+ 
+       if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get registers"));
+ 
+       amd64_supply_native_gregset (regcache, &regs, -1);
+@@ -63,7 +63,7 @@
+       struct fpreg fpregs;
+ 
+       if (ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get floating point status"));
+ 
+       amd64_supply_fxsave (regcache, -1, &fpregs);
+@@ -84,13 +84,13 @@
+       struct reg regs;
+ 
+       if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-                  (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++                  (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+         perror_with_name (_("Couldn't get registers"));
+ 
+       amd64_collect_native_gregset (regcache, &regs, regnum);
+ 
+       if (ptrace (PT_SETREGS, PIDGET (inferior_ptid),
+-	          (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++	          (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+         perror_with_name (_("Couldn't write registers"));
+ 
+       if (regnum != -1)
+@@ -102,13 +102,13 @@
+       struct fpreg fpregs;
+ 
+       if (ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get floating point status"));
+ 
+       amd64_collect_fxsave (regcache, regnum, &fpregs);
+ 
+       if (ptrace (PT_SETFPREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't write floating point status"));
+     }
+ }
+diff -rNU3 dist.orig/gdb/amd64nbsd-nat.c dist.nbsd/gdb/amd64nbsd-nat.c
+--- dist.orig/gdb/amd64nbsd-nat.c	2011-01-01 16:32:57.000000000 +0100
++++ dist.nbsd/gdb/amd64nbsd-nat.c	2013-07-11 13:41:55.394421489 +0200
+@@ -26,6 +26,23 @@
+ #include "nbsd-nat.h"
+ #include "amd64-tdep.h"
+ #include "amd64-nat.h"
++#include "regcache.h"
++#include "gdbcore.h"
++#include "bsd-kvm.h"
++
++#include <machine/frame.h>
++#include <machine/pcb.h>
++#include <machine/reg.h>
++
++#ifndef HAVE_GREGSET_T
++typedef struct reg gregset_t;
++#endif
++
++#ifndef HAVE_FPREGSET_T
++typedef struct fpreg fpregset_t;
++#endif
++
++#include "gregset.h"
+ 
+ /* Mapping between the general-purpose registers in NetBSD/amd64
+    `struct reg' format and GDB's register cache layout for
+@@ -57,6 +74,95 @@
+ };
+ 
+ 
++static int
++amd64nbsd_supply_pcb (struct regcache *regcache, struct pcb *pcb)
++{
++  struct switchframe sf;
++  int regnum;
++
++  /* The following is true for NetBSD/amd64:
++
++     The pcb contains the stack pointer at the point of the context
++     switch in cpu_switchto().  At that point we have a stack frame as
++     described by `struct switchframe', which for NetBSD/amd64 has the
++     following layout:
++
++     interrupt level
++     %r15
++     %r14
++     %r13
++     %r12
++     %rbx
++     return address
++
++     Together with %rsp in the pcb, this accounts for all callee-saved
++     registers specified by the psABI.  From this information we
++     reconstruct the register state as it would look when we just
++     returned from cpu_switchto().
++
++     For kernel core dumps, dumpsys() builds a fake switchframe for us. */
++
++  /* The stack pointer shouldn't be zero.  */
++  if (pcb->pcb_rsp == 0)
++    return 0;
++
++  /* Read the stack frame, and check its validity.  */
++  read_memory (pcb->pcb_rsp, (gdb_byte *) &sf, sizeof sf);
++  pcb->pcb_rsp += sizeof (struct switchframe);
++  regcache_raw_supply (regcache, 12, &sf.sf_r12);
++  regcache_raw_supply (regcache, 13, &sf.sf_r13);
++  regcache_raw_supply (regcache, 14, &sf.sf_r14);
++  regcache_raw_supply (regcache, 15, &sf.sf_r15);
++  regcache_raw_supply (regcache, AMD64_RBX_REGNUM, &sf.sf_rbx);
++  regcache_raw_supply (regcache, AMD64_RIP_REGNUM, &sf.sf_rip);
++
++  regcache_raw_supply (regcache, AMD64_RSP_REGNUM, &pcb->pcb_rsp);
++  regcache_raw_supply (regcache, AMD64_RBP_REGNUM, &pcb->pcb_rbp);
++  regcache_raw_supply (regcache, AMD64_FS_REGNUM, &pcb->pcb_fs);
++  regcache_raw_supply (regcache, AMD64_GS_REGNUM, &pcb->pcb_gs);
++
++  return 1;
++}
++
++void
++supply_gregset (struct regcache *regcache, const gregset_t *gregsetp)
++{
++  amd64_supply_native_gregset (regcache, gregsetp, -1);
++}
++
++/* Fill register REGNUM (if it is a general-purpose register) in
++   *GREGSETP with the value in GDB's register cache.  If REGNUM is -1,
++   do this for all registers.  */
++
++void
++fill_gregset (const struct regcache *regcache,
++	      gregset_t *gregsetp, int regnum)
++{
++  amd64_collect_native_gregset (regcache, gregsetp, regnum);
++}
++
++/* Transfering floating-point registers between GDB, inferiors and cores.  */
++
++/* Fill GDB's register cache with the floating-point and SSE register
++   values in *FPREGSETP.  */
++
++void
++supply_fpregset (struct regcache *regcache, const fpregset_t *fpregsetp)
++{
++  amd64_supply_fxsave (regcache, -1, fpregsetp);
++}
++
++/* Fill register REGNUM (if it is a floating-point or SSE register) in
++   *FPREGSETP with the value in GDB's register cache.  If REGNUM is
++   -1, do this for all registers.  */
++
++void
++fill_fpregset (const struct regcache *regcache,
++	       fpregset_t *fpregsetp, int regnum)
++{
++  amd64_collect_fxsave (regcache, regnum, fpregsetp);
++}
++
+ /* Provide a prototype to silence -Wmissing-prototypes.  */
+ void _initialize_amd64nbsd_nat (void);
+ 
+@@ -73,4 +179,7 @@
+   t = amd64bsd_target ();
+   t->to_pid_to_exec_file = nbsd_pid_to_exec_file;
+   add_target (t);
++
++  /* Support debugging kernel virtual memory images.  */
++  bsd_kvm_add_target (amd64nbsd_supply_pcb);
+ }
+diff -rNU3 dist.orig/gdb/amd64nbsd-tdep.c dist.nbsd/gdb/amd64nbsd-tdep.c
+--- dist.orig/gdb/amd64nbsd-tdep.c	2011-01-07 20:36:15.000000000 +0100
++++ dist.nbsd/gdb/amd64nbsd-tdep.c	2013-07-11 13:41:55.394421489 +0200
+@@ -26,10 +26,13 @@
+ #include "symtab.h"
+ 
+ #include "gdb_assert.h"
++#include "gdb_string.h"
+ 
+ #include "amd64-tdep.h"
+ #include "nbsd-tdep.h"
+ #include "solib-svr4.h"
++#include "trad-frame.h"
++#include "frame-unwind.h"
+ 
+ /* Support for signal handlers.  */
+ 
+@@ -96,6 +99,175 @@
+   15 * 8			/* %gs */
+ };
+ 
++/* Kernel debugging support */
++static const int amd64nbsd_tf_reg_offset[] =
++{
++  18 * 8,			/* %rax */
++  17 * 8,			/* %rbx */
++  10 * 8,			/* %rcx */
++  2 * 8,			/* %rdx */
++  1 * 8,			/* %rsi */
++  0 * 8,			/* %rdi */
++  16 * 8,			/* %rbp */
++  28 * 8,			/* %rsp */
++  4 * 8,			/* %r8 .. */
++  5 * 8,			
++  3 * 8,			
++  11 * 8,			
++  12 * 8,			
++  13 * 8,			
++  14 * 8,			
++  15 * 8,			/* ... %r15 */
++  25 * 8,			/* %rip */
++  27 * 8,			/* %eflags */
++  26 * 8,			/* %cs */
++  29 * 8,			/* %ss */
++  22 * 8,			/* %ds */
++  21 * 8,			/* %es */
++  20 * 8,			/* %fs */
++  19 * 8,			/* %gs */
++};
++
++static struct trad_frame_cache *
++amd64nbsd_trapframe_cache(struct frame_info *this_frame, void **this_cache)
++{
++  struct trad_frame_cache *cache;
++  CORE_ADDR func, sp, addr;
++  ULONGEST cs = 0, rip = 0;
++  char *name;
++  int i;
++  enum bfd_endian byte_order = gdbarch_byte_order (target_gdbarch);
++
++  if (*this_cache)
++    return *this_cache;
++
++  cache = trad_frame_cache_zalloc (this_frame);
++  *this_cache = cache;
++
++  func = get_frame_func (this_frame);
++  sp = get_frame_register_unsigned (this_frame, AMD64_RSP_REGNUM);
++
++  find_pc_partial_function (func, &name, NULL, NULL);
++
++  /* There is an extra 'call' in the interrupt sequence - ignore the extra
++   * return address */
++  if (name && strncmp (name, "Xintr", 5) == 0)
++    addr = sp + 8;		/* It's an interrupt frame.  */
++  else
++    addr = sp;
++
++  for (i = 0; i < ARRAY_SIZE (amd64nbsd_tf_reg_offset); i++)
++    {
++      if (amd64nbsd_tf_reg_offset[i] != -1)
++        trad_frame_set_reg_addr (cache, i, addr + amd64nbsd_tf_reg_offset[i]);
++
++      /* Read %cs and %rip when we have the addresses to hand */
++      if (i == AMD64_CS_REGNUM)
++        cs = read_memory_unsigned_integer (addr + amd64nbsd_tf_reg_offset[i], 8,
++	  byte_order);
++      if (i == AMD64_RIP_REGNUM)
++        rip = read_memory_unsigned_integer (addr + amd64nbsd_tf_reg_offset[i],
++	  8, byte_order);
++    }
++
++  if (cs == 0 || rip == 0)
++     abort();
++
++  /* The trap frame layout was changed lf the %rip value is less than 2^16 it
++   * is almost certainly the %ss of the old format. */
++  if (rip < (1 << 16))
++    {
++
++      for (i = 0; i < ARRAY_SIZE (amd64nbsd_tf_reg_offset); i++)
++        {
++
++          if (amd64nbsd_tf_reg_offset[i] == -1)
++            continue;
++
++          trad_frame_set_reg_addr (cache, i, addr + amd64nbsd_r_reg_offset[i]);
++
++          /* Read %cs when we have the address to hand */
++          if (i == AMD64_CS_REGNUM)
++	    cs = read_memory_unsigned_integer (addr + amd64nbsd_r_reg_offset[i],
++	    8, byte_order);
++        }
++    }
++
++  if ((cs & I386_SEL_RPL) == I386_SEL_UPL)
++    {
++      /* Trap from user space; terminate backtrace.  */
++      trad_frame_set_id (cache, outer_frame_id);
++    }
++  else
++    {
++      /* Construct the frame ID using the function start.  */
++      trad_frame_set_id (cache, frame_id_build (sp + 16, func));
++    }
++
++  return cache;
++}
++
++static void
++amd64nbsd_trapframe_this_id (struct frame_info *this_frame,
++			     void **this_cache,
++			     struct frame_id *this_id)
++{
++  struct trad_frame_cache *cache =
++    amd64nbsd_trapframe_cache (this_frame, this_cache);
++  
++  trad_frame_get_id (cache, this_id);
++}
++
++static struct value *
++amd64nbsd_trapframe_prev_register (struct frame_info *this_frame,
++				   void **this_cache, int regnum) 
++{
++  struct trad_frame_cache *cache =
++    amd64nbsd_trapframe_cache (this_frame, this_cache);
++
++  return trad_frame_get_register (cache, this_frame, regnum);
++}
++
++static int
++amd64nbsd_trapframe_sniffer (const struct frame_unwind *self,
++			     struct frame_info *this_frame,
++			     void **this_prologue_cache)
++{
++  ULONGEST cs;
++  char *name;
++
++  /* Check Current Privilege Level and bail out if we're not executing
++     in kernel space.  */
++  cs = get_frame_register_unsigned (this_frame, AMD64_CS_REGNUM);
++  if ((cs & I386_SEL_RPL) == I386_SEL_UPL)
++    return 0;
++
++  find_pc_partial_function (get_frame_pc (this_frame), &name, NULL, NULL);
++  return (name && ((strcmp (name, "alltraps") == 0)
++		   || (strcmp (name, "calltrap") == 0)
++		   || (strncmp (name, "Xtrap", 5) == 0)
++		   || (strcmp (name, "osyscall1") == 0)
++		   || (strcmp (name, "Xsyscall") == 0)
++		   || (strncmp (name, "Xintr", 5) == 0)
++		   || (strncmp (name, "Xresume", 7) == 0)
++		   || (strncmp (name, "Xstray", 6) == 0)
++		   || (strncmp (name, "Xrecurse", 8) == 0)
++		   || (strncmp (name, "Xsoft", 5) == 0)
++		   || (strcmp (name, "Xdoreti") == 0)));
++}
++
++static const struct frame_unwind amd64nbsd_trapframe_unwind = {
++  /* FIXME: kettenis/20051219: This really is more like an interrupt
++     frame, but SIGTRAMP_FRAME would print <signal handler called>,
++     which really is not what we want here.  */
++  NORMAL_FRAME,
++  default_frame_unwind_stop_reason,
++  amd64nbsd_trapframe_this_id,
++  amd64nbsd_trapframe_prev_register,
++  NULL,
++  amd64nbsd_trapframe_sniffer
++};
++
+ static void
+ amd64nbsd_init_abi (struct gdbarch_info info, struct gdbarch *gdbarch)
+ {
+@@ -119,6 +291,8 @@
+   /* NetBSD uses SVR4-style shared libraries.  */
+   set_solib_svr4_fetch_link_map_offsets
+     (gdbarch, svr4_lp64_fetch_link_map_offsets);
++  /* Unwind kernel trap frames correctly.  */
++  frame_unwind_prepend_unwinder (gdbarch, &amd64nbsd_trapframe_unwind);
+ }
+ 
+ 
+diff -rNU3 dist.orig/gdb/armnbsd-nat.c dist.nbsd/gdb/armnbsd-nat.c
+--- dist.orig/gdb/armnbsd-nat.c	2011-01-07 20:36:15.000000000 +0100
++++ dist.nbsd/gdb/armnbsd-nat.c	2013-07-11 13:41:55.711094488 +0200
+@@ -24,17 +24,78 @@
+ #include "regcache.h"
+ #include "target.h"
+ 
++#include "nbsd-nat.h"
+ #include "gdb_string.h"
+ #include <sys/types.h>
+ #include <sys/ptrace.h>
+ #include <machine/reg.h>
+ #include <machine/frame.h>
+ 
++/* Support for debugging kernel virtual memory images.  */
++#include <machine/pcb.h>
++
+ #include "arm-tdep.h"
+ #include "inf-ptrace.h"
++#include "bsd-kvm.h"
++
++#ifndef HAVE_GREGSET_T
++typedef struct reg gregset_t;
++#endif
++
++#ifndef HAVE_FPREGSET_T
++typedef struct fpreg fpregset_t;
++#endif
++
++#include "gregset.h"
+ 
+ extern int arm_apcs_32;
+ 
++static int
++armnbsd_supply_pcb (struct regcache *regcache, struct pcb *pcb)
++{
++  struct switchframe sf;
++
++  /* The following is true for NetBSD/arm32 in 5.0 and after:
++
++     The pcb contains r8-r13 (sp) at the point of context switch in
++     cpu_switchto() or call of dumpsys(). At that point we have a
++     stack frame as described by `struct switchframe', which for
++     NetBSD/arm32 has the following layout:
++
++	r4   ascending.
++	r5        |
++	r6        |
++	r7       \|/
++	old sp
++	pc
++
++     we reconstruct the register state as it would look when we just
++     returned from cpu_switchto() or dumpsys().  */
++
++  if (!arm_apcs_32)
++    return 0;
++
++  /* The stack pointer shouldn't be zero.  */
++  if (pcb->pcb_un.un_32.pcb32_sp == 0)
++    return 0;
++
++  read_memory (pcb->pcb_un.un_32.pcb32_sp, (gdb_byte *) &sf, sizeof sf);
++
++  regcache_raw_supply (regcache, ARM_PC_REGNUM, &sf.sf_pc);
++  regcache_raw_supply (regcache, ARM_SP_REGNUM, &pcb->pcb_un.un_32.pcb32_sp);
++  regcache_raw_supply (regcache, 12, &pcb->pcb_un.un_32.pcb32_r12);
++  regcache_raw_supply (regcache, 11, &pcb->pcb_un.un_32.pcb32_r11);
++  regcache_raw_supply (regcache, 10, &pcb->pcb_un.un_32.pcb32_r10);
++  regcache_raw_supply (regcache, 9, &pcb->pcb_un.un_32.pcb32_r9);
++  regcache_raw_supply (regcache, 8, &pcb->pcb_un.un_32.pcb32_r8);
++  regcache_raw_supply (regcache, 7, &sf.sf_r7);
++  regcache_raw_supply (regcache, 6, &sf.sf_r6);
++  regcache_raw_supply (regcache, 5, &sf.sf_r5);
++  regcache_raw_supply (regcache, 4, &sf.sf_r4);
++
++  return 1;
++}
++
+ static void
+ arm_supply_gregset (struct regcache *regcache, struct reg *gregset)
+ {
+@@ -74,6 +135,64 @@
+ 		       (char *) &fparegset->fpr_fpsr);
+ }
+ 
++void
++fill_gregset (const struct regcache *regcache, gregset_t *gregsetp, int regno)
++{
++  if (-1 == regno)
++    {
++      int regnum;
++      for (regnum = ARM_A1_REGNUM; regnum < ARM_SP_REGNUM; regnum++) 
++	regcache_raw_collect (regcache, regnum, (char *) &gregsetp->r[regnum]);
++    }
++  else if (regno >= ARM_A1_REGNUM && regno < ARM_SP_REGNUM)
++    regcache_raw_collect (regcache, regno, (char *) &gregsetp->r[regno]);
++
++  if (ARM_SP_REGNUM == regno || -1 == regno)
++    regcache_raw_collect (regcache, ARM_SP_REGNUM, (char *) &gregsetp->r_sp);
++
++  if (ARM_LR_REGNUM == regno || -1 == regno)
++    regcache_raw_collect (regcache, ARM_LR_REGNUM, (char *) &gregsetp->r_lr);
++
++  if (ARM_PC_REGNUM == regno || -1 == regno)
++    regcache_raw_collect (regcache, ARM_PC_REGNUM, (char *) &gregsetp->r_pc);
++
++  if (ARM_PS_REGNUM == regno || -1 == regno)
++    {
++      if (arm_apcs_32)
++	regcache_raw_collect (regcache, ARM_PS_REGNUM, (char *) &gregsetp->r_cpsr);
++      else
++	regcache_raw_collect (regcache, ARM_PS_REGNUM, (char *) &gregsetp->r_pc);
++    }
++ }
++ 
++void
++fill_fpregset (const struct regcache *regcache, fpregset_t *fpregsetp, int regno)
++{
++  if (-1 == regno)
++    {
++       int regnum;
++       for (regnum = ARM_F0_REGNUM; regnum <= ARM_F7_REGNUM; regnum++)
++         regcache_raw_collect(regcache, regnum, (char *) &fpregsetp->fpr[regnum - ARM_F0_REGNUM]);
++    }
++  else if (regno >= ARM_F0_REGNUM && regno <= ARM_F7_REGNUM)
++    regcache_raw_collect(regcache, regno, (char *) &fpregsetp->fpr[regno - ARM_F0_REGNUM]);
++
++  if (ARM_FPS_REGNUM == regno || -1 == regno)
++    regcache_raw_collect (regcache, ARM_FPS_REGNUM, (char *) &fpregsetp->fpr_fpsr);
++}
++
++void
++supply_gregset (struct regcache *regcache, const gdb_gregset_t *gregsetp)
++{
++  arm_supply_gregset (regcache, (struct reg *)gregsetp);
++}
++
++void
++supply_fpregset (struct regcache *regcache, const gdb_fpregset_t *fpregsetp)
++{
++  arm_supply_fparegset (regcache, (struct fpreg *)fpregsetp);
++}
++
+ static void
+ fetch_register (struct regcache *regcache, int regno)
+ {
+@@ -81,7 +200,7 @@
+   int ret;
+ 
+   ret = ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-		(PTRACE_TYPE_ARG3) &inferior_registers, 0);
++		(PTRACE_TYPE_ARG3) &inferior_registers, TIDGET (inferior_ptid));
+ 
+   if (ret < 0)
+     {
+@@ -134,7 +253,7 @@
+   int regno;
+ 
+   ret = ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-		(PTRACE_TYPE_ARG3) &inferior_registers, 0);
++		(PTRACE_TYPE_ARG3) &inferior_registers, TIDGET (inferior_ptid));
+ 
+   if (ret < 0)
+     {
+@@ -152,7 +271,7 @@
+   int ret;
+ 
+   ret = ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
+-		(PTRACE_TYPE_ARG3) &inferior_fp_registers, 0);
++		(PTRACE_TYPE_ARG3) &inferior_fp_registers, TIDGET (inferior_ptid));
+ 
+   if (ret < 0)
+     {
+@@ -182,7 +301,7 @@
+   int regno;
+ 
+   ret = ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
+-		(PTRACE_TYPE_ARG3) &inferior_fp_registers, 0);
++		(PTRACE_TYPE_ARG3) &inferior_fp_registers, TIDGET (inferior_ptid));
+ 
+   if (ret < 0)
+     {
+@@ -220,7 +339,7 @@
+   int ret;
+ 
+   ret = ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-		(PTRACE_TYPE_ARG3) &inferior_registers, 0);
++		(PTRACE_TYPE_ARG3) &inferior_registers, TIDGET (inferior_ptid));
+ 
+   if (ret < 0)
+     {
+@@ -283,7 +402,7 @@
+     }
+ 
+   ret = ptrace (PT_SETREGS, PIDGET (inferior_ptid),
+-		(PTRACE_TYPE_ARG3) &inferior_registers, 0);
++		(PTRACE_TYPE_ARG3) &inferior_registers, TIDGET (inferior_ptid));
+ 
+   if (ret < 0)
+     warning (_("unable to write register %d to inferior"), regno);
+@@ -331,7 +450,7 @@
+     }
+ 
+   ret = ptrace (PT_SETREGS, PIDGET (inferior_ptid),
+-		(PTRACE_TYPE_ARG3) &inferior_registers, 0);
++		(PTRACE_TYPE_ARG3) &inferior_registers, TIDGET (inferior_ptid));
+ 
+   if (ret < 0)
+     warning (_("unable to store general registers"));
+@@ -344,7 +463,7 @@
+   int ret;
+ 
+   ret = ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
+-		(PTRACE_TYPE_ARG3) &inferior_fp_registers, 0);
++		(PTRACE_TYPE_ARG3) &inferior_fp_registers, TIDGET (inferior_ptid));
+ 
+   if (ret < 0)
+     {
+@@ -366,7 +485,7 @@
+     }
+ 
+   ret = ptrace (PT_SETFPREGS, PIDGET (inferior_ptid),
+-		(PTRACE_TYPE_ARG3) &inferior_fp_registers, 0);
++		(PTRACE_TYPE_ARG3) &inferior_fp_registers, TIDGET (inferior_ptid));
+ 
+   if (ret < 0)
+     warning (_("unable to write register %d to inferior"), regno);
+@@ -388,7 +507,7 @@
+ 			(char *) &inferior_fp_registers.fpr_fpsr);
+ 
+   ret = ptrace (PT_SETFPREGS, PIDGET (inferior_ptid),
+-		(PTRACE_TYPE_ARG3) &inferior_fp_registers, 0);
++		(PTRACE_TYPE_ARG3) &inferior_fp_registers, TIDGET (inferior_ptid));
+ 
+   if (ret < 0)
+     warning (_("unable to store floating-point registers"));
+@@ -497,8 +616,12 @@
+   t = inf_ptrace_target ();
+   t->to_fetch_registers = armnbsd_fetch_registers;
+   t->to_store_registers = armnbsd_store_registers;
++  t->to_pid_to_exec_file = nbsd_pid_to_exec_file;
+   add_target (t);
+ 
++  /* Support debugging kernel virtual memory images.  */
++  bsd_kvm_add_target (armnbsd_supply_pcb);
++
+   deprecated_add_core_fns (&arm_netbsd_core_fns);
+   deprecated_add_core_fns (&arm_netbsd_elfcore_fns);
+ }
+diff -rNU3 dist.orig/gdb/bsd-kvm.c dist.nbsd/gdb/bsd-kvm.c
+--- dist.orig/gdb/bsd-kvm.c	2011-01-07 20:36:15.000000000 +0100
++++ dist.nbsd/gdb/bsd-kvm.c	2013-07-11 13:41:55.714427889 +0200
+@@ -37,6 +37,7 @@
+ #include <paths.h>
+ #include "readline/readline.h"
+ #include <sys/param.h>
++#define _KMEMUSER
+ #include <sys/proc.h>
+ #include <sys/user.h>
+ 
+@@ -69,6 +70,7 @@
+   char errbuf[_POSIX2_LINE_MAX];
+   char *execfile = NULL;
+   kvm_t *temp_kd;
++  struct inferior *inf;
+ 
+   target_preopen (from_tty);
+ 
+@@ -96,6 +98,10 @@
+   core_kd = temp_kd;
+   push_target (&bsd_kvm_ops);
+ 
++  inf = add_inferior_silent (PIDGET(bsd_kvm_ptid));
++  inf->aspace = maybe_new_address_space ();
++  inf->pspace = add_program_space (inf->aspace);
++
+   add_thread_silent (bsd_kvm_ptid);
+   inferior_ptid = bsd_kvm_ptid;
+ 
+@@ -222,6 +228,27 @@
+       return;
+     }
+ 
++#if 1 /* TODO: HAVE_STRUCT_LWP_L_ADDR */
++  memset (nl, 0, sizeof nl);
++  nl[0].n_name = "_lwp0";
++
++  if (kvm_nlist (core_kd, nl) == -1)
++    error (("%s"), kvm_geterr (core_kd));
++
++  if (nl[0].n_value != 0)
++    {
++      struct pcb *paddr;
++
++      /* Found lwp0.  */
++      nl[0].n_value += offsetof (struct lwp, l_addr);
++      if (kvm_read (core_kd, nl[0].n_value, &paddr, sizeof paddr) == -1)
++	error (("%s"), kvm_geterr (core_kd));
++
++      bsd_kvm_fetch_pcb (regcache, paddr);
++      return;
++    }
++#endif
++
+ #ifdef HAVE_STRUCT_THREAD_TD_PCB
+   /* In FreeBSD kernels for 5.0-RELEASE and later, the PCB no longer
+      lives in `struct proc' but in `struct thread'.  The `struct
+diff -rNU3 dist.orig/gdb/config/alpha/nbsd.mh dist.nbsd/gdb/config/alpha/nbsd.mh
+--- dist.orig/gdb/config/alpha/nbsd.mh	2006-07-31 22:15:50.000000000 +0200
++++ dist.nbsd/gdb/config/alpha/nbsd.mh	2013-07-11 13:41:55.434422290 +0200
+@@ -1,4 +1,5 @@
+ # Host: NetBSD/alpha
+-NATDEPFILES= fork-child.o inf-ptrace.o alphabsd-nat.o bsd-kvm.o
++NATDEPFILES= fork-child.o inf-ptrace.o alphabsd-nat.o bsd-kvm.o nbsd-nat.o \
++	nbsd-thread.o
+ 
+ LOADLIBES= -lkvm
+diff -rNU3 dist.orig/gdb/config/arm/nbsdelf.mh dist.nbsd/gdb/config/arm/nbsdelf.mh
+--- dist.orig/gdb/config/arm/nbsdelf.mh	2005-05-22 22:36:19.000000000 +0200
++++ dist.nbsd/gdb/config/arm/nbsdelf.mh	2013-07-11 13:41:55.494423489 +0200
+@@ -1,2 +1,3 @@
+ # Host: NetBSD/arm
+-NATDEPFILES= fork-child.o inf-ptrace.o corelow.o armnbsd-nat.o
++NATDEPFILES= fork-child.o inf-ptrace.o corelow.o nbsd-nat.o armnbsd-nat.o \
++	bsd-kvm.o nbsd-thread.o
+diff -rNU3 dist.orig/gdb/config/i386/nbsd64.mh dist.nbsd/gdb/config/i386/nbsd64.mh
+--- dist.orig/gdb/config/i386/nbsd64.mh	2008-03-16 09:50:43.000000000 +0100
++++ dist.nbsd/gdb/config/i386/nbsd64.mh	2013-07-11 13:41:55.487756689 +0200
+@@ -1,3 +1,6 @@
+ # Host: NetBSD/amd64
+ NATDEPFILES= fork-child.o inf-ptrace.o \
+-	nbsd-nat.o amd64-nat.o amd64bsd-nat.o amd64nbsd-nat.o
++	amd64-nat.o amd64bsd-nat.o nbsd-nat.o amd64nbsd-nat.o bsd-kvm.o \
++	nbsd-thread.o
++
++LOADLIBES= -lkvm
+diff -rNU3 dist.orig/gdb/config/i386/nbsdelf.mh dist.nbsd/gdb/config/i386/nbsdelf.mh
+--- dist.orig/gdb/config/i386/nbsdelf.mh	2006-12-17 14:30:44.000000000 +0100
++++ dist.nbsd/gdb/config/i386/nbsdelf.mh	2013-07-11 13:41:55.477756489 +0200
+@@ -1,5 +1,6 @@
+ # Host: NetBSD/i386 ELF
+ NATDEPFILES= fork-child.o inf-ptrace.o \
+-	nbsd-nat.o i386bsd-nat.o i386nbsd-nat.o bsd-kvm.o
++	nbsd-nat.o i386bsd-nat.o i386nbsd-nat.o bsd-kvm.o \
++	nbsd-thread.o
+ 
+ LOADLIBES= -lkvm
+diff -rNU3 dist.orig/gdb/config/m68k/nbsdelf.mh dist.nbsd/gdb/config/m68k/nbsdelf.mh
+--- dist.orig/gdb/config/m68k/nbsdelf.mh	2004-11-07 22:31:19.000000000 +0100
++++ dist.nbsd/gdb/config/m68k/nbsdelf.mh	2013-07-11 13:41:55.474423089 +0200
+@@ -1,4 +1,5 @@
+ # Host: NetBSD/m68k ELF
+-NATDEPFILES= m68kbsd-nat.o bsd-kvm.o fork-child.o inf-ptrace.o
++NATDEPFILES= nbsd-nat.o m68kbsd-nat.o bsd-kvm.o fork-child.o inf-ptrace.o \
++	nbsd-thread.o
+ 
+ LOADLIBES= -lkvm
+diff -rNU3 dist.orig/gdb/config/mips/nbsd.mh dist.nbsd/gdb/config/mips/nbsd.mh
+--- dist.orig/gdb/config/mips/nbsd.mh	2004-10-31 21:47:55.000000000 +0100
++++ dist.nbsd/gdb/config/mips/nbsd.mh	2013-07-11 13:41:55.491090090 +0200
+@@ -1,2 +1,3 @@
+ # Host: NetBSD/mips
+-NATDEPFILES= fork-child.o inf-ptrace.o mipsnbsd-nat.o
++NATDEPFILES= fork-child.o inf-ptrace.o nbsd-nat.o mipsnbsd-nat.o \
++	nbsd-thread.o
+diff -rNU3 dist.orig/gdb/config/pa/nbsd.mh dist.nbsd/gdb/config/pa/nbsd.mh
+--- dist.orig/gdb/config/pa/nbsd.mh	2008-01-19 16:03:50.000000000 +0100
++++ dist.nbsd/gdb/config/pa/nbsd.mh	2013-07-11 13:41:55.474423089 +0200
+@@ -1,2 +1,3 @@
+ # Host: NetBSD/hppa
+-NATDEPFILES= fork-child.o inf-ptrace.o nbsd-nat.o hppanbsd-nat.o
++NATDEPFILES= fork-child.o inf-ptrace.o nbsd-nat.o hppanbsd-nat.o \
++	nbsd-thread.o
+diff -rNU3 dist.orig/gdb/config/pa/nbsd.mt dist.nbsd/gdb/config/pa/nbsd.mt
+--- dist.orig/gdb/config/pa/nbsd.mt	1970-01-01 01:00:00.000000000 +0100
++++ dist.nbsd/gdb/config/pa/nbsd.mt	2013-07-11 13:41:55.474423089 +0200
+@@ -0,0 +1,2 @@
++# Target: NetBSD/hppa
++TDEPFILES= hppa-tdep.o hppabsd-tdep.o hppanbsd-tdep.o corelow.o solib.o solib-svr4.o
+diff -rNU3 dist.orig/gdb/config/powerpc/nbsd.mh dist.nbsd/gdb/config/powerpc/nbsd.mh
+--- dist.orig/gdb/config/powerpc/nbsd.mh	2006-05-12 22:53:15.000000000 +0200
++++ dist.nbsd/gdb/config/powerpc/nbsd.mh	2013-07-11 13:41:55.491090090 +0200
+@@ -1,4 +1,5 @@
+ # Host: NetBSD/powerpc
+-NATDEPFILES= fork-child.o inf-ptrace.o ppcnbsd-nat.o bsd-kvm.o
++NATDEPFILES= fork-child.o inf-ptrace.o nbsd-nat.o ppcnbsd-nat.o bsd-kvm.o \
++	nbsd-thread.o
+ 
+ LOADLIBES= -lkvm
+diff -rNU3 dist.orig/gdb/config/powerpc/ppc64-nbsd.mh dist.nbsd/gdb/config/powerpc/ppc64-nbsd.mh
+--- dist.orig/gdb/config/powerpc/ppc64-nbsd.mh	1970-01-01 01:00:00.000000000 +0100
++++ dist.nbsd/gdb/config/powerpc/ppc64-nbsd.mh	2013-07-11 13:41:55.491090090 +0200
+@@ -0,0 +1,5 @@
++# Host: NetBSD/powerpc64
++NATDEPFILES= fork-child.o inf-ptrace.o nbsd-nat.o ppcnbsd-nat.o bsd-kvm.o \
++	nbsd-thread.o
++
++LOADLIBES= -lkvm
+diff -rNU3 dist.orig/gdb/config/sh/nbsd.mh dist.nbsd/gdb/config/sh/nbsd.mh
+--- dist.orig/gdb/config/sh/nbsd.mh	2006-12-16 00:57:35.000000000 +0100
++++ dist.nbsd/gdb/config/sh/nbsd.mh	2013-07-11 13:41:55.434422290 +0200
+@@ -1,2 +1,3 @@
+ # Host: NetBSD/sh
+-NATDEPFILES= fork-child.o inf-ptrace.o shnbsd-nat.o
++NATDEPFILES= inf-ptrace.o fork-child.o nbsd-nat.o shnbsd-nat.o \
++	nbsd-thread.o
+diff -rNU3 dist.orig/gdb/config/sparc/nbsd64.mh dist.nbsd/gdb/config/sparc/nbsd64.mh
+--- dist.orig/gdb/config/sparc/nbsd64.mh	2005-03-25 23:28:53.000000000 +0100
++++ dist.nbsd/gdb/config/sparc/nbsd64.mh	2013-07-11 13:41:55.434422290 +0200
+@@ -1,5 +1,6 @@
+ # Host: NetBSD/sparc64
+ NATDEPFILES= fork-child.o inf-ptrace.o \
+-	sparc64nbsd-nat.o sparc-nat.o bsd-kvm.o
++	nbsd-nat.o sparc64nbsd-nat.o sparc-nat.o bsd-kvm.o \
++	nbsd-thread.o
+ 
+ LOADLIBES= -lkvm
+diff -rNU3 dist.orig/gdb/config/sparc/nbsdelf.mh dist.nbsd/gdb/config/sparc/nbsdelf.mh
+--- dist.orig/gdb/config/sparc/nbsdelf.mh	2004-11-29 12:20:10.000000000 +0100
++++ dist.nbsd/gdb/config/sparc/nbsdelf.mh	2013-07-11 13:41:55.434422290 +0200
+@@ -1,5 +1,6 @@
+ # Host: NetBSD/sparc ELF
+ NATDEPFILES= fork-child.o inf-ptrace.o \
+-	sparc-nat.o sparcnbsd-nat.o bsd-kvm.o
++	nbsd-nat.o sparcnbsd-nat.o sparc-nat.o bsd-kvm.o \
++	nbsd-thread.o
+ 
+ LOADLIBES= -lkvm
+diff -rNU3 dist.orig/gdb/config/vax/nbsdelf.mh dist.nbsd/gdb/config/vax/nbsdelf.mh
+--- dist.orig/gdb/config/vax/nbsdelf.mh	2004-10-01 19:26:14.000000000 +0200
++++ dist.nbsd/gdb/config/vax/nbsdelf.mh	2013-07-11 13:41:55.434422290 +0200
+@@ -1,5 +1,6 @@
+ # Host: NetBSD/vax ELF
+ NATDEPFILES= fork-child.o inf-ptrace.o \
+-	vaxbsd-nat.o bsd-kvm.o
++	nbsd-nat.o vaxbsd-nat.o bsd-kvm.o \
++	nbsd-thread.o
+ 
+ LOADLIBES= -lkvm
+diff -rNU3 dist.orig/gdb/configure dist.nbsd/gdb/configure
+--- dist.orig/gdb/configure	2011-04-03 18:32:40.000000000 +0200
++++ dist.nbsd/gdb/configure	2013-07-11 13:41:55.594425489 +0200
+@@ -13009,6 +13009,7 @@
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ #include <sys/param.h>
++#define _KMEMUSER
+ #include <sys/lwp.h>
+ int
+ main ()
+diff -rNU3 dist.orig/gdb/configure.ac dist.nbsd/gdb/configure.ac
+--- dist.orig/gdb/configure.ac	2011-04-03 18:32:40.000000000 +0200
++++ dist.nbsd/gdb/configure.ac	2013-07-11 13:41:55.381087889 +0200
+@@ -1137,6 +1137,7 @@
+ # See if <sys/lwp.h> defines `struct lwp`.
+ AC_CACHE_CHECK([for struct lwp], gdb_cv_struct_lwp,
+ [AC_TRY_COMPILE([#include <sys/param.h>
++#define _KMEMUSER
+ #include <sys/lwp.h>], [struct lwp l;],
+ gdb_cv_struct_lwp=yes, gdb_cv_struct_lwp=no)])
+ if test $gdb_cv_struct_lwp = yes; then
+diff -rNU3 dist.orig/gdb/configure.host dist.nbsd/gdb/configure.host
+--- dist.orig/gdb/configure.host	2011-01-13 17:24:12.000000000 +0100
++++ dist.nbsd/gdb/configure.host	2013-07-11 13:41:55.517757289 +0200
+@@ -128,6 +128,8 @@
+ powerpc-*-linux*)	gdb_host=linux ;;
+ powerpc-*-netbsd* | powerpc-*-knetbsd*-gnu)
+ 			gdb_host=nbsd ;;
++powerpc64-*-netbsd* | powerpc64-*-knetbsd*-gnu)
++			gdb_host=ppc64-nbsd ;;
+ powerpc-*-openbsd*)	gdb_host=obsd ;;
+ 
+ powerpc64-*-linux*)     gdb_host=ppc64-linux
+diff -rNU3 dist.orig/gdb/configure.tgt dist.nbsd/gdb/configure.tgt
+--- dist.orig/gdb/configure.tgt	2011-03-06 01:22:38.000000000 +0100
++++ dist.nbsd/gdb/configure.tgt	2013-07-11 13:41:55.564424890 +0200
+@@ -395,10 +395,11 @@
+ 	gdb_target_obs="mt-tdep.o"
+ 	;;
+ 
+-powerpc-*-netbsd* | powerpc-*-knetbsd*-gnu)
++powerpc-*-netbsd* | powerpc-*-knetbsd*-gnu | powerpc64-*-netbsd*)
+ 	# Target: NetBSD/powerpc
+-	gdb_target_obs="rs6000-tdep.o ppc-sysv-tdep.o ppcnbsd-tdep.o \
+-			corelow.o solib.o solib-svr4.o"
++	gdb_target_obs="rs6000-tdep.o ppcnbsd-tdep.o ppc-sysv-tdep.o \
++			solib.o solib-svr4.o solib-spu.o spu-multiarch.o \
++			corelow.o symfile-mem.o nbsd-tdep.o"
+ 	gdb_sim=../sim/ppc/libsim.a
+ 	;;
+ powerpc-*-openbsd*)
+@@ -459,7 +460,8 @@
+ 	;;
+ sh*-*-netbsdelf* | sh*-*-knetbsd*-gnu)
+ 	# Target: NetBSD/sh
+-	gdb_target_obs="sh-tdep.o shnbsd-tdep.o corelow.o solib.o solib-svr4.o"
++	gdb_target_obs="sh-tdep.o sh64-tdep.o shnbsd-tdep.o \
++			nbsd-tdep.o corelow.o solib.o solib-svr4.o"
+ 	gdb_sim=../sim/sh/libsim.a
+ 	;;
+ sh*-*-openbsd*)
+diff -rNU3 dist.orig/gdb/doc/gdbint.texinfo dist.nbsd/gdb/doc/gdbint.texinfo
+--- dist.orig/gdb/doc/gdbint.texinfo	2011-02-04 20:10:12.000000000 +0100
++++ dist.nbsd/gdb/doc/gdbint.texinfo	2013-07-11 13:41:55.561091489 +0200
+@@ -44,7 +44,7 @@
+ @page
+ @tex
+ \def\$#1${{#1}}  % Kluge: collect RCS revision info without $...$
+-\xdef\manvers{\$Revision$}  % For use in headers, footers too
++\xdef\manvers{\$Revision: 1.1.1.1 $}  % For use in headers, footers too
+ {\parskip=0pt
+ \hfill Cygnus Solutions\par
+ \hfill \manvers\par
+diff -rNU3 dist.orig/gdb/doc/stabs.texinfo dist.nbsd/gdb/doc/stabs.texinfo
+--- dist.orig/gdb/doc/stabs.texinfo	2011-01-05 06:09:54.000000000 +0100
++++ dist.nbsd/gdb/doc/stabs.texinfo	2013-07-11 13:41:55.561091489 +0200
+@@ -40,7 +40,7 @@
+ @page
+ @tex
+ \def\$#1${{#1}}  % Kluge: collect RCS revision info without $...$
+-\xdef\manvers{\$Revision: 2.130 $}  % For use in headers, footers too
++\xdef\manvers{\Revision: 2.130}  % For use in headers, footers too
+ {\parskip=0pt
+ \hfill Cygnus Support\par
+ \hfill \manvers\par
+diff -rNU3 dist.orig/gdb/gdb.1 dist.nbsd/gdb/gdb.1
+--- dist.orig/gdb/gdb.1	2011-01-05 06:09:51.000000000 +0100
++++ dist.nbsd/gdb/gdb.1	2013-07-11 13:41:55.551091289 +0200
+@@ -1,6 +1,6 @@
+ .\" Copyright (C) 1991, 1999, 2010, 2011 Free Software Foundation, Inc.
+ .\" See section COPYING for conditions for redistribution
+-.\" $Id: gdb.1,v 1.4 1999/01/05 00:50:50 jsm Exp $
++.\" Id: gdb.1,v 1.4 1999/01/05 00:50:50 jsm Exp
+ .TH gdb 1 "22may2002" "GNU Tools" "GNU Tools"
+ .SH NAME
+ gdb \- The GNU Debugger
+diff -rNU3 dist.orig/gdb/gdbserver/.gitignore dist.nbsd/gdb/gdbserver/.gitignore
+--- dist.orig/gdb/gdbserver/.gitignore	2010-12-23 22:13:24.000000000 +0100
++++ dist.nbsd/gdb/gdbserver/.gitignore	1970-01-01 01:00:00.000000000 +0100
+@@ -1,4 +0,0 @@
+-gdbreplay
+-gdbserver
+-reg-*.c
+-version.c
+diff -rNU3 dist.orig/gdb/.gitignore dist.nbsd/gdb/.gitignore
+--- dist.orig/gdb/.gitignore	2011-03-29 20:21:32.000000000 +0200
++++ dist.nbsd/gdb/.gitignore	1970-01-01 01:00:00.000000000 +0100
+@@ -1,17 +0,0 @@
+-/version.c
+-/xml-builtin.c
+-
+-/ada-exp.c
+-/ada-lex.c
+-/c-exp.c
+-/cp-name-parser.c
+-/f-exp.c
+-/gdb
+-/gdbtui
+-/init.c
+-/jv-exp.c
+-/m2-exp.c
+-/objc-exp.c
+-/observer.h
+-/observer.inc
+-/p-exp.c
+diff -rNU3 dist.orig/gdb/hppanbsd-nat.c dist.nbsd/gdb/hppanbsd-nat.c
+--- dist.orig/gdb/hppanbsd-nat.c	2011-01-01 16:33:07.000000000 +0100
++++ dist.nbsd/gdb/hppanbsd-nat.c	2013-07-11 13:41:55.391088089 +0200
+@@ -30,6 +30,16 @@
+ 
+ #include "nbsd-nat.h"
+ 
++#ifndef HAVE_GREGSET_T
++typedef struct reg gregset_t;
++#endif
++
++#ifndef HAVE_FPREGSET_T
++typedef struct fpreg fpregset_t;
++#endif
++
++#include "gregset.h"
++
+ static int
+ hppanbsd_gregset_supplies_p (int regnum)
+ {
+@@ -138,7 +148,7 @@
+    in FPREGS.  */
+ 
+ static void
+-hppanbsd_collect_fpregset (struct regcache *regcache,
++hppanbsd_collect_fpregset (const struct regcache *regcache,
+ 			  void *fpregs, int regnum)
+ {
+   char *regs = fpregs;
+@@ -168,7 +178,7 @@
+       struct reg regs;
+ 
+       if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get registers"));
+ 
+       hppanbsd_supply_gregset (regcache, &regs);
+@@ -179,7 +189,7 @@
+       struct fpreg fpregs;
+ 
+       if (ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get floating point status"));
+ 
+       hppanbsd_supply_fpregset (regcache, &fpregs);
+@@ -198,13 +208,13 @@
+       struct reg regs;
+ 
+       if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-                  (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++                  (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+         perror_with_name (_("Couldn't get registers"));
+ 
+       hppanbsd_collect_gregset (regcache, &regs, regnum);
+ 
+       if (ptrace (PT_SETREGS, PIDGET (inferior_ptid),
+-	          (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++	          (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+         perror_with_name (_("Couldn't write registers"));
+     }
+ 
+@@ -213,17 +223,55 @@
+       struct fpreg fpregs;
+ 
+       if (ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get floating point status"));
+ 
+       hppanbsd_collect_fpregset (regcache, &fpregs, regnum);
+ 
+       if (ptrace (PT_SETFPREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't write floating point status"));
+     }
+ }
+ 
++void
++supply_gregset (struct regcache *regcache, const gregset_t *gregsetp)
++{
++  hppanbsd_supply_gregset (regcache, gregsetp);
++}
++
++/* Fill register REGNUM (if it is a general-purpose register) in
++   *GREGSETP with the value in GDB's register cache.  If REGNUM is -1,
++   do this for all registers.  */
++
++void
++fill_gregset (const struct regcache *regcache,
++              gregset_t *gregsetp, int regnum)
++{
++  hppanbsd_collect_gregset (regcache, gregsetp, regnum);
++}
++
++/* Transfering floating-point registers between GDB, inferiors and cores.  */
++
++/* Fill GDB's register cache with the floating-point and SSE register
++   values in *FPREGSETP.  */
++
++void
++supply_fpregset (struct regcache *regcache, const fpregset_t *fpregsetp)
++{
++  hppanbsd_supply_fpregset (regcache, fpregsetp);
++}
++
++/* Fill register REGNUM (if it is a floating-point or SSE register) in
++   *FPREGSETP with the value in GDB's register cache.  If REGNUM is
++   -1, do this for all registers.  */
++
++void
++fill_fpregset (const struct regcache *regcache,
++               fpregset_t *fpregsetp, int regnum)
++{
++  hppanbsd_collect_fpregset (regcache, fpregsetp, regnum);
++}
+ 
+ /* Provide a prototype to silence -Wmissing-prototypes.  */
+ void _initialize_hppanbsd_nat (void);
+diff -rNU3 dist.orig/gdb/hppanbsd-tdep.c dist.nbsd/gdb/hppanbsd-tdep.c
+--- dist.orig/gdb/hppanbsd-tdep.c	2011-01-09 04:08:54.000000000 +0100
++++ dist.nbsd/gdb/hppanbsd-tdep.c	2013-07-11 13:41:55.517757289 +0200
+@@ -60,6 +60,19 @@
+   38 * 4,	/* sr1 */
+   39 * 4,	/* sr2 */
+   40 * 4,	/* sr3 */
++  -1,		/* 48 */
++  -1,		/* 49 */
++  -1,		/* 50 */
++  -1,		/* 51 */
++  -1,		/* 52 */
++  -1,		/* 53 */
++  -1,		/* 54 */
++  -1,		/* 55 */
++  -1,		/* 56 */
++  -1,		/* 57 CR24 */
++  -1,		/* 58 CR25 */
++  -1,		/* 59 CR26 */
++  43 * 4,	/* HPPA_CR27_REGNUM */
+ 
+   /* more tbd */
+ };
+@@ -133,7 +146,7 @@
+ /* Core file support.  */
+ 
+ /* Sizeof `struct reg' in <machine/reg.h>.  */
+-#define HPPANBSD_SIZEOF_GREGS	(44 * 4)
++#define HPPANBSD_SIZEOF_GREGS	(46 * 4)
+ 
+ static int hppanbsd_reg_offset[] =
+ {
+@@ -157,6 +170,25 @@
+   -1,		/* HPPA_ISR_REGNUM */
+   -1,		/* HPPA_IOR_REGNUM */
+   0 * 4,	/* HPPA_IPSW_REGNUM */
++  -1,		/* spare? */
++  41 * 4,	/* HPPA_SR4_REGNUM */
++  37 * 4,	/* sr0 */
++  38 * 4,	/* sr1 */
++  39 * 4,	/* sr2 */
++  40 * 4,	/* sr3 */
++  -1,		/* 48 */
++  -1,		/* 49 */
++  -1,		/* 50 */
++  -1,		/* 51 */
++  -1,		/* 52 */
++  -1,		/* 53 */
++  -1,		/* 54 */
++  -1,		/* 55 */
++  -1,		/* 56 */
++  -1,		/* 57 */
++  -1,		/* 58 */
++  -1,		/* 59 */
++  46 * 4,	/* HPPA_CR27_REGNUM */
+ };
+ 
+ /* Supply register REGNUM from the buffer specified by GREGS and LEN
+diff -rNU3 dist.orig/gdb/hppa-tdep.c dist.nbsd/gdb/hppa-tdep.c
+--- dist.orig/gdb/hppa-tdep.c	2011-03-18 19:52:30.000000000 +0100
++++ dist.nbsd/gdb/hppa-tdep.c	2013-07-11 13:41:55.597758888 +0200
+@@ -600,7 +600,7 @@
+     "sr5",    "sr6",     "sr7",    "cr0",
+     "cr8",    "cr9",     "ccr",    "cr12",
+     "cr13",   "cr24",    "cr25",   "cr26",
+-    "mpsfu_high","mpsfu_low","mpsfu_ovflo","pad",
++    "cr27",   "cr28",    "cr29",   "cr30",
+     "fpsr",    "fpe1",   "fpe2",   "fpe3",
+     "fpe4",   "fpe5",    "fpe6",   "fpe7",
+     "fr4",     "fr4R",   "fr5",    "fr5R",
+diff -rNU3 dist.orig/gdb/hppa-tdep.h dist.nbsd/gdb/hppa-tdep.h
+--- dist.orig/gdb/hppa-tdep.h	2011-03-15 16:52:09.000000000 +0100
++++ dist.nbsd/gdb/hppa-tdep.h	2013-07-11 13:41:55.497756888 +0200
+@@ -246,4 +246,6 @@
+ 					  CORE_ADDR pc, char *name);
+ extern CORE_ADDR hppa_skip_trampoline_code (struct frame_info *, CORE_ADDR pc);
+ 
++void _initialize_hppabsd_tdep (void);
++
+ #endif  /* hppa-tdep.h */
+diff -rNU3 dist.orig/gdb/i386bsd-nat.c dist.nbsd/gdb/i386bsd-nat.c
+--- dist.orig/gdb/i386bsd-nat.c	2011-01-01 16:33:08.000000000 +0100
++++ dist.nbsd/gdb/i386bsd-nat.c	2013-07-11 13:41:55.394421489 +0200
+@@ -88,7 +88,7 @@
+ 
+ /* Supply the general-purpose registers in GREGS, to REGCACHE.  */
+ 
+-static void
++void
+ i386bsd_supply_gregset (struct regcache *regcache, const void *gregs)
+ {
+   const char *regs = gregs;
+@@ -107,7 +107,7 @@
+    GREGS.  If REGNUM is -1, collect and store all appropriate
+    registers.  */
+ 
+-static void
++void
+ i386bsd_collect_gregset (const struct regcache *regcache,
+ 			 void *gregs, int regnum)
+ {
+@@ -138,7 +138,7 @@
+       struct reg regs;
+ 
+       if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get registers"));
+ 
+       i386bsd_supply_gregset (regcache, &regs);
+@@ -154,7 +154,7 @@
+ 
+       if (have_ptrace_xmmregs != 0
+ 	  && ptrace(PT_GETXMMREGS, PIDGET (inferior_ptid),
+-		    (PTRACE_TYPE_ARG3) xmmregs, 0) == 0)
++		    (PTRACE_TYPE_ARG3) xmmregs, TIDGET (inferior_ptid)) == 0)
+ 	{
+ 	  have_ptrace_xmmregs = 1;
+ 	  i387_supply_fxsave (regcache, -1, xmmregs);
+@@ -162,14 +162,14 @@
+       else
+ 	{
+           if (ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
+-		      (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		      (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	    perror_with_name (_("Couldn't get floating point status"));
+ 
+ 	  i387_supply_fsave (regcache, -1, &fpregs);
+ 	}
+ #else
+       if (ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get floating point status"));
+ 
+       i387_supply_fsave (regcache, -1, &fpregs);
+@@ -189,13 +189,13 @@
+       struct reg regs;
+ 
+       if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-                  (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++                  (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+         perror_with_name (_("Couldn't get registers"));
+ 
+       i386bsd_collect_gregset (regcache, &regs, regnum);
+ 
+       if (ptrace (PT_SETREGS, PIDGET (inferior_ptid),
+-	          (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++	          (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+         perror_with_name (_("Couldn't write registers"));
+ 
+       if (regnum != -1)
+@@ -210,14 +210,14 @@
+ 
+       if (have_ptrace_xmmregs != 0
+ 	  && ptrace(PT_GETXMMREGS, PIDGET (inferior_ptid),
+-		    (PTRACE_TYPE_ARG3) xmmregs, 0) == 0)
++		    (PTRACE_TYPE_ARG3) xmmregs, TIDGET (inferior_ptid)) == 0)
+ 	{
+ 	  have_ptrace_xmmregs = 1;
+ 
+ 	  i387_collect_fxsave (regcache, regnum, xmmregs);
+ 
+ 	  if (ptrace (PT_SETXMMREGS, PIDGET (inferior_ptid),
+-		      (PTRACE_TYPE_ARG3) xmmregs, 0) == -1)
++		      (PTRACE_TYPE_ARG3) xmmregs, TIDGET (inferior_ptid)) == -1)
+             perror_with_name (_("Couldn't write XMM registers"));
+ 	}
+       else
+@@ -225,13 +225,13 @@
+ 	  have_ptrace_xmmregs = 0;
+ #endif
+           if (ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
+-		      (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		      (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	    perror_with_name (_("Couldn't get floating point status"));
+ 
+           i387_collect_fsave (regcache, regnum, &fpregs);
+ 
+           if (ptrace (PT_SETFPREGS, PIDGET (inferior_ptid),
+-		      (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		      (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	    perror_with_name (_("Couldn't write floating point status"));
+ #ifdef HAVE_PT_GETXMMREGS
+         }
+@@ -270,7 +270,7 @@
+   struct dbreg dbregs;
+ 
+   if (ptrace (PT_GETDBREGS, PIDGET (inferior_ptid),
+-              (PTRACE_TYPE_ARG3) &dbregs, 0) == -1)
++              (PTRACE_TYPE_ARG3) &dbregs, TIDGET (inferior_ptid)) == -1)
+     perror_with_name (_("Couldn't get debug registers"));
+ 
+   /* For some mysterious reason, some of the reserved bits in the
+@@ -281,7 +281,7 @@
+   DBREG_DRX ((&dbregs), regnum) = value;
+ 
+   if (ptrace (PT_SETDBREGS, PIDGET (inferior_ptid),
+-              (PTRACE_TYPE_ARG3) &dbregs, 0) == -1)
++              (PTRACE_TYPE_ARG3) &dbregs, TIDGET (inferior_ptid)) == -1)
+     perror_with_name (_("Couldn't write debug registers"));
+ }
+ 
+@@ -318,7 +318,7 @@
+      stuff to the target vector.  For now, just return zero if the
+      ptrace call fails.  */
+   if (ptrace (PT_GETDBREGS, PIDGET (inferior_ptid),
+-	      (PTRACE_TYPE_ARG3) &dbregs, 0) == -1)
++	      (PTRACE_TYPE_ARG3) &dbregs, TIDGET (inferior_ptid)) == -1)
+ #if 0
+     perror_with_name (_("Couldn't read debug registers"));
+ #else
+diff -rNU3 dist.orig/gdb/i386bsd-nat.h dist.nbsd/gdb/i386bsd-nat.h
+--- dist.orig/gdb/i386bsd-nat.h	2011-01-01 16:33:08.000000000 +0100
++++ dist.nbsd/gdb/i386bsd-nat.h	2013-07-11 13:41:55.517757289 +0200
+@@ -36,4 +36,10 @@
+ 
+ extern unsigned long i386bsd_dr_get_status (void);
+ 
++extern void i386bsd_supply_gregset (struct regcache *regcache,
++				    const void *gregs);
++
++extern void i386bsd_collect_gregset (const struct regcache *regcache,
++				     void *gregs, int regnum);
++
+ #endif /* i386bsd-nat.h */
+diff -rNU3 dist.orig/gdb/i386nbsd-nat.c dist.nbsd/gdb/i386nbsd-nat.c
+--- dist.orig/gdb/i386nbsd-nat.c	2011-01-01 16:33:08.000000000 +0100
++++ dist.nbsd/gdb/i386nbsd-nat.c	2013-07-11 13:41:55.384421288 +0200
+@@ -24,54 +24,130 @@
+ #include "target.h"
+ 
+ #include "i386-tdep.h"
++#include "i387-tdep.h"
+ #include "i386bsd-nat.h"
+ 
+ /* Support for debugging kernel virtual memory images.  */
+ 
+ #include <sys/types.h>
++#include <machine/reg.h>
+ #include <machine/frame.h>
+ #include <machine/pcb.h>
+ 
+ #include "nbsd-nat.h"
+ #include "bsd-kvm.h"
+ 
++#ifndef HAVE_GREGSET_T
++typedef struct reg gregset_t;
++#endif
++
++#ifndef HAVE_FPREGSET_T
++typedef struct fpreg fpregset_t;
++#endif
++
++#include "gregset.h" 
++
+ static int
+ i386nbsd_supply_pcb (struct regcache *regcache, struct pcb *pcb)
+ {
+   struct switchframe sf;
+ 
+-  /* The following is true for NetBSD 1.6.2:
++  /* The following is true for NetBSD 1.6.2 and after:
+ 
+      The pcb contains %esp and %ebp at the point of the context switch
+-     in cpu_switch().  At that point we have a stack frame as
+-     described by `struct switchframe', which for NetBSD 1.6.2 has the
+-     following layout:
++     in cpu_switch()/cpu_switchto().  At that point we have a stack frame as
++     described by `struct switchframe', which for NetBSD (2.0 and later) has
++     the following layout:
+ 
+-     interrupt level
+      %edi
+      %esi
+      %ebx
+-     %eip
++     return address
+ 
+      we reconstruct the register state as it would look when we just
+-     returned from cpu_switch().  */
++     returned from cpu_switch()/cpu_switchto().
++
++     For core dumps the pcb is saved by savectx()/dumpsys() and contains the
++     stack pointer and frame pointer.  A new dumpsys() fakes a switchframe
++     whereas older code isn't reliable so use an iffy heuristic to detect this
++     and use the frame pointer to recover enough state.  */
+ 
+   /* The stack pointer shouldn't be zero.  */
+   if (pcb->pcb_esp == 0)
+     return 0;
+ 
+-  read_memory (pcb->pcb_esp, (gdb_byte *)&sf, sizeof sf);
+-  pcb->pcb_esp += sizeof (struct switchframe);
+-  regcache_raw_supply (regcache, I386_EDI_REGNUM, &sf.sf_edi);
+-  regcache_raw_supply (regcache, I386_ESI_REGNUM, &sf.sf_esi);
+-  regcache_raw_supply (regcache, I386_EBP_REGNUM, &pcb->pcb_ebp);
+-  regcache_raw_supply (regcache, I386_ESP_REGNUM, &pcb->pcb_esp);
+-  regcache_raw_supply (regcache, I386_EBX_REGNUM, &sf.sf_ebx);
+-  regcache_raw_supply (regcache, I386_EIP_REGNUM, &sf.sf_eip);
++  read_memory (pcb->pcb_esp, (gdb_byte *) &sf, sizeof sf);
++
++  if ( (unsigned long)sf.sf_eip >= (unsigned long)0xc0100000 )
++    {
++      /* Yes, we have a switchframe that matches cpu_switchto() or
++         the new dumpsys().  */
++
++      pcb->pcb_esp += sizeof (struct switchframe);
++      regcache_raw_supply (regcache, I386_EDI_REGNUM, &sf.sf_edi);
++      regcache_raw_supply (regcache, I386_ESI_REGNUM, &sf.sf_esi);
++      regcache_raw_supply (regcache, I386_EBP_REGNUM, &pcb->pcb_ebp);
++      regcache_raw_supply (regcache, I386_ESP_REGNUM, &pcb->pcb_esp);
++      regcache_raw_supply (regcache, I386_EBX_REGNUM, &sf.sf_ebx);
++      regcache_raw_supply (regcache, I386_EIP_REGNUM, &sf.sf_eip);
++    }
++  else
++    {
++      CORE_ADDR pc, fp;
++
++      /* No, the pcb must have been last updated by savectx() in old
++         dumpsys(). Use the frame pointer to recover enough state.  */
++
++      read_memory (pcb->pcb_ebp, (gdb_byte *) &fp, sizeof(fp));
++      read_memory (pcb->pcb_ebp + 4, (gdb_byte *) &pc, sizeof(pc));
++
++      regcache_raw_supply (regcache, I386_ESP_REGNUM, &pcb->pcb_ebp);
++      regcache_raw_supply (regcache, I386_EBP_REGNUM, &fp);
++      regcache_raw_supply (regcache, I386_EIP_REGNUM, &pc);
++    }
+ 
+   return 1;
+ }
+ 
++void
++supply_gregset (struct regcache *regcache, const gregset_t *gregsetp)
++{
++  i386bsd_supply_gregset (regcache, gregsetp);
++}
++
++/* Fill register REGNUM (if it is a general-purpose register) in
++   *GREGSETP with the value in GDB's register cache.  If REGNUM is -1,
++   do this for all registers.  */
++
++void
++fill_gregset (const struct regcache *regcache,
++              gregset_t *gregsetp, int regnum)
++{
++  i386bsd_collect_gregset (regcache, gregsetp, regnum);
++}
++
++/* Transfering floating-point registers between GDB, inferiors and cores.  */
++   
++/* Fill GDB's register cache with the floating-point and SSE register
++   values in *FPREGSETP.  */
++
++void
++supply_fpregset (struct regcache *regcache, const fpregset_t *fpregsetp)
++{  
++  i387_supply_fsave (regcache, -1, fpregsetp);
++}
++   
++/* Fill register REGNUM (if it is a floating-point or SSE register) in
++   *FPREGSETP with the value in GDB's register cache.  If REGNUM is
++   -1, do this for all registers.  */
++
++void
++fill_fpregset (const struct regcache *regcache,
++               fpregset_t *fpregsetp, int regnum)
++{
++  i387_collect_fsave (regcache, regnum, fpregsetp);
++}
++
+ 
+ /* Provide a prototype to silence -Wmissing-prototypes.  */
+ void _initialize_i386nbsd_nat (void);
+diff -rNU3 dist.orig/gdb/i386nbsd-tdep.c dist.nbsd/gdb/i386nbsd-tdep.c
+--- dist.orig/gdb/i386nbsd-tdep.c	2011-01-09 04:08:56.000000000 +0100
++++ dist.nbsd/gdb/i386nbsd-tdep.c	2013-07-11 13:41:55.391088089 +0200
+@@ -37,6 +37,11 @@
+ #include "nbsd-tdep.h"
+ #include "solib-svr4.h"
+ 
++#include "elf-bfd.h"		/* for header hack */
++#include "trad-frame.h"		/* signal trampoline/kernel frame support */
++#include "frame-unwind.h"	/* kernel frame support */
++#include "tramp-frame.h"	/* signal trampoline/kernel frame support */
++
+ /* From <machine/reg.h>.  */
+ static int i386nbsd_r_reg_offset[] =
+ {
+@@ -269,6 +274,151 @@
+ }
+ 
+ 
++/* From <machine/frame.h>.  Note that %esp and %ess are only saved in
++   a trap frame when entering the kernel from user space.  */
++static int i386nbsd_tf_reg_offset[] =
++{
++  10 * 4,			/* %eax */
++   9 * 4,			/* %ecx */
++   8 * 4,			/* %edx */
++   7 * 4,			/* %ebx */
++  -1,				/* %esp */
++   6 * 4,			/* %ebp */
++   5 * 4,			/* %esi */
++   4 * 4,			/* %edi */
++  13 * 4,			/* %eip */
++  15 * 4,			/* %eflags */
++  14 * 4,			/* %cs */
++  -1,				/* %ss */
++   3 * 4,			/* %ds */
++   2 * 4,			/* %es */
++   1 * 4,			/* %fs */
++   0 * 4			/* %gs */
++};
++ 
++static struct trad_frame_cache *
++i386nbsd_trapframe_cache(struct frame_info *this_frame, void **this_cache)
++{
++  struct trad_frame_cache *cache;
++  CORE_ADDR func, sp, addr, tmp;
++  ULONGEST cs;
++  char *name;
++  int i;
++  enum bfd_endian byte_order = gdbarch_byte_order (target_gdbarch);
++
++  if (*this_cache)
++    return *this_cache;
++
++  cache = trad_frame_cache_zalloc (this_frame);
++  *this_cache = cache;
++
++  func = get_frame_func (this_frame);
++  sp = get_frame_register_unsigned (this_frame, I386_ESP_REGNUM);
++
++  find_pc_partial_function (func, &name, NULL, NULL);
++  if (name && strncmp (name, "Xintr", 5) == 0)
++    {
++      /* It's an interrupt frame. */
++      tmp = read_memory_unsigned_integer (sp + 4, 4, byte_order);
++      if (tmp < 15)
++        {
++          /* Reasonable value for 'ppl': already on interrupt stack. */
++          addr = sp + 8;
++        }
++      else
++        {
++          /* Switch to previous stack. */
++          addr = tmp + 4;
++        }
++    }
++  else
++    {
++      /* It's a trap frame. */
++      addr = sp + 4;
++    }
++
++  for (i = 0; i < ARRAY_SIZE (i386nbsd_tf_reg_offset); i++)
++    if (i386nbsd_tf_reg_offset[i] != -1)
++      trad_frame_set_reg_addr (cache, i, addr + i386nbsd_tf_reg_offset[i]);
++
++  /* Read %cs from trap frame.  */
++  addr += i386nbsd_tf_reg_offset[I386_CS_REGNUM];
++  cs = read_memory_unsigned_integer (addr, 4, byte_order); 
++  if ((cs & I386_SEL_RPL) == I386_SEL_UPL)
++    {
++      /* Trap from user space; terminate backtrace.  */
++      trad_frame_set_id (cache, outer_frame_id);
++    }
++  else
++    {
++      /* Construct the frame ID using the function start.  */
++      trad_frame_set_id (cache, frame_id_build (sp + 8, func));
++    }
++
++  return cache;
++}
++
++static void
++i386nbsd_trapframe_this_id (struct frame_info *this_frame,
++			    void **this_cache, struct frame_id *this_id)
++{
++  struct trad_frame_cache *cache =
++    i386nbsd_trapframe_cache (this_frame, this_cache);
++  
++  trad_frame_get_id (cache, this_id);
++}
++
++static struct value *
++i386nbsd_trapframe_prev_register (struct frame_info *this_frame,
++				  void **this_cache, int regnum)
++{
++  struct trad_frame_cache *cache =
++    i386nbsd_trapframe_cache (this_frame, this_cache);
++
++  return trad_frame_get_register (cache, this_frame, regnum);
++}
++
++static int
++i386nbsd_trapframe_sniffer (const struct frame_unwind *self,
++			    struct frame_info *this_frame,
++			    void **this_prologue_cache)
++{
++  ULONGEST cs;
++  char *name;
++
++  /* Check Current Privilege Level and bail out if we're not executing
++     in kernel space.  */
++  cs = get_frame_register_unsigned (this_frame, I386_CS_REGNUM);
++  if ((cs & I386_SEL_RPL) == I386_SEL_UPL)
++    return 0;
++
++
++  find_pc_partial_function (get_frame_pc (this_frame), &name, NULL, NULL);
++  return (name && ((strcmp (name, "alltraps") == 0)
++		   || (strcmp (name, "calltrap") == 0)
++		   || (strncmp (name, "Xtrap", 5) == 0)
++		   || (strcmp (name, "syscall1") == 0)
++		   || (strcmp (name, "Xsyscall") == 0)
++		   || (strncmp (name, "Xintr", 5) == 0)
++		   || (strncmp (name, "Xresume", 7) == 0)
++		   || (strncmp (name, "Xstray", 6) == 0)
++		   || (strncmp (name, "Xrecurse", 8) == 0)
++		   || (strncmp (name, "Xsoft", 5) == 0)
++		   || (strncmp (name, "Xdoreti", 5) == 0)));
++}
++
++const struct frame_unwind i386nbsd_trapframe_unwind = {
++  /* FIXME: kettenis/20051219: This really is more like an interrupt
++     frame, but SIGTRAMP_FRAME would print <signal handler called>,
++     which really is not what we want here.  */
++  NORMAL_FRAME,
++  default_frame_unwind_stop_reason,
++  i386nbsd_trapframe_this_id,
++  i386nbsd_trapframe_prev_register,
++  NULL,
++  i386nbsd_trapframe_sniffer
++};
++
+ static void 
+ i386nbsd_init_abi (struct gdbarch_info info, struct gdbarch *gdbarch)
+ {
+@@ -298,6 +448,9 @@
+   tramp_frame_prepend_unwinder (gdbarch, &i386nbsd_sigtramp_si2);
+   tramp_frame_prepend_unwinder (gdbarch, &i386nbsd_sigtramp_si31);
+   tramp_frame_prepend_unwinder (gdbarch, &i386nbsd_sigtramp_si4);
++
++  /* Unwind kernel trap frames correctly.  */
++  frame_unwind_prepend_unwinder (gdbarch, &i386nbsd_trapframe_unwind);
+ }
+ 
+ /* NetBSD ELF.  */
+@@ -324,6 +477,7 @@
+ /* Provide a prototype to silence -Wmissing-prototypes.  */
+ extern initialize_file_ftype _initialize_i386nbsd_tdep;
+ 
++
+ void
+ _initialize_i386nbsd_tdep (void)
+ {
+diff -rNU3 dist.orig/gdb/inf-ptrace.c dist.nbsd/gdb/inf-ptrace.c
+--- dist.orig/gdb/inf-ptrace.c	2011-01-01 16:33:08.000000000 +0100
++++ dist.nbsd/gdb/inf-ptrace.c	2013-07-11 13:41:55.377754489 +0200
+@@ -346,7 +346,7 @@
+ 		   ptid_t ptid, int step, enum target_signal signal)
+ {
+   pid_t pid = ptid_get_pid (ptid);
+-  int request;
++  int request, sig;
+ 
+   if (pid == -1)
+     /* Resume all threads.  Traditionally ptrace() only supports
+@@ -366,13 +366,19 @@
+          all possible successor instructions), so we don't have to
+          worry about that here.  */
+       request = PT_STEP;
+-    }
++#ifdef __NetBSD__
++      sig = ptid_get_lwp(ptid);
++#else
++      sig = 0;
++#endif
++    } else
++      sig = target_signal_to_host (signal);
+ 
+   /* An address of (PTRACE_TYPE_ARG3)1 tells ptrace to continue from
+      where it was.  If GDB wanted it to start some other way, we have
+      already written a new program counter value to the child.  */
+   errno = 0;
+-  ptrace (request, pid, (PTRACE_TYPE_ARG3)1, target_signal_to_host (signal));
++  ptrace (request, pid, (PTRACE_TYPE_ARG3)1, sig);
+   if (errno != 0)
+     perror_with_name (("ptrace"));
+ }
+diff -rNU3 dist.orig/gdb/m68kbsd-nat.c dist.nbsd/gdb/m68kbsd-nat.c
+--- dist.orig/gdb/m68kbsd-nat.c	2011-01-01 16:33:10.000000000 +0100
++++ dist.nbsd/gdb/m68kbsd-nat.c	2013-07-11 13:41:55.557758088 +0200
+@@ -28,9 +28,20 @@
+ #include <sys/ptrace.h>
+ #include <machine/reg.h>
+ 
++#include "nbsd-nat.h"
+ #include "m68k-tdep.h"
+ #include "inf-ptrace.h"
+ 
++#ifndef HAVE_GREGSET_T
++typedef struct reg gregset_t;
++#endif
++
++#ifndef HAVE_FPREGSET_T
++typedef struct fpreg fpregset_t;
++#endif
++
++#include "gregset.h" 
++
+ static int
+ m68kbsd_gregset_supplies_p (int regnum)
+ {
+@@ -90,7 +101,7 @@
+    in FPREGS.  */
+ 
+ static void
+-m68kbsd_collect_fpregset (struct regcache *regcache,
++m68kbsd_collect_fpregset (const struct regcache *regcache,
+ 			  void *fpregs, int regnum)
+ {
+   struct gdbarch *gdbarch = get_regcache_arch (regcache);
+@@ -105,6 +116,36 @@
+     }
+ }
+ 
++void
++supply_gregset (struct regcache *regcache, const gregset_t *gregsetp)
++{
++  m68kbsd_supply_gregset (regcache, gregsetp);
++}
++
++/* Fill register REGNUM (if it is a general-purpose register) in
++   *GREGSETP with the value in GDB's register cache.  If REGNUM is -1,
++   do this for all registers.  */
++
++void
++fill_gregset (const struct regcache *regcache,
++              gregset_t *gregsetp, int regnum)
++{
++  m68kbsd_collect_gregset (regcache, gregsetp, regnum);
++}
++
++void
++supply_fpregset (struct regcache *regcache, const fpregset_t *fpregsetp)
++{  
++  m68kbsd_supply_fpregset (regcache, fpregsetp);
++}
++   
++void
++fill_fpregset (const struct regcache *regcache,
++               fpregset_t *fpregsetp, int regnum)
++{
++  m68kbsd_collect_fpregset (regcache, fpregsetp, regnum);
++}
++
+ 
+ /* Fetch register REGNUM from the inferior.  If REGNUM is -1, do this
+    for all registers (including the floating-point registers).  */
+@@ -118,7 +159,7 @@
+       struct reg regs;
+ 
+       if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get registers"));
+ 
+       m68kbsd_supply_gregset (regcache, &regs);
+@@ -129,7 +170,7 @@
+       struct fpreg fpregs;
+ 
+       if (ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get floating point status"));
+ 
+       m68kbsd_supply_fpregset (regcache, &fpregs);
+@@ -148,13 +189,13 @@
+       struct reg regs;
+ 
+       if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-                  (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++                  (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+         perror_with_name (_("Couldn't get registers"));
+ 
+       m68kbsd_collect_gregset (regcache, &regs, regnum);
+ 
+       if (ptrace (PT_SETREGS, PIDGET (inferior_ptid),
+-	          (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++	          (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+         perror_with_name (_("Couldn't write registers"));
+     }
+ 
+@@ -163,13 +204,13 @@
+       struct fpreg fpregs;
+ 
+       if (ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get floating point status"));
+ 
+       m68kbsd_collect_fpregset (regcache, &fpregs, regnum);
+ 
+       if (ptrace (PT_SETFPREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't write floating point status"));
+     }
+ }
+@@ -233,6 +274,7 @@
+   t = inf_ptrace_target ();
+   t->to_fetch_registers = m68kbsd_fetch_inferior_registers;
+   t->to_store_registers = m68kbsd_store_inferior_registers;
++  t->to_pid_to_exec_file = nbsd_pid_to_exec_file;
+   add_target (t);
+ 
+   /* Support debugging kernel virtual memory images.  */
+diff -rNU3 dist.orig/gdb/m68kbsd-tdep.c dist.nbsd/gdb/m68kbsd-tdep.c
+--- dist.orig/gdb/m68kbsd-tdep.c	2011-01-01 16:33:10.000000000 +0100
++++ dist.nbsd/gdb/m68kbsd-tdep.c	2013-07-11 13:41:55.534424289 +0200
+@@ -45,7 +45,7 @@
+ int
+ m68kbsd_fpreg_offset (struct gdbarch *gdbarch, int regnum)
+ {
+-  int fp_len = TYPE_LENGTH (gdbarch_register_type (gdbarch, regnum));
++  int fp_len = TYPE_LENGTH (gdbarch_register_type (gdbarch, M68K_FP0_REGNUM));
+   
+   if (regnum >= M68K_FPC_REGNUM)
+     return 8 * fp_len + (regnum - M68K_FPC_REGNUM) * 4;
+@@ -68,7 +68,7 @@
+ 
+   gdb_assert (len >= M68KBSD_SIZEOF_FPREGS);
+ 
+-  for (i = M68K_FP0_REGNUM; i <= M68K_PC_REGNUM; i++)
++  for (i = M68K_FP0_REGNUM; i <= M68K_FPI_REGNUM; i++)
+     {
+       if (regnum == i || regnum == -1)
+ 	regcache_raw_supply (regcache, i,
+diff -rNU3 dist.orig/gdb/mipsnbsd-nat.c dist.nbsd/gdb/mipsnbsd-nat.c
+--- dist.orig/gdb/mipsnbsd-nat.c	2011-01-09 04:20:33.000000000 +0100
++++ dist.nbsd/gdb/mipsnbsd-nat.c	2013-07-11 13:41:55.384421288 +0200
+@@ -27,6 +27,16 @@
+ #include <sys/ptrace.h>
+ #include <machine/reg.h>
+ 
++#ifndef HAVE_GREGSET_T
++typedef struct reg gregset_t;
++#endif
++
++#ifndef HAVE_FPREGSET_T
++typedef struct fpreg fpregset_t;
++#endif
++
++#include "gregset.h"
++
+ #include "mips-tdep.h"
+ #include "mipsnbsd-tdep.h"
+ #include "inf-ptrace.h"
+@@ -49,7 +59,7 @@
+       struct reg regs;
+ 
+       if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get registers"));
+       
+       mipsnbsd_supply_reg (regcache, (char *) &regs, regno);
+@@ -63,7 +73,7 @@
+       struct fpreg fpregs;
+ 
+       if (ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get floating point status"));
+ 
+       mipsnbsd_supply_fpreg (regcache, (char *) &fpregs, regno);
+@@ -80,13 +90,13 @@
+       struct reg regs;
+ 
+       if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get registers"));
+ 
+       mipsnbsd_fill_reg (regcache, (char *) &regs, regno);
+ 
+       if (ptrace (PT_SETREGS, PIDGET (inferior_ptid), 
+-		  (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't write registers"));
+ 
+       if (regno != -1)
+@@ -99,17 +109,43 @@
+       struct fpreg fpregs; 
+ 
+       if (ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get floating point status"));
+ 
+       mipsnbsd_fill_fpreg (regcache, (char *) &fpregs, regno);
+ 
+       if (ptrace (PT_SETFPREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't write floating point status"));
+     }
+ }
+ 
++/* Wrapper functions.  These are only used by nbsd-thread.  */
++void
++supply_gregset (struct regcache *regcache, const gdb_gregset_t *gregsetp)
++{
++  mipsnbsd_supply_reg (regcache, (const char *) gregsetp, -1);
++}   
++
++void
++fill_gregset (const struct regcache *regcache,
++              gdb_gregset_t *gregsetp, int regno)
++{
++  mipsnbsd_fill_reg (regcache, (char *) gregsetp, -1);
++}   
++
++void
++supply_fpregset (struct regcache *regcache, const gdb_fpregset_t *fpregsetp)
++{   
++  mipsnbsd_supply_fpreg (regcache, (const char *) fpregsetp, -1);
++}
++
++void
++fill_fpregset (const struct regcache *regcache,
++               gdb_fpregset_t *fpregsetp, int regno)
++{
++  mipsnbsd_fill_fpreg (regcache, (char *) fpregsetp, -1);
++}
+ 
+ /* Provide a prototype to silence -Wmissing-prototypes.  */
+ void _initialize_mipsnbsd_nat (void);
+diff -rNU3 dist.orig/gdb/nbsd-thread.c dist.nbsd/gdb/nbsd-thread.c
+--- dist.orig/gdb/nbsd-thread.c	1970-01-01 01:00:00.000000000 +0100
++++ dist.nbsd/gdb/nbsd-thread.c	2013-07-11 13:41:55.707761089 +0200
+@@ -0,0 +1,783 @@
++/* Thread debugging back-end code for NetBSD, for GDB.
++   Copyright 2002
++   Wasabi Systems, Inc.
++
++   This file is part of GDB.
++
++   This program is free software; you can redistribute it and/or modify
++   it under the terms of the GNU General Public License as published by
++   the Free Software Foundation; either version 2 of the License, or
++   (at your option) any later version.
++
++   This program is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   GNU General Public License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with this program; if not, write to the Free Software
++   Foundation, Inc., 59 Temple Place - Suite 330,
++   Boston, MA 02111-1307, USA.  */
++
++
++#include "defs.h"
++
++#include <sys/types.h>
++#include <sys/ptrace.h>
++
++#include <pthread.h>
++#include <pthread_dbg.h>
++
++#include "symtab.h"
++#include "symfile.h"
++#include "objfiles.h"
++#include "solib.h"
++#include "gdbthread.h"
++#include "bfd.h"
++#include "elf-bfd.h"
++#include "target.h"
++#include "inferior.h"
++#include "gdbcmd.h"
++#include "gdbcore.h"
++#include "observer.h"
++
++#include <machine/reg.h>
++#ifdef __sh3__
++struct fpreg { };
++#elif defined(__vax__)
++#else
++#define HAVE_FPREGS
++#endif
++
++#ifndef HAVE_GREGSET_T
++typedef struct reg gregset_t;
++#endif
++
++#ifndef HAVE_FPREGSET_T
++typedef struct fpreg fpregset_t;
++#endif
++
++#include "gregset.h"
++
++/* nbsd_thread_present indicates that new_objfile has spotted
++   libpthread and that post_attach() or create_inferior() should fire
++   up thread debugging if it isn't already active. */
++static int nbsd_thread_present = 0;
++
++/* nbsd_thread_active indicates that thread debugging is up and running, and
++   in particular that main_ta and main_ptid are valid. */
++static int nbsd_thread_active = 0;
++
++/* nbsd_thread_core indicates that we're working on a corefile, not a
++   live process. */ 
++static int nbsd_thread_core = 0;
++
++static ptid_t main_ptid;		/* Real process ID */
++
++static ptid_t cached_thread;
++
++struct target_ops nbsd_thread_ops;
++
++struct td_proc_callbacks_t nbsd_thread_callbacks;
++
++static ptid_t find_active_thread (void);
++static void nbsd_find_new_threads (struct target_ops *);
++
++#define GET_PID(ptid)		ptid_get_pid (ptid)
++#define GET_LWP(ptid)		ptid_get_lwp (ptid)
++
++#define IS_LWP(ptid)		(GET_LWP (ptid) != 0)
++
++#define BUILD_LWP(lwp, ptid)	ptid_build (GET_PID(ptid), (lwp), 0)
++
++static td_proc_t *main_ta;
++
++struct nbsd_thread_proc_arg {
++  struct target_ops *ops;
++  struct regcache *cache;
++} main_arg;
++
++static const char *syncnames[] = {
++  "unknown", "mutex", "cond var", "spinlock", "thread"
++};
++
++struct string_map
++  {
++    int num;
++    char *str;
++  };
++
++static char *
++td_err_string (int errcode)
++{
++  static struct string_map
++    td_err_table[] =
++  {
++    {TD_ERR_OK, "generic \"call succeeded\""},
++    {TD_ERR_ERR, "generic error."},
++    {TD_ERR_NOSYM, "symbol not found"},
++    {TD_ERR_NOOBJ, "no object can be found to satisfy query"},
++    {TD_ERR_BADTHREAD, "thread can not answer request"},
++    {TD_ERR_INUSE, "debugging interface already in use for this process"},
++    {TD_ERR_NOLIB, "process is not using libpthread"},
++    {TD_ERR_NOMEM, "out of memory"},
++    {TD_ERR_IO, "process callback error"},
++    {TD_ERR_INVAL, "invalid argument"},
++  };
++  const int td_err_size = sizeof td_err_table / sizeof (struct string_map);
++  int i;
++  static char buf[90];
++
++  for (i = 0; i < td_err_size; i++)
++    if (td_err_table[i].num == errcode)
++      return td_err_table[i].str;
++
++  sprintf (buf, "Unknown thread_db error code: %d", errcode);
++
++  return buf;
++}
++
++static void
++nbsd_thread_activate (void)
++{
++  nbsd_thread_active = 1;
++  main_ptid = inferior_ptid;
++  cached_thread = minus_one_ptid;
++  thread_change_ptid(inferior_ptid, BUILD_LWP(1, inferior_ptid));
++  nbsd_find_new_threads (NULL);
++  inferior_ptid = find_active_thread ();
++}
++
++static void
++nbsd_thread_deactivate (void)
++{
++  td_close (main_ta);
++
++  inferior_ptid = main_ptid;
++  main_ptid = minus_one_ptid;
++  cached_thread = main_ptid;
++  nbsd_thread_active = 0;
++  nbsd_thread_present = 0;
++  init_thread_list ();
++}
++
++static void
++nbsd_thread_attach (struct target_ops *ops, char *args, int from_tty)
++{
++  struct target_ops *beneath = find_target_beneath (ops);
++  nbsd_thread_core = 0;
++
++  if (nbsd_thread_present && !nbsd_thread_active)
++    push_target(&nbsd_thread_ops);
++
++  beneath->to_attach (beneath, args, from_tty);
++
++  /* seems like a good place to activate, but isn't. Let it happen in
++     nbsd_thread_post_attach(), after a wait has occurred. */
++}
++
++static void
++nbsd_thread_post_attach (int pid)
++{
++#if 0
++  struct target_ops *beneath = find_target_beneath (ops);
++  beneath->to_post_attach (pid);
++#endif
++
++  if (nbsd_thread_present && !nbsd_thread_active)
++    nbsd_thread_activate ();
++}
++
++
++/* Take a program previously attached to and detaches it.
++   The program resumes execution and will no longer stop
++   on signals, etc.  We'd better not have left any breakpoints
++   in the program or it'll die when it hits one.  For this
++   to work, it may be necessary for the process to have been
++   previously attached.  It *might* work if the program was
++   started via the normal ptrace (PTRACE_TRACEME).  */
++
++static void
++nbsd_thread_detach (struct target_ops *ops, char *args, int from_tty)
++{
++  struct target_ops *beneath = find_target_beneath (ops);
++  nbsd_thread_deactivate ();
++  unpush_target (ops);
++  /* Ordinarily, gdb caches solib information, but this means that it
++     won't call the new_obfile hook on a reattach. Clear the symbol file
++     cache so that attach -> detach -> attach works. */
++  clear_solib();
++  symbol_file_clear(0);
++  beneath->to_detach (beneath, args, from_tty);
++}
++
++static int nsusp;
++static int nsuspalloc;
++static td_thread_t **susp;
++
++static int
++thread_resume_suspend_cb (td_thread_t *th, void *arg)
++{
++  int val;
++  ptid_t *pt = arg;
++  td_thread_info_t ti;
++
++  if (td_thr_info (th, &ti) != 0)
++      return -1;
++
++  return 0;
++}
++
++static void
++nbsd_thread_resume (struct target_ops *ops, ptid_t ptid, int step,
++    enum target_signal signo)
++{
++  struct target_ops *beneath = find_target_beneath (ops);
++
++  /* If a particular thread is specified, then gdb wants to resume or
++     step just that thread. If it isn't on a processor, then it needs
++     to be put on one, and nothing else can be on the runnable list.
++     XXX If GDB asks us to step a LWP rather than a thread, there
++     isn't anything we can do but pass it down to the ptrace call;
++     given the flexibility of the LWP-to-thread mapping, this might or
++     might not accomplish what the user wanted. */
++  if (ptid_get_pid(ptid) == -1)
++    ptid = inferior_ptid;
++  beneath->to_resume (beneath, ptid, step, signo);
++
++  cached_thread = minus_one_ptid;
++}
++
++
++static void
++nbsd_thread_unsuspend(void)
++{
++  int i, val;
++
++  for (i = 0; i < nsusp; i++)
++    {
++      val = td_thr_resume(susp[i]);
++      if (val != 0)
++	error ("nbsd_thread_unsuspend: td_thr_resume(%p): %s", susp[i],
++	       td_err_string (val));
++    }
++  nsusp = 0;
++}
++  
++static ptid_t
++find_active_thread (void)
++{
++  int val;
++  td_thread_t *thread;
++  td_thread_info_t ti;
++  struct ptrace_lwpinfo pl;
++
++  if (!ptid_equal (cached_thread, minus_one_ptid))
++    return cached_thread;
++
++  if (target_has_execution)
++    {
++      pl.pl_lwpid = 0;
++      val = ptrace (PT_LWPINFO, GET_PID(inferior_ptid), (void *)&pl, sizeof(pl));
++      while ((val != -1) && (pl.pl_lwpid != 0) &&
++	     (pl.pl_event != PL_EVENT_SIGNAL))
++	val = ptrace (PT_LWPINFO, GET_PID(inferior_ptid), (void *)&pl, sizeof(pl));
++    }
++  else
++    {
++      return inferior_ptid;
++    }
++
++  cached_thread = BUILD_LWP (pl.pl_lwpid, main_ptid);
++  return cached_thread;
++}
++
++
++/* Wait for any threads to stop.  We may have to convert PID from a thread id
++   to a LWP id, and vice versa on the way out.  */
++
++static ptid_t
++nbsd_thread_wait (struct target_ops *ops, ptid_t ptid,
++  struct target_waitstatus *ourstatus, int options)
++{
++  ptid_t rtnval;
++  struct target_ops *beneath = find_target_beneath (ops);
++
++  rtnval = beneath->to_wait (beneath, ptid, ourstatus, options);
++
++  nbsd_thread_unsuspend();
++
++  if (nbsd_thread_active && (ourstatus->kind != TARGET_WAITKIND_EXITED))
++    {
++      rtnval = find_active_thread ();
++      if (ptid_equal (rtnval, minus_one_ptid))
++	error ("No active thread!\n");
++      if (!in_thread_list (rtnval))
++	add_thread (rtnval);
++    }
++
++  return rtnval;
++}
++
++static void
++nbsd_thread_fetch_registers (struct target_ops *ops, struct regcache *cache,
++    int regno)
++{
++  struct target_ops *beneath = find_target_beneath (ops);
++  td_thread_t *thread;
++  gregset_t gregs;
++#ifdef HAVE_FPREGS
++  fpregset_t fpregs;
++#endif
++  int val;
++  struct cleanup *old_chain;
++
++  old_chain = save_inferior_ptid ();
++
++  if (!target_has_execution)
++    {
++      inferior_ptid = pid_to_ptid ((GET_LWP (inferior_ptid) << 16) | 
++				    GET_PID (inferior_ptid));
++    }
++    beneath->to_fetch_registers (beneath, cache, regno);
++  
++  do_cleanups (old_chain);
++}
++
++static void
++nbsd_thread_store_registers (struct target_ops *ops, struct regcache *cache,
++    int regno)
++{
++  struct target_ops *beneath = find_target_beneath (ops);
++  td_thread_t *thread;
++  gregset_t gregs;
++#ifdef HAVE_FPREGS
++  fpregset_t fpregs;
++#endif
++  int val;
++
++  beneath->to_store_registers (beneath, cache, regno);
++}
++
++
++
++static LONGEST
++nbsd_thread_xfer_partial (struct target_ops *ops, enum target_object object,
++			  const char *annex, gdb_byte *readbuf,
++			  const gdb_byte *writebuf,  ULONGEST offset,
++			  LONGEST len)
++{
++  struct target_ops *beneath = find_target_beneath (ops);
++  LONGEST val;
++
++  val = beneath->to_xfer_partial (beneath, object, annex, readbuf, writebuf,
++				  offset, len);
++  return val;
++}
++
++/* Clean up after the inferior dies.  */
++
++static void
++nbsd_thread_mourn_inferior (struct target_ops *ops)
++{
++  struct target_ops *beneath = find_target_beneath (ops);
++
++  if (nbsd_thread_active)
++    nbsd_thread_deactivate ();
++
++  unpush_target (ops);
++  beneath->to_mourn_inferior (beneath);
++}
++
++
++static void
++nbsd_thread_files_info (struct target_ops *ignore)
++{
++  struct target_ops *beneath = find_target_beneath (ignore);
++  beneath->to_files_info (beneath);
++}
++
++static void
++nbsd_core_files_info (struct target_ops *ignore)
++{
++  struct target_ops *beneath = find_target_beneath (ignore);
++  beneath->to_files_info (beneath);
++}
++
++/* Convert a ptid to printable form. */
++
++char *
++nbsd_pid_to_str (struct target_ops *ops, ptid_t ptid)
++{
++  static char buf[100];
++  td_thread_t *th;
++  char name[32];
++
++  if ((GET_LWP(ptid) == 0) && 
++      (nbsd_thread_active == 0))
++    sprintf (buf, "process %d", GET_PID (ptid));
++  else
++    sprintf (buf, "LWP %ld", GET_LWP (ptid));
++
++  return buf;
++}
++
++
++static void
++nbsd_add_to_thread_list (bfd *abfd, asection *asect, PTR reg_sect_arg)
++{
++  int regval;
++  td_thread_t *dummy;
++
++  if (strncmp (bfd_section_name (abfd, asect), ".reg/", 5) != 0)
++    return;
++
++  regval = atoi (bfd_section_name (abfd, asect) + 5);
++
++  add_thread (BUILD_LWP(regval, main_ptid));
++}
++
++/* This routine is called whenever a new symbol table is read in, or when all
++   symbol tables are removed.  libthread_db can only be initialized when it
++   finds the right variables in libthread.so.  Since it's a shared library,
++   those variables don't show up until the library gets mapped and the symbol
++   table is read in.  */
++
++/* This new_objfile event is now managed by a chained function pointer.
++ * It is the callee's responsability to call the next client on the chain.
++ */
++
++void
++nbsd_thread_new_objfile (struct objfile *objfile)
++{
++  int val;
++
++  if (!objfile)
++    {
++      nbsd_thread_active = 0;
++      goto quit;
++    }
++
++  /* Don't do anything if we've already fired up the debugging library */
++  if (nbsd_thread_active)
++    goto quit;
++
++
++  /* Now, initialize the thread debugging library.  This needs to be
++     done after the shared libraries are located because it needs
++     information from the user's thread library.  */
++  val = td_open (&nbsd_thread_callbacks, &main_arg, &main_ta);
++  if (val == TD_ERR_NOLIB)
++    goto quit;
++  else if (val != 0)
++    {
++      warning ("nbsd_thread_new_objfile: td_open: %s", td_err_string (val));
++      goto quit;
++    }
++
++  nbsd_thread_present = 1;
++
++  if ((nbsd_thread_core == 0) && 
++      !ptid_equal (inferior_ptid, null_ptid))
++    {
++      push_target (&nbsd_thread_ops);
++      nbsd_thread_activate();
++    }
++
++quit:
++  return;
++}
++
++static int
++nbsd_thread_alive (struct target_ops *ops, ptid_t ptid)
++{
++  struct target_ops *beneath = find_target_beneath (ops);
++  td_thread_t *th;
++  td_thread_info_t ti;
++  int val;
++
++  if (nbsd_thread_active)
++    {
++      if (IS_LWP (ptid))
++	{
++	  struct ptrace_lwpinfo pl;
++	  pl.pl_lwpid = GET_LWP (ptid);
++	  val = ptrace (PT_LWPINFO, GET_PID (ptid), (void *)&pl, sizeof(pl));
++	  if (val == -1)
++	    val = 0;
++	  else
++	    val = 1;
++	}
++      else
++	val = beneath->to_thread_alive (beneath, ptid);
++    }
++  else
++    val = beneath->to_thread_alive (beneath, ptid);
++
++  return val;
++}
++
++static int
++nbsd_core_thread_alive (struct target_ops *ops, ptid_t ptid)
++{
++  struct target_ops *beneath = find_target_beneath (ops);
++  return beneath->to_thread_alive (beneath, ptid);
++}
++
++
++static void
++nbsd_find_new_threads (struct target_ops *ops)
++{
++  int retval;
++  ptid_t ptid;
++
++  if (nbsd_thread_active == 0)
++	  return;
++
++  if (ptid_equal (inferior_ptid, minus_one_ptid))
++    {
++      printf_filtered ("No process.\n");
++      return;
++    }
++
++  if (target_has_execution)
++    {
++      struct ptrace_lwpinfo pl;
++      pl.pl_lwpid = 0;
++      retval = ptrace (PT_LWPINFO, GET_PID(inferior_ptid), (void *)&pl, sizeof(pl));
++      while ((retval != -1) && pl.pl_lwpid != 0)
++	{
++	  ptid = BUILD_LWP (pl.pl_lwpid, main_ptid);
++	  if (!in_thread_list (ptid))
++	    add_thread (ptid);
++	  retval = ptrace (PT_LWPINFO, GET_PID(inferior_ptid), (void *)&pl, sizeof(pl));
++	}
++    }
++}
++
++
++/* Fork an inferior process, and start debugging it.  */
++
++static void
++nbsd_thread_create_inferior (struct target_ops *ops, char *exec_file,
++			     char *allargs, char **env, int from_tty)
++{
++  struct target_ops *beneath = find_target_beneath (ops);
++  nbsd_thread_core = 0;
++
++  if (nbsd_thread_present && !nbsd_thread_active)
++    push_target(&nbsd_thread_ops);
++
++  beneath->to_create_inferior (beneath, exec_file, allargs, env, from_tty);
++
++  if (nbsd_thread_present && !nbsd_thread_active)
++    nbsd_thread_activate();
++}
++
++
++/*
++ * Process operation callbacks
++ */
++static int
++nbsd_thread_proc_read (void *arg, caddr_t addr, void *buf, size_t size)
++{
++  int val;
++
++  val = target_read_memory ((CORE_ADDR)(uintptr_t)addr, buf, size);
++
++  if (val == 0)
++    return 0;
++  else
++    return TD_ERR_IO;
++}
++
++
++static int
++nbsd_thread_proc_write (void *arg, caddr_t addr, void *buf, size_t size)
++{
++  int val;
++
++  val = target_write_memory ((CORE_ADDR)(uintptr_t)addr, buf, size);
++
++  if (val == 0)
++    return 0;
++  else
++    return TD_ERR_IO;
++}
++
++static int
++nbsd_thread_proc_lookup (void *arg, const char *sym, caddr_t *addr)
++{
++  struct minimal_symbol *ms;
++
++  ms = lookup_minimal_symbol (sym, NULL, NULL);
++
++  if (!ms)
++    return TD_ERR_NOSYM;
++
++  *addr = (caddr_t)(uintptr_t)SYMBOL_VALUE_ADDRESS (ms);
++
++  return 0;
++
++}
++
++static int
++nbsd_thread_proc_regsize (void *arg, int regset, size_t *size)
++{
++  switch (regset)
++    {
++    case 0:
++      *size = sizeof (gregset_t);
++      break;
++    case 1:
++#ifdef HAVE_FPREGS
++      *size = sizeof (fpregset_t);
++#else
++      *size = 0;
++#endif
++      break;
++    default:
++      return TD_ERR_INVAL;
++    }
++
++  return 0;
++}
++
++static int
++nbsd_thread_proc_getregs (void *arg, int regset, int lwp, void *buf)
++{
++  struct nbsd_thread_proc_arg *a = arg; 
++  struct regcache *cache = a->cache;
++  struct target_ops *ops = a->ops;
++  struct cleanup *old_chain;
++  struct target_ops *beneath = find_target_beneath (ops);
++  int ret;
++
++  old_chain = save_inferior_ptid ();
++
++  if (target_has_execution)
++    {
++      /* Fetching registers from a live process requires that
++	 inferior_ptid is a LWP value rather than a thread value. */
++      inferior_ptid = BUILD_LWP (lwp, main_ptid);
++      beneath->to_fetch_registers (beneath, cache, -1);
++    }
++  else
++    {
++      /* Fetching registers from a core process requires that
++	 the PID value of inferior_ptid have the funky value that
++	 the kernel drops rather than the real PID. Gross. */
++      inferior_ptid = pid_to_ptid ((lwp << 16) | GET_PID (main_ptid));
++      beneath->to_fetch_registers (ops, cache, -1);
++    }
++
++  ret = 0;
++  switch (regset)
++    {
++    case 0:
++      fill_gregset (cache, (gregset_t *)buf, -1);
++      break;
++    case 1:
++#ifdef HAVE_FPREGS
++      fill_fpregset (cache, (fpregset_t *)buf, -1);
++#endif
++      break;
++    default: /* XXX need to handle other reg sets: SSE, AltiVec, etc. */
++      ret = TD_ERR_INVAL;
++    }
++
++  do_cleanups (old_chain);
++
++  return ret;
++}
++
++static int
++nbsd_thread_proc_setregs (void *arg, int regset, int lwp, void *buf)
++{
++  struct nbsd_thread_proc_arg *a = arg; 
++  struct regcache *cache = a->cache;
++  struct target_ops *ops = a->ops;
++  struct cleanup *old_chain;
++  struct target_ops *beneath = find_target_beneath (ops);
++  int ret;
++
++  ret = 0;
++  old_chain = save_inferior_ptid ();
++
++  switch (regset)
++    {
++    case 0:
++      supply_gregset(cache, (gregset_t *)buf);
++      break;
++    case 1:
++#ifdef HAVE_FPREGS
++      supply_fpregset(cache, (fpregset_t *)buf);
++#endif
++      break;
++    default: /* XXX need to handle other reg sets: SSE, AltiVec, etc. */
++      ret = TD_ERR_INVAL;
++    }
++
++  /* Storing registers requires that inferior_ptid is a LWP value
++     rather than a thread value. */
++  inferior_ptid = BUILD_LWP (lwp, main_ptid);
++  beneath->to_store_registers (beneath, cache, -1);
++  do_cleanups (old_chain);
++
++  return ret;
++}
++
++static void
++init_nbsd_proc_callbacks (void)
++{
++  nbsd_thread_callbacks.proc_read = nbsd_thread_proc_read;
++  nbsd_thread_callbacks.proc_write = nbsd_thread_proc_write;
++  nbsd_thread_callbacks.proc_lookup = nbsd_thread_proc_lookup;
++  nbsd_thread_callbacks.proc_regsize = nbsd_thread_proc_regsize;
++  nbsd_thread_callbacks.proc_getregs = nbsd_thread_proc_getregs;
++  nbsd_thread_callbacks.proc_setregs = nbsd_thread_proc_setregs;
++}
++
++static void
++init_nbsd_thread_ops (void)
++{
++  nbsd_thread_ops.to_shortname = "netbsd-threads";
++  nbsd_thread_ops.to_longname = "NetBSD pthread.";
++  nbsd_thread_ops.to_doc = "NetBSD pthread support.";
++  nbsd_thread_ops.to_attach = nbsd_thread_attach;
++  nbsd_thread_ops.to_post_attach = nbsd_thread_post_attach;
++  nbsd_thread_ops.to_detach = nbsd_thread_detach;
++  nbsd_thread_ops.to_resume = nbsd_thread_resume;
++  nbsd_thread_ops.to_wait = nbsd_thread_wait;
++  nbsd_thread_ops.to_fetch_registers = nbsd_thread_fetch_registers;
++  nbsd_thread_ops.to_store_registers = nbsd_thread_store_registers;
++  nbsd_thread_ops.to_xfer_partial = nbsd_thread_xfer_partial;
++  nbsd_thread_ops.to_files_info = nbsd_thread_files_info;
++  nbsd_thread_ops.to_insert_breakpoint = memory_insert_breakpoint;
++  nbsd_thread_ops.to_remove_breakpoint = memory_remove_breakpoint;
++  nbsd_thread_ops.to_terminal_init = terminal_init_inferior;
++  nbsd_thread_ops.to_terminal_inferior = terminal_inferior;
++  nbsd_thread_ops.to_terminal_ours_for_output = terminal_ours_for_output;
++  nbsd_thread_ops.to_terminal_ours = terminal_ours;
++  nbsd_thread_ops.to_terminal_info = child_terminal_info;
++  nbsd_thread_ops.to_create_inferior = nbsd_thread_create_inferior;
++  nbsd_thread_ops.to_mourn_inferior = nbsd_thread_mourn_inferior;
++  nbsd_thread_ops.to_thread_alive = nbsd_thread_alive;
++  nbsd_thread_ops.to_pid_to_str = nbsd_pid_to_str;
++  nbsd_thread_ops.to_find_new_threads = nbsd_find_new_threads;
++  nbsd_thread_ops.to_stratum = thread_stratum;
++  nbsd_thread_ops.to_has_thread_control = tc_none;
++  nbsd_thread_ops.to_magic = OPS_MAGIC;
++}
++
++void
++_initialize_nbsd_thread (void)
++{
++  init_nbsd_thread_ops ();
++  init_nbsd_proc_callbacks ();
++
++  add_target (&nbsd_thread_ops);
++
++  /* Hook into new_objfile notification.  */ 
++  observer_attach_new_objfile (nbsd_thread_new_objfile);
++}
+diff -rNU3 dist.orig/gdb/objfiles.c dist.nbsd/gdb/objfiles.c
+--- dist.orig/gdb/objfiles.c	2011-04-25 23:25:18.000000000 +0200
++++ dist.nbsd/gdb/objfiles.c	2013-07-11 13:41:55.517757289 +0200
+@@ -1125,6 +1125,13 @@
+ insert_section_p (const struct bfd *abfd,
+ 		  const struct bfd_section *section)
+ {
++#ifndef __NetBSD__
++  /*
++   * On NetBSD we don't typically have overlay sections and in some of
++   * our kernels (i386 vma = lma | 0xc0000000), so the following test
++   * makes kernels not load any symbols. There must be a better way to
++   * detect overlays.
++   */
+   const bfd_vma lma = bfd_section_lma (abfd, section);
+ 
+   if (lma != 0 && lma != bfd_section_vma (abfd, section)
+@@ -1133,6 +1140,7 @@
+        discarding sections from the "system supplied DSO" (aka vdso)
+        on some Linux systems (e.g. Fedora 11).  */
+     return 0;
++#endif
+   if ((bfd_get_section_flags (abfd, section) & SEC_THREAD_LOCAL) != 0)
+     /* This is a TLS section.  */
+     return 0;
+diff -rNU3 dist.orig/gdb/ppcnbsd-nat.c dist.nbsd/gdb/ppcnbsd-nat.c
+--- dist.orig/gdb/ppcnbsd-nat.c	2011-01-01 16:33:12.000000000 +0100
++++ dist.nbsd/gdb/ppcnbsd-nat.c	2013-07-11 13:41:55.497756888 +0200
+@@ -33,11 +33,22 @@
+ 
+ #include "gdb_assert.h"
+ 
++#include "nbsd-nat.h"
+ #include "ppc-tdep.h"
+ #include "ppcnbsd-tdep.h"
+ #include "bsd-kvm.h"
+ #include "inf-ptrace.h"
+ 
++#ifndef HAVE_GREGSET_T
++typedef struct reg gregset_t;
++#endif
++
++#ifndef HAVE_FPREGSET_T
++typedef struct fpreg fpregset_t;
++#endif
++#include "gregset.h"
++ 
++
+ /* Returns true if PT_GETREGS fetches this register.  */
+ 
+ static int
+@@ -89,7 +100,7 @@
+       struct reg regs;
+ 
+       if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+         perror_with_name (_("Couldn't get registers"));
+ 
+       ppc_supply_gregset (&ppcnbsd_gregset, regcache,
+@@ -101,7 +112,7 @@
+       struct fpreg fpregs;
+ 
+       if (ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get FP registers"));
+ 
+       ppc_supply_fpregset (&ppcnbsd_fpregset, regcache,
+@@ -120,14 +131,14 @@
+       struct reg regs;
+ 
+       if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get registers"));
+ 
+       ppc_collect_gregset (&ppcnbsd_gregset, regcache,
+ 			   regnum, &regs, sizeof regs);
+ 
+       if (ptrace (PT_SETREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't write registers"));
+     }
+ 
+@@ -136,18 +147,50 @@
+       struct fpreg fpregs;
+ 
+       if (ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get FP registers"));
+ 
+       ppc_collect_fpregset (&ppcnbsd_fpregset, regcache,
+ 			    regnum, &fpregs, sizeof fpregs);
+ 
+       if (ptrace (PT_SETFPREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't set FP registers"));
+     }
+ }
+ 
++void
++supply_gregset (struct regcache *regcache, const gregset_t *gregs)
++{
++  if (ptrace (PT_SETREGS, PIDGET (inferior_ptid),
++	      (PTRACE_TYPE_ARG3) gregs, TIDGET (inferior_ptid)) == -1)
++    perror_with_name (_("Couldn't write registers"));
++}
++
++void
++supply_fpregset (struct regcache *regcache, const fpregset_t *fpregs)
++{
++  if (ptrace (PT_SETFPREGS, PIDGET (inferior_ptid),
++	      (PTRACE_TYPE_ARG3) fpregs, TIDGET (inferior_ptid)) == -1)
++    perror_with_name (_("Couldn't set FP registers"));
++}
++
++void
++fill_gregset (const struct regcache *regcache, gregset_t *gregs, int regnum)
++{
++      if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
++		  (PTRACE_TYPE_ARG3) gregs, TIDGET (inferior_ptid)) == -1)
++        perror_with_name (_("Couldn't get registers"));
++}
++
++void
++fill_fpregset (const struct regcache *regcache, fpregset_t *fpregs, int regnum)
++{
++      if (ptrace (PT_GETFPREGS, PIDGET (inferior_ptid),
++		  (PTRACE_TYPE_ARG3) fpregs, TIDGET (inferior_ptid)) == -1)
++	perror_with_name (_("Couldn't get FP registers"));
++}
++
+ static int
+ ppcnbsd_supply_pcb (struct regcache *regcache, struct pcb *pcb)
+ {
+@@ -162,20 +205,20 @@
+     return 0;
+ 
+   read_memory (pcb->pcb_sp, (gdb_byte *)&sf, sizeof sf);
+-  regcache_raw_supply (regcache, tdep->ppc_cr_regnum, &sf.cr);
+-  regcache_raw_supply (regcache, tdep->ppc_gp0_regnum + 2, &sf.fixreg2);
++  regcache_raw_supply (regcache, tdep->ppc_cr_regnum, &sf.sf_cr);
++  regcache_raw_supply (regcache, tdep->ppc_gp0_regnum + 2, &sf.sf_fixreg2);
+   for (i = 0 ; i < 19 ; i++)
+     regcache_raw_supply (regcache, tdep->ppc_gp0_regnum + 13 + i,
+-			 &sf.fixreg[i]);
++			 &sf.sf_fixreg[i]);
+ 
+-  read_memory(sf.sp, (gdb_byte *)&cf, sizeof(cf));
+-  regcache_raw_supply (regcache, tdep->ppc_gp0_regnum + 30, &cf.r30);
+-  regcache_raw_supply (regcache, tdep->ppc_gp0_regnum + 31, &cf.r31);
+-  regcache_raw_supply (regcache, tdep->ppc_gp0_regnum + 1, &cf.sp);
+-
+-  read_memory(cf.sp, (gdb_byte *)&cf, sizeof(cf));
+-  regcache_raw_supply (regcache, tdep->ppc_lr_regnum, &cf.lr);
+-  regcache_raw_supply (regcache, gdbarch_pc_regnum (gdbarch), &cf.lr);
++  read_memory(sf.sf_sp, (gdb_byte *)&cf, sizeof(cf));
++  regcache_raw_supply (regcache, tdep->ppc_gp0_regnum + 30, &cf.cf_r30);
++  regcache_raw_supply (regcache, tdep->ppc_gp0_regnum + 31, &cf.cf_r31);
++  regcache_raw_supply (regcache, tdep->ppc_gp0_regnum + 1, &cf.cf_sp);
++
++  read_memory(cf.cf_sp, (gdb_byte *)&cf, sizeof(cf));
++  regcache_raw_supply (regcache, tdep->ppc_lr_regnum, &cf.cf_lr);
++  regcache_raw_supply (regcache, gdbarch_pc_regnum (gdbarch), &cf.cf_lr);
+ 
+   return 1;
+ }
+@@ -195,5 +238,6 @@
+   t = inf_ptrace_target ();
+   t->to_fetch_registers = ppcnbsd_fetch_inferior_registers;
+   t->to_store_registers = ppcnbsd_store_inferior_registers;
++  t->to_pid_to_exec_file = nbsd_pid_to_exec_file;
+   add_target (t);
+ }
+diff -rNU3 dist.orig/gdb/regcache.c dist.nbsd/gdb/regcache.c
+--- dist.orig/gdb/regcache.c	2011-04-20 19:04:32.000000000 +0200
++++ dist.nbsd/gdb/regcache.c	2013-07-11 13:41:55.521090688 +0200
+@@ -839,7 +839,7 @@
+ static enum register_status
+ regcache_xfer_part (struct regcache *regcache, int regnum,
+ 		    int offset, int len, void *in, const void *out,
+-		    enum register_status (*read) (struct regcache *regcache,
++		    enum register_status (*xread) (struct regcache *regcache,
+ 						  int regnum,
+ 						  gdb_byte *buf),
+ 		    void (*write) (struct regcache *regcache, int regnum,
+@@ -860,8 +860,8 @@
+     {
+       enum register_status status;
+ 
+-      gdb_assert (read != NULL);
+-      status = read (regcache, regnum, reg);
++      gdb_assert (xread != NULL);
++      status = xread (regcache, regnum, reg);
+       if (status != REG_VALID)
+ 	return status;
+     }
+diff -rNU3 dist.orig/gdb/shnbsd-nat.c dist.nbsd/gdb/shnbsd-nat.c
+--- dist.orig/gdb/shnbsd-nat.c	2011-01-11 22:53:24.000000000 +0100
++++ dist.nbsd/gdb/shnbsd-nat.c	2013-07-11 13:41:55.387754688 +0200
+@@ -30,17 +30,29 @@
+ #include "sh-tdep.h"
+ #include "inf-ptrace.h"
+ #include "regcache.h"
++#include "inf-ptrace.h"
+ 
++#include "nbsd-nat.h"
+ 
++#ifndef HAVE_GREGSET_T
++typedef struct reg gregset_t;
++#endif
++
++#ifndef HAVE_FPREGSET_T
++struct fpreg { };
++typedef struct fpreg fpregset_t;
++#endif
++#include "gregset.h"
++ 
+ /* Determine if PT_GETREGS fetches this register.  */
+ #define GETREGS_SUPPLIES(gdbarch, regno) \
+   (((regno) >= R0_REGNUM && (regno) <= (R0_REGNUM + 15)) \
+ || (regno) == gdbarch_pc_regnum (gdbarch) || (regno) == PR_REGNUM \
+ || (regno) == MACH_REGNUM || (regno) == MACL_REGNUM \
+-|| (regno) == SR_REGNUM)
++|| (regno) == SR_REGNUM || (regno) == GBR_REGNUM)
+ 
+ /* Sizeof `struct reg' in <machine/reg.h>.  */
+-#define SHNBSD_SIZEOF_GREGS	(21 * 4)
++#define SHNBSD_SIZEOF_GREGS	(22 * 4)
+ 
+ static void
+ shnbsd_fetch_inferior_registers (struct target_ops *ops,
+@@ -51,7 +63,7 @@
+       struct reg inferior_registers;
+ 
+       if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &inferior_registers, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &inferior_registers, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get registers"));
+ 
+       sh_corefile_supply_regset (&sh_corefile_gregset, regcache, regno,
+@@ -72,7 +84,7 @@
+       struct reg inferior_registers;
+ 
+       if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &inferior_registers, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &inferior_registers, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get registers"));
+ 
+       sh_corefile_collect_regset (&sh_corefile_gregset, regcache, regno,
+@@ -80,7 +92,7 @@
+ 				  SHNBSD_SIZEOF_GREGS);
+ 
+       if (ptrace (PT_SETREGS, PIDGET (inferior_ptid),
+-		  (PTRACE_TYPE_ARG3) &inferior_registers, 0) == -1)
++		  (PTRACE_TYPE_ARG3) &inferior_registers, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't set registers"));
+ 
+       if (regno != -1)
+@@ -88,6 +100,22 @@
+     }
+ }
+ 
++void
++supply_gregset (struct regcache *regcache, const gregset_t *gregs)
++{
++      if (ptrace (PT_SETREGS, PIDGET (inferior_ptid),
++		  (PTRACE_TYPE_ARG3) gregs, TIDGET (inferior_ptid)) == -1)
++	perror_with_name (_("Couldn't set registers"));
++}
++
++void
++fill_gregset (const struct regcache *regcache, gregset_t *gregs, int regnum)
++{
++   if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
++	(PTRACE_TYPE_ARG3) gregs, TIDGET (inferior_ptid)) == -1)
++	perror_with_name (_("Couldn't get registers"));
++}
++
+ /* Provide a prototype to silence -Wmissing-prototypes.  */
+ void _initialize_shnbsd_nat (void);
+ 
+@@ -99,5 +127,6 @@
+   t = inf_ptrace_target ();
+   t->to_fetch_registers = shnbsd_fetch_inferior_registers;
+   t->to_store_registers = shnbsd_store_inferior_registers;
++  t->to_pid_to_exec_file = nbsd_pid_to_exec_file;
+   add_target (t);
+ }
+diff -rNU3 dist.orig/gdb/shnbsd-tdep.c dist.nbsd/gdb/shnbsd-tdep.c
+--- dist.orig/gdb/shnbsd-tdep.c	2011-01-01 16:33:14.000000000 +0100
++++ dist.nbsd/gdb/shnbsd-tdep.c	2013-07-11 13:41:55.394421489 +0200
+@@ -1,15 +1,12 @@
+-/* Target-dependent code for NetBSD/sh.
+-
+-   Copyright (C) 2002, 2003, 2006, 2007, 2008, 2009, 2010, 2011
+-   Free Software Foundation, Inc.
+-
++/* Target-dependent code for SuperH running NetBSD, for GDB.
++   Copyright (C) 2002, 2003 Free Software Foundation, Inc.
+    Contributed by Wasabi Systems, Inc.
+ 
+    This file is part of GDB.
+ 
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+-   the Free Software Foundation; either version 3 of the License, or
++   the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+ 
+    This program is distributed in the hope that it will be useful,
+@@ -18,22 +15,33 @@
+    GNU General Public License for more details.
+ 
+    You should have received a copy of the GNU General Public License
+-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
++   along with this program; if not, write to the Free Software
++   Foundation, Inc., 51 Franklin Street, Fifth Floor,
++   Boston, MA 02110-1301, USA.  */
+ 
+ #include "defs.h"
+ #include "gdbcore.h"
++#include "inferior.h"
++#include "regcache.h"
+ #include "regset.h"
+ #include "value.h"
+ #include "osabi.h"
+ 
++#include "trad-frame.h"
++#include "tramp-frame.h"
++
++#include "gdb_assert.h"
+ #include "gdb_string.h"
+ 
+-#include "sh-tdep.h"
+ #include "solib-svr4.h"
+ 
++#include "sh-tdep.h"
++#include "shnbsd-tdep.h"
++#include "nbsd-tdep.h"
++
+ /* Convert a register number into an offset into a ptrace
+    register structure.  */
+-static const struct sh_corefile_regmap regmap[] =
++static const struct sh_corefile_regmap gregs_table[] =
+ {
+   {R0_REGNUM,      20 * 4},
+   {R0_REGNUM + 1,  19 * 4},
+@@ -56,9 +64,136 @@
+   {PR_REGNUM,	    2 * 4},
+   {MACH_REGNUM,	    3 * 4},
+   {MACL_REGNUM,	    4 * 4},
++  {GBR_REGNUM,	   21 * 4},
++  {-1 /* Terminator.  */, 0}
++};
++
++
++#define REGSx16(base) \
++  {(base),      0}, \
++  {(base) +  1, 4}, \
++  {(base) +  2, 8}, \
++  {(base) +  3, 12}, \
++  {(base) +  4, 16}, \
++  {(base) +  5, 20}, \
++  {(base) +  6, 24}, \
++  {(base) +  7, 28}, \
++  {(base) +  8, 32}, \
++  {(base) +  9, 36}, \
++  {(base) + 10, 40}, \
++  {(base) + 11, 44}, \
++  {(base) + 12, 48}, \
++  {(base) + 13, 52}, \
++  {(base) + 14, 56}, \
++  {(base) + 15, 60}
++
++/* Convert an FPU register number into an offset into a ptrace
++   register structure.  */
++static const struct sh_corefile_regmap fpregs_table[] =
++{
++  REGSx16 (FR0_REGNUM),
++  /* XXX: REGSx16(XF0_REGNUM) omitted.  */
++  {FPSCR_REGNUM, 128},
++  {FPUL_REGNUM,  132},
+   {-1 /* Terminator.  */, 0}
+ };
++
++
++/* From <machine/mcontext.h>.  */
++static const int shnbsd_mc_reg_offset[] =
++{
++  (20 * 4),	/* r0 */
++  (19 * 4),	/* r1 */
++  (18 * 4),	/* r2 */ 
++  (17 * 4),	/* r3 */ 
++  (16 * 4),	/* r4 */
++  (15 * 4),	/* r5 */
++  (14 * 4),	/* r6 */
++  (13 * 4),	/* r7 */
++  (12 * 4),	/* r8 */ 
++  (11 * 4),	/* r9 */
++  (10 * 4),	/* r10 */
++  ( 9 * 4),	/* r11 */
++  ( 8 * 4),	/* r12 */
++  ( 7 * 4),	/* r13 */
++  ( 6 * 4),	/* r14 */
++  (21 * 4),	/* r15/sp */
++  ( 1 * 4),	/* pc */
++  ( 5 * 4),	/* pr */
++  ( 0 * 4),	/* gbr */
++  -1,
++  ( 4 * 4),	/* mach */
++  ( 3 * 4),	/* macl */
++  ( 2 * 4),	/* sr */
++};
++
++/* SH register sets.  */
++
+ 
++static void
++shnbsd_sigtramp_cache_init (const struct tramp_frame *,
++			     struct frame_info *,
++			     struct trad_frame_cache *,
++			     CORE_ADDR);
++
++/* The siginfo signal trampoline for NetBSD/sh3 versions 2.0 and later */
++static const struct tramp_frame shnbsd_sigtramp_si2 =
++{
++  SIGTRAMP_FRAME,
++  2,
++  {
++    { 0x64f3, -1 },			/* mov     r15,r4 */
++    { 0xd002, -1 },			/* mov.l   .LSYS_setcontext */
++    { 0xc380, -1 },			/* trapa   #-128 */
++    { 0xa003, -1 },			/* bra     .Lskip1 */
++    { 0x0009, -1 },			/* nop */
++    { 0x0009, -1 },			/* nop */
++ /* .LSYS_setcontext */
++    { 0x0134, -1 }, { 0x0000, -1 },     /* 0x134 */
++ /* .Lskip1 */
++    { 0x6403, -1 },			/* mov     r0,r4 */
++    { 0xd002, -1 },			/* mov.l   .LSYS_exit  */
++    { 0xc380, -1 },			/* trapa   #-128 */
++    { 0xa003, -1 },			/* bra     .Lskip2 */
++    { 0x0009, -1 },			/* nop */
++    { 0x0009, -1 },			/* nop */
++ /* .LSYS_exit */
++    { 0x0001, -1 }, { 0x0000, -1 },     /* 0x1 */
++/* .Lskip2 */
++    { TRAMP_SENTINEL_INSN, -1 }
++  },
++  shnbsd_sigtramp_cache_init
++};
++
++static void
++shnbsd_sigtramp_cache_init (const struct tramp_frame *self,
++			    struct frame_info *next_frame,
++			    struct trad_frame_cache *this_cache,
++			    CORE_ADDR func)
++{
++  struct gdbarch *gdbarch = get_frame_arch (next_frame);
++  struct gdbarch_tdep *tdep = gdbarch_tdep (gdbarch);
++  int sp_regnum = gdbarch_sp_regnum (gdbarch);
++  CORE_ADDR sp = get_frame_register_unsigned (next_frame, sp_regnum);
++  CORE_ADDR base;
++  const int *reg_offset;
++  int num_regs;
++  int i;
++
++  reg_offset = shnbsd_mc_reg_offset;
++  num_regs = ARRAY_SIZE (shnbsd_mc_reg_offset);
++  /* SP already points at the ucontext. */
++  base = sp;
++  /* offsetof(ucontext_t, uc_mcontext) == 36 */
++  base += 36;
++
++  for (i = 0; i < num_regs; i++)
++    if (reg_offset[i] != -1)
++      trad_frame_set_reg_addr (this_cache, i, base + reg_offset[i]);
++
++  /* Construct the frame ID using the function start.  */
++  trad_frame_set_id (this_cache, frame_id_build (sp, func));
++}
+ 
+ static void
+ shnbsd_init_abi (struct gdbarch_info info,
+@@ -66,16 +201,21 @@
+ {
+   struct gdbarch_tdep *tdep = gdbarch_tdep (gdbarch);
+ 
+-  tdep->core_gregmap = (struct sh_corefile_regmap *)regmap;
++  tdep->core_gregmap = (struct sh_corefile_regmap *)gregs_table;
++  tdep->core_fpregmap = (struct sh_corefile_regmap *)fpregs_table;
+ 
+   set_solib_svr4_fetch_link_map_offsets
+-    (gdbarch, svr4_ilp32_fetch_link_map_offsets);
++    (gdbarch, nbsd_ilp32_solib_svr4_fetch_link_map_offsets);
++
++  tramp_frame_prepend_unwinder (gdbarch, &shnbsd_sigtramp_si2);
+ }
+ 
+ 
+-/* OpenBSD uses uses the traditional NetBSD core file format, even for
+-   ports that use ELF.  */
++#if defined (GDB_OSABI_DEFAULT) && (GDB_OSABI_DEFAULT == GDB_OSABI_OPENBSD_ELF)
+ #define GDB_OSABI_NETBSD_CORE GDB_OSABI_OPENBSD_ELF
++#else
++#define GDB_OSABI_NETBSD_CORE GDB_OSABI_NETBSD_AOUT
++#endif
+ 
+ static enum gdb_osabi
+ shnbsd_core_osabi_sniffer (bfd *abfd)
+@@ -98,6 +238,4 @@
+ 
+   gdbarch_register_osabi (bfd_arch_sh, 0, GDB_OSABI_NETBSD_ELF,
+ 			  shnbsd_init_abi);
+-  gdbarch_register_osabi (bfd_arch_sh, 0, GDB_OSABI_OPENBSD_ELF,
+-			  shnbsd_init_abi);
+ }
+diff -rNU3 dist.orig/gdb/shnbsd-tdep.h dist.nbsd/gdb/shnbsd-tdep.h
+--- dist.orig/gdb/shnbsd-tdep.h	1970-01-01 01:00:00.000000000 +0100
++++ dist.nbsd/gdb/shnbsd-tdep.h	2013-07-11 13:41:55.597758888 +0200
+@@ -0,0 +1,28 @@
++/* Target-dependent definitions for SuperH running NetBSD, for GDB.
++   Copyright (C) 2002 Free Software Foundation, Inc.
++   Contributed by Wasabi Systems, Inc.
++
++   This file is part of GDB.
++
++   This program is free software; you can redistribute it and/or modify
++   it under the terms of the GNU General Public License as published by
++   the Free Software Foundation; either version 2 of the License, or
++   (at your option) any later version.
++
++   This program is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   GNU General Public License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with this program; if not, write to the Free Software
++   Foundation, Inc., 51 Franklin Street, Fifth Floor,
++   Boston, MA 02110-1301, USA.  */
++
++#ifndef SH_NBSD_TDEP_H
++#define SH_NBSD_TDEP_H
++
++void shnbsd_supply_reg (struct regcache *, const char *, int);
++void shnbsd_fill_reg (const struct regcache *, char *, int);
++
++#endif /* SH_NBSD_TDEP_H */
+diff -rNU3 dist.orig/gdb/sh-tdep.c dist.nbsd/gdb/sh-tdep.c
+--- dist.orig/gdb/sh-tdep.c	2011-03-18 19:52:32.000000000 +0100
++++ dist.nbsd/gdb/sh-tdep.c	2013-07-11 13:41:55.714427889 +0200
+@@ -521,11 +521,14 @@
+ static CORE_ADDR
+ sh_analyze_prologue (struct gdbarch *gdbarch,
+ 		     CORE_ADDR pc, CORE_ADDR current_pc,
+-		     struct sh_frame_cache *cache, ULONGEST fpscr)
++		     struct sh_frame_cache *cache,
++		     struct frame_info *fpscr_frame)
+ {
+   enum bfd_endian byte_order = gdbarch_byte_order (gdbarch);
+   ULONGEST inst;
+   CORE_ADDR opc;
++  ULONGEST fpscr = 0;
++  int have_fpscr = (fpscr_frame == NULL);
+   int offset;
+   int sav_offset = 0;
+   int r3_val = 0;
+@@ -631,6 +634,12 @@
+ 	}
+       else if (IS_FPUSH (inst))
+ 	{
++	  if (!have_fpscr)
++	    {
++	      fpscr = get_frame_register_unsigned (fpscr_frame, FPSCR_REGNUM);
++	      have_fpscr = 1;
++	    }
++
+ 	  if (fpscr & FPSCR_SZ)
+ 	    {
+ 	      cache->sp_offset += 8;
+@@ -745,7 +754,7 @@
+     return max (pc, start_pc);
+ 
+   cache.sp_offset = -4;
+-  pc = sh_analyze_prologue (gdbarch, start_pc, (CORE_ADDR) -1, &cache, 0);
++  pc = sh_analyze_prologue (gdbarch, start_pc, (CORE_ADDR) -1, &cache, NULL);
+   if (!cache.uses_fp)
+     return start_pc;
+ 
+@@ -2563,11 +2572,7 @@
+   cache->pc = get_frame_func (this_frame);
+   current_pc = get_frame_pc (this_frame);
+   if (cache->pc != 0)
+-    {
+-      ULONGEST fpscr;
+-      fpscr = get_frame_register_unsigned (this_frame, FPSCR_REGNUM);
+-      sh_analyze_prologue (gdbarch, cache->pc, current_pc, cache, fpscr);
+-    }
++    sh_analyze_prologue (gdbarch, cache->pc, current_pc, cache, this_frame);
+ 
+   if (!cache->uses_fp)
+     {
+diff -rNU3 dist.orig/gdb/sparc64nbsd-nat.c dist.nbsd/gdb/sparc64nbsd-nat.c
+--- dist.orig/gdb/sparc64nbsd-nat.c	2011-01-01 16:33:15.000000000 +0100
++++ dist.nbsd/gdb/sparc64nbsd-nat.c	2013-07-11 13:41:55.494423489 +0200
+@@ -23,9 +23,21 @@
+ #include "regcache.h"
+ #include "target.h"
+ 
++#include "nbsd-nat.h"
+ #include "sparc64-tdep.h"
+ #include "sparc-nat.h"
+ 
++#include <machine/reg.h>
++
++#ifndef HAVE_GREGSET_T
++typedef struct reg gregset_t;
++#endif
++
++#ifndef HAVE_FPREGSET_T
++typedef struct fpreg fpregset_t;
++#endif
++#include "gregset.h"
++ 
+ /* NetBSD is different from the other OSes that support both SPARC and
+    UltraSPARC in that the result of ptrace(2) depends on whether the
+    traced process is 32-bit or 64-bit.  */
+@@ -125,7 +137,29 @@
+   return 0;
+ }
+ 
++void
++supply_gregset (struct regcache *regcache, const gregset_t *gregs)
++{
++  sparc64nbsd_supply_gregset (sparc_gregset, regcache, -1, gregs);
++}
++
++void
++supply_fpregset (struct regcache *regcache, const fpregset_t *fpregs)
++{
++  sparc64nbsd_supply_fpregset (regcache, -1, fpregs);
++}
+ 
++void
++fill_gregset (const struct regcache *regcache, gregset_t *gregs, int regnum)
++{
++  sparc64nbsd_collect_gregset (sparc_gregset, regcache, regnum, gregs);
++}
++
++void
++fill_fpregset (const struct regcache *regcache, fpregset_t *fpregs, int regnum)
++{
++  sparc64nbsd_collect_fpregset (regcache, regnum, fpregs);
++}
+ /* Support for debugging kernel virtual memory images.  */
+ 
+ #include <sys/types.h>
+@@ -173,6 +207,8 @@
+ void
+ _initialize_sparc64nbsd_nat (void)
+ {
++  struct target_ops *t;
++
+   sparc_supply_gregset = sparc64nbsd_supply_gregset;
+   sparc_collect_gregset = sparc64nbsd_collect_gregset;
+   sparc_supply_fpregset = sparc64nbsd_supply_fpregset;
+@@ -180,8 +216,10 @@
+   sparc_gregset_supplies_p = sparc64nbsd_gregset_supplies_p;
+   sparc_fpregset_supplies_p = sparc64nbsd_fpregset_supplies_p;
+ 
+-  /* We've got nothing to add to the generic SPARC target.  */
+-  add_target (sparc_target ());
++  /* Add some extra features to the generic SPARC target.  */
++  t = sparc_target ();
++  t->to_pid_to_exec_file = nbsd_pid_to_exec_file;
++  add_target (t);
+ 
+   /* Support debugging kernel virtual memory images.  */
+   bsd_kvm_add_target (sparc64nbsd_supply_pcb);
+diff -rNU3 dist.orig/gdb/sparc-nat.c dist.nbsd/gdb/sparc-nat.c
+--- dist.orig/gdb/sparc-nat.c	2011-01-01 16:33:15.000000000 +0100
++++ dist.nbsd/gdb/sparc-nat.c	2013-07-11 13:41:55.564424890 +0200
+@@ -140,22 +140,7 @@
+   struct gdbarch *gdbarch = get_regcache_arch (regcache);
+   int pid;
+ 
+-  /* NOTE: cagney/2002-12-03: This code assumes that the currently
+-     selected light weight processes' registers can be written
+-     directly into the selected thread's register cache.  This works
+-     fine when given an 1:1 LWP:thread model (such as found on
+-     GNU/Linux) but will, likely, have problems when used on an N:1
+-     (userland threads) or N:M (userland multiple LWP) model.  In the
+-     case of the latter two, the LWP's registers do not necessarily
+-     belong to the selected thread (the LWP could be in the middle of
+-     executing the thread switch code).
+-
+-     These functions should instead be paramaterized with an explicit
+-     object (struct regcache, struct thread_info?) into which the LWPs
+-     registers can be written.  */
+-  pid = TIDGET (inferior_ptid);
+-  if (pid == 0)
+-    pid = PIDGET (inferior_ptid);
++  pid = PIDGET (inferior_ptid);
+ 
+   if (regnum == SPARC_G0_REGNUM)
+     {
+@@ -167,7 +152,7 @@
+     {
+       gregset_t regs;
+ 
+-      if (ptrace (PTRACE_GETREGS, pid, (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++      if (ptrace (PTRACE_GETREGS, pid, (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get registers"));
+ 
+       sparc_supply_gregset (sparc_gregset, regcache, -1, &regs);
+@@ -179,7 +164,7 @@
+     {
+       fpregset_t fpregs;
+ 
+-      if (ptrace (PTRACE_GETFPREGS, pid, (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++      if (ptrace (PTRACE_GETFPREGS, pid, (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get floating point status"));
+ 
+       sparc_supply_fpregset (regcache, -1, &fpregs);
+@@ -193,22 +178,18 @@
+   struct gdbarch *gdbarch = get_regcache_arch (regcache);
+   int pid;
+ 
+-  /* NOTE: cagney/2002-12-02: See comment in fetch_inferior_registers
+-     about threaded assumptions.  */
+-  pid = TIDGET (inferior_ptid);
+-  if (pid == 0)
+-    pid = PIDGET (inferior_ptid);
++  pid = PIDGET (inferior_ptid);
+ 
+   if (regnum == -1 || sparc_gregset_supplies_p (gdbarch, regnum))
+     {
+       gregset_t regs;
+ 
+-      if (ptrace (PTRACE_GETREGS, pid, (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++      if (ptrace (PTRACE_GETREGS, pid, (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get registers"));
+ 
+       sparc_collect_gregset (sparc_gregset, regcache, regnum, &regs);
+ 
+-      if (ptrace (PTRACE_SETREGS, pid, (PTRACE_TYPE_ARG3) &regs, 0) == -1)
++      if (ptrace (PTRACE_SETREGS, pid, (PTRACE_TYPE_ARG3) &regs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't write registers"));
+ 
+       /* Deal with the stack regs.  */
+@@ -229,7 +210,7 @@
+     {
+       fpregset_t fpregs, saved_fpregs;
+ 
+-      if (ptrace (PTRACE_GETFPREGS, pid, (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++      if (ptrace (PTRACE_GETFPREGS, pid, (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	perror_with_name (_("Couldn't get floating-point registers"));
+ 
+       memcpy (&saved_fpregs, &fpregs, sizeof (fpregs));
+@@ -242,7 +223,7 @@
+       if (memcmp (&saved_fpregs, &fpregs, sizeof (fpregs)) != 0)
+ 	{
+ 	  if (ptrace (PTRACE_SETFPREGS, pid,
+-		      (PTRACE_TYPE_ARG3) &fpregs, 0) == -1)
++		      (PTRACE_TYPE_ARG3) &fpregs, TIDGET (inferior_ptid)) == -1)
+ 	    perror_with_name (_("Couldn't write floating-point registers"));
+ 	}
+ 
+@@ -278,9 +259,7 @@
+   {
+     int pid;
+ 
+-    pid = TIDGET (inferior_ptid);
+-    if (pid == 0)
+-      pid = PIDGET (inferior_ptid);
++    pid = PIDGET (inferior_ptid);
+ 
+     /* Sanity check.  The proper type for a cookie is register_t, but
+        we can't assume that this type exists on all systems supported
+diff -rNU3 dist.orig/gdb/sparcnbsd-nat.c dist.nbsd/gdb/sparcnbsd-nat.c
+--- dist.orig/gdb/sparcnbsd-nat.c	2011-01-01 16:33:15.000000000 +0100
++++ dist.nbsd/gdb/sparcnbsd-nat.c	2013-07-11 13:41:55.591092089 +0200
+@@ -22,6 +22,7 @@
+ #include "regcache.h"
+ #include "target.h"
+ 
++#include "nbsd-nat.h"
+ #include "sparc-tdep.h"
+ #include "sparc-nat.h"
+ 
+@@ -29,9 +30,43 @@
+ 
+ #include <sys/types.h>
+ #include <machine/pcb.h>
++#include <machine/reg.h>
+ 
+ #include "bsd-kvm.h"
+ 
++#ifndef HAVE_GREGSET_T
++typedef struct reg gregset_t;
++#endif
++
++#ifndef HAVE_FPREGSET_T
++typedef struct fpreg fpregset_t;
++#endif
++#include "gregset.h"
++ 
++void
++supply_gregset (struct regcache *regcache, const gregset_t *gregs)
++{
++  sparc_supply_gregset (sparc_gregset, regcache, -1, gregs);
++}
++
++void
++supply_fpregset (struct regcache *regcache, const fpregset_t *fpregs)
++{
++  sparc_supply_fpregset (regcache, -1, fpregs);
++}
++
++void
++fill_gregset (const struct regcache *regcache, gregset_t *gregs, int regnum)
++{
++  sparc_collect_gregset (sparc_gregset, regcache, regnum, gregs);
++}
++
++void
++fill_fpregset (const struct regcache *regcache, fpregset_t *fpregs, int regnum)
++{
++  sparc_collect_fpregset (regcache, regnum, fpregs);
++}
++
+ static int
+ sparc32nbsd_supply_pcb (struct regcache *regcache, struct pcb *pcb)
+ {
+@@ -63,10 +98,13 @@
+ void
+ _initialize_sparcnbsd_nat (void)
+ {
++  struct target_ops *t;
+   sparc_gregset = &sparc32nbsd_gregset;
+ 
+-  /* We've got nothing to add to the generic SPARC target.  */
+-  add_target (sparc_target ());
++  /* Add some extra features to the generic SPARC target.  */
++  t = sparc_target ();
++  t->to_pid_to_exec_file = nbsd_pid_to_exec_file;
++  add_target (t);
+ 
+   /* Support debugging kernel virtual memory images.  */
+   bsd_kvm_add_target (sparc32nbsd_supply_pcb);
+diff -rNU3 dist.orig/gdb/tui/tui-stack.c dist.nbsd/gdb/tui/tui-stack.c
+--- dist.orig/gdb/tui/tui-stack.c	2011-03-18 19:44:34.000000000 +0100
++++ dist.nbsd/gdb/tui/tui-stack.c	2013-07-11 13:41:55.597758888 +0200
+@@ -379,7 +379,7 @@
+ 	  else
+ 	    {
+ 	      if (find_pc_partial_function (get_frame_pc (fi), (char **) NULL,
+-					    &low, (CORE_ADDR) 0) == 0)
++					    &low, (CORE_ADDR *) 0) == 0)
+ 		error (_("No function contains program "
+ 			 "counter for selected frame."));
+ 	      else
+diff -rNU3 dist.orig/gdb/ui-file.c dist.nbsd/gdb/ui-file.c
+--- dist.orig/gdb/ui-file.c	2011-01-12 02:23:28.000000000 +0100
++++ dist.nbsd/gdb/ui-file.c	2013-07-11 13:41:55.384421288 +0200
+@@ -532,7 +532,7 @@
+ 		    _("stdio_file_write: bad magic number"));
+   /* Calling error crashes when we are called from the exception framework.  */
+   if (fwrite (buf, length_buf, 1, stdio->file))
+-    ;
++    return;
+ }
+ 
+ static void
+@@ -545,7 +545,7 @@
+ 		    _("stdio_file_fputs: bad magic number"));
+   /* Calling error crashes when we are called from the exception framework.  */
+   if (fputs (linebuffer, stdio->file))
+-    ;
++    return;
+ }
+ 
+ static int
+diff -rNU3 dist.orig/gdb/user-regs.c dist.nbsd/gdb/user-regs.c
+--- dist.orig/gdb/user-regs.c	2011-01-05 23:22:53.000000000 +0100
++++ dist.nbsd/gdb/user-regs.c	2013-07-11 13:41:55.387754688 +0200
+@@ -41,7 +41,7 @@
+ struct user_reg
+ {
+   const char *name;
+-  struct value *(*read) (struct frame_info * frame, const void *baton);
++  struct value *(*xread) (struct frame_info * frame, const void *baton);
+   const void *baton;
+   struct user_reg *next;
+ };
+@@ -60,7 +60,7 @@
+ 
+ static void
+ append_user_reg (struct gdb_user_regs *regs, const char *name,
+-		 user_reg_read_ftype *read, const void *baton,
++		 user_reg_read_ftype *xread, const void *baton,
+ 		 struct user_reg *reg)
+ {
+   /* The caller is responsible for allocating memory needed to store
+@@ -68,7 +68,7 @@
+      register list stored in the common heap or a specific obstack.  */
+   gdb_assert (reg != NULL);
+   reg->name = name;
+-  reg->read = read;
++  reg->xread = xread;
+   reg->baton = baton;
+   reg->next = NULL;
+   (*regs->last) = reg;
+@@ -82,10 +82,10 @@
+ };
+ 
+ void
+-user_reg_add_builtin (const char *name, user_reg_read_ftype *read,
++user_reg_add_builtin (const char *name, user_reg_read_ftype *xread,
+ 		      const void *baton)
+ {
+-  append_user_reg (&builtin_user_regs, name, read, baton,
++  append_user_reg (&builtin_user_regs, name, xread, baton,
+ 		   XMALLOC (struct user_reg));
+ }
+ 
+@@ -103,14 +103,14 @@
+ 
+   regs->last = &regs->first;
+   for (reg = builtin_user_regs.first; reg != NULL; reg = reg->next)
+-    append_user_reg (regs, reg->name, reg->read, reg->baton,
++    append_user_reg (regs, reg->name, reg->xread, reg->baton,
+ 		     GDBARCH_OBSTACK_ZALLOC (gdbarch, struct user_reg));
+   return regs;
+ }
+ 
+ void
+ user_reg_add (struct gdbarch *gdbarch, const char *name,
+-	      user_reg_read_ftype *read, const void *baton)
++	      user_reg_read_ftype *xread, const void *baton)
+ {
+   struct gdb_user_regs *regs = gdbarch_data (gdbarch, user_regs_data);
+ 
+@@ -121,7 +121,7 @@
+       regs = user_regs_init (gdbarch);
+       deprecated_set_gdbarch_data (gdbarch, user_regs_data, regs);
+     }
+-  append_user_reg (regs, name, read, baton,
++  append_user_reg (regs, name, xread, baton,
+ 		   GDBARCH_OBSTACK_ZALLOC (gdbarch, struct user_reg));
+ }
+ 
+@@ -215,7 +215,7 @@
+   struct user_reg *reg = usernum_to_user_reg (gdbarch, regnum - maxregs);
+ 
+   gdb_assert (reg != NULL);
+-  return reg->read (frame, reg->baton);
++  return reg->xread (frame, reg->baton);
+ }
+ 
+ extern initialize_file_ftype _initialize_user_regs; /* -Wmissing-prototypes */
+diff -rNU3 dist.orig/gdb/vaxbsd-nat.c dist.nbsd/gdb/vaxbsd-nat.c
+--- dist.orig/gdb/vaxbsd-nat.c	2011-01-01 16:33:19.000000000 +0100
++++ dist.nbsd/gdb/vaxbsd-nat.c	2013-07-11 13:41:55.544424489 +0200
+@@ -27,9 +27,14 @@
+ #include <sys/ptrace.h>
+ #include <machine/reg.h>
+ 
++#include "nbsd-nat.h"
+ #include "vax-tdep.h"
+ #include "inf-ptrace.h"
+ 
++#ifndef HAVE_GREGSET_T
++typedef struct reg gregset_t;
++#endif
++
+ /* Supply the general-purpose registers stored in GREGS to REGCACHE.  */
+ 
+ static void
+@@ -59,6 +64,24 @@
+     }
+ }
+ 
++void
++supply_gregset (struct regcache *regcache, const gregset_t *gregs)
++{
++  if (ptrace (PT_SETREGS, PIDGET (inferior_ptid),
++	      (PTRACE_TYPE_ARG3) gregs, TIDGET (inferior_ptid)) == -1)
++    perror_with_name (_("Couldn't write registers"));
++}
++
++void
++fill_gregset (const struct regcache *regcache, gregset_t *gregs, int regnum)
++{
++  if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
++	      (PTRACE_TYPE_ARG3) gregs, TIDGET (inferior_ptid)) == -1)
++    perror_with_name (_("Couldn't get registers"));
++}
++
++
++/* Support for debugging kernel virtual memory images.  */
+ 
+ /* Fetch register REGNUM from the inferior.  If REGNUM is -1, do this
+    for all registers.  */
+@@ -67,13 +90,11 @@
+ vaxbsd_fetch_inferior_registers (struct target_ops *ops,
+ 				 struct regcache *regcache, int regnum)
+ {
+-  struct reg regs;
++  gregset_t gregs;
+ 
+-  if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-	      (PTRACE_TYPE_ARG3) &regs, 0) == -1)
+-    perror_with_name (_("Couldn't get registers"));
++  fill_gregset (regcache, &gregs, regnum);
+ 
+-  vaxbsd_supply_gregset (regcache, &regs);
++  vaxbsd_supply_gregset (regcache, &gregs);
+ }
+ 
+ /* Store register REGNUM back into the inferior.  If REGNUM is -1, do
+@@ -83,22 +104,16 @@
+ vaxbsd_store_inferior_registers (struct target_ops *ops,
+ 				 struct regcache *regcache, int regnum)
+ {
+-  struct reg regs;
++  gregset_t gregs;
+ 
+-  if (ptrace (PT_GETREGS, PIDGET (inferior_ptid),
+-	      (PTRACE_TYPE_ARG3) &regs, 0) == -1)
+-    perror_with_name (_("Couldn't get registers"));
++  fill_gregset (regcache, &gregs, regnum);
+ 
+-  vaxbsd_collect_gregset (regcache, &regs, regnum);
++  vaxbsd_collect_gregset (regcache, &gregs, regnum);
+ 
+-  if (ptrace (PT_SETREGS, PIDGET (inferior_ptid),
+-	      (PTRACE_TYPE_ARG3) &regs, 0) == -1)
+-    perror_with_name (_("Couldn't write registers"));
++  supply_gregset (regcache, &gregs);
+ }
+ 
+ 
+-/* Support for debugging kernel virtual memory images.  */
+-
+ #include <sys/types.h>
+ #include <machine/pcb.h>
+ 
+@@ -138,9 +153,11 @@
+ {
+   struct target_ops *t;
+ 
++  /* Add some extra features to the common *BSD/vax target.  */
+   t = inf_ptrace_target ();
+   t->to_fetch_registers = vaxbsd_fetch_inferior_registers;
+   t->to_store_registers = vaxbsd_store_inferior_registers;
++  t->to_pid_to_exec_file = nbsd_pid_to_exec_file;
+   add_target (t);
+ 
+   /* Support debugging kernel virtual memory images.  */
+diff -rNU3 dist.orig/intl/Makefile.in dist.nbsd/intl/Makefile.in
+--- dist.orig/intl/Makefile.in	2009-07-31 00:44:50.000000000 +0200
++++ dist.nbsd/intl/Makefile.in	2013-07-11 13:41:56.144436490 +0200
+@@ -133,8 +133,8 @@
+ 	$(COMPILE) $<
+ 
+ .y.c:
+-	$(YACC) $(YFLAGS) --output $@ $<
+-	rm -f $*.h
++#	$(YACC) $(YFLAGS) --output $@ $<
++#	rm -f $*.h
+ 
+ INCLUDES = -I. -I$(srcdir)
+ 
+diff -rNU3 dist.orig/libdecnumber/.gitignore dist.nbsd/libdecnumber/.gitignore
+--- dist.orig/libdecnumber/.gitignore	2011-03-29 03:59:37.000000000 +0200
++++ dist.nbsd/libdecnumber/.gitignore	1970-01-01 01:00:00.000000000 +0100
+@@ -1 +0,0 @@
+-/gstdint.h
+diff -rNU3 dist.orig/libiberty/.gitignore dist.nbsd/libiberty/.gitignore
+--- dist.orig/libiberty/.gitignore	2010-12-09 10:03:17.000000000 +0100
++++ dist.nbsd/libiberty/.gitignore	1970-01-01 01:00:00.000000000 +0100
+@@ -1,2 +0,0 @@
+-/required-list
+-/xhost-mkfrag
+diff -rNU3 dist.orig/libiberty/strerror.c dist.nbsd/libiberty/strerror.c
+--- dist.orig/libiberty/strerror.c	2005-03-28 04:09:01.000000000 +0200
++++ dist.nbsd/libiberty/strerror.c	2013-07-11 13:41:56.154436690 +0200
+@@ -347,7 +347,7 @@
+   ENTRY(EPROTOTYPE, "EPROTOTYPE", "Protocol wrong type for socket"),
+ #endif
+ #if defined (ENOPROTOOPT)
+-  ENTRY(ENOPROTOOPT, "ENOPROTOOPT", "Protocol not available"),
++  ENTRY(ENOPROTOOPT, "ENOPROTOOPT", "Protocol option not available"),
+ #endif
+ #if defined (EPROTONOSUPPORT)
+   ENTRY(EPROTONOSUPPORT, "EPROTONOSUPPORT", "Protocol not supported"),
+diff -rNU3 dist.orig/opcodes/cgen.sh dist.nbsd/opcodes/cgen.sh
+--- dist.orig/opcodes/cgen.sh	2009-06-14 18:36:56.000000000 +0200
++++ dist.nbsd/opcodes/cgen.sh	2013-07-11 13:41:55.324420089 +0200
+@@ -61,6 +61,7 @@
+ shift ; extrafiles=$9
+ 
+ rootdir=${srcdir}/..
++move_if_change="${CONFIG_SHELL:-/bin/sh} ${rootdir}/move-if-change"
+ 
+ # $arch is $6, as passed on the command line.
+ # $ARCH is the same argument but in all uppercase.
+@@ -114,41 +115,41 @@
+ 
+ 	# Customise generated files for the particular architecture.
+ 	sed -e "s/@ARCH@/${ARCH}/g" -e "s/@arch@/${arch}/g" < ${tmp}-desc.h1 > ${tmp}-desc.h
+-	${rootdir}/move-if-change ${tmp}-desc.h ${srcdir}/${prefix}-desc.h
++	${move_if_change} ${tmp}-desc.h ${srcdir}/${prefix}-desc.h
+ 
+ 	sed -e "s/@ARCH@/${ARCH}/g" -e "s/@arch@/${arch}/g" \
+ 		-e "s/@prefix@/${prefix}/" < ${tmp}-desc.c1 > ${tmp}-desc.c
+-	${rootdir}/move-if-change ${tmp}-desc.c ${srcdir}/${prefix}-desc.c
++	${move_if_change} ${tmp}-desc.c ${srcdir}/${prefix}-desc.c
+ 
+ 	sed -e "s/@ARCH@/${ARCH}/g" -e "s/@arch@/${arch}/g" < ${tmp}-opc.h1 > ${tmp}-opc.h
+-	${rootdir}/move-if-change ${tmp}-opc.h ${srcdir}/${prefix}-opc.h
++	${move_if_change} ${tmp}-opc.h ${srcdir}/${prefix}-opc.h
+ 
+ 	sed -e "s/@ARCH@/${ARCH}/g" -e "s/@arch@/${arch}/g" \
+ 		-e "s/@prefix@/${prefix}/" < ${tmp}-opc.c1 > ${tmp}-opc.c
+-	${rootdir}/move-if-change ${tmp}-opc.c ${srcdir}/${prefix}-opc.c
++	${move_if_change} ${tmp}-opc.c ${srcdir}/${prefix}-opc.c
+ 
+ 	case $extrafiles in
+ 	*opinst*)
+ 	  sed -e "s/@ARCH@/${ARCH}/g" -e "s/@arch@/${arch}/g" \
+ 		-e "s/@prefix@/${prefix}/" < ${tmp}-opinst.c1 >${tmp}-opinst.c
+-	  ${rootdir}/move-if-change ${tmp}-opinst.c ${srcdir}/${prefix}-opinst.c
++	  ${move_if_change} ${tmp}-opinst.c ${srcdir}/${prefix}-opinst.c
+ 	  ;;
+ 	esac
+ 
+ 	cat ${srcdir}/cgen-ibld.in ${tmp}-ibld.in1 | \
+ 	  sed -e "s/@ARCH@/${ARCH}/g" -e "s/@arch@/${arch}/g" \
+ 		-e "s/@prefix@/${prefix}/" > ${tmp}-ibld.c
+-	${rootdir}/move-if-change ${tmp}-ibld.c ${srcdir}/${prefix}-ibld.c
++	${move_if_change} ${tmp}-ibld.c ${srcdir}/${prefix}-ibld.c
+ 
+ 	sed -e "/ -- assembler routines/ r ${tmp}-asm.in1" ${srcdir}/cgen-asm.in \
+ 	  | sed -e "s/@ARCH@/${ARCH}/g" -e "s/@arch@/${arch}/g" \
+ 		-e "s/@prefix@/${prefix}/" > ${tmp}-asm.c
+-	${rootdir}/move-if-change ${tmp}-asm.c ${srcdir}/${prefix}-asm.c
++	${move_if_change} ${tmp}-asm.c ${srcdir}/${prefix}-asm.c
+ 
+ 	sed -e "/ -- disassembler routines/ r ${tmp}-dis.in1" ${srcdir}/cgen-dis.in \
+ 	  | sed -e "s/@ARCH@/${ARCH}/g" -e "s/@arch@/${arch}/g" \
+ 		-e "s/@prefix@/${prefix}/" > ${tmp}-dis.c
+-	${rootdir}/move-if-change ${tmp}-dis.c ${srcdir}/${prefix}-dis.c
++	${move_if_change} ${tmp}-dis.c ${srcdir}/${prefix}-dis.c
+ 
+ 	# Remove temporary files.
+ 	rm -f ${tmp}-desc.h1 ${tmp}-desc.c1
+diff -rNU3 dist.orig/opcodes/configure dist.nbsd/opcodes/configure
+--- dist.orig/opcodes/configure	2011-02-13 22:00:14.000000000 +0100
++++ dist.nbsd/opcodes/configure	2013-07-11 13:41:55.344420489 +0200
+@@ -12465,6 +12465,14 @@
+ 	  # specified, as in sh3-elf, sh3b-linux-gnu, etc.
+ 	  # Include it just for ELF targets, since the SH5 bfd:s are ELF only.
+ 	  for t in $target $canon_targets; do
++	    # For NetBSD we do NOT want SH5 support unless sh5 or sh64
++	    # is specified
++	    case $t in
++	      sh5*-* | sh64*-*) # let the case below handle it
++				;;
++	      sh*-*-netbsd* | sh*l*-*-netbsd*)
++				continue ;;
++	    esac
+ 	    case $t in
+ 	      all |  sh5*-* | sh64*-* | sh-*-*elf* | shl*-*-*elf* | \
+ 	      sh-*-linux* | shl-*-linux*)
+diff -rNU3 dist.orig/opcodes/configure.in dist.nbsd/opcodes/configure.in
+--- dist.orig/opcodes/configure.in	2010-06-29 06:17:33.000000000 +0200
++++ dist.nbsd/opcodes/configure.in	2013-07-11 13:41:55.311086489 +0200
+@@ -279,6 +279,14 @@
+ 	  # specified, as in sh3-elf, sh3b-linux-gnu, etc.
+ 	  # Include it just for ELF targets, since the SH5 bfd:s are ELF only.
+ 	  for t in $target $canon_targets; do
++	    # For NetBSD we do NOT want SH5 support unless sh5 or sh64
++	    # is specified
++	    case $t in
++	      sh5*-* | sh64*-*) # let the case below handle it
++				;;
++	      sh*-*-netbsd* | sh*l*-*-netbsd*)
++				continue ;;
++	    esac
+ 	    case $t in
+ 	      all |  sh5*-* | sh64*-* | sh-*-*elf* | shl*-*-*elf* | \
+ 	      sh-*-linux* | shl-*-linux*)
+diff -rNU3 dist.orig/opcodes/.gitignore dist.nbsd/opcodes/.gitignore
+--- dist.orig/opcodes/.gitignore	2010-12-09 10:03:17.000000000 +0100
++++ dist.nbsd/opcodes/.gitignore	1970-01-01 01:00:00.000000000 +0100
+@@ -1,2 +0,0 @@
+-/s390-mkopc
+-/s390-opc.tab
+diff -rNU3 dist.orig/readline/display.c dist.nbsd/readline/display.c
+--- dist.orig/readline/display.c	2008-03-24 13:59:51.000000000 +0100
++++ dist.nbsd/readline/display.c	2013-07-11 13:41:56.181103891 +0200
+@@ -47,6 +47,7 @@
+ 
+ /* System-specific feature definitions and include files. */
+ #include "rldefs.h"
++#include "rltty.h"
+ #include "rlmbutil.h"
+ 
+ /* Termcap library stuff. */
+diff -rNU3 dist.orig/readline/doc/texi2dvi dist.nbsd/readline/doc/texi2dvi
+--- dist.orig/readline/doc/texi2dvi	2006-05-05 20:26:14.000000000 +0200
++++ dist.nbsd/readline/doc/texi2dvi	2013-07-11 13:41:56.184437291 +0200
+@@ -1,6 +1,6 @@
+ #! /bin/sh
+ # texi2dvi --- produce DVI (or PDF) files from Texinfo (or LaTeX) sources.
+-# $Id: texi2dvi,v 1.14 2003/02/05 00:42:33 karl Exp $
++# Id: texi2dvi,v 1.14 2003/02/05 00:42:33 karl Exp
+ #
+ # Copyright (C) 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2001,
+ # 2002, 2003 Free Software Foundation, Inc.
+@@ -27,7 +27,7 @@
+ # the `--debug' option when making a bug report.
+ 
+ # This string is expanded by rcs automatically when this file is checked out.
+-rcs_revision='$Revision: 1.14 $'
++rcs_revision='Revision: 1.14'
+ rcs_version=`set - $rcs_revision; echo $2`
+ program=`echo $0 | sed -e 's!.*/!!'`
+ version="texi2dvi (GNU Texinfo 4.5) $rcs_version
+diff -rNU3 dist.orig/readline/doc/texi2html dist.nbsd/readline/doc/texi2html
+--- dist.orig/readline/doc/texi2html	2006-04-20 22:13:20.000000000 +0200
++++ dist.nbsd/readline/doc/texi2html	2013-07-11 13:41:56.184437291 +0200
+@@ -36,7 +36,7 @@
+ #--##############################################################################
+ 
+ # CVS version:
+-# $Id: texi2html.pl,v 1.55 2000/07/27 14:39:41 obachman Exp $
++# Id: texi2html.pl,v 1.55 2000/07/27 14:39:41 obachman Exp
+ 
+ # Homepage:
+ $T2H_HOMEPAGE = <<EOT;
+@@ -92,7 +92,7 @@
+ # Copy this file and make changes to it, if you like.
+ # Afterwards, either, load it with command-line option -init_file <your_init_file>
+ #
+-# $Id: texi2html.init,v 1.34 2000/07/27 14:09:02 obachman Exp $
++# Id: texi2html.init,v 1.34 2000/07/27 14:09:02 obachman Exp
+ 
+ ######################################################################
+ # stuff which can also be set by command-line options
+@@ -1510,7 +1510,7 @@
+ 
+ # --------------------------------------------------------------------------
+ # Locally modified by obachman (Display type instead of env, order by cmp)
+-# $Id: MySimple.pm,v 1.1 2000/07/03 08:44:13 obachman Exp $
++# Id: MySimple.pm,v 1.1 2000/07/03 08:44:13 obachman Exp
+ 
+ # use strict;
+ # no strict 'refs';
+diff -rNU3 dist.orig/readline/examples/readlinebuf.h dist.nbsd/readline/examples/readlinebuf.h
+--- dist.orig/readline/examples/readlinebuf.h	2006-04-20 22:13:20.000000000 +0200
++++ dist.nbsd/readline/examples/readlinebuf.h	2013-07-11 13:41:56.184437291 +0200
+@@ -1,7 +1,7 @@
+ /*******************************************************************************
+- * $Revision: 1.2 $
+- * $Date: 2001/09/11 06:19:36 $
+- * $Author: vyzo $
++ * Revision: 1.2
++ * Date: 2001/09/11 06:19:36
++ * Author: vyzo
+  *
+  * Contents: A streambuf which uses the GNU readline library for line I/O
+  * (c) 2001 by Dimitris Vyzovitis [vyzo@media.mit.edu]
+diff -rNU3 dist.orig/readline/examples/rlfe/config.h.in dist.nbsd/readline/examples/rlfe/config.h.in
+--- dist.orig/readline/examples/rlfe/config.h.in	2006-04-20 22:05:51.000000000 +0200
++++ dist.nbsd/readline/examples/rlfe/config.h.in	2013-07-11 13:41:56.184437291 +0200
+@@ -21,7 +21,7 @@
+  * 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
+  *
+  ****************************************************************
+- * $Id: config.h.in,v 1.12 1994/05/31 12:31:36 mlschroe Exp $ FAU
++ * Id: config.h.in,v 1.12 1994/05/31 12:31:36 mlschroe Exp FAU
+  */
+ 
+ 
+diff -rNU3 dist.orig/readline/examples/rlfe/extern.h dist.nbsd/readline/examples/rlfe/extern.h
+--- dist.orig/readline/examples/rlfe/extern.h	2006-04-20 22:05:51.000000000 +0200
++++ dist.nbsd/readline/examples/rlfe/extern.h	2013-07-11 13:41:56.184437291 +0200
+@@ -19,7 +19,7 @@
+  * 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
+  *
+  ****************************************************************
+- * $Id: extern.h,v 1.18 1994/05/31 12:31:57 mlschroe Exp $ FAU
++ * Id: extern.h,v 1.18 1994/05/31 12:31:57 mlschroe Exp FAU
+  */
+ 
+ #if !defined(__GNUC__) || __GNUC__ < 2
+diff -rNU3 dist.orig/readline/examples/rlfe/os.h dist.nbsd/readline/examples/rlfe/os.h
+--- dist.orig/readline/examples/rlfe/os.h	2006-04-20 22:05:51.000000000 +0200
++++ dist.nbsd/readline/examples/rlfe/os.h	2013-07-11 13:41:56.184437291 +0200
+@@ -19,7 +19,7 @@
+  * 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
+  *
+  ****************************************************************
+- * $Id: os.h,v 1.10 1994/05/31 12:32:22 mlschroe Exp $ FAU
++ * Id: os.h,v 1.10 1994/05/31 12:32:22 mlschroe Exp FAU
+  */
+ 
+ #include <stdio.h>
+diff -rNU3 dist.orig/readline/rltty.c dist.nbsd/readline/rltty.c
+--- dist.orig/readline/rltty.c	2008-03-24 13:59:51.000000000 +0100
++++ dist.nbsd/readline/rltty.c	2013-07-11 13:41:56.181103891 +0200
+@@ -37,9 +37,9 @@
+ 
+ #include "rldefs.h"
+ 
+-#if defined (GWINSZ_IN_SYS_IOCTL)
++#if defined (HAVE_SYS_IOCTL_H)
+ #  include <sys/ioctl.h>
+-#endif /* GWINSZ_IN_SYS_IOCTL */
++#endif /* HAVE_SYS_IOCTL_H */
+ 
+ #include "rltty.h"
+ #include "readline.h"
+diff -rNU3 dist.orig/readline/terminal.c dist.nbsd/readline/terminal.c
+--- dist.orig/readline/terminal.c	2006-11-13 10:33:30.000000000 +0100
++++ dist.nbsd/readline/terminal.c	2013-07-11 13:41:56.184437291 +0200
+@@ -32,6 +32,10 @@
+ #  include <sys/file.h>
+ #endif /* HAVE_SYS_FILE_H */
+ 
++#if defined (HAVE_SYS_IOCTL_H)
++#include <sys/ioctl.h>
++#endif /* HAVE_SYS_IOCTL_H */
++
+ #if defined (HAVE_UNISTD_H)
+ #  include <unistd.h>
+ #endif /* HAVE_UNISTD_H */
+diff -rNU3 dist.orig/readline/xmalloc.h dist.nbsd/readline/xmalloc.h
+--- dist.orig/readline/xmalloc.h	2011-06-29 23:46:43.000000000 +0200
++++ dist.nbsd/readline/xmalloc.h	2013-07-11 13:41:56.184437291 +0200
+@@ -39,9 +39,6 @@
+ 
+ #endif /* !PTR_T */
+ 
+-/* xmalloc and xrealloc should be also protected from RL_STATE_SIGHANDLER.  */
+-#define xfree xfree_readline
+-
+ /* readline-5.1 backport.  */
+ #define free xfree
+ 
+diff -rNU3 dist.orig/sim/common/callback.c dist.nbsd/sim/common/callback.c
+--- dist.orig/sim/common/callback.c	2011-03-15 04:16:16.000000000 +0100
++++ dist.nbsd/sim/common/callback.c	2013-07-11 13:41:55.884431288 +0200
+@@ -501,7 +501,11 @@
+      host_callback *p;
+      long *t;
+ {
+-  return wrap (p, time (t));
++  long v = (long)time(NULL);
++
++  if (t != NULL)
++    *t = v;
++  return wrap (p, v);
+ }
+ 
+ 
+diff -rNU3 dist.orig/sim/common/cgen.sh dist.nbsd/sim/common/cgen.sh
+--- dist.orig/sim/common/cgen.sh	2009-07-07 10:09:19.000000000 +0200
++++ dist.nbsd/sim/common/cgen.sh	2013-07-11 13:41:55.884431288 +0200
+@@ -29,6 +29,7 @@
+ shift ; opcfile=$9
+ 
+ rootdir=${srcdir}/../..
++move_if_change="${CONFIG_SHELL:-/bin/sh} ${rootdir}/move-if-change"
+ 
+ test -z "${opcfile}" && opcfile=/dev/null
+ 
+@@ -70,11 +71,11 @@
+ 		-B ${tmp}-arch.c1 \
+ 		-N ${tmp}-all.h1
+ 	sed $sedscript < ${tmp}-arch.h1 > ${tmp}-arch.h
+-	${rootdir}/move-if-change ${tmp}-arch.h ${srcdir}/arch.h
++	${move_if_change} ${tmp}-arch.h ${srcdir}/arch.h
+ 	sed $sedscript < ${tmp}-arch.c1 > ${tmp}-arch.c
+-	${rootdir}/move-if-change ${tmp}-arch.c ${srcdir}/arch.c
++	${move_if_change} ${tmp}-arch.c ${srcdir}/arch.c
+ 	sed $sedscript < ${tmp}-all.h1 > ${tmp}-all.h
+-	${rootdir}/move-if-change ${tmp}-all.h ${srcdir}/cpuall.h
++	${move_if_change} ${tmp}-all.h ${srcdir}/cpuall.h
+ 
+ 	rm -f ${tmp}-arch.h1 ${tmp}-arch.c1 ${tmp}-all.h1
+ 	;;
+@@ -136,11 +137,11 @@
+ 	case $action in
+ 	*cpu*)
+ 		sed $sedscript < ${tmp}-cpu.h1 > ${tmp}-cpu.h
+-		${rootdir}/move-if-change ${tmp}-cpu.h ${srcdir}/cpu${suffix}.h
++		${move_if_change} ${tmp}-cpu.h ${srcdir}/cpu${suffix}.h
+ 		sed $sedscript < ${tmp}-cpu.c1 > ${tmp}-cpu.c
+-		${rootdir}/move-if-change ${tmp}-cpu.c ${srcdir}/cpu${suffix}.c
++		${move_if_change} ${tmp}-cpu.c ${srcdir}/cpu${suffix}.c
+ 		sed $sedscript < ${tmp}-mod.c1 > ${tmp}-mod.c
+-		${rootdir}/move-if-change ${tmp}-mod.c ${srcdir}/model${suffix}.c
++		${move_if_change} ${tmp}-mod.c ${srcdir}/model${suffix}.c
+ 		rm -f ${tmp}-cpu.h1 ${tmp}-cpu.c1 ${tmp}-mod.c1
+ 		;;
+ 	esac
+@@ -148,36 +149,36 @@
+ 	case $action in
+ 	*decode*)
+ 		sed $sedscript < ${tmp}-dec.h1 > ${tmp}-dec.h
+-		${rootdir}/move-if-change ${tmp}-dec.h ${srcdir}/decode${suffix}.h
++		${move_if_change} ${tmp}-dec.h ${srcdir}/decode${suffix}.h
+ 		sed $sedscript < ${tmp}-dec.c1 > ${tmp}-dec.c
+-		${rootdir}/move-if-change ${tmp}-dec.c ${srcdir}/decode${suffix}.c
++		${move_if_change} ${tmp}-dec.c ${srcdir}/decode${suffix}.c
+ 		rm -f ${tmp}-dec.h1 ${tmp}-dec.c1
+ 		;;
+ 	esac
+ 
+ 	if test -f ${tmp}-ext.c1 ; then \
+ 		sed $sedscript < ${tmp}-ext.c1 > ${tmp}-ext.c ; \
+-		${rootdir}/move-if-change ${tmp}-ext.c ${srcdir}/extract${suffix}.c ; \
++		${move_if_change} ${tmp}-ext.c ${srcdir}/extract${suffix}.c ; \
+ 		rm -f ${tmp}-ext.c1
+ 	fi
+ 	if test -f ${tmp}-read.c1 ; then \
+ 		sed $sedscript < ${tmp}-read.c1 > ${tmp}-read.c ; \
+-		${rootdir}/move-if-change ${tmp}-read.c ${srcdir}/read${suffix}.c ; \
++		${move_if_change} ${tmp}-read.c ${srcdir}/read${suffix}.c ; \
+ 		rm -f ${tmp}-read.c1
+ 	fi
+ 	if test -f ${tmp}-write.c1 ; then \
+ 		sed $sedscript < ${tmp}-write.c1 > ${tmp}-write.c ; \
+-		${rootdir}/move-if-change ${tmp}-write.c ${srcdir}/write${suffix}.c ; \
++		${move_if_change} ${tmp}-write.c ${srcdir}/write${suffix}.c ; \
+ 		rm -f ${tmp}-write.c1
+ 	fi
+ 	if test -f ${tmp}-sem.c1 ; then \
+ 		sed $sedscript < ${tmp}-sem.c1 > ${tmp}-sem.c ; \
+-		${rootdir}/move-if-change ${tmp}-sem.c ${srcdir}/sem${suffix}.c ; \
++		${move_if_change} ${tmp}-sem.c ${srcdir}/sem${suffix}.c ; \
+ 		rm -f ${tmp}-sem.c1
+ 	fi
+ 	if test -f ${tmp}-semsw.c1 ; then \
+ 		sed $sedscript < ${tmp}-semsw.c1 > ${tmp}-semsw.c ; \
+-		${rootdir}/move-if-change ${tmp}-semsw.c ${srcdir}/sem${suffix}-switch.c ; \
++		${move_if_change} ${tmp}-semsw.c ${srcdir}/sem${suffix}-switch.c ; \
+ 		rm -f ${tmp}-semsw.c1
+ 	fi
+ 
+@@ -195,7 +196,7 @@
+ 		-i ${isa} \
+ 		-G ${tmp}-defs.h1
+ 	sed $sedscript < ${tmp}-defs.h1 > ${tmp}-defs.h
+-	${rootdir}/move-if-change ${tmp}-defs.h ${srcdir}/defs${suffix}.h
++	${move_if_change} ${tmp}-defs.h ${srcdir}/defs${suffix}.h
+ 	rm -f ${tmp}-defs.h1
+ 	;;
+ 
+@@ -216,11 +217,11 @@
+ 		-C ${tmp}-desc.c1 \
+ 		-O ${tmp}-opc.h1
+ 	sed $sedscript < ${tmp}-desc.h1 > ${tmp}-desc.h
+-	${rootdir}/move-if-change ${tmp}-desc.h ${srcdir}/${arch}-desc.h
++	${move_if_change} ${tmp}-desc.h ${srcdir}/${arch}-desc.h
+ 	sed $sedscript < ${tmp}-desc.c1 > ${tmp}-desc.c
+-	${rootdir}/move-if-change ${tmp}-desc.c ${srcdir}/${arch}-desc.c
++	${move_if_change} ${tmp}-desc.c ${srcdir}/${arch}-desc.c
+ 	sed $sedscript < ${tmp}-opc.h1 > ${tmp}-opc.h
+-	${rootdir}/move-if-change ${tmp}-opc.h ${srcdir}/${arch}-opc.h
++	${move_if_change} ${tmp}-opc.h ${srcdir}/${arch}-opc.h
+ 
+ 	rm -f ${tmp}-desc.h1 ${tmp}-desc.c1 ${tmp}-opc.h1
+ 	;;
+diff -rNU3 dist.orig/sim/configure dist.nbsd/sim/configure
+--- dist.orig/sim/configure	2011-03-06 01:20:17.000000000 +0100
++++ dist.nbsd/sim/configure	2013-07-11 13:41:55.911098490 +0200
+@@ -3773,7 +3773,7 @@
+ 
+ 
+        ;;
+-   sh64*-*-*)
++   sh64*-*-* | sh5*-*-*)
+ 
+   sim_arch=sh64
+   subdirs="$subdirs sh64"
+diff -rNU3 dist.orig/sim/.gitignore dist.nbsd/sim/.gitignore
+--- dist.orig/sim/.gitignore	2011-01-05 18:17:44.000000000 +0100
++++ dist.nbsd/sim/.gitignore	1970-01-01 01:00:00.000000000 +0100
+@@ -1,8 +0,0 @@
+-/*/gentmap
+-/*/run
+-/*/hw-config.h
+-/*/targ-*
+-/*/tconfig.h
+-/*/version.c
+-
+-/common/cconfig.h
+diff -rNU3 dist.orig/sim/mips/Makefile.in dist.nbsd/sim/mips/Makefile.in
+--- dist.orig/sim/mips/Makefile.in	2007-06-25 13:21:53.000000000 +0200
++++ dist.nbsd/sim/mips/Makefile.in	2013-07-11 13:41:55.907765090 +0200
+@@ -135,7 +135,7 @@
+ $(BUILT_SRC_FROM_IGEN): tmp-igen
+ 
+ tmp-igen: $(IGEN_INSN) $(IGEN_DC) ../igen/igen $(IGEN_INCLUDE)
+-	cd ../igen && $(MAKE)
++#	cd ../igen && $(MAKE)
+ 	../igen/igen \
+ 		$(IGEN_TRACE) \
+ 		-I $(srcdir) \
+diff -rNU3 dist.orig/sim/mn10300/Makefile.in dist.nbsd/sim/mn10300/Makefile.in
+--- dist.orig/sim/mn10300/Makefile.in	2011-01-01 16:34:03.000000000 +0100
++++ dist.nbsd/sim/mn10300/Makefile.in	2013-07-11 13:41:55.714427889 +0200
+@@ -82,7 +82,7 @@
+ IGEN_INSN=$(srcdir)/mn10300.igen $(srcdir)/am33.igen $(srcdir)/am33-2.igen
+ IGEN_DC=$(srcdir)/mn10300.dc
+ tmp-igen: $(IGEN_INSN) $(IGEN_DC) ../igen/igen
+-	cd ../igen && $(MAKE)
++#	cd ../igen && $(MAKE)
+ 	../igen/igen \
+ 		$(IGEN_TRACE) \
+ 		-G gen-direct-access \
+diff -rNU3 dist.orig/sim/ppc/emul_netbsd.c dist.nbsd/sim/ppc/emul_netbsd.c
+--- dist.orig/sim/ppc/emul_netbsd.c	2011-02-14 06:14:27.000000000 +0100
++++ dist.nbsd/sim/ppc/emul_netbsd.c	2013-07-11 13:41:55.917765290 +0200
+@@ -738,7 +738,7 @@
+   if (WITH_TRACE && ppc_trace[trace_os_emul])
+     printf_filtered ("0x%lx, 0x%lx", (long)t_addr, (long)tz_addr);
+ 
+-  SYS(gettimeofday);
++  SYS(__gettimeofday50);
+   emul_write_status(processor, status, err);
+   if (status == 0) {
+     if (t_addr != 0)
+@@ -768,7 +768,7 @@
+   if (WITH_TRACE && ppc_trace[trace_os_emul])
+     printf_filtered ("%d, 0x%lx", who, (long)rusage_addr);
+ 
+-  SYS(getrusage);
++  SYS(__getrusage50);
+   emul_write_status(processor, status, err);
+   if (status == 0) {
+     if (rusage_addr != 0)
+@@ -1039,21 +1039,21 @@
+   /* 4 */ { do_write, "write" },
+   /* 5 */ { do_open, "open" },
+   /* 6 */ { do_close, "close" },
+-  /* 7 */ { 0, "wait4" },
++  { 0, }, /* 7 is old wait4 */
+   { 0, }, /* 8 is old creat */
+   /* 9 */ { 0, "link" },
+   /* 10 */ { 0, "unlink" },
+   { 0, }, /* 11 is obsolete execv */
+   /* 12 */ { 0, "chdir" },
+   /* 13 */ { 0, "fchdir" },
+-  /* 14 */ { 0, "mknod" },
++  { 0, }, /* 14 is old mknod */
+   /* 15 */ { 0, "chmod" },
+   /* 16 */ { 0, "chown" },
+   /* 17 */ { do_break, "break" },
+-  /* 18 */ { 0, "getfsstat" },
++  { 0, }, /* 18 is old getfsstat */
+   { 0, }, /* 19 is old lseek */
+   /* 20 */ { do_getpid, "getpid" },
+-  /* 21 */ { 0, "mount" },
++  { 0, }, /* 21 is old mount */
+   /* 22 */ { 0, "unmount" },
+   /* 23 */ { 0, "setuid" },
+   /* 24 */ { do_getuid, "getuid" },
+@@ -1078,16 +1078,16 @@
+   /* 43 */ { do_getegid, "getegid" },
+   /* 44 */ { 0, "profil" },
+   /* 45 */ { 0, "ktrace" },
+-  /* 46 */ { 0, "sigaction" },
++  { 0, }, /* 46 is old sigaction */
+   /* 47 */ { do_getgid, "getgid" },
+-  /* 48 */ { do_sigprocmask, "sigprocmask" },
++  { 0, }, /* 48 is old sigprocmask */
+   /* 49 */ { 0, "getlogin" },
+   /* 50 */ { 0, "setlogin" },
+   /* 51 */ { 0, "acct" },
+-  /* 52 */ { 0, "sigpending" },
+-  /* 53 */ { 0, "sigaltstack" },
++  { 0, }, /* 52 is old sigpending */
++  { 0, }, /* 53 is old sigaltstack */
+   /* 54 */ { do_ioctl, "ioctl" },
+-  /* 55 */ { 0, "reboot" },
++  { 0, }, /* 55 is old reboot */
+   /* 56 */ { 0, "revoke" },
+   /* 57 */ { 0, "symlink" },
+   /* 58 */ { 0, "readlink" },
+@@ -1097,7 +1097,7 @@
+   { 0, }, /* 62 is old fstat */
+   { 0, }, /* 63 is old getkerninfo */
+   { 0, }, /* 64 is old getpagesize */
+-  /* 65 */ { 0, "msync" },
++  { 0, }, /* 65 is old msync */
+   /* 66 */ { 0, "vfork" },
+   { 0, }, /* 67 is obsolete vread */
+   { 0, }, /* 68 is obsolete vwrite */
+@@ -1115,27 +1115,27 @@
+   /* 80 */ { 0, "setgroups" },
+   /* 81 */ { 0, "getpgrp" },
+   /* 82 */ { 0, "setpgid" },
+-  /* 83 */ { 0, "setitimer" },
++  { 0, }, /* 83 is old setitimer */
+   { 0, }, /* 84 is old wait */
+-  /* 85 */ { 0, "swapon" },
+-  /* 86 */ { 0, "getitimer" },
++  { 0, }, /* 85 is old swapon */
++  { 0, }, /* 86 is old getitimer */
+   { 0, }, /* 87 is old gethostname */
+   { 0, }, /* 88 is old sethostname */
+   { 0, }, /* 89 is old getdtablesize */
+   { do_dup2, "dup2" },
+   { 0, }, /* 91 */
+   /* 92 */ { do_fcntl, "fcntl" },
+-  /* 93 */ { 0, "select" },
++  { 0, }, /* 93 is old select */
+   { 0, }, /* 94 */
+   /* 95 */ { 0, "fsync" },
+   /* 96 */ { 0, "setpriority" },
+-  /* 97 */ { 0, "socket" },
+-  /* 98 */ { 0, "connect" },
++  { 0, }, /* 97 is old socket */
++  { 0, }, /* 98 is old connect */
+   { 0, }, /* 99 is old accept */
+   /* 100 */ { 0, "getpriority" },
+   { 0, }, /* 101 is old send */
+   { 0, }, /* 102 is old recv */
+-  /* 103 */ { 0, "sigreturn" },
++  { 0, }, /* 103 is old sigreturn */
+   /* 104 */ { 0, "bind" },
+   /* 105 */ { 0, "setsockopt" },
+   /* 106 */ { 0, "listen" },
+@@ -1143,23 +1143,25 @@
+   { 0, }, /* 108 is old sigvec */
+   { 0, }, /* 109 is old sigblock */
+   { 0, }, /* 110 is old sigsetmask */
+-  /* 111 */ { 0, "sigsuspend" },
++  { 0, }, /* 111 is old sigsuspend */
+   { 0, }, /* 112 is old sigstack */
+   { 0, }, /* 113 is old recvmsg */
+   { 0, }, /* 114 is old sendmsg */
+   /* - is obsolete vtrace */ { 0, "vtrace	115" },
+-  /* 116 */ { do_gettimeofday, "gettimeofday" },
+-  /* 117 */ { do_getrusage, "getrusage" },
++  { 0, }, /* 116 is old gettimeofday */
++  { 0, }, /* 117 is old getrusage */
+   /* 118 */ { 0, "getsockopt" },
+-  /* 119 */ { 0, "resuba" },
++  /* - is obsolete resuba */ { 0, "resuba	119" },
+   /* 120 */ { 0, "readv" },
+   /* 121 */ { 0, "writev" },
+-  /* 122 */ { 0, "settimeofday" },
++  { 0, }, /* 122 is old settimeofday */
+   /* 123 */ { 0, "fchown" },
+   /* 124 */ { 0, "fchmod" },
+   { 0, }, /* 125 is old recvfrom */
+   { 0, }, /* 126 is old setreuid */
+   { 0, }, /* 127 is old setregid */
++  /* 126 */ { 0, "setreuid" },
++  /* 127 */ { 0, "setregid" },
+   /* 128 */ { 0, "rename" },
+   { 0, }, /* 129 is old truncate */
+   { 0, }, /* 130 is old ftruncate */
+@@ -1170,9 +1172,9 @@
+   /* 135 */ { 0, "socketpair" },
+   /* 136 */ { 0, "mkdir" },
+   /* 137 */ { 0, "rmdir" },
+-  /* 138 */ { 0, "utimes" },
++  { 0, }, /* 138 is old utimes */
+   { 0, }, /* 139 is obsolete 4.2 sigreturn */
+-  /* 140 */ { 0, "adjtime" },
++  { 0, }, /* 140 is old adjtime */
+   { 0, }, /* 141 is old getpeername */
+   { 0, }, /* 142 is old gethostid */
+   { 0, }, /* 143 is old sethostid */
+@@ -1189,11 +1191,11 @@
+   { 0, }, /* 154 */
+   /* 155 */ { 0, "nfssvc" },
+   { 0, }, /* 156 is old getdirentries */
+-  /* 157 */ { 0, "statfs" },
+-  /* 158 */ { do_fstatfs, "fstatfs" },
++  { 0, }, /* 157 is old statfs */
++  { 0, }, /* 158 is old fstatfs */
+   { 0, }, /* 159 */
+   { 0, }, /* 160 */
+-  /* 161 */ { 0, "getfh" },
++  { 0, }, /* 161 is old getfh */
+   { 0, }, /* 162 is old getdomainname */
+   { 0, }, /* 163 is old setdomainname */
+   { 0, }, /* 164 is old uname */
+@@ -1201,14 +1203,14 @@
+   { 0, }, /* 166 */
+   { 0, }, /* 167 */
+   { 0, }, /* 168 */
+-  /* 169 */ { 0, "semsys" },
+-  /* 170 */ { 0, "msgsys" },
+-  /* 171 */ { 0, "shmsys" },
++  { 0, }, /* 169 is old semsys */
++  { 0, }, /* 170 is old msgsys */
++  { 0, }, /* 171 is old shmsys */
+   { 0, }, /* 172 */
+-  { 0, }, /* 173 */
+-  { 0, }, /* 174 */
+-  { 0, }, /* 175 */
+-  { 0, }, /* 176 */
++  /* 173 */ { 0, "pread" },
++  /* 174 */ { 0, "pwrite" },
++  { 0, }, /* 175 is old ntp_gettime */
++  /* 176 */ { 0, "ntp_adjtime" },
+   { 0, }, /* 177 */
+   { 0, }, /* 178 */
+   { 0, }, /* 179 */
+@@ -1220,15 +1222,15 @@
+   /* 185 */ { 0, "lfs_markv" },
+   /* 186 */ { 0, "lfs_segclean" },
+   /* 187 */ { 0, "lfs_segwait" },
+-  /* 188 */ { do_stat, "stat" },
+-  /* 189 */ { do_fstat, "fstat" },
+-  /* 190 */ { do_lstat, "lstat" },
++  { 0, }, /* 188 is old stat" */
++  { 0, }, /* 189 is old fstat */
++  { 0, }, /* 190 is old lstat */
+   /* 191 */ { 0, "pathconf" },
+   /* 192 */ { 0, "fpathconf" },
+   { 0, }, /* 193 */
+   /* 194 */ { 0, "getrlimit" },
+   /* 195 */ { 0, "setrlimit" },
+-  /* 196 */ { do_getdirentries, "getdirentries" },
++  { 0, }, /* 196 is old getdirentries */
+   /* 197 */ { 0, "mmap" },
+   /* 198 */ { do___syscall, "__syscall" },
+   /* 199 */ { do_lseek, "lseek" },
+@@ -1237,6 +1239,275 @@
+   /* 202 */ { do___sysctl, "__sysctl" },
+   /* 203 */ { 0, "mlock" },
+   /* 204 */ { 0, "munlock" },
++  /* 205 */ { 0, "undelete" },
++  { 0, }, /* 206 is old futimes */
++  /* 207 */ { 0, "getpgid" },
++  /* 208 */ { 0, "reboot" },
++  /* 209 */ { 0, "poll" },
++  { 0, }, /* 210 */
++  { 0, }, /* 211 */
++  { 0, }, /* 212 */
++  { 0, }, /* 213 */
++  { 0, }, /* 214 */
++  { 0, }, /* 215 */
++  { 0, }, /* 216 */
++  { 0, }, /* 217 */
++  { 0, }, /* 218 */
++  { 0, }, /* 219 */
++  { 0, }, /* 220 is old semctl */
++  /* 221 */ { 0, "semget" },
++  /* 222 */ { 0, "semop" },
++  /* 223 */ { 0, "semconfig" },
++  { 0, }, /* 224 is old msgctl */
++  /* 225 */ { 0, "msgget" },
++  /* 226 */ { 0, "msgsnd" },
++  /* 227 */ { 0, "msgrcv" },
++  /* 228 */ { 0, "shmat" },
++  { 0, }, /* 229 is old shmctl */
++  /* 230 */ { 0, "shmdt" },
++  /* 231 */ { 0, "shmget" },
++  { 0, }, /* 232 is old clock_gettime */
++  { 0, }, /* 233 is old clock_settime */
++  { 0, }, /* 234 is old clock_getres */
++  /* 235 */ { 0, "timer_create" },
++  /* 236 */ { 0, "timer_delete" },
++  { 0, }, /* 237 is old timer_settime */
++  { 0, }, /* 238 is old timer_gettime */
++  /* 239 */ { 0, "timer_getoverrun" },
++  { 0, }, /* 240 is old nanosleep */
++  /* 241 */ { 0, "fdatasync" },
++  /* 242 */ { 0, "mlockall" },
++  /* 243 */ { 0, "munlockall" },
++  { 0, }, /* 244 is old sigtimedwait */
++  { 0, }, /* 245 */
++  /* 246 */ { 0, "modctl" },
++  /* 247 */ { 0, "_ksem_init" },
++  /* 248 */ { 0, "_ksem_open" },
++  /* 249 */ { 0, "_ksem_unlink" },
++  /* 250 */ { 0, "_ksem_close" },
++  /* 251 */ { 0, "_ksem_post" },
++  /* 252 */ { 0, "_ksem_wait" },
++  /* 253 */ { 0, "_ksem_trywait" },
++  /* 254 */ { 0, "_ksem_getvalue" },
++  /* 255 */ { 0, "_ksem_destroy" },
++  /* 256 */ { 0, "_ksem_timedwait" },
++  /* 257 */ { 0, "mq_open" },
++  /* 258 */ { 0, "mq_close" },
++  /* 259 */ { 0, "mq_unlink" },
++  /* 260 */ { 0, "mq_getattr" },
++  /* 261 */ { 0, "mq_setattr" },
++  /* 262 */ { 0, "mq_notify" },
++  /* 263 */ { 0, "mq_send" },
++  /* 264 */ { 0, "mq_receive" },
++  { 0, }, /* 265 is old mq_timedsend */
++  { 0, }, /* 266 is old mq_timedrecive */
++  { 0, }, /* 267 */
++  { 0, }, /* 268 */
++  { 0, }, /* 269 */
++  /* 270 */ { 0, "__posix_rename" },
++  /* 271 */ { 0, "swapctl" },
++  { 0, }, /* 272 is old getdents */
++  /* 273 */ { 0, "minherit" },
++  /* 274 */ { 0, "lchmod" },
++  /* 275 */ { 0, "lchown" },
++  { 0, }, /* 276 is old lutimes */
++  /* 277 */ { 0, "__msync13" },
++  { 0, }, /* 278 is old stat */
++  { 0, }, /* 279 is old fstat */
++  { 0, }, /* 280 is old lstat */
++  /* 281 */ { 0, "__sigaltstack13" },
++  /* 282 */ { 0, "__vfork14" },
++  /* 283 */ { 0, "__posix_chown" },
++  /* 284 */ { 0, "__posix_fchown" },
++  /* 285 */ { 0, "__posix_lchown" },
++  /* 286 */ { 0, "getsid" },
++  /* 287 */ { 0, "__clone" },
++  /* 288 */ { 0, "fktrace" },
++  /* 289 */ { 0, "preadv" },
++  /* 290 */ { 0, "pwritev" },
++  { 0, }, /* 291 is old sigaction */
++  /* 292 */ { 0, "__sigpending14" },
++  /* 293 */ { do_sigprocmask, "__sigprocmask14" },
++  /* 294 */ { 0, "__sigsuspend14" },
++  /* 295 */ { 0, "__sigreturn14" },
++  /* 296 */ { 0, "__getcwd" },
++  /* 297 */ { 0, "fchroot" },
++  { 0, }, /* 298 is old fhopen */
++  { 0, }, /* 299 is old fhstat */
++  { 0, }, /* 300 is old fhstatfs */
++  { 0, }, /* 301 is old semctl */
++  { 0, }, /* 302 is old msgctl */
++  { 0, }, /* 303 is old shmctl */
++  /* 304 */ { 0, "lchflags" },
++  /* 305 */ { 0, "issetugid" },
++  /* 306 */ { 0, "utrace" },
++  /* 307 */ { 0, "getcontext" },
++  /* 308 */ { 0, "setcontext" },
++  /* 309 */ { 0, "_lwp_create" },
++  /* 310 */ { 0, "_lwp_exit" },
++  /* 311 */ { 0, "_lwp_self" },
++  /* 312 */ { 0, "_lwp_wait" },
++  /* 313 */ { 0, "_lwp_suspend" },
++  /* 314 */ { 0, "_lwp_continue" },
++  /* 315 */ { 0, "_lwp_wakeup" },
++  /* 316 */ { 0, "_lwp_getprivate" },
++  /* 317 */ { 0, "_lwp_setprivate" },
++  /* 318 */ { 0, "_lwp_kill" },
++  /* 319 */ { 0, "_lwp_detach" },
++  { 0, }, /* 320 is old _lwp_park */
++  /* 321 */ { 0, "_lwp_unpark" },
++  /* 322 */ { 0, "_lwp_unpark_all" },
++  /* 323 */ { 0, "_lwp_setname" },
++  /* 324 */ { 0, "_lwp_getname" },
++  /* 325 */ { 0, "_lwp_ctl" },
++  { 0, }, /* 326 */
++  { 0, }, /* 327 */
++  { 0, }, /* 328 */
++  { 0, }, /* 329 */
++  /* 330 */ { 0, "sa_register" },
++  /* 331 */ { 0, "sa_stacks" },
++  /* 332 */ { 0, "sa_enable" },
++  /* 333 */ { 0, "sa_setconcurrency" },
++  /* 334 */ { 0, "sa_yield" },
++  /* 335 */ { 0, "sa_preempt" },
++  { 0, }, /* 336 */
++  { 0, }, /* 337 */
++  { 0, }, /* 338 */
++  { 0, }, /* 339 */
++  /* 340 */ { 0, "__sigaction_sigtramp" },
++  /* 341 */ { 0, "pmc_get_info" },
++  /* 342 */ { 0, "pmc_control" },
++  /* 343 */ { 0, "rasctl" },
++  /* 344 */ { 0, "kqueue" },
++  { 0, }, /* 345 is old kevent */
++  /* 346 */ { 0, "_sched_setparam" },
++  /* 347 */ { 0, "_sched_getparam" },
++  /* 348 */ { 0, "_sched_setaffinity" },
++  /* 349 */ { 0, "_sched_getaffinity" },
++  /* 350 */ { 0, "sched_yield" },
++  { 0, }, /* 351 */
++  { 0, }, /* 352 */
++  { 0, }, /* 353 */
++  /* 354 */ { 0, "fsync_range" },
++  /* 355 */ { 0, "uuidgen" },
++  /* 356 */ { 0, "getvfsstat" },
++  /* 357 */ { 0, "statvfs1" },
++  /* 358 */ { 0, "fstatvfs1" },
++  { 0, }, /* 359 is old fhstatvfs1 */
++  /* 360 */ { 0, "extattrctl" },
++  /* 361 */ { 0, "extattr_set_file" },
++  /* 362 */ { 0, "extattr_get_file" },
++  /* 363 */ { 0, "extattr_delete_file" },
++  /* 364 */ { 0, "extattr_set_fd" },
++  /* 365 */ { 0, "extattr_get_fd" },
++  /* 366 */ { 0, "extattr_delete_fd" },
++  /* 367 */ { 0, "extattr_set_link" },
++  /* 368 */ { 0, "extattr_get_link" },
++  /* 369 */ { 0, "extattr_delete_link" },
++  /* 370 */ { 0, "extattr_list_fd" },
++  /* 371 */ { 0, "extattr_list_file" },
++  /* 372 */ { 0, "extattr_list_link" },
++  { 0, }, /* 373 is old pselect */
++  { 0, }, /* 374 is old pollts */
++  /* 375 */ { 0, "setxattr" },
++  /* 376 */ { 0, "lsetxattr" },
++  /* 377 */ { 0, "fsetxattr" },
++  /* 378 */ { 0, "getxattr" },
++  /* 379 */ { 0, "lgetxattr" },
++  /* 380 */ { 0, "fgetxattr" },
++  /* 381 */ { 0, "listxattr" },
++  /* 382 */ { 0, "llistxattr" },
++  /* 383 */ { 0, "flistxattr" },
++  /* 384 */ { 0, "removexattr" },
++  /* 385 */ { 0, "lremovexattr" },
++  /* 386 */ { 0, "fremovexattr" },
++  { 0, }, /* 387 is old stat */
++  { 0, }, /* 388 is old fstat */
++  { 0, }, /* 389 is old lstat */
++  /* 390 */ { do_getdirentries, "__getdents30" },
++  { 0, }, /* 391 is old posix_fadvise */
++  { 0, }, /* 392 is old fhstat */
++  { 0, }, /* 393 is old ntp_gettime */
++  /* 394 */ { 0, "__socket30" },
++  /* 395 */ { 0, "__getfh30" },
++  /* 396 */ { 0, "__fhopen40" },
++  /* 397 */ { 0, "__fhstatvfs140" },
++  { 0, }, /* 398 is old fhstat */
++  /* 399 */ { 0, "aio_cancel" },
++  /* 400 */ { 0, "aio_error" },
++  /* 401 */ { 0, "aio_fsync" },
++  /* 402 */ { 0, "aio_read" },
++  /* 403 */ { 0, "aio_return" },
++  { 0, }, /* 404 is old aio_suspend */
++  /* 405 */ { 0, "aio_write" },
++  /* 406 */ { 0, "lio_listio" },
++  { 0, }, /* 407 */
++  { 0, }, /* 408 */
++  { 0, }, /* 409 */
++  /* 410 */ { 0, "__mount50" },
++  /* 411 */ { 0, "mremap" },
++  /* 412 */ { 0, "pset_create" },
++  /* 413 */ { 0, "pset_destroy" },
++  /* 414 */ { 0, "pset_assign" },
++  /* 415 */ { 0, "_pset_bind" },
++  /* 416 */ { 0, "__posix_fadvise50" },
++  /* 417 */ { 0, "__select50" },
++  /* 418 */ { do_gettimeofday, "__gettimeofday50" },
++  /* 419 */ { 0, "__settimeofday50" },
++  /* 420 */ { 0, "__utimes50" },
++  /* 421 */ { 0, "__adjtime50" },
++  /* 422 */ { 0, "__lfs_segwait50" },
++  /* 423 */ { 0, "__futimes50" },
++  /* 424 */ { 0, "__lutimes50" },
++  /* 425 */ { 0, "__setitimer50" },
++  /* 426 */ { 0, "__getitimer50" },
++  /* 427 */ { 0, "__clock_gettime50" },
++  /* 428 */ { 0, "__clock_settime50" },
++  /* 429 */ { 0, "__clock_getres50" },
++  /* 430 */ { 0, "__nanosleep50" },
++  /* 431 */ { 0, "____sigtimedwait50" },
++  /* 432 */ { 0, "__mq_timedsend50" },
++  /* 433 */ { 0, "__mq_timedreceive50" },
++  /* 434 */ { 0, "____lwp_park50" },
++  /* 435 */ { 0, "__kevent50" },
++  /* 436 */ { 0, "__pselect50" },
++  /* 437 */ { 0, "__pollts50" },
++  /* 438 */ { 0, "__aio_suspend50" },
++  /* 439 */ { do_stat, "__stat50" },
++  /* 440 */ { do_fstat, "__fstat50" },
++  /* 441 */ { do_lstat, "__lstat50" },
++  /* 442 */ { 0, "____semctl50" },
++  /* 443 */ { 0, "__shmctl50" },
++  /* 444 */ { 0, "__msgctl50" },
++  /* 445 */ { do_getrusage, "__getrusage50" },
++  /* 446 */ { 0, "__timer_settime50" },
++  /* 447 */ { 0, "__timer_gettime50" },
++  /* 448 */ { 0, "__ntp_gettime50" },
++  /* 449 */ { 0, "__wait450" },
++  /* 450 */ { 0, "__mknod50" },
++  /* 451 */ { 0, "__fhstat50" },
++  { 0, }, /* 452 is obsolete 5.99 __quotactl50 */
++  /* 453 */ { 0, "pipe2" },
++  /* 454 */ { 0, "dup3" },
++  /* 455 */ { 0, "kqueue1" },
++  /* 456 */ { 0, "paccept" },
++  /* 457 */ { 0, "linkat" },
++  /* 458 */ { 0, "renameat" },
++  /* 459 */ { 0, "mkfifoat" },
++  /* 460 */ { 0, "mknodat" },
++  /* 461 */ { 0, "mkdirat" },
++  /* 462 */ { 0, "faccessat" },
++  /* 463 */ { 0, "fchmodat" },
++  /* 464 */ { 0, "fchownat" },
++  /* 465 */ { 0, "fexecve" },
++  /* 466 */ { 0, "fstatat" },
++  /* 467 */ { 0, "utimensat" },
++  /* 468 */ { 0, "openat" },
++  /* 469 */ { 0, "readlinkat" },
++  /* 470 */ { 0, "symlinkat" },
++  /* 471 */ { 0, "unlinkat" },
++  /* 472 */ { 0, "futimens" },
++  /* 473 */ { 0, "__quotactl" },
+ };
+ 
+ static char *(netbsd_error_names[]) = {
+@@ -1322,7 +1593,22 @@
+   /* 79 */ "EFTYPE",
+   /* 80 */ "EAUTH",
+   /* 81 */ "ENEEDAUTH",
+-  /* 81 */ "ELAST",
++  /* 82 */ "EIDRM",
++  /* 83 */ "ENOMSG",
++  /* 84 */ "EOVERFLOW",
++  /* 85 */ "EILSEQ",
++  /* 86 */ "ENOTSUP",
++  /* 87 */ "ECANCELED",
++  /* 88 */ "EBADMSG",
++  /* 89 */ "ENODATA",
++  /* 90 */ "ENOSR",
++  /* 91 */ "ENOSTR",
++  /* 92 */ "ETIME",
++  /* 93 */ "ENOATTR",
++  /* 94 */ "EMULTIHOP",
++  /* 95 */ "ENOLINK",
++  /* 96 */ "EPROTO",
++  /* 96 */ "ELAST",
+ };
+ 
+ static char *(netbsd_signal_names[]) = {
+@@ -1358,6 +1644,7 @@
+   /* 29 */ "SIGINFO",
+   /* 30 */ "SIGUSR1",
+   /* 31 */ "SIGUSR2",
++  /* 32 */ "SIGPWR",
+ };
+ 
+ static emul_syscall emul_netbsd_syscalls = {
+diff -rNU3 dist.orig/sim/v850/Makefile.in dist.nbsd/sim/v850/Makefile.in
+--- dist.orig/sim/v850/Makefile.in	2011-01-01 16:34:07.000000000 +0100
++++ dist.nbsd/sim/v850/Makefile.in	2013-07-11 13:41:55.801096291 +0200
+@@ -80,7 +80,7 @@
+ IGEN_INSN=$(srcdir)/v850.igen
+ IGEN_DC=$(srcdir)/v850-dc
+ tmp-igen: $(IGEN_INSN) $(IGEN_DC) ../igen/igen
+-	cd ../igen && $(MAKE)
++#	cd ../igen && $(MAKE)
+ 	../igen/igen \
+ 		$(IGEN_TRACE) \
+ 		-G gen-direct-access \
