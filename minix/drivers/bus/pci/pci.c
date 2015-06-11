@@ -1959,7 +1959,7 @@ do_pcibridge(int busind)
  *				pci_intel_init				     *
  *===========================================================================*/
 static void
-pci_intel_init()
+pci_intel_init(void)
 {
 	/* Try to detect a know PCI controller. Read the Vendor ID and
 	 * the Device ID for function 0 of device 0.

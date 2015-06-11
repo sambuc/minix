@@ -19,9 +19,9 @@ typedef struct spinlock {
 #else
 
 /* SMP */
-#define SPINLOCK_DEFINE(name)	spinlock_t name;
+#define SPINLOCK_DEFINE(name)	spinlock_t name = { .val = 0 };
 #define PRIVATE_SPINLOCK_DEFINE(name)	PRIVATE SPINLOCK_DEFINE(name)
-#define SPINLOCK_DECLARE(name)	extern SPINLOCK_DEFINE(name)
+#define SPINLOCK_DECLARE(name)	extern spinlock_t name;
 #define spinlock_init(sl) do { (sl)->val = 0; } while (0)
 
 #if CONFIG_MAX_CPUS == 1

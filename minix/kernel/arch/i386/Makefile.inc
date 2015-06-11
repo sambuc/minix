@@ -84,6 +84,8 @@ OBJS.kernel+=	${UNPAGED_OBJS}
 
 .ifdef CONFIG_SMP
 SRCS += arch_smp.c trampoline.S
+# trampoline.S uses .code16, which is unsupported by clang.
+AFLAGS.trampoline.S= ${${ACTIVE_CC} == "clang":?-no-integrated-as:}
 .endif
 
 .if ${USE_ACPI} != "no"
