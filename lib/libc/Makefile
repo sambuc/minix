@@ -91,11 +91,7 @@ SUBDIR+= pkgconfig
 .include "${.CURDIR}/regex/Makefile.inc"
 .endif
 .include "${.CURDIR}/resolv/Makefile.inc"
-.if defined(__MINIX)
-# RPC needs pollts() and a reserved port allocator.
-.else
 .include "${.CURDIR}/rpc/Makefile.inc"
-.endif # defined(__MINIX)
 .include "${.CURDIR}/ssp/Makefile.inc"
 .include "${.CURDIR}/stdio/Makefile.inc"
 .include "${.CURDIR}/stdlib/Makefile.inc"

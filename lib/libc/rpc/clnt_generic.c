@@ -59,6 +59,9 @@ __RCSID("$NetBSD: clnt_generic.c,v 1.33 2014/05/28 14:45:19 christos Exp $");
 #include <stdlib.h>
 #include <unistd.h>
 
+#if defined(__minix)
+#include <signal.h>
+#endif
 #include "svc_fdset.h"
 #include "rpc_internal.h"
 

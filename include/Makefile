@@ -43,12 +43,9 @@ INCS+=	ieeefp.h
 INCSDIR=	/usr/include
 
 .if defined(__MINIX)
-# RPC is not compiled in the libc. This include also needs
-# rpcgen, which can be compiled if needed.
 SUBDIR+=	../minix/include
-.else
-SUBDIR=		rpc
 .endif # defined(__MINIX)
+SUBDIR=		rpc
 SUBDIR+=	../common/include/prop
 SUBDIR+=	../common/include/ppath
 

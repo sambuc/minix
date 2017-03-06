@@ -35,9 +35,11 @@
 
 #include <sys/types.h>
 #include <sys/time.h>
-#include <unistd.h>
 #include <sys/poll.h>
+
 #include <errno.h>
+#include <signal.h>
+#include <unistd.h>
 
 int
 poll(struct pollfd *p, nfds_t nfds, int timout)
@@ -98,5 +100,30 @@ poll(struct pollfd *p, nfds_t nfds, int timout)
 		if (p[i].revents != 0)
 			rval++;
 	}
+	return rval;
+}
+
+int
+pollts(struct pollfd * __restrict fds, nfds_t nfds, const struct timespec * __restrict ts,
+	const sigset_t * __restrict sigmask)
+{
+	sigset_t oldmask;
+	int timeout, rval;
+
+	if (NULL != sigmask) {
+		sigprocmask(SIG_SETMASK, sigmask, &oldmask);
+	}
+
+	if (NULL != ts) {
+		timeout = ts->tv_sec * 1000 + ts->tv_nsec / 1000;
+		rval = poll(fds, nfds, timeout);
+	} else {
+		rval = poll(fds, nfds, INFTIM);
+	}
+	
+	if (NULL != sigmask) {
+		sigprocmask(SIG_SETMASK, &oldmask, NULL);
+	}
+
 	return rval;
 }
