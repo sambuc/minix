@@ -77,9 +77,7 @@
 #endif /* defined(__minix) */
 
 /* Never define _REENTRANT on Minix */
-#if !defined(__minix)
 #if ((_POSIX_C_SOURCE - 0) >= 199506L || (_XOPEN_SOURCE - 0) >= 500) && \
     !defined(_REENTRANT)
 #define _REENTRANT
-#endif /* !defined(__minix) */
 #endif

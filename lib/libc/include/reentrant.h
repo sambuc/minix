@@ -84,23 +84,12 @@
  *
  */
 
-#if !defined(__minix) || !defined(_LIBC_REENTRANT_H)
-#ifdef __minix
-/*
- * If _REENTRANT is not defined, the header may not be included more than once.
- * This is probably a NetBSD libc bug, but for now we solve it for MINIX3 only.
- */
-#define _LIBC_REENTRANT_H
-#endif /* __minix */
-
 /*
  * Abstract thread interface for thread-safe libraries.  These routines
  * will use stubs in libc if the application is not linked against the
  * pthread library, and the real function in the pthread library if it
  * is.
  */
-
-#ifndef __minix
 
 #include <pthread.h>
 #include <signal.h>
@@ -132,15 +121,6 @@
 
 #define	once_t			pthread_once_t
 #define	ONCE_INITIALIZER	PTHREAD_ONCE_INIT
-
-#else /* __minix */
-
-typedef struct {
-	int pto_done;
-} once_t;
-#define ONCE_INITIALIZER	{ .pto_done = 0 }
-
-#endif /* __minix */
 
 #ifdef _REENTRANT
 
@@ -349,5 +329,3 @@ thr_once(once_t *once_control, void (*routine)(void))
 #define	FUNLOCKFILE(fp) __empty
 
 #endif /* _REENTRANT */
-
-#endif /* !defined(__minix) || !defined(_LIBC_REENTRANT_H) */
