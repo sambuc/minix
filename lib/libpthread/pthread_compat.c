@@ -70,6 +70,188 @@ __pthread_init(void)
 	__libc_thr_init();
 }
 
+#if defined(__minix)
+lwpid_t
+_lwp_self(void)
+{
+	return NULL;
+}
+
+int
+_lwp_create(const ucontext_t *, unsigned  long, lwpid_t *)
+{
+	return -1;
+}
+
+int
+_lwp_exit(void)
+{
+	return -1;
+}
+
+int
+_lwp_wait(lwpid_t, lwpid_t *)
+{
+	return -1;
+}
+
+int
+_lwp_suspend(lwpid_t)
+{
+	return -1;
+}
+
+int
+_lwp_continue(lwpid_t)
+{
+	return -1;
+}
+
+int
+_lwp_wakeup(lwpid_t)
+{
+	return -1;
+}
+
+void
+_lwp_makecontext(ucontext_t *, void (*)(void *), void *, void *,
+	    caddr_t, size_t)
+{
+	return;
+}
+
+void *
+_lwp_getprivate(void)
+{
+	return NULL;
+}
+
+void
+_lwp_setprivate(void *);
+{
+	return;
+}
+
+int
+_lwp_kill(lwpid_t, int)
+{
+	return -1;
+}
+
+int
+_lwp_detach(lwpid_t)
+{
+	return -1;
+}
+
+int
+_lwp_park(clockid_t, int, const struct timespec *, lwpid_t,
+    const void *, const void *)
+{
+	return -1;
+}
+
+int
+_lwp_unpark(lwpid_t, const void *)
+{
+	return -1;
+}
+
+ssize_t
+_lwp_unpark_all(const lwpid_t *, size_t, const void *)
+{
+	return -1;
+}
+
+int
+_lwp_setname(lwpid_t, const char *)
+{
+	return -1;
+}
+
+int
+_lwp_getname(lwpid_t, char *, size_t)
+{
+	return -1;
+}
+
+int
+_lwp_ctl(int, struct lwpctl **)
+{
+	return -1;
+}
+
+#if 0
+int
+_sys_sched_yield(void)
+{
+	return -1;
+}
+
+int
+sched_yield(void)
+{
+	return -1;
+}
+
+int
+_sched_setaffinity(pid_t a, lwpid_t b, size_t c, const cpuset_t *d)
+{
+	return -1;
+}
+
+int
+_sched_getaffinity(pid_t a, lwpid_t b, size_t c, cpuset_t *d)
+{
+	return -1;
+}
+
+int
+_sched_setparam(pid_t a, lwpid_t b, int c, const struct sched_param *d)
+{
+	return -1;
+}
+
+int
+_sched_getparam(pid_t a, lwpid_t b, int *c, struct sched_param *d)
+{
+	return -1;
+}
+
+int
+_sys_aio_suspend(const struct aiocb * const a[], int b,
+		 const struct timespec *c)
+{
+	return -1;
+}
+
+int
+_sys_mq_send(mqd_t a, const char *b, size_t c, unsigned d)
+{
+	return -1;
+}
+
+ssize_t
+_sys_mq_receive(mqd_t a, char *b, size_t c, unsigned *d)
+{
+	return -1;
+}
+
+int
+_sys_mq_timedsend(mqd_t a, const char *b, size_t c, unsigned d,
+		  const struct timespec *e)
+{
+	return -1;
+}
+
+ssize_t
+_sys_mq_timedreceive(mqd_t a, char *b, size_t c, unsigned *d,
+		     const struct timespec *e)
+{
+	return -1;
+}
+#endif /* 0 */
+#else
 int
 _lwp_kill(lwpid_t a, int b)
 {
@@ -206,3 +388,4 @@ _sys_mq_timedreceive(mqd_t a, char *b, size_t c, unsigned *d,
 
 	return (ssize_t)syscall(SYS_mq_timedreceive, a, b, c, d, e);
 }
+#endif /* defined(__minix) */

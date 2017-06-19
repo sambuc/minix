@@ -4,10 +4,10 @@
 
 #__MINIX:
 #	libbluetooth
-#	libobjc libposix libppath libpthread
+#	libobjc libposix libppath
 #	librt libtre semaphore
 TESTS_SUBDIRS=	csu libc libcrypt libcurses libevent libexecinfo \
-		libm libprop  \
+		libm libprop libpthread \
 		libutil
 
 .if (${MKRUMP} != "no") && !defined(BSD_MK_COMPAT_FILE)

@@ -224,6 +224,7 @@ fcntl(int fd, int cmd, ...)
 	return retval;
 }
 
+#if !defined(__minix)
 int
 fdatasync(int d)
 {
@@ -237,6 +238,7 @@ fdatasync(int d)
 	
 	return retval;
 }
+#endif /* !defined(__minix) */
 
 int
 fsync(int d)
