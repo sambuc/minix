@@ -66,9 +66,7 @@ int	__libc_sigaction14(int, const struct sigaction * __restrict,
     defined(_NETBSD_SOURCE)
 int	pthread_sigmask(int, const sigset_t * __restrict,
 	    sigset_t * __restrict);
-#if !defined(__minix)
 int	pthread_kill(pthread_t, int);
-#endif /* !defined(__minix) */
 int	__libc_thr_sigsetmask(int, const sigset_t * __restrict,
 	    sigset_t * __restrict);
 #ifndef __LIBPTHREAD_SOURCE__
