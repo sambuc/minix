@@ -28,27 +28,29 @@ PROTO=			proto
 # Common to all architectures
 ETC=			system.conf group
 EXTRA=			rc
-PROTO_FILES=		proto.common.etc
-PROTO_FILES+=		proto.common.dynamic
+PROTO_FILES=	proto.common.etc
+PROTO_FILES+=	proto.common.dynamic
 PROGRAMS=		# defined
 PROGRAMS+=		fsck_mfs
 dir.fsck_mfs:=	minix/commands/fsck.mfs
 PROGRAMS+=		grep
-dir.grep:=	minix/usr.bin/grep
+dir.grep:=		minix/usr.bin/grep
+PROGRAMS+=		dd
+dir.dd:=		bin/dd
 PROGRAMS+=		input
-dir.input:=	minix/servers/input
+dir.input:=		minix/servers/input
 PROGRAMS+=		loadramdisk
 dir.loadramdisk:=	minix/commands/loadramdisk
 PROGRAMS+=		mfs
-dir.mfs:=	minix/fs/mfs
+dir.mfs:=		minix/fs/mfs
 PROGRAMS+=		mount
-dir.mount:=	minix/commands/mount
+dir.mount:=		minix/commands/mount
 PROGRAMS+=		procfs
 dir.procfs:=	minix/fs/procfs
 PROGRAMS+=		service
 dir.service:=	minix/commands/service
 PROGRAMS+=		sh
-dir.sh:=	bin/sh
+dir.sh:=		bin/sh
 PROGRAMS+=		sysenv
 dir.sysenv:=	minix/commands/sysenv
 PROGRAMS+=		umount
@@ -65,9 +67,9 @@ dir.at_wini:=	minix/drivers/storage/at_wini
 PROGRAMS+=		floppy
 dir.floppy:=	minix/drivers/storage/floppy
 PROGRAMS+=		pci
-dir.pci:=	minix/drivers/bus/pci
+dir.pci:=		minix/drivers/bus/pci
 PROGRAMS+=		pckbd
-dir.pckbd:=	minix/drivers/hid/pckbd
+dir.pckbd:=		minix/drivers/hid/pckbd
 PROGRAMS+=		cdprobe
 dir.cdprobe:=	minix/commands/cdprobe
 PROGRAMS+=		pwd_mkdb
@@ -77,23 +79,25 @@ dir.isofs:=	minix/fs/isofs
 
 .if ${MKSMALL} != "yes"
 PROGRAMS+=		ahci
-dir.ahci:=	minix/drivers/storage/ahci
+dir.ahci:=		minix/drivers/storage/ahci
 PROGRAMS+=		virtio_blk
 dir.virtio_blk:= minix/drivers/storage/virtio_blk
 PROGRAMS+=		ext2
-dir.ext2:=	minix/fs/ext2
+dir.ext2:=		minix/fs/ext2
 .endif
 
 .if ${MKACPI} != "no"
 RAMDISK_INC_ACPI= 1
 PROGRAMS+=		acpi
-dir.acpi:=	minix/drivers/power/acpi
+dir.acpi:=		minix/drivers/power/acpi
 .endif
 .endif # ${MACHINE_ARCH} == "i386"
 
 .if ${MACHINE_ARCH} == "earm"
-PROGRAMS+=		mmc
-dir.mmc:=	minix/drivers/storage/mmc
+PROGRAMS+=		rpi_mmc
+dir.rpi_mmc:=	minix/drivers/storage/mmc/rpi
+PROGRAMS+=		omap_mmc
+dir.omap_mmc:=	minix/drivers/storage/mmc/omap
 .endif # ${MACHINE_ARCH} == "earm"
 
 .if ${LDSTATIC} == "-dynamic"

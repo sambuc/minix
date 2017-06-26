@@ -21,15 +21,14 @@
 #include <unistd.h>
 
 /* local headers */
-#include "mmchost.h"
+#include "../mmchost.h"
 
 /* header imported from netbsd */
-#include "sdmmcreg.h"
-#include "sdmmcreg.h"
-#include "sdhcreg.h"
+#include "../sdmmcreg.h"
+#include "../sdhcreg.h"
 
-/* omap /hardware related */
-#include "omap_mmc.h"
+/* rpi hardware related */
+#include "rpi_mmc.h"
 
 #define USE_INTR
 
@@ -41,22 +40,14 @@ static int hook_id = 1;
 
 #define SANE_TIMEOUT 500000	/* 500 ms */
 
-struct omap_mmchs *mmchs;	/* pointer to the current mmchs */
+struct rpi_mmchs *mmchs;	/* pointer to the current mmchs */
 
-struct omap_mmchs bone_sdcard = {
+struct rpi_mmchs rpi_sdcard = {
 	.io_base = 0,
-	.io_size = 0x2ff,
-	.hw_base = 0x48060000,
-	.irq_nr = 64,		/* MMC/SD module 1 */
-	.regs = &regs_v1,
-};
-
-struct omap_mmchs bbxm_sdcard = {
-	.io_base = 0,
-	.io_size = 0x2ff,
-	.hw_base = 0x4809C000,
-	.irq_nr = 83,		/* MMC/SD module 1 */
-	.regs = &regs_v0,
+	.io_size = 0x100,
+	.hw_base = 0x3f300000,
+	.irq_nr = 24,
+	.regs = &regs_v0
 };
 
 /* Integer divide x by y and ensure that the result z is
@@ -111,7 +102,7 @@ mmchs_set_bus_freq(u32_t freq)
 	clkd = (clkd > 1023) ? 1023 : clkd;
 
 	log_debug(&log, "Setting divider to %d\n", clkd);
-	mmc_set32(mmchs->regs->SYSCTL, MMCHS_SD_SYSCTL_CLKD, (clkd << 6));
+	mmc_set32(mmchs->regs->control1, MMCHS_SD_SYSCTL_CLKD, (clkd << 6));
 }
 
 /*
@@ -149,14 +140,14 @@ mmchs_init(uint32_t instance)
 	 */
 
 	/* Write 1 to sysconfig[0] to trigger a reset */
-	mmc_set32(mmchs->regs->SYSCONFIG, MMCHS_SD_SYSCONFIG_SOFTRESET,
-	    MMCHS_SD_SYSCONFIG_SOFTRESET);
+	mmc_set32(mmchs->regs->control1, MMCHS_SD_SYSCTL_SRA,         
+		MMCHS_SD_SYSCTL_SRA);
 
 	/* Read sysstatus to know when it's done */
 
 	spin_init(&spin, SANE_TIMEOUT);
-	while (!(mmc_read32(mmchs->regs->SYSSTATUS)
-		& MMCHS_SD_SYSSTATUS_RESETDONE)) {
+	while (mmc_read32(mmchs->regs->control1)
+		& MMCHS_SD_SYSCTL_SRA) {
 		if (spin_check(&spin) == FALSE) {
 			log_warn(&log, "mmc init timeout\n");
 			return 1;
@@ -164,75 +155,27 @@ mmchs_init(uint32_t instance)
 	}
 
 	/* Set SD default capabilities */
-	mmc_set32(mmchs->regs->CAPA, MMCHS_SD_CAPA_VS_MASK,
+	mmc_set32(mmchs->regs->slotisr_var, MMCHS_SD_CAPA_VS_MASK,
 	    MMCHS_SD_CAPA_VS18 | MMCHS_SD_CAPA_VS30);
-
-	/* TRM mentions MMCHS_SD_CUR_CAPA but does not describe how to limit
-	 * the current */
-
-	uint32_t mask =
-	    MMCHS_SD_SYSCONFIG_AUTOIDLE | MMCHS_SD_SYSCONFIG_ENAWAKEUP |
-	    MMCHS_SD_SYSCONFIG_STANDBYMODE | MMCHS_SD_SYSCONFIG_CLOCKACTIVITY |
-	    MMCHS_SD_SYSCONFIG_SIDLEMODE;
-
-	/* Automatic clock gating strategy */
-	value = MMCHS_SD_SYSCONFIG_AUTOIDLE_EN;
-	/* Enable wake-up capability */
-	value |= MMCHS_SD_SYSCONFIG_ENAWAKEUP_EN;
-	/* Smart-idle */
-	value |= MMCHS_SD_SYSCONFIG_SIDLEMODE_IDLE;
-	/* Both the interface and functional can be switched off */
-	value |= MMCHS_SD_SYSCONFIG_CLOCKACTIVITY_OFF;
-	/* Go into wake-up mode when possible */
-	value |= MMCHS_SD_SYSCONFIG_STANDBYMODE_WAKEUP_INTERNAL;
-
-	/* 
-	 * wake-up configuration
-	 */
-	mmc_set32(mmchs->regs->SYSCONFIG, mask, value);
-
-	/* Wake-up on sd interrupt for SDIO */
-	mmc_set32(mmchs->regs->HCTL, MMCHS_SD_HCTL_IWE, MMCHS_SD_HCTL_IWE_EN);
 
 	/* 
 	 * MMC host and bus configuration
 	 */
 
-	/* Configure data and command transfer (1 bit mode) switching to
-	 * higher bit modes happens after a card is detected */
-	mmc_set32(mmchs->regs->CON, MMCHS_SD_CON_DW8, MMCHS_SD_CON_DW8_1BIT);
-	mmc_set32(mmchs->regs->HCTL, MMCHS_SD_HCTL_DTW,
+	mmc_set32(mmchs->regs->control0, MMCHS_SD_HCTL_DTW,
 	    MMCHS_SD_HCTL_DTW_1BIT);
 
-	/* Configure card voltage to 3.0 volt */
-	mmc_set32(mmchs->regs->HCTL, MMCHS_SD_HCTL_SDVS,
-	    MMCHS_SD_HCTL_SDVS_VS30);
-
-	/* Power on the host controller and wait for the
-	 * MMCHS_SD_HCTL_SDBP_POWER_ON to be set */
-	mmc_set32(mmchs->regs->HCTL, MMCHS_SD_HCTL_SDBP,
-	    MMCHS_SD_HCTL_SDBP_ON);
-
-	spin_init(&spin, SANE_TIMEOUT);
-	while ((mmc_read32(mmchs->regs->HCTL) & MMCHS_SD_HCTL_SDBP)
-	    != MMCHS_SD_HCTL_SDBP_ON) {
-		if (spin_check(&spin) == FALSE) {
-			log_warn(&log, "mmc init timeout SDBP not set\n");
-			return 1;
-		}
-	}
-
 	/* Enable internal clock and clock to the card */
-	mmc_set32(mmchs->regs->SYSCTL, MMCHS_SD_SYSCTL_ICE,
+	mmc_set32(mmchs->regs->control1, MMCHS_SD_SYSCTL_ICE,
 	    MMCHS_SD_SYSCTL_ICE_EN);
 
 	mmchs_set_bus_freq(HSMMCSD_0_INIT_FREQ);
 
-	mmc_set32(mmchs->regs->SYSCTL, MMCHS_SD_SYSCTL_CEN,
+	mmc_set32(mmchs->regs->control1, MMCHS_SD_SYSCTL_CEN,
 	    MMCHS_SD_SYSCTL_CEN_EN);
 
 	spin_init(&spin, SANE_TIMEOUT);
-	while ((mmc_read32(mmchs->regs->SYSCTL) & MMCHS_SD_SYSCTL_ICS)
+	while ((mmc_read32(mmchs->regs->control1) & MMCHS_SD_SYSCTL_ICS)
 	    != MMCHS_SD_SYSCTL_ICS_STABLE) {
 		if (spin_check(&spin) == FALSE) {
 			log_warn(&log, "clock not stable\n");
@@ -245,30 +188,31 @@ mmchs_init(uint32_t instance)
 	 */
 
 	/* Enable command interrupt */
-	mmc_set32(mmchs->regs->IE, MMCHS_SD_IE_CC_ENABLE,
+	mmc_write32(mmchs->regs->irpt_en, 0);	
+	mmc_set32(mmchs->regs->irpt_mask, MMCHS_SD_IE_CC_ENABLE,
 	    MMCHS_SD_IE_CC_ENABLE_ENABLE);
 	/* Enable transfer complete interrupt */
-	mmc_set32(mmchs->regs->IE, MMCHS_SD_IE_TC_ENABLE,
+	mmc_set32(mmchs->regs->irpt_mask, MMCHS_SD_IE_TC_ENABLE,
 	    MMCHS_SD_IE_TC_ENABLE_ENABLE);
 
 	/* enable error interrupts */
-	mmc_set32(mmchs->regs->IE, MMCHS_SD_IE_ERROR_MASK, 0xffffffffu);
+	mmc_set32(mmchs->regs->irpt_mask, MMCHS_SD_IE_ERROR_MASK, 0xffffffffu);
 
 	/* clear the error interrupts */
-	mmc_set32(mmchs->regs->SD_STAT, MMCHS_SD_STAT_ERROR_MASK, 0xffffffffu);
+	mmc_set32(mmchs->regs->irpt, MMCHS_SD_STAT_ERROR_MASK, 0xffffffffu);
 
 	/* send a init signal to the host controller. This does not actually
 	 * send a command to a card manner */
-	mmc_set32(mmchs->regs->CON, MMCHS_SD_CON_INIT, MMCHS_SD_CON_INIT_INIT);
+	//mmc_set32(mmchs->regs->CON, MMCHS_SD_CON_INIT, MMCHS_SD_CON_INIT_INIT);
 	/* command 0 , type other commands not response etc) */
-	mmc_write32(mmchs->regs->CMD, 0x00);
+	mmc_write32(mmchs->regs->cmdtm, 0x00);
 
 	spin_init(&spin, SANE_TIMEOUT);
-	while ((mmc_read32(mmchs->regs->SD_STAT) & MMCHS_SD_STAT_CC)
+	while ((mmc_read32(mmchs->regs->irpt) & MMCHS_SD_STAT_CC)
 	    != MMCHS_SD_STAT_CC_RAISED) {
-		if (mmc_read32(mmchs->regs->SD_STAT) & 0x8000) {
+		if (mmc_read32(mmchs->regs->irpt) & 0x8000) {
 			log_warn(&log, "%s, error stat  %x\n",
-			    __FUNCTION__, mmc_read32(mmchs->regs->SD_STAT));
+			    __FUNCTION__, mmc_read32(mmchs->regs->irpt_mask));
 			return 1;
 		}
 
@@ -279,21 +223,21 @@ mmchs_init(uint32_t instance)
 	}
 
 	/* clear the cc interrupt status */
-	mmc_set32(mmchs->regs->SD_STAT, MMCHS_SD_IE_CC_ENABLE,
+	mmc_set32(mmchs->regs->irpt_mask, MMCHS_SD_IE_CC_ENABLE,
 	    MMCHS_SD_IE_CC_ENABLE_ENABLE);
 
 	/* 
 	 * Set Set SD_CON[1] INIT bit to 0x0 to end the initialization sequence
 	 */
-	mmc_set32(mmchs->regs->CON, MMCHS_SD_CON_INIT,
+	/*mmc_set32(mmchs->regs->CON, MMCHS_SD_CON_INIT,
 	    MMCHS_SD_CON_INIT_NOINIT);
 
 	/* Set timeout */
-	mmc_set32(mmchs->regs->SYSCTL, MMCHS_SD_SYSCTL_DTO,
+	mmc_set32(mmchs->regs->control1, MMCHS_SD_SYSCTL_DTO,
 	    MMCHS_SD_SYSCTL_DTO_2POW27);
 
 	/* Clean the MMCHS_SD_STAT register */
-	mmc_write32(mmchs->regs->SD_STAT, 0xffffffffu);
+	mmc_write32(mmchs->regs->irpt, 0xffffffffu);
 #ifdef USE_INTR
 	hook_id = 1;
 	if (sys_irqsetpolicy(mmchs->irq_nr, 0, &hook_id) != OK) {
@@ -302,7 +246,7 @@ mmchs_init(uint32_t instance)
 		return 1;
 	}
 	/* enable signaling from MMC controller towards interrupt controller */
-	mmc_write32(mmchs->regs->ISE, 0xffffffffu);
+	mmc_write32(mmchs->regs->irpt_en, 0xffffffffu);
 #endif
 
 	return 0;
@@ -311,13 +255,13 @@ mmchs_init(uint32_t instance)
 void
 intr_deassert(int mask)
 {
-	if (mmc_read32(mmchs->regs->SD_STAT) & 0x8000) {
+	if (mmc_read32(mmchs->regs->irpt_mask) & 0x8000) {
 		log_warn(&log, "%s, error stat  %08x\n", __FUNCTION__,
-		    mmc_read32(mmchs->regs->SD_STAT));
-		mmc_set32(mmchs->regs->SD_STAT, MMCHS_SD_STAT_ERROR_MASK,
+		    mmc_read32(mmchs->regs->irpt_mask));
+		mmc_set32(mmchs->regs->irpt_mask, MMCHS_SD_STAT_ERROR_MASK,
 		    0xffffffffu);
 	} else {
-		mmc_write32(mmchs->regs->SD_STAT, mask);
+		mmc_write32(mmchs->regs->irpt_mask, mask);
 	}
 }
 
@@ -334,12 +278,12 @@ handle_bwr()
 	 * send the data to the hardware or not */
 	uint32_t value;
 	uint32_t count;
-	assert(mmc_read32(mmchs->regs->PSTATE) & MMCHS_SD_PSTATE_BWE_EN);
+	assert(mmc_read32(mmchs->regs->status) & MMCHS_SD_PSTATE_BWE_EN);
 	assert(io_data != NULL);
 
 	for (count = 0; count < io_len; count += 4) {
 		while (!(mmc_read32(mmchs->regs->
-			    PSTATE) & MMCHS_SD_PSTATE_BWE_EN)) {
+			    status) & MMCHS_SD_PSTATE_BWE_EN)) {
 			log_warn(&log,
 			    "Error expected Buffer to be write enabled(%d)\n",
 			    count);
@@ -348,7 +292,7 @@ handle_bwr()
 		*((char *) &value + 1) = io_data[count + 1];
 		*((char *) &value + 2) = io_data[count + 2];
 		*((char *) &value + 3) = io_data[count + 3];
-		mmc_write32(mmchs->regs->DATA, value);
+		mmc_write32(mmchs->regs->data, value);
 	}
 	intr_deassert(MMCHS_SD_IE_BWR_ENABLE);
 	/* expect buffer to be write enabled */
@@ -365,12 +309,12 @@ handle_brr()
 	uint32_t count;
 
 	/* Problem BRE should be true */
-	assert(mmc_read32(mmchs->regs->PSTATE) & MMCHS_SD_PSTATE_BRE_EN);
+	assert(mmc_read32(mmchs->regs->status) & MMCHS_SD_PSTATE_BRE_EN);
 
 	assert(io_data != NULL);
 
 	for (count = 0; count < io_len; count += 4) {
-		value = mmc_read32(mmchs->regs->DATA);
+		value = mmc_read32(mmchs->regs->data);
 		io_data[count] = *((char *) &value);
 		io_data[count + 1] = *((char *) &value + 1);
 		io_data[count + 2] = *((char *) &value + 2);
@@ -385,7 +329,7 @@ static void
 mmchs_hw_intr(unsigned int irqs)
 {
 	log_warn(&log, "Hardware interrupt left over (0x%08lx)\n",
-	    mmc_read32(mmchs->regs->SD_STAT));
+	    mmc_read32(mmchs->regs->irpt_mask));
 
 #ifdef USE_INTR
 	if (sys_irqenable(&hook_id) != OK)
@@ -426,7 +370,7 @@ intr_wait(int mask)
 				break;
 			case HARDWARE:
 				while ((v =
-					mmc_read32(mmchs->regs->SD_STAT)) !=
+					mmc_read32(mmchs->regs->irpt_mask)) !=
 				    0) {
 					if (v & MMCHS_SD_IE_BWR_ENABLE) {
 						handle_bwr();
@@ -486,7 +430,7 @@ intr_wait(int mask)
 	int counter = 0;
 	while (1 == 1) {
 		counter++;
-		v = mmc_read32(mmchs->regs->SD_STAT);
+		v = mmc_read32(mmchs->regs->irpt_mask);
 		if (spin_check(&spin) == FALSE) {
 			log_warn(&log,
 			    "Timeout waiting for interrupt (%d) value 0x%08x mask 0x%08x\n",
@@ -520,15 +464,15 @@ mmchs_send_cmd(uint32_t command, uint32_t arg)
 
 	/* Read current interrupt status and fail it an interrupt is already
 	 * asserted */
-	assert(mmc_read32(mmchs->regs->SD_STAT) == 0);
+	assert(mmc_read32(mmchs->regs->irpt_mask) == 0);
 
 	/* Set arguments */
-	mmc_write32(mmchs->regs->ARG, arg);
+	mmc_write32(mmchs->regs->arg1, arg);
 	/* Set command */
-	mmc_set32(mmchs->regs->CMD, MMCHS_SD_CMD_MASK, command);
+	mmc_set32(mmchs->regs->cmdtm, MMCHS_SD_CMD_MASK, command);
 
 	if (intr_wait(MMCHS_SD_STAT_CC)) {
-		uint32_t v = mmc_read32(mmchs->regs->SD_STAT);
+		uint32_t v = mmc_read32(mmchs->regs->irpt_mask);
 		intr_deassert(MMCHS_SD_STAT_CC);
 		log_warn(&log, "Failure waiting for interrupt 0x%lx\n", v);
 		return 1;
@@ -540,7 +484,7 @@ mmchs_send_cmd(uint32_t command, uint32_t arg)
 		/* 
 		 * Command with busy response *CAN* also set the TC bit if they exit busy
 		 */
-		if ((mmc_read32(mmchs->regs->SD_STAT)
+		if ((mmc_read32(mmchs->regs->irpt_mask)
 			& MMCHS_SD_IE_TC_ENABLE_ENABLE) == 0) {
 			log_warn(&log, "TC should be raised\n");
 		}
@@ -593,21 +537,21 @@ mmc_send_cmd(struct mmc_command *c)
 	}
 
 	/* check we are in a sane state */
-	if ((mmc_read32(mmchs->regs->SD_STAT) & 0xffffu)) {
+	if ((mmc_read32(mmchs->regs->irpt_mask) & 0xffffu)) {
 		log_warn(&log, "%s, interrupt already raised stat  %08x\n",
-		    __FUNCTION__, mmc_read32(mmchs->regs->SD_STAT));
-		mmc_write32(mmchs->regs->SD_STAT, MMCHS_SD_IE_CC_ENABLE_CLEAR);
+		    __FUNCTION__, mmc_read32(mmchs->regs->irpt_mask));
+		mmc_write32(mmchs->regs->irpt_mask, MMCHS_SD_IE_CC_ENABLE_CLEAR);
 	}
 
 	if (cmd & MMCHS_SD_CMD_DP_DATA) {
 		if (cmd & MMCHS_SD_CMD_DDIR_READ) {
 			/* if we are going to read enable the buffer ready
 			 * interrupt */
-			mmc_set32(mmchs->regs->IE,
+			mmc_set32(mmchs->regs->irpt,
 			    MMCHS_SD_IE_BRR_ENABLE,
 			    MMCHS_SD_IE_BRR_ENABLE_ENABLE);
 		} else {
-			mmc_set32(mmchs->regs->IE,
+			mmc_set32(mmchs->regs->irpt,
 			    MMCHS_SD_IE_BWR_ENABLE,
 			    MMCHS_SD_IE_BWR_ENABLE_ENABLE);
 		}
@@ -615,7 +559,7 @@ mmc_send_cmd(struct mmc_command *c)
 		io_len = c->data_len;
 		assert(io_len <= 0xFFF);	/* only 12 bits */
 		assert(io_data != NULL);
-		mmc_set32(mmchs->regs->BLK, MMCHS_SD_BLK_BLEN, io_len);
+		mmc_set32(mmchs->regs->blkscnt, MMCHS_SD_BLK_BLEN, io_len);
 	}
 
 	ret = mmchs_send_cmd(cmd, arg);
@@ -631,11 +575,11 @@ mmc_send_cmd(struct mmc_command *c)
 				return 1;
 			}
 
-			mmc_write32(mmchs->regs->SD_STAT,
+			mmc_write32(mmchs->regs->irpt_mask,
 			    MMCHS_SD_IE_TC_ENABLE_CLEAR);
 
 			/* disable the bbr interrupt */
-			mmc_set32(mmchs->regs->IE,
+			mmc_set32(mmchs->regs->irpt,
 			    MMCHS_SD_IE_BRR_ENABLE,
 			    MMCHS_SD_IE_BRR_ENABLE_DISABLE);
 		} else {
@@ -648,7 +592,7 @@ mmc_send_cmd(struct mmc_command *c)
 			}
 			intr_deassert(MMCHS_SD_IE_TC_ENABLE_CLEAR);
 
-			mmc_set32(mmchs->regs->IE,
+			mmc_set32(mmchs->regs->irpt,
 			    MMCHS_SD_IE_BWR_ENABLE,
 			    MMCHS_SD_IE_BWR_ENABLE_DISABLE);
 
@@ -659,13 +603,13 @@ mmc_send_cmd(struct mmc_command *c)
 	switch (c->resp_type) {
 	case RESP_LEN_48_CHK_BUSY:
 	case RESP_LEN_48:
-		c->resp[0] = mmc_read32(mmchs->regs->RSP10);
+		c->resp[0] = mmc_read32(mmchs->regs->resp0);
 		break;
 	case RESP_LEN_136:
-		c->resp[0] = mmc_read32(mmchs->regs->RSP10);
-		c->resp[1] = mmc_read32(mmchs->regs->RSP32);
-		c->resp[2] = mmc_read32(mmchs->regs->RSP54);
-		c->resp[3] = mmc_read32(mmchs->regs->RSP76);
+		c->resp[0] = mmc_read32(mmchs->regs->resp0);
+		c->resp[1] = mmc_read32(mmchs->regs->resp1);
+		c->resp[2] = mmc_read32(mmchs->regs->resp2);
+		c->resp[3] = mmc_read32(mmchs->regs->resp3);
 		break;
 	case RESP_NO_RESPONSE:
 		break;
@@ -930,7 +874,7 @@ enable_4bit_mode(struct sd_card_regs *card)
 			return 1;
 		}
 		/* now configure the controller to use 4 bit access */
-		mmc_set32(mmchs->regs->HCTL, MMCHS_SD_HCTL_DTW,
+		mmc_set32(mmchs->regs->control0, MMCHS_SD_HCTL_DTW,
 		    MMCHS_SD_HCTL_DTW_4BIT);
 		return 0;
 	}
@@ -1224,7 +1168,7 @@ mmchs_card_release(struct sd_card *card)
 	/* TODO:Set card state */
 
 	/* now configure the controller to use 4 bit access */
-	mmc_set32(mmchs->regs->HCTL, MMCHS_SD_HCTL_DTW,
+	mmc_set32(mmchs->regs->control0, MMCHS_SD_HCTL_DTW,
 	    MMCHS_SD_HCTL_DTW_1BIT);
 
 	return OK;
@@ -1240,11 +1184,7 @@ host_initialize_host_structure_mmchs(struct mmc_host *host)
 	struct machine  machine ;
 	sys_getmachine(&machine);
 
-	if (BOARD_IS_BBXM(machine.board_id)){
-		mmchs = &bbxm_sdcard;
-	} else if ( BOARD_IS_BB(machine.board_id)){
-		mmchs = &bone_sdcard;
-	}
+	mmchs = &rpi_sdcard;
 	
 	assert(mmchs);
 	host->host_set_instance = mmchs_host_set_instance;

@@ -8,8 +8,8 @@
 #include <sys/mman.h>
 
 #include "omap_mmc.h"
-#include "mmchost.h"
-#include "sdmmcreg.h"
+#include "../mmchost.h"
+#include "../sdmmcreg.h"
 
 /* MINIX IRQ timeout. Twice the host controller data/busy timeout @ 48MHz. */
 #define IRQ_TIMEOUT 5600000 /* 5,600,000 us */
