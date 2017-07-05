@@ -98,6 +98,8 @@ PROGRAMS+=		rpi_mmc
 dir.rpi_mmc:=	minix/drivers/storage/mmc/rpi
 PROGRAMS+=		omap_mmc
 dir.omap_mmc:=	minix/drivers/storage/mmc/omap
+PROGRAMS+=		mailbox
+dir.mailbox:=	minix/drivers/system/mailbox
 .endif # ${MACHINE_ARCH} == "earm"
 
 .if ${LDSTATIC} == "-dynamic"

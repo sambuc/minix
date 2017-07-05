@@ -16,12 +16,12 @@
 ./etc/system.conf.d/usbd                                minix-base
 ./service/bmp085                                        minix-base
 ./service/cat24c256                                     minix-base
-./service/omap_emmc                                     minix-base
-./service/rpi_emmc                                      minix-base
 ./service/fb                                            minix-base
 ./service/gpio                                          minix-base
 ./service/i2c                                           minix-base
 ./service/lan8710a                                      minix-base
+./service/mailbox										minix-base
+./service/omap_emmc                                     minix-base
 ./service/omap_mmc                                      minix-base
 ./service/rpi_mmc                                       minix-base
 ./service/random                                        minix-base

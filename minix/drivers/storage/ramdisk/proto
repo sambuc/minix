@@ -31,6 +31,7 @@ d--755 0 0
 #ifdef __arm__
 		rpi_mmc ---755 0 0 rpi_mmc
 		omap_mmc ---755 0 0 omap_mmc
+		mailbox ---755 0 0 mailbox
 #endif
 		mfs ---755 0 0 mfs
 		procfs ---755 0 0 procfs
