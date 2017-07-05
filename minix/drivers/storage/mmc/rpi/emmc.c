@@ -59,8 +59,8 @@
 /* AM335x MMC1 memory map (physical start address and size). */
 #define BCM2835_MMC0_BASE_ADDR 0x3F300000
 #define BCM2835_MMC0_SIZE (4 << 6)
-/* AM335x MMC1 interrupt number. */
-#define BCM2835_MMCSD1INT 28
+/* BCM2835 MMC1 interrupt number. */
+#define BCM2835_MMCSD1INT 52
 
 static uint32_t bus_width;
 
@@ -239,19 +239,22 @@ send_cmd(uint32_t arg, uint32_t cmd)
 	write32(reg->arg1, arg);
 	write32(reg->cmdtm, cmd);
 	/* Wait for the command completion. */
-	if (irq_wait() < 0)
+	if (irq_wait() < 0) {
+		log_warn (&log, "can't wait irq\n");
 		return -1;
-	stat = read32(reg->irpt_mask);
+	}
+	stat = read32(reg->irpt);
 	/*
 	 * Clear only the command status/error bits. The transfer status/error
 	 * bits (including ERRI) must be preserved.
 	 */
-	write32(reg->irpt_mask, MMCHS_SD_STAT_CIE
+	write32(reg->irpt, MMCHS_SD_STAT_CIE
 		| MMCHS_SD_STAT_CEB
 		| MMCHS_SD_STAT_CCRC
 		| MMCHS_SD_STAT_CTO
 		| MMCHS_SD_STAT_CC);
 	if (stat & MMCHS_SD_STAT_CTO) {
+		log_warn(&log, "timeout error\n");
 		reset_mmchs_fsm(MMCHS_SD_SYSCTL_SRC);
 		return -1;
 	}
@@ -277,7 +280,7 @@ send_cmd_check_r1(uint32_t arg, uint32_t cmd)
 static int
 go_idle_state(void)
 {
-	return send_cmd(0, MMCHS_SD_CMD_INDX_CMD(GO_IDLE_STATE));
+	return send_cmd(0, MMCHS_SD_CMD_INDX_CMD(MMC_GO_IDLE_STATE));
 }
 
 /* Send CMD1 (SEND_OP_COND) command to the card. */
@@ -298,7 +301,7 @@ all_send_cid(void)
 {
 	uint32_t cmd;
 
-	cmd = MMCHS_SD_CMD_INDX_CMD(ALL_SEND_CID)
+	cmd = MMCHS_SD_CMD_INDX_CMD(MMC_ALL_SEND_CID)
 		| MMCHS_SD_CMD_CCCE_ENABLE
 		| MMCHS_SD_CMD_RSP_TYPE_136B;
 	return send_cmd(0, cmd);
@@ -310,7 +313,7 @@ set_relative_addr(void)
 {
 	uint32_t cmd;
 
-	cmd = MMCHS_SD_CMD_INDX_CMD(SEND_RELATIVE_ADDR)
+	cmd = MMCHS_SD_CMD_INDX_CMD(MMC_SET_RELATIVE_ADDR)
 		| MMCHS_SD_CMD_CICE_ENABLE
 		| MMCHS_SD_CMD_CCCE_ENABLE
 		| MMCHS_SD_CMD_RSP_TYPE_48B;
@@ -325,7 +328,7 @@ mmc_switch(uint32_t access, uint32_t index, uint32_t value)
 
 	/* SWITCH argument: [25:24] Access, [23:16] Index, [15:8] Value. */
 	arg = (access << 24) | (index << 16) | (value << 8);
-	cmd = MMCHS_SD_CMD_INDX_CMD(SWITCH_FUNC)
+	cmd = MMCHS_SD_CMD_INDX_CMD(MMC_SWITCH)
 		| MMCHS_SD_CMD_CICE_ENABLE
 		| MMCHS_SD_CMD_CCCE_ENABLE
 		| MMCHS_SD_CMD_RSP_TYPE_48B_BUSY;
@@ -338,7 +341,7 @@ select_card(void)
 {
 	uint32_t cmd;
 
-	cmd = MMCHS_SD_CMD_INDX_CMD(SELECT_CARD)
+	cmd = MMCHS_SD_CMD_INDX_CMD(MMC_SELECT_CARD)
 		| MMCHS_SD_CMD_CICE_ENABLE
 		| MMCHS_SD_CMD_CCCE_ENABLE
 		| MMCHS_SD_CMD_RSP_TYPE_48B;
@@ -351,7 +354,7 @@ send_csd(void)
 {
 	uint32_t cmd;
 
-	cmd = MMCHS_SD_CMD_INDX_CMD(SEND_CSD)
+	cmd = MMCHS_SD_CMD_INDX_CMD(MMC_SEND_CSD)
 		| MMCHS_SD_CMD_CCCE_ENABLE
 		| MMCHS_SD_CMD_RSP_TYPE_136B;
 	return send_cmd(MMC_ARG_RCA(RCA), cmd);
@@ -363,7 +366,7 @@ send_status(void)
 {
 	uint32_t cmd;
 
-	cmd = MMCHS_SD_CMD_INDX_CMD(SEND_STATUS)
+	cmd = MMCHS_SD_CMD_INDX_CMD(MMC_SEND_STATUS)
 		| MMCHS_SD_CMD_CICE_ENABLE
 		| MMCHS_SD_CMD_CCCE_ENABLE
 		| MMCHS_SD_CMD_RSP_TYPE_48B;
@@ -377,7 +380,7 @@ set_blocklen(void)
 	uint32_t cmd;
 
 	/* Set block length to sector size (512B). */
-	cmd = MMCHS_SD_CMD_INDX_CMD(SET_BLOCKLEN)
+	cmd = MMCHS_SD_CMD_INDX_CMD(MMC_SET_BLOCKLEN)
 		| MMCHS_SD_CMD_CICE_ENABLE
 		| MMCHS_SD_CMD_CCCE_ENABLE
 		| MMCHS_SD_CMD_RSP_TYPE_48B;
@@ -390,7 +393,7 @@ read_single_block(uint32_t addr)
 {
 	uint32_t cmd;
 
-	cmd = MMCHS_SD_CMD_INDX_CMD(READ_SINGLE_BLOCK)
+	cmd = MMCHS_SD_CMD_INDX_CMD(MMC_READ_BLOCK_SINGLE)
 		| MMCHS_SD_CMD_DP_DATA
 		| MMCHS_SD_CMD_CICE_ENABLE
 		| MMCHS_SD_CMD_CCCE_ENABLE
@@ -405,7 +408,7 @@ write_block(uint32_t addr)
 {
 	uint32_t cmd;
 
-	cmd = MMCHS_SD_CMD_INDX_CMD(WRITE_SINGLE_BLOCK)
+	cmd = MMCHS_SD_CMD_INDX_CMD(MMC_WRITE_BLOCK_SINGLE)
 		| MMCHS_SD_CMD_DP_DATA
 		| MMCHS_SD_CMD_CICE_ENABLE
 		| MMCHS_SD_CMD_CCCE_ENABLE
@@ -453,8 +456,8 @@ read_busy(void)
 	 */
 	if (irq_wait() < 0)
 		return -1;
-	stat = read32(reg->irpt_mask);
-	write32(reg->irpt_mask, MMCHS_SD_STAT_DCRC
+	stat = read32(reg->irpt);
+	write32(reg->irpt, MMCHS_SD_STAT_DCRC
 		| MMCHS_SD_STAT_DTO
 		| MMCHS_SD_STAT_TC);
 	if (stat & MMCHS_SD_STAT_ERRI) {
@@ -477,8 +480,8 @@ read_data(uint32_t *data)
 	/* Wait for BRR interrupt. */
 	if (irq_wait() < 0)
 		return -1;
-	if (read32(reg->irpt_mask) & MMCHS_SD_STAT_BRR) {
-		write32(reg->irpt_mask, MMCHS_SD_STAT_BRR);
+	if (read32(reg->irpt) & MMCHS_SD_STAT_BRR) {
+		write32(reg->irpt, MMCHS_SD_STAT_BRR);
 		for (i=SD_DATA_WLEN; i>0; i--)
 			*data++ = read32(reg->data);
 	}
@@ -486,8 +489,8 @@ read_data(uint32_t *data)
 	/* Wait for TC or ERRI interrupt. */
 	if (irq_wait() < 0)
 		return -1;
-	stat = read32(reg->irpt_mask);
-	write32(reg->irpt_mask, MMCHS_SD_STAT_DEB
+	stat = read32(reg->irpt);
+	write32(reg->irpt, MMCHS_SD_STAT_DEB
 		| MMCHS_SD_STAT_DCRC
 		| MMCHS_SD_STAT_DTO
 		| MMCHS_SD_STAT_TC);
@@ -512,7 +515,7 @@ write_data(uint32_t *data)
 	if (irq_wait() < 0)
 		return -1;
 	if (read32(reg->status) & MMCHS_SD_STAT_BWR) {
-		write32(reg->irpt_mask, MMCHS_SD_STAT_BWR);
+		write32(reg->irpt, MMCHS_SD_STAT_BWR);
 		for (i = SD_DATA_WLEN; i > 0; i--)
 			write32(reg->data, *data++);
 	}
@@ -520,8 +523,8 @@ write_data(uint32_t *data)
 	/* Wait for TC or ERRI interrupt. */
 	if (irq_wait() < 0)
 		return -1;
-	stat = read32(reg->irpt_mask);
-	write32(reg->irpt_mask, MMCHS_SD_STAT_DEB
+	stat = read32(reg->irpt);
+	write32(reg->irpt, MMCHS_SD_STAT_DEB
 		| MMCHS_SD_STAT_DCRC
 		| MMCHS_SD_STAT_DTO
 		| MMCHS_SD_STAT_TC);
@@ -585,10 +588,6 @@ minix_init(void)
 	struct minix_mem_range mr;
 	uint32_t v_base;
 
-	/*
-	 * On the BeagleBone Black, the eMMC device is connected to MMC1.
-	 * Add the MMC1 memory address range to the process' resources.
-	 */
 	mr.mr_base  = BCM2835_MMC0_BASE_ADDR;
 	mr.mr_limit = BCM2835_MMC0_BASE_ADDR + BCM2835_MMC0_SIZE - 1;
 	if (sys_privctl(SELF, SYS_PRIV_ADD_MEM, &mr) != OK)
@@ -620,8 +619,10 @@ minix_init(void)
 	reg->slotisr_var += v_base;
 
 	/* Register the MMC1 interrupt number. */
-	if (sys_irqsetpolicy(BCM2835_MMCSD1INT, 0, &hook_id) != OK)
+	if (sys_irqsetpolicy(BCM2835_MMCSD1INT, 0, &hook_id) != OK) {
+		log_warn(&log, "can't set irq\n");
 		return -1;
+	}
 	return 0;
 }
 
@@ -654,7 +655,7 @@ emmc_host_init(struct mmc_host *host)
 	/* Initialize the driver and kernel structures. */
 	if (minix_init() < 0)
 		return -1;
-#if 0
+
 	/*
 	 * Multiplex pins GPMC_AD4-7 to signals MMC1_DAT4-7 (Mode 1), in order
 	 * to allow the use of 8-bit mode.
@@ -664,30 +665,10 @@ emmc_host_init(struct mmc_host *host)
 		bus_width = EXT_CSD_BUS_WIDTH_4;
 	else
 		bus_width = EXT_CSD_BUS_WIDTH_8;
-#endif
-	/* Reset the host controller. */
-/*	set32(reg->SYSCONFIG, MMCHS_SD_SYSCONFIG_SOFTRESET,
-		MMCHS_SD_SYSCONFIG_SOFTRESET);
-	if (spin_until_set(reg->SYSSTATUS, MMCHS_SD_SYSSTATUS_RESETDONE)
-		!= MMCHS_SD_SYSSTATUS_RESETDONE)
-		return -1;
-*/
-	/*
-	 * SD_CAPA: "The host driver shall not modify this register after the
-	 * initialization." (AM335x TRM)
-	 */
 
-	/*
-	 * Set the bus voltage to 3V, and turn the bus power on.
-	 * On the BeagleBone Black, the bus voltage is pulled up to 3.3V, but
-	 * the MMCHS supports only 1.8V or 3V.
-	 */
-/*	set32(reg->HCTL, MMCHS_SD_HCTL_SDVS, MMCHS_SD_HCTL_SDVS_VS30);
-	set32(reg->HCTL, MMCHS_SD_HCTL_SDBP, MMCHS_SD_HCTL_SDBP_ON);
-	if (spin_until_set(reg->HCTL, MMCHS_SD_HCTL_SDBP)
-		== MMCHS_SD_HCTL_SDBP_OFF)
-		return -1;
-*/
+	set32(reg->control1, MMCHS_SD_SYSCTL_SRA,         
+		MMCHS_SD_SYSCTL_SRA);
+
 	/* Set the bus clock frequency to FOD (400kHz). */
 	set32(reg->control1, MMCHS_SD_SYSCTL_CLKD,
 		MMCHS_SD_SYSCTL_CLKD_400KHZ << 6);
@@ -698,27 +679,19 @@ emmc_host_init(struct mmc_host *host)
 	/* Enable the internal clock. */
 	set32(reg->control1, MMCHS_SD_SYSCTL_ICE, MMCHS_SD_SYSCTL_ICE_EN);
 	if (spin_until_set(reg->control1, MMCHS_SD_SYSCTL_ICS)
-		== MMCHS_SD_SYSCTL_ICS_UNSTABLE)
-		return -1;
+		== MMCHS_SD_SYSCTL_ICS_UNSTABLE) {
+		log_warn(&log, "clock is unstable\n");
+		return -1;		
+	}
 
 	/* Enable the bus clock. */
 	set32(reg->control1, MMCHS_SD_SYSCTL_CEN, MMCHS_SD_SYSCTL_CEN_EN);
-
-	/*
-	 * Set the internal clock gating strategy to automatic, and enable
-	 * Smart Idle mode. The host controller does not implement wake-up
-	 * request (SWAKEUP pin is not connected).
-	 */
-	/*set32(reg->SYSCONFIG, MMCHS_SD_SYSCONFIG_AUTOIDLE,
-		MMCHS_SD_SYSCONFIG_AUTOIDLE_EN);
-	set32(reg->SYSCONFIG, MMCHS_SD_SYSCONFIG_SIDLEMODE,
-		MMCHS_SD_SYSCONFIG_SIDLEMODE_IDLE);*/
 
 	/* The driver reads and writes single 512B blocks. */
 	set32(reg->blkscnt, MMCHS_SD_BLK_BLEN, SEC_SIZE);
 
 	/* Enable interrupt status and requests. */
-	write32(reg->irpt, MMCHS_SD_IE_ERROR_MASK
+	write32(reg->irpt_mask, MMCHS_SD_IE_ERROR_MASK
 		| MMCHS_SD_IE_BRR_ENABLE_ENABLE
 		| MMCHS_SD_IE_BWR_ENABLE_ENABLE
 		| MMCHS_SD_IE_TC_ENABLE_ENABLE
@@ -777,17 +750,10 @@ emmc_card_initialize(struct sd_slot *slot)
 	if (go_idle_state() < 0)
 		return NULL;
 
-	/*
-	 * Set the MMC_CMD line to open drain.
-	 * "The host starts the card identification process in open-drain mode
-	 * with the identification clock rate FOD." (MMCA, 4.41)
-	 */
-	//set32(reg->CON, MMCHS_SD_CON_OD, MMCHS_SD_CON_OD_OD);
-
 	/* CMD1 */
-	/*if (repeat_send_op_cond() < 0)
+	if (repeat_send_op_cond() < 0)
 		return NULL;
-*/
+
 	/* CMD2. The driver has no use for the CID. */
 	if (all_send_cid() < 0)
 		return NULL;
@@ -795,13 +761,6 @@ emmc_card_initialize(struct sd_slot *slot)
 	/* CMD3 */
 	if (set_relative_addr() < 0)
 		return NULL;
-
-	/*
-	 * Set the MMC_CMD line to push-pull.
-	 * "When the card is in Stand-by State, communication over the CMD and
-	 * DAT lines will be performed in push-pull mode." (MMCA, 4.41)
-	 */
-	//set32(reg->CON, MMCHS_SD_CON_OD, MMCHS_SD_CON_OD_PP);
 
 	/* CMD9 */
 	if (send_csd() < 0)
@@ -825,9 +784,9 @@ emmc_card_initialize(struct sd_slot *slot)
 		return NULL;
 
 	/* Receive the Extended CSD register. */
-/*	if (read_data((uint32_t *)card_ext_csd) < 0)
+	if (read_data((uint32_t *)card_ext_csd) < 0)
 		return NULL;
-*/
+
 	/* Card capacity for densities greater than 2GB. */
 	if (MMC_EXT_CSD_SEC_COUNT > 0)
 		card_size = (uint64_t)MMC_EXT_CSD_SEC_COUNT * SEC_SIZE;
@@ -863,13 +822,10 @@ emmc_card_initialize(struct sd_slot *slot)
 	/* CMD13. Check the result of the SWITCH operation. */
 	if (send_status() < 0)
 		return NULL;
-#if 0
-	/* Host controller: set data bus width. */
-	if (bus_width == EXT_CSD_BUS_WIDTH_4)
-		set32(reg->HCTL, MMCHS_SD_HCTL_DTW, MMCHS_SD_HCTL_DTW_4BIT);
-	else
-		set32(reg->CON, MMCHS_SD_CON_DW8, MMCHS_SD_CON_DW8_8BITS);
-#endif
+
+	set32(reg->control0, MMCHS_SD_HCTL_DTW,
+	    MMCHS_SD_HCTL_DTW_1BIT);
+	
 	/* CMD16. Set block length to sector size (512B). */
 	if (set_blocklen() < 0)
 		return NULL;
@@ -910,7 +866,7 @@ emmc_card_release(struct sd_card *card)
 static void
 emmc_hw_intr(unsigned int irqs)
 {
-	log_warn(&log, "register SD_STAT == 0x%08x\n", reg->irpt_mask);
+	log_warn(&log, "register SD_STAT == 0x%08x\n", reg->irpt);
 }
 
 /*

@@ -178,26 +178,27 @@ struct rpi_mmchs {
 #define MMCHS_SD_SYSCTL_DTO_2POW20   (0x7 << 16) /* TCF x 2^20  */
 #define MMCHS_SD_SYSCTL_DTO_2POW27   (0xe << 16) /* TCF x 2^27  */
 
-#define MMCHS_SD_STAT_CERR            (0x1 << 28) /* card error */
-#define MMCHS_SD_STAT_DEB             (0x1 << 22) /* data end bit error */
-#define MMCHS_SD_STAT_DCRC            (0x1 << 21) /* data CRC error */
-#define MMCHS_SD_STAT_DTO             (0x1 << 20) /* data timeout error */
-#define MMCHS_SD_STAT_CIE             (0x1 << 19) /* command index error */
-#define MMCHS_SD_STAT_CEB             (0x1 << 18) /* command end bit error */
-#define MMCHS_SD_STAT_CCRC            (0x1 << 17) /* command CRC error */
-#define MMCHS_SD_STAT_CTO             (0x1 << 16) /* command timeout error */
-#define MMCHS_SD_STAT_ERRI            (0x01 << 15) /* Error interrupt */
-#define MMCHS_SD_STAT_ERROR_MASK      (0xff << 15 | 0x3 << 24 | 0x03 << 28)
-#define MMCHS_SD_STAT_BRR             (0x1 << 5) /* Buffer Read ready */
-#define MMCHS_SD_STAT_BWR             (0x1 << 4) /* Buffer Write ready */
-#define MMCHS_SD_STAT_CC              (0x1 << 0) /* Command complete status */
-#define MMCHS_SD_STAT_CC_UNRAISED     (0x0 << 0) /* Command not completed */
-#define MMCHS_SD_STAT_CC_RAISED       (0x1 << 0) /* Command completed */
-#define MMCHS_SD_STAT_TC              (0x1 << 1) /* Transfer complete status */
-#define MMCHS_SD_STAT_TC_UNRAISED     (0x0 << 1) /* Transfer not completed */
-#define MMCHS_SD_STAT_TC_RAISED       (0x1 << 1) /* Transfer completed */
+#define MMCHS_SD_STAT_CERR 				(0x1 << 28) /* card error */
+#define MMCHS_SD_STAT_DEB  				(0x1 << 22) /* data end bit error */
+#define MMCHS_SD_STAT_DCRC 				(0x1 << 21) /* data CRC error */
+#define MMCHS_SD_STAT_DTO  				(0x1 << 20) /* data timeout error */
+#define MMCHS_SD_STAT_CIE  				(0x1 << 19) /* command index error */
+#define MMCHS_SD_STAT_CEB  				(0x1 << 18) /* command end bit error */
+#define MMCHS_SD_STAT_CCRC 				(0x1 << 17) /* command CRC error */
+#define MMCHS_SD_STAT_CTO  				(0x1 << 16) /* command timeout error */
+#define MMCHS_SD_STAT_DONE 				(0xffff0001u) /* send command done */	
+#define MMCHS_SD_STAT_ERRI        		(0x01 << 15) /* Error interrupt */
+#define MMCHS_SD_STAT_ERROR_MASK  		(0xfe << 15 | 0x1 << 24)
+#define MMCHS_SD_STAT_BRR         		(0x1 << 5) /* Buffer Read ready */
+#define MMCHS_SD_STAT_BWR         		(0x1 << 4) /* Buffer Write ready */
+#define MMCHS_SD_STAT_CC          		(0x1 << 0) /* Command complete status */
+#define MMCHS_SD_STAT_CC_UNRAISED 		(0x0 << 0) /* Command not completed */
+#define MMCHS_SD_STAT_CC_RAISED   		(0x1 << 0) /* Command completed */
+#define MMCHS_SD_STAT_TC          		(0x1 << 1) /* Transfer complete status */
+#define MMCHS_SD_STAT_TC_UNRAISED 		(0x0 << 1) /* Transfer not completed */
+#define MMCHS_SD_STAT_TC_RAISED   		(0x1 << 1) /* Transfer completed */
 
-#define MMCHS_SD_IE_ERROR_MASK     (0xff << 15 | 0x3 << 24 | 0x03 << 28)
+#define MMCHS_SD_IE_ERROR_MASK     (0xfe << 15 | 0x1 << 24)
 
 #define MMCHS_SD_IE_CC_ENABLE        (0x1 << 0) /* Command complete interrupt enable */
 #define MMCHS_SD_IE_CC_ENABLE_ENABLE (0x1 << 0) /* Command complete Interrupts are enabled */
@@ -221,42 +222,6 @@ struct rpi_mmchs {
 #define MMCHS_SD_CAPA_VS18 (0x01 << 26 )  /* 1.8 volt */
 #define MMCHS_SD_CAPA_VS30 (0x01 << 25 )  /* 3.0 volt */
 #define MMCHS_SD_CAPA_VS33 (0x01 << 24 )  /* 3.3 volt */
-
-// The actual command indices
-#define GO_IDLE_STATE           0
-#define ALL_SEND_CID            2
-#define SEND_RELATIVE_ADDR      3
-#define SET_DSR                 4
-#define IO_SET_OP_COND          5
-#define SWITCH_FUNC             6
-#define SELECT_CARD             7
-#define DESELECT_CARD           7
-#define SELECT_DESELECT_CARD    7
-#define SEND_IF_COND            8
-#define SEND_CSD                9
-#define SEND_CID                10
-#define VOLTAGE_SWITCH          11
-#define STOP_TRANSMISSION       12
-#define SEND_STATUS             13
-#define GO_INACTIVE_STATE       15
-#define SET_BLOCKLEN            16
-#define READ_SINGLE_BLOCK       17
-#define READ_MULTIPLE_BLOCK     18
-#define SEND_TUNING_BLOCK       19
-#define SPEED_CLASS_CONTROL     20
-#define SET_BLOCK_COUNT         23
-#define WRITE_SINGLE_BLOCK      24
-#define WRITE_MULTIPLE_BLOCK    25
-#define PROGRAM_CSD             27
-#define SET_WRITE_PROT          28
-#define CLR_WRITE_PROT          29
-#define SEND_WRITE_PROT         30
-#define ERASE_WR_BLK_START      32
-#define ERASE_WR_BLK_END        33
-#define ERASE                   38
-#define LOCK_UNLOCK             42
-#define APP_CMD                 55
-#define GEN_CMD                 56
 
 #define IS_APP_CMD              0x80000000
 #define ACMD(a)                 (a | IS_APP_CMD)
