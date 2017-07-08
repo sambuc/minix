@@ -37,14 +37,14 @@ static struct log log = {
 static void write32(vir_bytes reg, uint32_t data)
 {
 	assert(reg >= 0 && reg <= sizeof (struct mailbox_t));
-	uint32_t addr = mbox_base + reg;
-	addr = data;
+	uint32_t *addr = (uint32_t *)(mbox_base + reg);
+	*addr = data;
 }
 
 static uint32_t read32(vir_bytes reg)
 {
 	assert(reg >= 0 && reg <= sizeof (struct mailbox_t));
-	return mbox_base + reg;
+	return *(uint32_t *)(mbox_base + reg);
 }
 
 void mailbox_init()
@@ -70,6 +70,8 @@ void mailbox_init()
 		panic("Unable to map MMC memory");
 
 	gmailbox = &mailbox;
+
+	write32(gmailbox->config, IRQ_EN);
 }
 
 uint32_t mbox_read(uint8_t chan)
