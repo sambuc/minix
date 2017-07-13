@@ -1,16 +1,18 @@
 # Makefile for I2C support
 
+PROG= i2c
+SRCS+= i2c.c
+FILESNAME=i2c
+FILES=i2c.conf
+
 .if ${MACHINE_ARCH} == "earm"
 .for pl in rpi omap
 .PATH: ${.CURDIR}/arch/earm/${pl}
-PROGS+= i2c_${pl}
-SRCS.i2c_${pl}+= i2c.c ${pl}_i2c.c ${pl}_i2c.h ${pl}_i2c_registers.h
-FILES.i2c_${pl}=i2c_${pl}.conf
-FILESNAME=i2c_${pl}
+SRCS+= ${pl}_i2c.c ${pl}_i2c.h ${pl}_i2c_registers.h
 .endfor
 .else
 .PATH: ${.CURDIR}/arch/${MACHINE_ARCH}
-SRCS.i2c += pci_i2c.c pci_i2c.h pci_i2c_register.h
+SRCS+= pci_i2c.c pci_i2c.h pci_i2c_register.h
 .endif
 
 FILESDIR= /etc/system.conf.d
