@@ -1,6 +1,8 @@
 #include <minix/drivers.h>
 #include <minix/chardriver.h>
 #include <minix/type.h>
+#include <minix/vm.h>
+#include <sys/mman.h>
 #include <minix/log.h>
 
 #include "mbox.h"
@@ -22,6 +24,9 @@ static ssize_t m_write(devminor_t minor, u64_t position, endpoint_t endpt,
 	cp_grant_id_t grant, size_t size, int flags, cdev_id_t id);
 static int m_open(devminor_t minor, int access, endpoint_t user_endpt);
 static int m_select(devminor_t, unsigned int, endpoint_t);
+
+static u8_t* mboxbuffer_vir;	/* Address of dss phys memory map */
+static phys_bytes mboxbuffer_phys;
 
 /* Entry points to this driver. */
 static struct chardriver m_dtab = {
@@ -82,6 +87,14 @@ static int sef_cb_init_fresh(int UNUSED(type), sef_init_info_t *UNUSED(info))
 		return(EPERM);
 	}
 
+	mbox_flush();
+
+	/* Configure mailbox buffer */
+	mboxbuffer_vir = (u8_t*) alloc_contig(0x1000, 0, &mboxbuffer_phys);
+	if (mboxbuffer_vir == (u8_t*) MAP_FAILED) {
+		panic("Unable to allocate contiguous memory for mailbox buffer\n");
+	}
+
 	/* Announce we are up! */
 	chardriver_announce();
 
@@ -98,8 +111,8 @@ static ssize_t m_read(devminor_t minor, u64_t position, endpoint_t endpt,
 	if (minor != MAILBOX_DEV) 
 		return(EIO);
 	
-	uint8_t *buf = (int8_t *)mbox_read(MBOX_PROP);
-	r = sys_safecopyto(endpt, grant, 0, (vir_bytes)buf, size);
+	mbox_read(MBOX_PROP);
+	r = sys_safecopyto(endpt, grant, 0, (vir_bytes)mboxbuffer_vir, size);
 	if (r != OK) {
 		log_warn(&log, "mailbox: sys_safecopyto failed for proc %d, grant %d\n",
 			endpt, grant);
@@ -108,17 +121,15 @@ static ssize_t m_read(devminor_t minor, u64_t position, endpoint_t endpt,
 
 	mbox_flush();
 
-
 	return(OK);
 }
 
+static int hook_id = 1;
+
 static int wait_irq()
 {
-	int hook_id = 1;
-	if (sys_irqenable(&hook_id) != OK) {
-		log_warn(&log, "Failed to enable irqenable irq\n");
-		return -1;
-	}
+	if (sys_irqenable(&hook_id) != OK)
+		log_warn(&log, "Failed to enable irq\n");
 
 	/* Wait for a task completion interrupt. */
 	message m;
@@ -141,6 +152,7 @@ static int wait_irq()
 				return -1;
 				break;
 			case HARDWARE:
+				log_debug(&log, "HARDWARE\n");
 				sys_setalarm(0, 0);
 				return 0;
 			}
@@ -156,31 +168,18 @@ static ssize_t m_write(devminor_t minor, u64_t position, endpoint_t endpt,
 	/* Write to one of the driver's minor devices. */
 	int r;
 	uint32_t msg;
-	int8_t *buf;
+	
 
 	if (minor != MAILBOX_DEV) 
 		return(EIO);
 
-		r = sys_safecopyfrom(endpt, grant, 0, (vir_bytes)&msg,
-			sizeof (uint32_t));
-		if (r != OK) {
-			log_warn(&log, "mailbox: sys_safecopyfrom failed for proc %d,"
-				" grant %d\n", endpt, grant);
-			return r;
-		}
-		log_info(&log, "size of buffer %d\n", *(int *)msg);
-		buf = (int8_t *)calloc(*(int *)msg, sizeof (int8_t));
-		if (!buf) {
-			log_warn(&log, "can't allocate buffer\n");
-			return(ENOMEM);
-		}
-		r = sys_safecopyfrom(endpt, grant, 0, (vir_bytes)buf, *(int *)msg);
-		if (r != OK) {
-			log_warn(&log, "mailbox: sys_safecopyfrom failed for proc %d,"
-				" grant %d\n", endpt, grant);
-			return r;
-		}
-		mbox_write(MBOX_PROP, (uint32_t)buf);
+	r = sys_safecopyfrom(endpt, grant, 0, (vir_bytes)mboxbuffer_vir, size);
+	if (r != OK) {
+		log_warn(&log, "mailbox: sys_safecopyfrom failed for proc %d,"
+			" grant %d\n", endpt, grant);
+		return r;
+	}
+	mbox_write(MBOX_PROP, (uint32_t)mboxbuffer_phys + 0x40000000);
 
 	if (wait_irq() < 0) {
 		log_warn(&log, "can't wait interrupt from mbox\n");

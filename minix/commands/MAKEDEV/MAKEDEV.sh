@@ -139,6 +139,7 @@ Where key is one of the following:
   filter                  # Make /dev/filter
   fbd                     # Make /dev/fbd
   hello                   # Make /dev/hello
+  mailbox                 # Make /dev/mailbox
   video                   # Make /dev/video
   pci                     # Make /dev/pci
   vnd0 vnd0p0 vnd0p0s0 .. # Make vnode disks /dev/vnd[0-7] and (sub)partitions
@@ -356,7 +357,7 @@ do
 		makedev ${dev} c 15 0 ${uname} ${gname} ${permissions}
 		;;
 	mailbox)
-		makedev ${dev} c 16 0 ${uname} ${gname} ${permissions}
+		makedev ${dev} c 22 0 ${uname} ${gname} 0666
 		;;
 	pc[0-3]|at[0-3]|qd[0-3]|ps[0-3]|pat[0-3]|qh[0-3]|PS[0-3])
 		# Obsolete density locked floppy disk drive n.
