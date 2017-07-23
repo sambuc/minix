@@ -4,13 +4,13 @@
 
 /* kernel headers */
 #include <minix/chardriver.h>
-#include <minix/clkconf.h>
 #include <minix/drivers.h>
 #include <minix/ds.h>
 #include <minix/log.h>
 #include <minix/mmio.h>
 #include <minix/padconf.h>
 #include <minix/sysutil.h>
+#include <minix/syslib.h>
 #include <minix/type.h>
 #include <minix/board.h>
 #include <minix/spin.h>
@@ -84,10 +84,10 @@ static rpi_i2c_regs_t bcm283x_i2c_regs = {
 static rpi_i2c_bus_t bcm283x_i2c_buses[] = {
 	{BCM283X_I2C0_BASE, BCM283X_I2C0_SIZE, 0, &bcm283x_i2c_regs,
 		BCM283X_FUNCTIONAL_CLOCK, BCM283X_MODULE_CLOCK, 
-		BUS_SPEED_400KHz, BCM283X_I2C0_IRQ, 1, 1},
+		BUS_SPEED_100KHz, BCM283X_I2C0_IRQ, 1, 1},
 	{BCM283X_I2C1_BASE, BCM283X_I2C1_SIZE, 0, &bcm283x_i2c_regs,
 		BCM283X_FUNCTIONAL_CLOCK, BCM283X_MODULE_CLOCK,
-		BUS_SPEED_400KHz, BCM283X_I2C0_IRQ, 2, 3}
+		BUS_SPEED_100KHz, BCM283X_I2C0_IRQ, 2, 3}
 	};
 
 #define BCM283X_rpi_NBUSES (sizeof(bcm283x_i2c_buses) / sizeof(rpi_i2c_bus_t))
@@ -101,7 +101,7 @@ static int rpi_i2c_nbuses;	/* number of buses supported by SoC */
 /* logging - use with log_warn(), log_info(), log_debug(), log_trace() */
 static struct log log = {
 	.name = "i2c",
-	.log_level = LEVEL_INFO,
+	.log_level = LEVEL_TRACE,
 	.log_func = default_log
 };
 
@@ -117,7 +117,6 @@ static int rpi_i2c_bus_is_free(void);
 static int rpi_i2c_soft_reset(void);
 static void rpi_i2c_bus_init(void);
 static void rpi_i2c_padconf(int i2c_bus_id);
-static void rpi_i2c_clkconf(int i2c_bus_id);
 static void rpi_i2c_intr_enable(void);
 static uint32_t rpi_i2c_read_status(void);
 static void rpi_i2c_write_status(uint32_t mask);
@@ -144,6 +143,7 @@ rpi_i2c_process(minix_i2c_ioctl_exec_t * ioctl_exec)
 	}
 
 	rpi_i2c_flush();	/* clear any garbage in the fifo */
+	log_debug(&log, "buflen %d, cmdlen %d, addr 0x%x\n", ioctl_exec->iie_buflen, ioctl_exec->iie_cmdlen, ioctl_exec->iie_addr);
 
 	/* Check bus busy flag before using the bus */
 	r = rpi_i2c_bus_is_free();
@@ -151,7 +151,6 @@ rpi_i2c_process(minix_i2c_ioctl_exec_t * ioctl_exec)
 		log_warn(&log, "Bus is busy\n");
 		return EBUSY;
 	}
-
 	if (ioctl_exec->iie_cmdlen > 0) {
 		r = rpi_i2c_write(ioctl_exec->iie_addr, ioctl_exec->iie_cmd,
 		    ioctl_exec->iie_cmdlen,
@@ -195,14 +194,19 @@ rpi_i2c_flush(void)
 	for (tries = 0; tries < 1000; tries++) {
 		status = rpi_i2c_poll(BCM283X_STATUS_RXD);
 		if ((status & BCM283X_STATUS_RXD) != 0) {	/* bytes available for reading */
-
 			/* consume the byte and throw it away */
-			(void) read32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->FIFO);
+			read32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->FIFO);
+
+			set32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->CTRL, 
+				BCM283X_CTRL_CFIFO, BCM283X_CTRL_CFIFO);
+			set32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->ST, 
+				BCM283X_STATUS_DONE, BCM283X_STATUS_DONE);
 
 		} else {
 			break;	/* buffer drained */
 		}
 	}
+	log_debug(&log, "bytes available 0x%x\n", status);
 }
 
 /*
@@ -222,7 +226,6 @@ rpi_i2c_poll(uint32_t mask)
 		if ((status & mask) != 0) {	/* any bits in mask set */
 			return status;
 		}
-
 	} while (spin_check(&spin));
 
 	return status;		/* timeout reached, abort */
@@ -246,30 +249,9 @@ rpi_i2c_bus_is_free(void)
 		if ((status & BCM283X_STATUS_TA) == 0) {
 			return 1;	/* bus is free */
 		}
-
 	} while (spin_check(&spin));
 
 	return 0;		/* timeout expired */
-}
-
-static void
-rpi_i2c_clkconf(int i2c_bus_id)
-{
-	clkconf_init();
-
-	switch (i2c_bus_id) {
-	case 0:
-		clkconf_set(CM_WKUP_I2C0_CLKCTRL, BIT(1), 0xffffffff);
-		break;
-	case 1:
-		clkconf_set(CM_PER_I2C1_CLKCTRL, BIT(1), 0xffffffff);
-		break;
-	default:
-		log_warn(&log, "Invalid i2c_bus_id\n");
-		break;
-	}
-
-	clkconf_release();
 }
 
 static void
@@ -278,21 +260,11 @@ rpi_i2c_padconf(int i2c_bus_id)
 	int r;
 	u32_t pinopts;
 
-	/* use the options suggested in starterware driver */
-	pinopts =
-	    CONTROL_CONF_SLEWCTRL | CONTROL_CONF_RXACTIVE |
-	    CONTROL_CONF_PUTYPESEL;
 	switch (i2c_bus_id) {
 	case 0:
-		pinopts |= CONTROL_CONF_MUXMODE(0);
+		pinopts |= CONTROL_BCM_CONF_I2C0_SDA | CONTROL_BCM_CONF_I2C0_SCL;
 	
-		r = sys_padconf(CONTROL_CONF_I2C0_SDA, 0xffffffff,
-		    pinopts);
-		if (r != OK) {
-			log_warn(&log, "padconf failed (r=%d)\n", r);
-		}
-	
-		r = sys_padconf(CONTROL_CONF_I2C0_SCL, 0xffffffff,
+		r = sys_padconf(GPFSEL09, 0xffffffff,
 		    pinopts);
 		if (r != OK) {
 			log_warn(&log, "padconf failed (r=%d)\n", r);
@@ -302,15 +274,9 @@ rpi_i2c_padconf(int i2c_bus_id)
 		break;
 	
 	case 1:
-		pinopts |= CONTROL_CONF_MUXMODE(2);
+		pinopts |= CONTROL_BCM_CONF_I2C1_SDA | CONTROL_BCM_CONF_I2C1_SCL;
 	
-		r = sys_padconf(CONTROL_CONF_SPI0_CS0, 0xffffffff,
-		    pinopts);
-		if (r != OK) {
-			log_warn(&log, "padconf failed (r=%d)\n", r);
-		}
-	
-		r = sys_padconf(CONTROL_CONF_SPI0_D1, 0xffffffff,
+		r = sys_padconf(GPFSEL09, 0xffffffff,
 		    pinopts);
 		if (r != OK) {
 			log_warn(&log, "padconf failed (r=%d)\n", r);
@@ -382,13 +348,13 @@ rpi_i2c_intr_enable(void)
 static void
 rpi_i2c_bus_init(void)
 {
-
 	/* Ensure i2c module is disabled before setting prescalar & bus speed */
 	write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->CTRL, 0);
 	micro_delay(50000);
 
 	/* Set prescalar to obtain 12 MHz i2c module clock */
-	uint32_t divider = (rpi_i2c_bus->functional_clock / rpi_i2c_bus->module_clock) - 1;
+	uint32_t divider = (sys_hz() * 10000 + rpi_i2c_bus->bus_speed - 1) / rpi_i2c_bus->bus_speed;
+	log_debug(&log, "divider %lu sys_hz %lu\n", (uint32_t)divider, sys_hz());
 	if (divider > BCM283X_I2C_CDIV_MAX ||
 		divider < BCM283X_I2C_CDIV_MIN) {
 		log_warn(&log, "Incorrect divider\n");
@@ -397,7 +363,7 @@ rpi_i2c_bus_init(void)
 	if (divider & 0x01)
 		divider++;
 
-	write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->DIV, divider);
+	write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->DIV, 1500);
 
 	/* Set own I2C address */
 	write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->SL_ADDR, I2C_OWN_ADDRESS);
@@ -410,6 +376,8 @@ rpi_i2c_bus_init(void)
 	 * Enable interrupts
 	 */
 	rpi_i2c_intr_enable();
+
+	log_debug(&log, "interrupts enabled\n");
 }
 
 static uint32_t
@@ -435,53 +403,61 @@ rpi_i2c_read(i2c_addr_t addr, uint8_t * buf, size_t buflen, int dostop)
 
 	/* Set address of slave device */
 	addr &= MAX_I2C_SA_MASK;	/* sanitize address (10-bit max) */
+	if (addr > 0xff) {
+		write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->DLEN, 1);
 
-	write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->DLEN, 1);
-
-	write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->FIFO, addr & 0xff);
-
-	write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->SL_ADDR, (addr >> XSA) | SL_ADDR_MASK);
-
-	ctrl = read32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->CTRL);
-	ctrl |= BCM283X_CTRL_ST;
-	ctrl &= (~BCM283X_CTRL_READ);
-	write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->CTRL, ctrl);
-
-	pollmask |= BCM283X_STATUS_DONE;
-	errmask  |= BCM283X_STATUS_CLKT;
-	errmask  |= BCM283X_STATUS_ERR;
-
-	r = rpi_i2c_poll(pollmask | errmask);
-	if ((r & errmask) != 0) {
-		/* only debug log level because i2cscan trigers this */
-		log_debug(&log, "Read Error! Status=%x\n", r);
-		return EIO;
-	} else if ((r & pollmask) == 0) {
-		log_warn(&log, "No RRDY Interrupt. Status=%x\n", r);
-		log_warn(&log,
-		    "Likely cause: bad pinmux or no devices on bus\n");
-		return EBUSY;
-	}
+		write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->SL_ADDR, (addr >> XSA) | SL_ADDR_MASK);
 	
-	write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->DLEN, buflen);
+		write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->FIFO, addr & 0xff);
+
+		ctrl = read32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->CTRL);
+		ctrl |= BCM283X_CTRL_ST;
+		ctrl &= (~BCM283X_CTRL_READ);
+		write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->CTRL, ctrl);
+
+		pollmask |= BCM283X_STATUS_TA;
+		pollmask |= BCM283X_STATUS_DONE;
+		errmask  |= BCM283X_STATUS_CLKT;
+		errmask  |= BCM283X_STATUS_ERR;
+
+		r = rpi_i2c_poll(pollmask | errmask);
+		if ((r & errmask) != 0) {
+			/* only debug log level because i2cscan trigers this */
+			log_debug(&log, "Write addrress Error! On %d byte, Status=%x\n", i, r);
+			return EIO;
+		} else if ((r & pollmask) == 0) {
+			log_warn(&log, "No TA Interrupt. Status=%x\n", r);
+			log_warn(&log,
+				"Likely cause: bad pinmux or no devices on bus\n");
+			return EBUSY;
+		}
+	} else {
+		write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->SL_ADDR, addr);	
+	}
 
 	ctrl = read32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->CTRL);
 	ctrl |= BCM283X_CTRL_ST;
 	ctrl |= BCM283X_CTRL_READ;
 	write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->CTRL, ctrl);
 
-	pollmask |= BCM283X_STATUS_RXD;
+	errmask  |= BCM283X_STATUS_CLKT;
+	errmask  |= BCM283X_STATUS_ERR;
+	pollmask = BCM283X_STATUS_RXD;
+	pollmask |= BCM283X_STATUS_RXR;
 	pollmask |= BCM283X_STATUS_RXF;
+	pollmask |= BCM283X_STATUS_DONE;
+
+	write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->DLEN, buflen);
 
 	for (i = 0; i < buflen; i++) {
 		/* Data to read? */
 		r = rpi_i2c_poll(pollmask | errmask);
 		if ((r & errmask) != 0) {
 			/* only debug log level because i2cscan trigers this */
-			log_debug(&log, "Read Error! Status=%x\n", r);
+			log_debug(&log, "Read Error! On %d byte, Status=%x\n", i, r);
 			return EIO;
 		} else if ((r & pollmask) == 0) {
-			log_warn(&log, "No RRDY Interrupt. Status=%x\n", r);
+			log_warn(&log, "No RXD Interrupt. Status=%x\n", r);
 			log_warn(&log,
 			    "Likely cause: bad pinmux or no devices on bus\n");
 			return EBUSY;
@@ -489,14 +465,28 @@ rpi_i2c_read(i2c_addr_t addr, uint8_t * buf, size_t buflen, int dostop)
 
 		/* read a byte */
 		buf[i] = read32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->FIFO) & 0xff;
-
-		/* clear the read ready flag */
-		rpi_i2c_write_status(BCM283X_STATUS_DONE | errmask);
 	}
 
-	set32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->CTRL, BCM283X_CTRL_CFIFO, BCM283X_CTRL_CFIFO);
+	if (rpi_i2c_read_status() & BCM283X_STATUS_ERR) {
+		log_warn(&log, "can't wait ack\n");
+		return EIO;
+	}
 
-	return 0;
+	pollmask = BCM283X_STATUS_DONE; /* poll access ready bit */
+	r = rpi_i2c_poll(pollmask);
+	if ((r & pollmask) == 0) {
+		log_warn(&log, "Read operation never finished.\n");
+		return EBUSY;
+	}
+
+	ctrl = read32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->CTRL);
+	ctrl |= BCM283X_CTRL_CFIFO;
+	write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->CTRL, ctrl);
+
+	/* clear the read ready flag */
+	rpi_i2c_write_status(BCM283X_STATUS_DONE | errmask);
+
+	return OK;
 }
 
 static int
@@ -506,17 +496,23 @@ rpi_i2c_write(i2c_addr_t addr, const uint8_t * buf, size_t buflen, int dostop)
 	uint32_t pollmask;
 	uint32_t errmask;
 	uint32_t ctrl;
-
 	/* Set address of slave device */
 	addr &= MAX_I2C_SA_MASK;	/* sanitize address (10-bit max) */
 
-	write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->DLEN, buflen + 1);
+	if (addr > 0xff) {
+		write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->DLEN, buflen + 1);
 
-	write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->FIFO, addr & 0xff);
+		write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->SL_ADDR, (addr >> XSA) | SL_ADDR_MASK);
+	
+		write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->FIFO, addr & 0xff);
+	} else {
+		write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->DLEN, buflen);
 
-	pollmask |= BCM283X_STATUS_DONE;
-	pollmask |= BCM283X_STATUS_TXE;
+		write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->SL_ADDR, addr);	
+	}
+
 	pollmask |= BCM283X_STATUS_TXD;
+	pollmask |= BCM283X_STATUS_DONE;
 	errmask  |= BCM283X_STATUS_CLKT;
 	errmask  |= BCM283X_STATUS_ERR;
 
@@ -525,27 +521,41 @@ rpi_i2c_write(i2c_addr_t addr, const uint8_t * buf, size_t buflen, int dostop)
 	ctrl &= (~BCM283X_CTRL_READ);
 	write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->CTRL, ctrl);
 
-	for (i = 0; i < buflen; i++) {
+	log_debug(&log, "buflen %d data 0x%x\n", buflen, buf[0]);
 
+	for (i = 0; i < buflen; i++) {
+		log_debug(&log, "write\n");
 		/* Ready to write? */
 		r = rpi_i2c_poll(pollmask | errmask);
 		if ((r & errmask) != 0) {
-			log_warn(&log, "Write Error! Status=%x\n", r);
+			log_warn(&log, "Write Error! On %d byte, Status=%x\n", i, r);
 			return EIO;
 		} else if ((r & pollmask) == 0) {
 			log_warn(&log, "Not ready for write? Status=%x\n", r);
 			return EBUSY;
 		}
 
-		write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->FIFO, buf[i]);
-
-		/* clear the write ready flag */
-		rpi_i2c_write_status(BCM283X_STATUS_DONE | errmask);
+		write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->FIFO, buf[i]);	
+	}
+	
+	if (rpi_i2c_read_status() & BCM283X_STATUS_ERR) {
+		log_warn(&log, "can't wait ack\n");
+		return EIO;
 	}
 
-	set32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->CTRL, BCM283X_CTRL_CFIFO, BCM283X_CTRL_CFIFO);
+	r = rpi_i2c_poll(pollmask);
+	if ((r & pollmask) == 0) {
+		log_warn(&log, "Write operation never finished.\n");
+		return EBUSY;
+	}
 
-	return 0;
+	ctrl = read32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->CTRL);
+	ctrl |= BCM283X_CTRL_CFIFO;
+	write32(rpi_i2c_bus->mapped_addr + rpi_i2c_bus->regs->CTRL, ctrl);
+	/* clear the write ready flag */
+	rpi_i2c_write_status(BCM283X_STATUS_DONE | errmask);
+
+	return OK;
 }
 
 int
@@ -558,6 +568,7 @@ rpi_interface_setup(int (**process) (minix_i2c_ioctl_exec_t * ioctl_exec),
 	struct machine machine;
 	sys_getmachine(&machine);
 
+	log_info(&log, "setup start\n");
 	/* Fill in the function pointer */
 
 	*process = rpi_i2c_process;
@@ -570,6 +581,8 @@ rpi_interface_setup(int (**process) (minix_i2c_ioctl_exec_t * ioctl_exec),
 	} else {
 		return EINVAL;
 	}
+
+	log_debug(&log, "cont\n");
 
 	if (i2c_bus_id < 0 || i2c_bus_id >= rpi_i2c_nbuses) {
 		return EINVAL;
@@ -602,12 +615,10 @@ rpi_interface_setup(int (**process) (minix_i2c_ioctl_exec_t * ioctl_exec),
 		panic("Unable to map i2c registers");
 	}
 
-	/* Enable Clocks */
-	rpi_i2c_clkconf(i2c_bus_id);
-
 	/* Perform a soft reset of the I2C module to ensure a fresh start */
 	r = rpi_i2c_soft_reset();
 	if (r != OK) {
+		log_warn(&log, "can't do soft reset\n");
 		/* module didn't come back up :( */
 		return r;
 	}
