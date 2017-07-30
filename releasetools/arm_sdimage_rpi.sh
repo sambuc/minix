@@ -24,13 +24,14 @@ BSP_NAME=rpi
 : ${TOOLCHAIN_TRIPLET=arm-elf32-minix-}
 : ${BUILDSH=build.sh}
 
-: ${SETS="minix-base"}
+: ${SETS="minix-base minix-comp minix-games minix-man minix-tests tests"}
 : ${IMG=minix_arm_sd.img}
 
 # ARM definitions:
 : ${BUILDVARS=-V MKGCCCMDS=yes -V MKLLVM=no}
 # These BUILDVARS are for building with LLVM:
 #: ${BUILDVARS=-V MKLIBCXX=no -V MKKYUA=no -V MKATF=no -V MKLLVMCMDS=no}
+: ${FAT_SIZE=$((    64*(2**20) / 512))} # This is in sectors
 
 if [ ! -f ${BUILDSH} ]
 then
@@ -38,21 +39,23 @@ then
 	exit 1
 fi
 
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:${PATH}
+
 # we create a disk image of about 2 gig's
 # for alignment reasons, prefer sizes which are multiples of 4096 bytes
-: ${FAT_START=4096}
-: ${FAT_SIZE=$((    64*(2**20) - ${FAT_START} ))}
+: ${IMG_SIZE=$((     2*(2**30) ))}
 : ${ROOT_SIZE=$((   64*(2**20) ))}
 : ${HOME_SIZE=$((  128*(2**20) ))}
 : ${USR_SIZE=$((  1792*(2**20) ))}
-#: ${IMG_SIZE=$((     2*(2**30) ))} # no need to build an image that big for now
-: ${IMG_SIZE=$((    64*(2**20) ))}
 
 # set up disk creation environment
 . releasetools/image.defaults
 . releasetools/image.functions
 
-${RELEASETOOLSDIR}/checkout_repo.sh -o ${RELEASETOOLSDIR}/rpi-firmware -b ${RPI_FIRMWARE_BRANCH} -n ${RPI_FIRMWARE_REVISION} ${RPI_FIRMWARE_URL}
+# all sizes are written in 512 byte blocks
+ROOTSIZEARG="-b $((${ROOT_SIZE} / 512 / 8))"
+USRSIZEARG="-b $((${USR_SIZE} / 512 / 8))"
+HOMESIZEARG="-b $((${HOME_SIZE} / 512 / 8))"
 
 # where the kernel & boot modules will be
 MODDIR=${DESTDIR}/boot/minix/.temp
@@ -60,52 +63,61 @@ MODDIR=${DESTDIR}/boot/minix/.temp
 echo "Building work directory..."
 build_workdir "$SETS"
 
-# IMG might be a block device
-if [ -f ${IMG} ]
+echo "Adding extra files..."
+
+# create a fstab entry in /etc
+cat >${ROOT_DIR}/etc/fstab <<END_FSTAB
+/dev/c0d0p2	/usr		mfs	rw			0	2
+/dev/c0d0p3	/home		mfs	rw			0	2
+none		/sys		devman	rw,rslabel=devman	0	0
+none		/dev/pts	ptyfs	rw,rslabel=ptyfs	0	0
+END_FSTAB
+add_file_spec "etc/fstab" extra.fstab
+
+echo "Bundling packages..."
+bundle_packages "$BUNDLE_PACKAGES"
+
+echo "Creating specification files..."
+create_input_spec
+create_protos "usr home"
+
+# Download the stage 1 bootloader and u-boot
+#
+${RELEASETOOLSDIR}/checkout_repo.sh -o ${RELEASETOOLSDIR}/rpi-firmware -b ${RPI_FIRMWARE_BRANCH} -n ${RPI_FIRMWARE_REVISION} ${RPI_FIRMWARE_URL}
+
+# Clean image
+if [ -f ${IMG} ]	# IMG might be a block device
 then
 	rm -f ${IMG}
 fi
-dd if=/dev/zero of=${IMG} bs=512 count=1 seek=$((($IMG_SIZE / 512) -1)) 2>/dev/null
+
+#
+# Create the empty image where we later will put the partitions in.
+# Make sure it is at least 2GB, otherwise the SD card will not be detected
+# correctly in qemu / HW.
+#
+dd if=/dev/zero of=${IMG} bs=512 count=1 seek=$((($IMG_SIZE / 512) -1))
 
 #
 # Generate /root, /usr and /home partition images.
 #
 echo "Writing disk image..."
-
-#
-# Write FAT bootloader partition
-#
+FAT_START=$((4096 / 512)) # those are sectors
+ROOT_START=$(($FAT_START + $FAT_SIZE))
+echo " * ROOT"
+_ROOT_SIZE=$(${CROSS_TOOLS}/nbmkfs.mfs -d ${ROOTSIZEARG} -I $((${ROOT_START}*512)) ${IMG} ${WORK_DIR}/proto.root)
+_ROOT_SIZE=$(($_ROOT_SIZE / 512))
+USR_START=$((${ROOT_START} + ${_ROOT_SIZE}))
+echo " * USR"
+_USR_SIZE=$(${CROSS_TOOLS}/nbmkfs.mfs  -d ${USRSIZEARG}  -I $((${USR_START}*512))  ${IMG} ${WORK_DIR}/proto.usr)
+_USR_SIZE=$(($_USR_SIZE / 512))
+HOME_START=$((${USR_START} + ${_USR_SIZE}))
+echo " * HOME"
+_HOME_SIZE=$(${CROSS_TOOLS}/nbmkfs.mfs -d ${HOMESIZEARG} -I $((${HOME_START}*512)) ${IMG} ${WORK_DIR}/proto.home)
+_HOME_SIZE=$(($_HOME_SIZE / 512))
 echo " * BOOT"
 rm -rf ${ROOT_DIR}/*
-# copy over all modules
-for i in ${MODDIR}/*
-do
-	cp $i ${ROOT_DIR}/$(basename $i).elf
-done
-${CROSS_PREFIX}objcopy ${OBJ}/minix/kernel/kernel -O binary ${ROOT_DIR}/kernel.bin
-# create packer
-${CROSS_PREFIX}as ${RELEASETOOLSDIR}/rpi-bootloader/bootloader.S -o ${RELEASETOOLSDIR}/rpi-bootloader/bootloader.o
-${CROSS_PREFIX}ld ${RELEASETOOLSDIR}/rpi-bootloader/bootloader.o -o ${RELEASETOOLSDIR}/rpi-bootloader/bootloader.elf -Ttext=0x8000 2> /dev/null
-${CROSS_PREFIX}objcopy -O binary ${RELEASETOOLSDIR}/rpi-bootloader/bootloader.elf ${ROOT_DIR}/minix_rpi.bin
 # copy device trees
-cp ${RELEASETOOLSDIR}/rpi-firmware/bcm*.dtb ${ROOT_DIR}
-# pack modules
-(cd ${ROOT_DIR} && cat <<EOF | cpio -o --format=newc >> ${ROOT_DIR}/minix_rpi.bin 2>/dev/null
-kernel.bin
-mod01_ds.elf
-mod02_rs.elf
-mod03_pm.elf
-mod04_sched.elf
-mod05_vfs.elf
-mod06_memory.elf
-mod07_tty.elf
-mod08_mib.elf
-mod09_vm.elf
-mod10_pfs.elf
-mod11_mfs.elf
-mod12_init.elf
-EOF
-)
 cp -r releasetools/rpi-firmware/* ${ROOT_DIR}
 
 # Write GPU config file
@@ -125,16 +137,82 @@ kernel=minix_rpi.bin
 dtparam=i2c_arm=on
 EOF
 
-${CROSS_TOOLS}/nbmakefs -t msdos -s $FAT_SIZE -O $FAT_START -o "F=32,c=1" ${IMG} ${ROOT_DIR} >/dev/null
+#
+# Do some last processing of the kernel and servers and then put them on the FAT
+# partition.
+#
+
+# copy over all modules
+for i in ${MODDIR}/*
+do
+	cp $i ${WORK_DIR}/$(basename $i).elf
+done
+${CROSS_PREFIX}objcopy ${OBJ}/minix/kernel/kernel -O binary ${WORK_DIR}/kernel.bin
+
+(
+	# create packer
+	export CROSS_PREFIX=$PWD/${CROSS_PREFIX}
+	${CROSS_PREFIX}as ${RELEASETOOLSDIR}/rpi-bootloader/bootloader.S -o ${WORK_DIR}/bootloader.o
+
+	cd ${WORK_DIR}
+	${CROSS_PREFIX}ld bootloader.o -o bootloader.elf -Ttext=0x8000
+	${CROSS_PREFIX}objcopy -O binary bootloader.elf ${ROOT_DIR}/minix_rpi.bin
+
+	# pack modules
+	cpio -o --format=newc >> ${ROOT_DIR}/minix_rpi.bin <<EOF
+kernel.bin
+mod01_ds.elf
+mod02_rs.elf
+mod03_pm.elf
+mod04_sched.elf
+mod05_vfs.elf
+mod06_memory.elf
+mod07_tty.elf
+mod08_mib.elf
+mod09_vm.elf
+mod10_pfs.elf
+mod11_mfs.elf
+mod12_init.elf
+EOF
+)
+
+cat >${WORK_DIR}/boot.mtree <<EOF
+. type=dir
+./LICENCE.broadcom type=file
+./bcm2708-rpi-b-plus.dtb type=file
+./bcm2708-rpi-b.dtb type=file
+./bcm2708-rpi-cm.dtb type=file
+./bcm2709-rpi-2-b.dtb type=file
+./bcm2710-rpi-3-b.dtb type=file
+./bootcode.bin type=file
+./config.txt type=file
+./fixup.dat type=file
+./minix_rpi.bin type=file
+./overlays type=dir
+./overlays/pi3-disable-bt.dtbo type=file
+./overlays/pi3-miniuart-bt.dtbo type=file
+./start.elf type=file
+EOF
+
+#
+# Create the FAT partition, which contains the bootloader files, kernel and modules
+#
+${CROSS_TOOLS}/nbmakefs -t msdos -s ${FAT_SIZE}b -o F=32,c=1 \
+	-F ${WORK_DIR}/boot.mtree ${WORK_DIR}/fat.img ${ROOT_DIR}
 
 #
 # Write the partition table using the natively compiled
 # minix partition utility
 #
-${CROSS_TOOLS}/nbpartition -f -m ${IMG} $((${FAT_START}/512)) "c:$((${FAT_SIZE}/512))*"
+${CROSS_TOOLS}/nbpartition -f -m ${IMG} ${FAT_START} \
+	"c:${FAT_SIZE}*" 81:${_ROOT_SIZE} 81:${_USR_SIZE} 81:${_HOME_SIZE}
 
-echo ""
+#
+# Merge the partitions into a single image.
+#
+echo "Merging file systems"
+dd if=${WORK_DIR}/fat.img of=${IMG} seek=$FAT_START conv=notrunc
+
 echo "Disk image at `pwd`/${IMG}"
-echo ""
 echo "To boot this image on kvm:"
 echo "qemu-system-arm -M raspi2 -kernel if=sd,cache=writeback,format=raw,file=/$(pwd)/${IMG} -bios ${ROOT_DIR}/minix_rpi.bin -serial stdio -dtb $(pwd)/releasetools/rpi-firmware/bcm2709-rpi-2-b.dtb "
