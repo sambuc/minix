@@ -19,12 +19,15 @@
 ./service/fb                                            minix-base
 ./service/gpio                                          minix-base
 ./service/i2c                                           minix-base
+./service/i2c_omap                                      minix-base
+./service/i2c_rpi                                       minix-base
 ./service/lan8710a                                      minix-base
 ./service/mailbox                                       minix-base
 ./service/omap_emmc                                     minix-base
 ./service/omap_mmc                                      minix-base
-./service/rpi_mmc                                       minix-base
 ./service/random                                        minix-base
+./service/rpi_emmc                                      minix-base
+./service/rpi_mmc                                       minix-base
 ./service/sht21                                         minix-base
 ./service/tda19988                                      minix-base
 ./service/tps65217                                      minix-base
