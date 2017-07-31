@@ -22,11 +22,11 @@
 /* local headers */
 #include "mmchost.h"
 
-/* used for logging */
-static struct log log = {
-	.name = "mmc_block",
+/* Initialize the log system. */
+struct log log = {
+	.name = "mmc",
 	.log_level = LEVEL_INFO,
-	.log_func = default_log
+	.log_func = default_log,
 };
 
 /* holding the current host controller */
@@ -114,10 +114,10 @@ apply_env()
 	} else {
 		log_warn(&log, "Unknown driver %s\n", driver);
 	}
-	/* Initialize the verbosity level. */
 	v = 0;
+	/* Initialize the verbosity level. */
 	if (env_parse("log_level", "d", 0, &v, LEVEL_NONE,
-		LEVEL_TRACE) == EP_SET) {
+		LEVEL_TRACE + 1) == EP_SET) {
 		set_log_level(v);
 	}
 
@@ -641,14 +641,11 @@ get_slot(devminor_t minor)
 static void
 set_log_level(int level)
 {
-	if (level < 0 || level >= 4) {
+	if ((level < LEVEL_NONE) || (level > (LEVEL_TRACE + 1))) {
 		return;
 	}
 	log_info(&log, "Setting verbosity level to %d\n", level);
 	log.log_level = level;
-	if (host.set_log_level) {
-		host.set_log_level(level);
-	}
 }
 
 int

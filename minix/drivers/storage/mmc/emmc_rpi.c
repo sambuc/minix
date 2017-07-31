@@ -6,10 +6,10 @@
 #include <minix/syslib.h>
 
 #include <sys/mman.h>
-//#include "rpi_mmc.h"
-#include "../mmchost.h"
-#include "../sdmmcreg.h"
-#include "rpi_mmc.h"
+
+#include "mmc_rpi.h"
+#include "mmchost.h"
+#include "sdmmcreg.h"
 
 /* MINIX IRQ timeout. Twice the host controller data/busy timeout @ 48MHz. */
 #define IRQ_TIMEOUT 5600000 /* 5,600,000 us */
@@ -65,7 +65,7 @@
 static uint32_t bus_width;
 
 /* AM335x MMCHS registers virtual addresses: virtual base + offset. */
-static rpi_mmchs_registers *reg;
+static struct rpi_mmchs_registers *reg;
 
 /* Card registers. */
 static uint32_t card_csd[4];
@@ -76,14 +76,6 @@ static uint64_t card_size;
 
 /* IRQ_HOOK_ID for SYS_IRQCTL kernel call. */
 static int hook_id = 1;
-
-/* Initialize the log system. */
-static struct log log = {
-	.name = "emmc",
-	.log_level = LEVEL_INFO,
-	.log_func = default_log,
-};
-
 
 /*
  * Spin until a register flag is set, or the time runs out.
@@ -146,7 +138,6 @@ spin_until_clear(uint32_t address, uint32_t flag)
 static int
 set_bus_clkd(uint32_t clkd)
 {
-	uint32_t control1;
 	/*
 	 * Disable the bus clock, set the clock divider, wait until the
 	 * internal clock is stable, enable the bus clock.
@@ -258,6 +249,7 @@ send_cmd(uint32_t arg, uint32_t cmd)
 		reset_mmchs_fsm(MMCHS_SD_SYSCTL_SRC);
 		return -1;
 	}
+
 	return 0;
 }
 
@@ -273,6 +265,7 @@ send_cmd_check_r1(uint32_t arg, uint32_t cmd)
 	/* Check for card errors in the card response (R1). */
 	if (read32(reg->resp0) & R1_ERROR_MASK)
 		return -1;
+
 	return 0;
 }
 
@@ -532,6 +525,7 @@ write_data(uint32_t *data)
 		reset_mmchs_fsm(MMCHS_SD_SYSCTL_SRD);
 		return -1;
 	}
+
 	return 0;
 }
 
@@ -623,6 +617,7 @@ minix_init(void)
 		log_warn(&log, "can't set irq\n");
 		return -1;
 	}
+
 	return 0;
 }
 
@@ -701,29 +696,21 @@ emmc_host_init(struct mmc_host *host)
 		| MMCHS_SD_IE_BWR_ENABLE_ENABLE
 		| MMCHS_SD_IE_TC_ENABLE_ENABLE
 		| MMCHS_SD_IE_CC_ENABLE_ENABLE);
+
 	return 0;
 }
-
-/*
- * Interface to the MINIX block device driver.
- * Set the log level.
- */
-static void
-emmc_set_log_level(int level)
-{
-	log.log_level = level;
-}
-
 
 /*
  * Interface to the MINIX block device driver.
  * Unused, but declared in mmchost.h.
  */
+#if 0
 static int
 emmc_host_reset(struct mmc_host *host)
 {
 	return 0;
 }
+#endif
 
 /*
  * Interface to the MINIX block device driver.
@@ -856,6 +843,7 @@ emmc_card_release(struct sd_card *card)
 	 * The block special file is closed, but the driver does not need to
 	 * "release" the eMMC, even if the driver is unloaded.
 	 */
+
 	return 0;
 }
 
@@ -931,6 +919,10 @@ emmc_write(struct sd_card *card,
 	return emmc_read_write(&cim_write_block, blknr, count, buf);
 }
 
+/*
+ * Interface to the MINIX block device driver.
+ * Driver interface registration.
+ */
 void
 host_initialize_host_structure_mmchs(struct mmc_host *host)
 {
@@ -939,7 +931,6 @@ host_initialize_host_structure_mmchs(struct mmc_host *host)
 	/* Register the driver interface at the block device driver. */
 	host->host_set_instance = &emmc_host_set_instance;
 	host->host_init =         &emmc_host_init;
-	host->set_log_level =     &emmc_set_log_level;
 	host->host_reset =        NULL;
 	host->card_detect =       &emmc_card_detect;
 	host->card_initialize =   &emmc_card_initialize;
@@ -952,6 +943,9 @@ host_initialize_host_structure_mmchs(struct mmc_host *host)
 		host->slot[i].card.state = SD_MODE_UNINITIALIZED;
 		host->slot[i].card.slot = &host->slot[i];
 	}
+
+	/* Customize name for logs */
+	log.name = "emmc_rpi";
 }
 
 /*

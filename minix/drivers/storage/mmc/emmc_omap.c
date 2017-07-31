@@ -7,9 +7,9 @@
 
 #include <sys/mman.h>
 
-#include "omap_mmc.h"
-#include "../mmchost.h"
-#include "../sdmmcreg.h"
+#include "mmc_omap.h"
+#include "mmchost.h"
+#include "sdmmcreg.h"
 
 /* MINIX IRQ timeout. Twice the host controller data/busy timeout @ 48MHz. */
 #define IRQ_TIMEOUT 5600000 /* 5,600,000 us */
@@ -76,14 +76,6 @@ static uint64_t card_size;
 
 /* IRQ_HOOK_ID for SYS_IRQCTL kernel call. */
 static int hook_id = 1;
-
-/* Initialize the log system. */
-static struct log log = {
-	.name = "emmc",
-	.log_level = LEVEL_INFO,
-	.log_func = default_log,
-};
-
 
 /*
  * Spin until a register flag is set, or the time runs out.
@@ -223,8 +215,10 @@ send_cmd(uint32_t arg, uint32_t cmd)
 	write32(reg->ARG, arg);
 	write32(reg->CMD, cmd);
 	/* Wait for the command completion. */
-	if (irq_wait() < 0)
+	if (irq_wait() < 0) {
+		log_warn (&log, "can't wait irq\n");
 		return -1;
+	}
 	stat = read32(reg->SD_STAT);
 	/*
 	 * Clear only the command status/error bits. The transfer status/error
@@ -236,6 +230,7 @@ send_cmd(uint32_t arg, uint32_t cmd)
 		| MMCHS_SD_STAT_CTO
 		| MMCHS_SD_STAT_CC);
 	if (stat & MMCHS_SD_STAT_CTO) {
+		log_warn(&log, "timeout error\n");
 		reset_mmchs_fsm(MMCHS_SD_SYSCTL_SRC);
 		return -1;
 	}
@@ -623,8 +618,10 @@ minix_init(void)
 	reg->ISE       += v_base;
 
 	/* Register the MMC1 interrupt number. */
-	if (sys_irqsetpolicy(AM335X_MMCSD1INT, 0, &hook_id) != OK)
+	if (sys_irqsetpolicy(AM335X_MMCSD1INT, 0, &hook_id) != OK) {
+		log_warn(&log, "can't set irq\n");
 		return -1;
+	}
 
 	return 0;
 }
@@ -745,17 +742,6 @@ emmc_host_init(struct mmc_host *host)
 
 /*
  * Interface to the MINIX block device driver.
- * Set the log level.
- */
-static void
-emmc_set_log_level(int level)
-{
-	log.log_level = level;
-}
-
-
-/*
- * Interface to the MINIX block device driver.
  * Unused, but declared in mmchost.h.
  */
 #if 0
@@ -841,6 +827,7 @@ emmc_card_initialize(struct sd_slot *slot)
 	/* CMD8 */
 	if (send_ext_csd() < 0)
 		return NULL;
+
 	/* Receive the Extended CSD register. */
 	if (read_data((uint32_t *)card_ext_csd) < 0)
 		return NULL;
@@ -1005,7 +992,6 @@ host_initialize_host_structure_mmchs(struct mmc_host *host)
 	/* Register the driver interface at the block device driver. */
 	host->host_set_instance = &emmc_host_set_instance;
 	host->host_init =         &emmc_host_init;
-	host->set_log_level =     &emmc_set_log_level;
 	host->host_reset =        NULL;
 	host->card_detect =       &emmc_card_detect;
 	host->card_initialize =   &emmc_card_initialize;
@@ -1018,6 +1004,9 @@ host_initialize_host_structure_mmchs(struct mmc_host *host)
 		host->slot[i].card.state = SD_MODE_UNINITIALIZED;
 		host->slot[i].card.slot = &host->slot[i];
 	}
+
+	/* Customize name for logs */
+	log.name = "emmc_omap";
 }
 
 /*

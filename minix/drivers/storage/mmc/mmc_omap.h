@@ -1,53 +1,104 @@
-#ifndef __SD_H__
-#define __SD_H__
+#ifndef _MMC_OMAP_H_
+#define _MMC_OMAP_H_
 
-#define RW
-#define R
-
-typedef struct {
-	RW vir_bytes blkscnt;
-	RW vir_bytes arg1;
-	RW vir_bytes cmdtm;
-	R vir_bytes resp0;
-	R vir_bytes resp1;
-	R vir_bytes resp2;
-	R vir_bytes resp3;
-	RW vir_bytes data;
-	R vir_bytes status;
-	RW vir_bytes control0;
-	RW vir_bytes control1;
-	RW vir_bytes irpt;
-	RW vir_bytes irpt_mask;
-	RW vir_bytes irpt_en;
-	RW vir_bytes control2;
-	RW vir_bytes slotisr_var;
-} rpi_mmchs_registers;
-
-rpi_mmchs_registers regs_v0 = {
-	.blkscnt = 0x4,
-	.arg1 = 0x8,
-	.cmdtm = 0xc,
-	.resp0 = 0x10,
-	.resp1 = 0x14,
-	.resp2 = 0x18,
-	.resp3 = 0x1c,
-	.data = 0x20,
-	.status = 0x24,
-	.control0 = 0x28,
-	.control1 = 0x2c,
-	.irpt = 0x30,
-	.irpt_mask = 0x34,
-	.irpt_en = 0x38,
-	.control2 = 0x3c,
-	.slotisr_var = 0xfc
+struct omap_mmchs_registers {
+	/* SD system configuration */ 
+	vir_bytes SYSCONFIG;
+	/* SD system status */
+	vir_bytes SYSSTATUS;
+	/* Configuration (functional mode,card initialization etc) */
+	vir_bytes CON;
+	/* Transfer length configuration */ 
+	vir_bytes BLK;
+	/* Command argument bit 38-8 of command format*/
+	vir_bytes ARG;
+	/* Command and transfer mode */
+	vir_bytes CMD;
+	/* SDMA System address */
+	vir_bytes SDMASA;
+	/* Command response 0 and 1 */
+	vir_bytes RSP10;
+	/* Command response 2 and 3  */
+	vir_bytes RSP32;
+	/* Command response 4 and 5  */ 
+	vir_bytes RSP54;
+	/* Command response 6 and 7  */
+	vir_bytes RSP76;
+	/* Data register */
+	vir_bytes DATA;
+	/* Present state */
+	vir_bytes PSTATE;
+	/* Host control(power ,wake-up and transfer) */
+	vir_bytes HCTL;
+	/* SD System control (reset,clocks and timeout) */
+	vir_bytes SYSCTL;
+	/* SD Interrupt status */
+	vir_bytes SD_STAT;
+	/* SD Interrupt Enable register */
+	vir_bytes IE;
+	/* SD Interrupt Signal Enable register */
+	vir_bytes ISE;
+	/* Capabilities of the host controller */ 
+	vir_bytes CAPA;
+	/* Current capabilities of the host controller */
+	vir_bytes CUR_CAPA;
 };
 
-struct rpi_mmchs {
+struct omap_mmchs {
 	vir_bytes io_base;
 	vir_bytes io_size;
 	phys_bytes hw_base;/* HW address */
 	int irq_nr;
-	rpi_mmchs_registers * regs;
+	struct omap_mmchs_registers * regs;
+};
+
+/* version used on the AM335x */
+struct omap_mmchs_registers regs_v1 = {
+	.SYSCONFIG = 0x110,
+	.SYSSTATUS = 0x114,
+	.CON = 0x12c,
+	.BLK = 0x204,
+	.ARG = 0x208,
+	.CMD = 0x20c,
+	.SDMASA = 0x200,
+	.RSP10 = 0x210,
+	.RSP32 = 0x214,
+	.RSP54 = 0x218,
+	.RSP76 = 0x21c,
+	.DATA = 0x220,
+	.PSTATE = 0x224,
+	.HCTL = 0x228,
+	.SYSCTL = 0x22c,
+	.SD_STAT = 0x230,
+	.IE = 0x234,
+	.ISE = 0x238,
+	.CAPA = 0x240,
+	.CUR_CAPA = 0x248,
+};
+
+/* version used on the DM37xx */
+/* DM and AM have the same register but shifted by 0x100. */
+struct omap_mmchs_registers regs_v0 = {
+	.SYSCONFIG = 0x010,
+	.SYSSTATUS = 0x014,
+	.CON = 0x02c,
+	.BLK = 0x104,
+	.ARG = 0x108,
+	.CMD = 0x10c,
+	.SDMASA = 0x100,
+	.RSP10 = 0x110,
+	.RSP32 = 0x114,
+	.RSP54 = 0x118,
+	.RSP76 = 0x11c,
+	.DATA = 0x120,
+	.PSTATE = 0x124,
+	.HCTL = 0x128,
+	.SYSCTL = 0x12c,
+	.SD_STAT = 0x130,
+	.IE = 0x134,
+	.ISE = 0x138,
+	.CAPA = 0x140,
+	.CUR_CAPA = 0x148,
 };
 
 #define MMCHS_SD_SYSCONFIG_AUTOIDLE                    (0x1 << 0)  /* Internal clock gating strategy */
@@ -178,27 +229,26 @@ struct rpi_mmchs {
 #define MMCHS_SD_SYSCTL_DTO_2POW20   (0x7 << 16) /* TCF x 2^20  */
 #define MMCHS_SD_SYSCTL_DTO_2POW27   (0xe << 16) /* TCF x 2^27  */
 
-#define MMCHS_SD_STAT_CERR 				(0x1 << 28) /* card error */
-#define MMCHS_SD_STAT_DEB  				(0x1 << 22) /* data end bit error */
-#define MMCHS_SD_STAT_DCRC 				(0x1 << 21) /* data CRC error */
-#define MMCHS_SD_STAT_DTO  				(0x1 << 20) /* data timeout error */
-#define MMCHS_SD_STAT_CIE  				(0x1 << 19) /* command index error */
-#define MMCHS_SD_STAT_CEB  				(0x1 << 18) /* command end bit error */
-#define MMCHS_SD_STAT_CCRC 				(0x1 << 17) /* command CRC error */
-#define MMCHS_SD_STAT_CTO  				(0x1 << 16) /* command timeout error */
-#define MMCHS_SD_STAT_DONE 				(0xffff0001u) /* send command done */	
-#define MMCHS_SD_STAT_ERRI        		(0x01 << 15) /* Error interrupt */
-#define MMCHS_SD_STAT_ERROR_MASK  		(0xfe << 15 | 0x1 << 24)
-#define MMCHS_SD_STAT_BRR         		(0x1 << 5) /* Buffer Read ready */
-#define MMCHS_SD_STAT_BWR         		(0x1 << 4) /* Buffer Write ready */
-#define MMCHS_SD_STAT_CC          		(0x1 << 0) /* Command complete status */
-#define MMCHS_SD_STAT_CC_UNRAISED 		(0x0 << 0) /* Command not completed */
-#define MMCHS_SD_STAT_CC_RAISED   		(0x1 << 0) /* Command completed */
-#define MMCHS_SD_STAT_TC          		(0x1 << 1) /* Transfer complete status */
-#define MMCHS_SD_STAT_TC_UNRAISED 		(0x0 << 1) /* Transfer not completed */
-#define MMCHS_SD_STAT_TC_RAISED   		(0x1 << 1) /* Transfer completed */
+#define MMCHS_SD_STAT_CERR            (0x1 << 28) /* card error */
+#define MMCHS_SD_STAT_DEB             (0x1 << 22) /* data end bit error */
+#define MMCHS_SD_STAT_DCRC            (0x1 << 21) /* data CRC error */
+#define MMCHS_SD_STAT_DTO             (0x1 << 20) /* data timeout error */
+#define MMCHS_SD_STAT_CIE             (0x1 << 19) /* command index error */
+#define MMCHS_SD_STAT_CEB             (0x1 << 18) /* command end bit error */
+#define MMCHS_SD_STAT_CCRC            (0x1 << 17) /* command CRC error */
+#define MMCHS_SD_STAT_CTO             (0x1 << 16) /* command timeout error */
+#define MMCHS_SD_STAT_ERRI            (0x01 << 15) /* Error interrupt */
+#define MMCHS_SD_STAT_ERROR_MASK      (0xff << 15 | 0x3 << 24 | 0x03 << 28)
+#define MMCHS_SD_STAT_BRR             (0x1 << 5) /* Buffer Read ready */
+#define MMCHS_SD_STAT_BWR             (0x1 << 4) /* Buffer Write ready */
+#define MMCHS_SD_STAT_CC              (0x1 << 0) /* Command complete status */
+#define MMCHS_SD_STAT_CC_UNRAISED     (0x0 << 0) /* Command not completed */
+#define MMCHS_SD_STAT_CC_RAISED       (0x1 << 0) /* Command completed */
+#define MMCHS_SD_STAT_TC              (0x1 << 1) /* Transfer complete status */
+#define MMCHS_SD_STAT_TC_UNRAISED     (0x0 << 1) /* Transfer not completed */
+#define MMCHS_SD_STAT_TC_RAISED       (0x1 << 1) /* Transfer completed */
 
-#define MMCHS_SD_IE_ERROR_MASK     (0xfe << 15 | 0x1 << 24)
+#define MMCHS_SD_IE_ERROR_MASK     (0xff << 15 | 0x3 << 24 | 0x03 << 28)
 
 #define MMCHS_SD_IE_CC_ENABLE        (0x1 << 0) /* Command complete interrupt enable */
 #define MMCHS_SD_IE_CC_ENABLE_ENABLE (0x1 << 0) /* Command complete Interrupts are enabled */
@@ -223,25 +273,4 @@ struct rpi_mmchs {
 #define MMCHS_SD_CAPA_VS30 (0x01 << 25 )  /* 3.0 volt */
 #define MMCHS_SD_CAPA_VS33 (0x01 << 24 )  /* 3.3 volt */
 
-#define IS_APP_CMD              0x80000000
-#define ACMD(a)                 (a | IS_APP_CMD)
-#define SET_BUS_WIDTH           (6 | IS_APP_CMD)
-#define SD_STATUS               (13 | IS_APP_CMD)
-#define SEND_NUM_WR_BLOCKS      (22 | IS_APP_CMD)
-#define SET_WR_BLK_ERASE_COUNT  (23 | IS_APP_CMD)
-#define SD_SEND_OP_COND         (41 | IS_APP_CMD)
-#define SET_CLR_CARD_DETECT     (42 | IS_APP_CMD)
-#define SEND_SCR                (51 | IS_APP_CMD)
-
-#define SD_GET_CLOCK_DIVIDER_FAIL	0xffffffff
-
-#define MIN_FREQ 400000
-#define BCM2835_EMMC_WRITE_DELAY       (((2 * 1000000) / MIN_FREQ) + 1)
-
-// Enable 4-bit support
-#define SD_4BIT_DATA
-
-// Enable SDXC maximum performance mode
-#define SDXC_MAXIMUM_PERFORMANCE
-
-#endif
+#endif /* _MMC_OMAP_H_*/

@@ -14,15 +14,6 @@
 #include "mmchost.h"
 #include "sdmmcreg.h"
 
-/*
- * Define a structure to be used for logging
- */
-static struct log log = {
-	.name = "mmc_host_memory",
-	.log_level = LEVEL_INFO,
-	.log_func = default_log
-};
-
 /* This is currently a dummy driver using an in-memory structure */
 #define DUMMY_SIZE_IN_BLOCKS 0xFFFFFu
 #define DUMMY_BLOCK_SIZE 512
@@ -68,14 +59,6 @@ int
 dummy_host_init(struct mmc_host *host)
 {
 	return 0;
-}
-
-void
-dummy_set_log_level(int level)
-{
-	if (level >= 0 && level <= 4) {
-		log.log_level = level;
-	}
 }
 
 int
@@ -152,7 +135,6 @@ host_initialize_host_structure_dummy(struct mmc_host *host)
 
 	host->host_set_instance = dummy_host_set_instance;
 	host->host_init = dummy_host_init;
-	host->set_log_level = dummy_set_log_level;
 	host->host_reset = dummy_host_reset;
 	host->card_detect = dummy_card_detect;
 	host->card_initialize = dummy_card_initialize;
@@ -167,4 +149,7 @@ host_initialize_host_structure_dummy(struct mmc_host *host)
 		host->slot[i].card.slot = &host->slot[i];
 	}
 	init_dummy_sdcard(&host->slot[0]);
+
+	/* Customize name for logs */
+	log.name = "mmc_memory";
 }

@@ -94,10 +94,10 @@ dir.acpi:=		minix/drivers/power/acpi
 .endif # ${MACHINE_ARCH} == "i386"
 
 .if ${MACHINE_ARCH} == "earm"
-PROGRAMS+=		rpi_mmc
-dir.rpi_mmc:=	minix/drivers/storage/mmc/rpi
 PROGRAMS+=		omap_mmc
-dir.omap_mmc:=	minix/drivers/storage/mmc/omap
+dir.omap_mmc:=	minix/drivers/storage/mmc
+PROGRAMS+=		rpi_mmc
+dir.rpi_mmc:=	minix/drivers/storage/mmc
 PROGRAMS+=		mailbox
 dir.mailbox:=	minix/drivers/system/mailbox
 .endif # ${MACHINE_ARCH} == "earm"

@@ -45,15 +45,9 @@ then	if [ -e $ACPI -a -n "`sysenv acpi`" ]
 	/bin/umount /proc >/dev/null
 fi
 
-# XXX: We don't have anything better to do on Raspberry Pi yet
-if [ "$(/bin/sysenv board_name)" = "RPI_2_B" ] || [ "$(/bin/sysenv board_name)" = "RPI_3_B" ]
-then
-	exec /bin/sh < /dev/console
-fi
-
 if [ X`/bin/sysenv arch` = Xearm ]
 then	echo Starting the mmc driver
-	/bin/service -c up /service/rpi_mmc -dev /dev/c0d0
+	/bin/service -c up /service/rpi_mmc -args "log_level=5" -dev /dev/c0d0
 fi
 
 /bin/service up /service/procfs || echo "WARNING: couldn't start procfs"
@@ -109,6 +103,12 @@ then
 fi
 
 /bin/mount -e -n -t procfs none /proc || echo "WARNING: couldn't mount procfs"
+
+# XXX: We don't have anything better to do on Raspberry Pi yet
+if [ "$(/bin/sysenv board_name)" = "RPI_2_B" ] || [ "$(/bin/sysenv board_name)" = "RPI_3_B" ]
+then
+	exec /bin/sh < /dev/console
+fi
 
 if ! sysenv bootramdisk >/dev/null
 then

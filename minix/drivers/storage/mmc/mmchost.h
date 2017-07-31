@@ -1,4 +1,3 @@
-
 #define SUBPARTITION_PER_PARTITION 4	/* 4 sub partitions per partition */
 #define PARTITONS_PER_DISK 4	/* 4 partitions per disk */
 #define MINOR_PER_DISK  1	/* one additional minor to point to */
@@ -30,6 +29,7 @@
 
 #define MAX_SD_SLOTS 4
 
+extern struct log log;
 struct mmc_host;
 
 //TODO Add more modes like INACTIVE STATE and such
@@ -110,8 +110,6 @@ struct mmc_host
 	int (*host_set_instance) (struct mmc_host * host, int instance);
 	/* MMC host configuration */
 	int (*host_init) (struct mmc_host * host);
-	/* Set log level */
-	void (*set_log_level) (int level);
 	/* Host controller reset */
 	int (*host_reset) (struct mmc_host * host);
 	/* Card detection (binary yes/no) */

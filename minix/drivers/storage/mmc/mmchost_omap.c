@@ -21,22 +21,20 @@
 #include <unistd.h>
 
 /* local headers */
-#include "../mmchost.h"
+#include "mmchost.h"
 
 /* header imported from netbsd */
-#include "../sdmmcreg.h"
-#include "../sdhcreg.h"
+#include "sdmmcreg.h"
+#include "sdhcreg.h"
 
 /* omap /hardware related */
-#include "omap_mmc.h"
+#include "mmc_omap.h"
 
 #define USE_INTR
 
 #ifdef USE_INTR
 static int hook_id = 1;
 #endif
-
-#define USE_DMA
 
 #define SANE_TIMEOUT 500000	/* 500 ms */
 
@@ -63,19 +61,10 @@ struct omap_mmchs bbxm_sdcard = {
  */
 #define	div_roundup(x, y) (((x)+((y)-1))/(y))
 
-/*
- * Define a structure to be used for logging
- */
-static struct log log = {
-	.name = "mmc_host_mmchs",
-	.log_level = LEVEL_INFO,
-	.log_func = default_log
-};
-
-#define HSMMCSD_0_IN_FREQ    96000000	/* 96MHz */
-#define HSMMCSD_0_INIT_FREQ  400000	/* 400kHz */
-#define HSMMCSD_0_FREQ_25MHZ  25000000	/* 25MHz */
-#define HSMMCSD_0_FREQ_50MHZ  50000000	/* 50MHz */
+#define HSMMCSD_0_IN_FREQ	96000000 /* 96MHz */
+#define HSMMCSD_0_INIT_FREQ	  400000 /* 400kHz */
+#define HSMMCSD_0_FREQ_25MHZ	25000000 /* 25MHz */
+#define HSMMCSD_0_FREQ_50MHZ	50000000 /* 50MHz */
 
 void
 mmc_set32(vir_bytes reg, u32_t mask, u32_t value)
@@ -149,7 +138,7 @@ mmchs_init(uint32_t instance)
 
 	/* Write 1 to sysconfig[0] to trigger a reset */
 	mmc_set32(mmchs->regs->SYSCONFIG, MMCHS_SD_SYSCONFIG_SOFTRESET,
-	    MMCHS_SD_SYSCONFIG_SOFTRESET);
+		MMCHS_SD_SYSCONFIG_SOFTRESET);
 
 	/* Read sysstatus to know when it's done */
 
@@ -1076,14 +1065,6 @@ mmchs_host_init(struct mmc_host *host)
 	return 0;
 }
 
-void
-mmchs_set_log_level(int level)
-{
-	if (level >= 0 && level <= 4) {
-		log.log_level = level;
-	}
-}
-
 int
 mmchs_host_set_instance(struct mmc_host *host, int instance)
 {
@@ -1189,9 +1170,7 @@ static int
 mmchs_host_read(struct sd_card *card,
     uint32_t blknr, uint32_t count, unsigned char *buf)
 {
-	uint32_t i;
-	i = count;
-	for (i = 0; i < count; i++) {
+	for (uint32_t i = 0; i < count; i++) {
 		read_single_block(&card->regs, blknr + i,
 		    buf + (i * card->blk_size));
 	}
@@ -1248,7 +1227,6 @@ host_initialize_host_structure_mmchs(struct mmc_host *host)
 	assert(mmchs);
 	host->host_set_instance = mmchs_host_set_instance;
 	host->host_init = mmchs_host_init;
-	host->set_log_level = mmchs_set_log_level;
 	host->host_reset = mmchs_host_reset;
 	host->card_detect = mmchs_card_detect;
 	host->card_initialize = mmchs_card_initialize;
@@ -1263,4 +1241,7 @@ host_initialize_host_structure_mmchs(struct mmc_host *host)
 		host->slot[i].host = host;
 		host->slot[i].card.slot = &host->slot[i];
 	}
+
+	/* Customize name for logs */
+	log.name = "mmc_omap";
 }

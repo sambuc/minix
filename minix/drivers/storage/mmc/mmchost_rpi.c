@@ -21,14 +21,14 @@
 #include <unistd.h>
 
 /* local headers */
-#include "../mmchost.h"
+#include "mmchost.h"
 
 /* header imported from netbsd */
-#include "../sdmmcreg.h"
-#include "../sdhcreg.h"
+#include "sdmmcreg.h"
+#include "sdhcreg.h"
 
 /* rpi hardware related */
-#include "rpi_mmc.h"
+#include "mmc_rpi.h"
 
 #define USE_INTR
 
@@ -53,19 +53,10 @@ struct rpi_mmchs rpi_sdcard = {
  */
 #define	div_roundup(x, y) (((x)+((y)-1))/(y))
 
-/*
- * Define a structure to be used for logging
- */
-static struct log log = {
-	.name = "mmc_host_mmchs",
-	.log_level = LEVEL_INFO,
-	.log_func = default_log
-};
-
-#define HSMMCSD_0_IN_FREQ 		96000000	/* 96MHz */
-#define HSMMCSD_0_INIT_FREQ 	400000		/* 400kHz */
-#define HSMMCSD_0_FREQ_25MHZ 	25000000	/* 25MHz */
-#define HSMMCSD_0_FREQ_50MHZ 	50000000	/* 50MHz */
+#define HSMMCSD_0_IN_FREQ	96000000 /* 96MHz */
+#define HSMMCSD_0_INIT_FREQ	  400000 /* 400kHz */
+#define HSMMCSD_0_FREQ_25MHZ	25000000 /* 25MHz */
+#define HSMMCSD_0_FREQ_50MHZ	50000000 /* 50MHz */
 
 void
 mmc_set32(vir_bytes reg, u32_t mask, u32_t value)
@@ -140,7 +131,7 @@ mmchs_init(uint32_t instance)
 	mmc_write32(mmchs->regs->control0, 0);
 	mmc_write32(mmchs->regs->control2, 0);
 	/* Write 1 to sysconfig[0] to trigger a reset */
-	mmc_set32(mmchs->regs->control1, MMCHS_SD_SYSCTL_SRA,         
+	mmc_set32(mmchs->regs->control1, MMCHS_SD_SYSCTL_SRA,
 		MMCHS_SD_SYSCTL_SRA);
 
 	/* Read sysstatus to know when it's done */
@@ -316,7 +307,6 @@ intr_wait(int mask)
 	message m;
 	int ipc_status;
 	int ticks = SANE_TIMEOUT * sys_hz() / 1000000;
-	log_info(&log, "wait irpt with 0x%x\n", mmc_read32(mmchs->regs->irpt));
 
 	if (ticks <= 0)
 		ticks = 1;
@@ -338,10 +328,12 @@ intr_wait(int mask)
 					mmc_read32(mmchs->regs->irpt)) !=
 				    0) {
 					if (v & MMCHS_SD_IE_BWR_ENABLE) {
+						log_info(&log, "MMCHS_SD_IE_BWR_ENABLE 0x%x\n", v & MMCHS_SD_IE_BWR_ENABLE);
 						handle_bwr();
 						continue;
 					}
 					if (v & MMCHS_SD_IE_BRR_ENABLE) {
+						log_info(&log, "MMCHS_SD_IE_BRR_ENABLE 0x%x\n", v & MMCHS_SD_IE_BRR_ENABLE);
 						handle_brr();
 						continue;
 					}
@@ -355,6 +347,7 @@ intr_wait(int mask)
 						sys_setalarm(0, 0);
 						return 0;
 					} else if (v & (1 << 15)) {
+						log_info(&log, "MASK 0x%x 0x%x\n", (1 << 15), v & (1 << 15));
 						return 1;	/* error */
 					}
 
@@ -534,6 +527,7 @@ mmc_send_cmd(struct mmc_command *c)
 		assert(io_data != NULL);
 		mmc_set32(mmchs->regs->blkscnt, MMCHS_SD_BLK_BLEN, io_len);
 	}
+
 	ret = mmchs_send_cmd(cmd, arg);
 
 	if (cmd & MMCHS_SD_CMD_DP_DATA) {
@@ -570,6 +564,7 @@ mmc_send_cmd(struct mmc_command *c)
 
 		}
 	}
+
 	/* copy response into cmd->resp */
 	switch (c->resp_type) {
 	case RESP_LEN_48_CHK_BUSY:
@@ -630,6 +625,8 @@ card_identification()
 	command.args = MMCHS_SD_ARG_CMD8_VHS | MMCHS_SD_ARG_CMD8_CHECK_PATTERN;
 
 	if (mmc_send_cmd(&command)) {
+		/* We currently only support 2.0, and 1.0 won't respond to
+		 * this request */
 		log_warn(&log, "%s,  non SDHC card inserted\n", __FUNCTION__);
 		return 1;
 	}
@@ -896,8 +893,7 @@ mmc_switch(int function, int value, uint8_t * data)
 }
 
 int
-read_single_block(struct sd_card_regs *card,
-    uint32_t blknr, unsigned char *buf)
+read_single_block(struct sd_card *card, uint32_t blknr, unsigned char *buf)
 {
 	struct mmc_command command;
 
@@ -906,7 +902,7 @@ read_single_block(struct sd_card_regs *card,
 	command.resp_type = RESP_LEN_48;
 	command.data_type = DATA_READ;
 	command.data = buf;
-	command.data_len = 512;
+	command.data_len = card->blk_size;
 
 	if (mmc_send_cmd(&command)) {
 		log_warn(&log, "Error sending command\n");
@@ -917,7 +913,7 @@ read_single_block(struct sd_card_regs *card,
 }
 
 int
-write_single_block(struct sd_card_regs *card,
+write_single_block(struct sd_card *card,
     uint32_t blknr, unsigned char *buf)
 {
 	struct mmc_command command;
@@ -927,7 +923,7 @@ write_single_block(struct sd_card_regs *card,
 	command.resp_type = RESP_LEN_48;
 	command.data_type = DATA_WRITE;
 	command.data = buf;
-	command.data_len = 512;
+	command.data_len = card->blk_size;
 
 	/* write single block */
 	if (mmc_send_cmd(&command)) {
@@ -943,14 +939,6 @@ mmchs_host_init(struct mmc_host *host)
 {
 	mmchs_init(1);
 	return 0;
-}
-
-void
-mmchs_set_log_level(int level)
-{
-	if (level >= 0 && level <= 4) {
-		log.log_level = level;
-	}
 }
 
 int
@@ -980,9 +968,11 @@ mmchs_card_detect(struct sd_slot *slot)
 struct sd_card *
 mmchs_card_initialize(struct sd_slot *slot)
 {
+	int blksize;
+	struct sd_card *card;
+
 	mmchs_init(1);
 
-	struct sd_card *card;
 	card = &slot->card;
 	memset(card, 0, sizeof(struct sd_card));
 	card->slot = slot;
@@ -1028,7 +1018,6 @@ mmchs_card_initialize(struct sd_slot *slot)
 		return NULL;
 	}
 
-	int blksize;
 	switch (SD_CSD_READ_BL_LEN(slot->card.regs.csd)) {
 		case 0x09:
 			blksize = 512;
@@ -1044,6 +1033,7 @@ mmchs_card_initialize(struct sd_slot *slot)
 			return NULL;
 	}
 	slot->card.blk_size = blksize;
+	
 	int version;
 	switch (SD_CSD_CSDVER(slot->card.regs.csd)) {
 		case 0:
@@ -1070,7 +1060,11 @@ mmchs_card_initialize(struct sd_slot *slot)
 		slot->card.part[0].dv_size =
 	    	(unsigned long long) SD_CSD_V2_CAPACITY(slot->card.regs.csd) * blksize;
 
-	log_info(&log, "dv_size: %d, blksize: %d\n", slot->card.part[0].dv_size, slot->card.blk_size);
+	log_debug(&log, "CARD: blk_size %ld blk_count %ld\n", slot->card.blk_size, slot->card.blk_count);
+	log_debug(&log, "part0: dv_base %lld dv_size %lld\n", slot->card.part[0].dv_base, slot->card.part[0].dv_size);
+	log_debug(&log, "part1: dv_base %lld dv_size %lld\n", slot->card.part[1].dv_base, slot->card.part[1].dv_size);
+	log_debug(&log, "part2: dv_base %lld dv_size %lld\n", slot->card.part[2].dv_base, slot->card.part[2].dv_size);
+	log_debug(&log, "part3: dv_base %lld dv_size %lld\n", slot->card.part[3].dv_base, slot->card.part[3].dv_size);
 	return &slot->card;
 }
 
@@ -1079,11 +1073,9 @@ static int
 mmchs_host_read(struct sd_card *card,
     uint32_t blknr, uint32_t count, unsigned char *buf)
 {
-	uint32_t i;
-	i = count;
-	for (i = 0; i < count; i++) {
-		log_info(&log, "read %d block\n", i);
-		read_single_block(&card->regs, blknr + i,
+	for (uint32_t i = 0; i < count; i++) {
+		log_info(&log, "read %d block nr %p blk_size %d count %d\n", blknr + i, buf + (i * card->blk_size), card->blk_size, count);
+		read_single_block(card, blknr + i,
 		    buf + (i * card->blk_size));
 	}
 	return OK;
@@ -1098,8 +1090,8 @@ mmchs_host_write(struct sd_card *card,
 
 	i = count;
 	for (i = 0; i < count; i++) {
-		log_info(&log, "write %d block\n", i);
-		write_single_block(&card->regs, blknr + i,
+		log_info(&log, "write %d block nr\n", blknr + i);
+		write_single_block(card, blknr + i,
 		    buf + (i * card->blk_size));
 	}
 
@@ -1136,7 +1128,6 @@ host_initialize_host_structure_mmchs(struct mmc_host *host)
 	assert(mmchs);
 	host->host_set_instance = mmchs_host_set_instance;
 	host->host_init = mmchs_host_init;
-	host->set_log_level = mmchs_set_log_level;
 	host->host_reset = mmchs_host_reset;
 	host->card_detect = mmchs_card_detect;
 	host->card_initialize = mmchs_card_initialize;
@@ -1151,4 +1142,7 @@ host_initialize_host_structure_mmchs(struct mmc_host *host)
 		host->slot[i].host = host;
 		host->slot[i].card.slot = &host->slot[i];
 	}
+
+	/* Customize name for logs */
+	log.name = "mmc_rpi";
 }
