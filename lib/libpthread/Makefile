@@ -73,6 +73,9 @@ SRCS+= pthread_md.S
 .include "${ARCHDIR}/Makefile.inc"
 .endif
 
+.if defined(__MINIX)
+SRCS+=		pthread_userspace.c
+.endif # defined(__MINIX)
 # The PTHREAD__COMPAT flag builds a libpthread that can be dropped
 # into a NetBSD 2/3/4 chroot with a NetBSD 5 or later kernel.
 # This makes threading work in the chroot, no other modifications
