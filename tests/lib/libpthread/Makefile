@@ -32,14 +32,18 @@ TESTS_C+=	t_once
 TESTS_C+=	t_preempt
 TESTS_SH+=	t_resolv
 TESTS_C+=	t_rwlock
+.if !defined(__MINIX)
 TESTS_C+=	t_sem
+.endif # !defined(__MINIX)
 TESTS_C+=	t_sigmask
 TESTS_C+=	t_sigsuspend
 TESTS_C+=	t_siglongjmp
 TESTS_C+=	t_sleep
 TESTS_C+=	t_swapcontext
 
+.if !defined(__MINIX)
 LDADD.t_sem+=	-lrt
+.endif # !defined(__MINIX)
 
 BINDIR=		${TESTSDIR}
 PROGS=		h_atexit

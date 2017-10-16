@@ -20,7 +20,6 @@ SRCS+=	_errno.c
 .if defined(__MINIX)
 # Unsupported by Minix.
 # 	closefrom.c confstr.c extattr.c \
-#	pthread_atfork.c
 #
 # Not useful but portable
 #	disklabel.c
@@ -41,7 +40,7 @@ SRCS+=	alarm.c alphasort.c arc4random.c assert.c asysctl.c \
 	isascii.c isatty.c isctype.c lockf.c nftw.c \
 	nice.c nlist.c nlist_aout.c nlist_coff.c nlist_ecoff.c nlist_elf32.c \
 	nlist_elf64.c opendir.c pause.c popen.c posix_spawn_sched.c \
-	posix_spawn_fileactions.c posix_spawnp.c psignal.c \
+	posix_spawn_fileactions.c posix_spawnp.c psignal.c pthread_atfork.c \
 	ptree.c pwcache.c pw_scan.c raise.c randomid.c rb.c readdir.c \
 	rewinddir.c scandir.c seekdir.c setdomainname.c \
 	sethostname.c setjmperr.c setmode.c setproctitle.c setprogname.c \

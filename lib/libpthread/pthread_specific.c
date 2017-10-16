@@ -49,7 +49,9 @@ __strong_alias(__libc_thr_setspecific,pthread_setspecific)
 __strong_alias(__libc_thr_getspecific,pthread_getspecific)
 __strong_alias(__libc_thr_curcpu,pthread_curcpu_np)
 
+#if !defined(__minix)
 __strong_alias(setcontext,pthread_setcontext)
+#endif /* !defined(__minix) */
 
 int
 pthread_setspecific(pthread_key_t key, const void *value)
@@ -94,6 +96,7 @@ pthread_curcpu_np(void)
 	}
 }
 
+#if !defined(__minix)
 /*
  * Override setcontext so that pthread private pointer is preserved
  */
@@ -113,3 +116,4 @@ pthread_setcontext(const ucontext_t *ucp)
 #endif /* _UC_TLSBASE */
 	return _sys_setcontext(ucp);
 }
+#endif /* !defined(__minix) */

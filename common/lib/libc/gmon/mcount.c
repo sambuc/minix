@@ -138,6 +138,7 @@ _MCOUNT_DECL(u_long frompc, u_long selfpc)
 	int s;
 #endif
 
+#if !defined(__minix)
 #if defined(_REENTRANT) && !defined(_KERNEL)
 	if (__isthreaded) {
 		p = thr_getspecific(_gmonkey);
@@ -148,6 +149,7 @@ _MCOUNT_DECL(u_long frompc, u_long selfpc)
 		}
 	} else
 #endif
+#endif /* !defined(__minix) */
 		p = &_gmonparam;
 	/*
 	 * check that we are profiling

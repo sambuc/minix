@@ -163,7 +163,9 @@ ATF_TC_BODY(once3, tc)
 
 	act.sa_sigaction = handler;
 	sigemptyset(&act.sa_mask);
+#if !defined(__minix)
 	act.sa_flags = SA_SIGINFO;
+#endif /* !defined(__minix) */
 	sigaction(SIGALRM, &act, NULL);
 
 	timerclear(&it.it_value);

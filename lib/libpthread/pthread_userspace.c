@@ -4,6 +4,7 @@
 #include <sys/lwp.h>
 #include <sys/lwpctl.h>
 #include <sys/param.h>
+#include <sys/ras.h>
 #include <sys/syscall.h>
 
 #include <assert.h>
@@ -31,6 +32,9 @@ int	_sys_sched_yield(void);
 int	_sys_mq_send(mqd_t, const char *, size_t, unsigned);
 ssize_t	_sys_mq_receive(mqd_t, char *, size_t, unsigned *);
 
+/* Work around kludge for pthread_cancelstub */
+int pthread__cancel_stub_binder;
+
 struct lwp {
 	int return_value;
 	int flags;
@@ -39,7 +43,7 @@ struct lwp {
 };
 
 static struct lwp lwp_threads[MAX_THREAD_POOL];
-static lwpid_t current_thread = -1;
+static volatile lwpid_t current_thread = -1;
 
 static int
 __minix_runnable(struct lwp* thread)
@@ -60,11 +64,13 @@ __minix_schedule(int signal __unused)
 	static int last_pos = 0;
 	int pos;
 
+//	printf("%s:%d\n", __func__, __LINE__);
 	if (-1 == current_thread) {
 		/* No pthread scheduled yet, so nothing to do. */
 		return;
 	}
 
+//	printf("%s:%d\n", __func__, __LINE__);
 	/* Select Next thread to run. 
 	 * Simply scan the array looking for a schedulable thread, and
 	 * loopback to the start if we reach the end. */
@@ -75,6 +81,7 @@ __minix_schedule(int signal __unused)
 		}
 	}
 
+//	printf("%s:%d\n", __func__, __LINE__);
 	if (pos == last_pos) {
 		/* No other thread found to run, is the current one
 		 * still runnable? */	
@@ -83,36 +90,33 @@ __minix_schedule(int signal __unused)
 		}
 	}
 
+//	printf("%s:%d\n", __func__, __LINE__);
 	/* Restore the next context of the thread picked. */
 	last_pos = pos;
 
-	/* FIXME DO STUFF */
+//	printf("%s:%d\n", __func__, __LINE__);
+	(void)setcontext(&(lwp_threads[pos].context));
 }
 
-static void __attribute__((__constructor__, __used__))
-__pthread_init(void)
+void __pthread_init_minix(void) __attribute__((__constructor__, __used__));
+void 
+__pthread_init_minix(void)
 {
 	int r;
-        struct sigaction old_action;
-        struct sigaction new_action;
+        static struct sigaction old_action;
+        static struct sigaction new_action;
 
         struct itimerval nit;
         struct itimerval oit;
 
-	__libc_atomic_init();
-	__libc_thr_init();
-
-        printf("Start: Setting signal handler\n");
         new_action.sa_handler = __minix_schedule;
         new_action.sa_flags = 0;
         r = sigaction(SIGVTALRM, &new_action, &old_action);
 
         if (0 != r) {
                 int e = errno;
-                printf("Failure to install signal handler: %s\n", strerror(e));
         }
 
-        printf("Start: Setting timer\n");
         nit.it_value.tv_sec = 0;
         nit.it_value.tv_usec = 1;
         nit.it_interval.tv_sec = 0;
@@ -120,7 +124,6 @@ __pthread_init(void)
         r = setitimer(ITIMER_VIRTUAL, &nit, &oit);
         if (0 != r) {
                 int e = errno;
-                printf("Failure to set the virtual timer: %s\n", strerror(e));
         }
 }	
 
@@ -284,13 +287,12 @@ _lwp_unpark(lwpid_t lwp, const void * hint)
 ssize_t
 _lwp_unpark_all(const lwpid_t * targets, size_t ntargets, const void * hint)
 {
-	if (MAX_THREAD_POOL <= ntargets) {
-		errno = EINVAL;
-		return -1;
+	if (NULL == targets) {
+		return MAX_THREAD_POOL;
 	}
 
-	if (NULL == targets) {
-		errno = EFAULT;
+	if (MAX_THREAD_POOL <= ntargets) {
+		errno = EINVAL;
 		return -1;
 	}
 
@@ -298,6 +300,7 @@ _lwp_unpark_all(const lwpid_t * targets, size_t ntargets, const void * hint)
 		lwp_threads[targets[i]].flags |= LW_UNPARKED;
 	}
 
+	printf("%s:%d\n", __func__, __LINE__);
 	return 0;
 }
 
@@ -359,7 +362,7 @@ sched_yield(void)
 	return _sys_sched_yield();
 }
 
-#if 0
+#if 1 /* FIXME */
 int
 _sched_setaffinity(pid_t a, lwpid_t b, size_t c, const cpuset_t *d)
 {
@@ -385,6 +388,14 @@ _sched_getparam(pid_t a, lwpid_t b, int *c, struct sched_param *d)
 }
 
 int
+rasctl(void *addr, size_t len, int op)
+{
+	errno = EOPNOTSUPP;
+	return -1;
+}
+
+#if 0
+int
 _sys_mq_send(mqd_t a, const char *b, size_t c, unsigned d)
 {
 	return -1;
@@ -395,4 +406,5 @@ _sys_mq_receive(mqd_t a, char *b, size_t c, unsigned *d)
 {
 	return -1;
 }
+#endif /* 0 */
 #endif /* 0 */

@@ -25,10 +25,8 @@ SRCS+=	strtod.c
 # private interfaces interfacing to libc
 SRCS+=	dtoa.c ldtoa.c hdtoa.c gdtoa.c
 
-.if !defined(__MINIX)
 # local locking implementation
 SRCS+=	gdtoa_locks.c
-.endif # !defined(__MINIX)
 
 # private interfaces
 SRCS+=	dmisc.c \

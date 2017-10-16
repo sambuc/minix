@@ -111,13 +111,17 @@ ATF_TC_BODY(before_threads, tc)
 	act.sa_sigaction = upcalls_not_started_handler1;
 	sigemptyset(&act.sa_mask);
 	sigaddset(&act.sa_mask, SIGUSR2);
+#if !defined(__minix)
 	act.sa_flags = SA_SIGINFO;
+#endif /* !defined(__minix) */
 
 	ATF_REQUIRE_EQ(sigaction(SIGUSR1, &act, NULL), 0);
 
 	act.sa_sigaction = upcalls_not_started_handler2;
 	sigemptyset(&act.sa_mask);
+#if !defined(__minix)
 	act.sa_flags = SA_SIGINFO;
+#endif /* !defined(__minix) */
 	(void)sigaction(SIGUSR2, &act, NULL);
 
 	kill(getpid(), SIGUSR1);
@@ -182,13 +186,17 @@ ATF_TC_BODY(respected_while_running, tc)
 	act.sa_sigaction = respected_while_running_handler1;
 	sigemptyset(&act.sa_mask);
 	sigaddset(&act.sa_mask, SIGUSR2);
+#if !defined(__minix)
 	act.sa_flags = SA_SIGINFO;
+#endif /* !defined(__minix) */
 
 	ATF_REQUIRE_EQ(sigaction(SIGUSR1, &act, NULL), 0);
 
 	act.sa_sigaction = respected_while_running_handler2;
 	sigemptyset(&act.sa_mask);
+#if !defined(__minix)
 	act.sa_flags = SA_SIGINFO;
+#endif /* !defined(__minix) */
 	(void)sigaction(SIGUSR2, &act, NULL);
 
 	PTHREAD_REQUIRE(pthread_create(&thread, NULL,

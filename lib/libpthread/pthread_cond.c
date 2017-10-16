@@ -405,7 +405,11 @@ pthread_cond_wait_nothread(pthread_t self, pthread_mutex_t *mutex,
 	do {
 		pthread__testcancel(self);
 		pthread_mutex_unlock(mutex);
+#if !defined(__minix)
 		retval = _sys___nanosleep50(&diff, NULL);
+#else
+		retval = nanosleep(&diff, NULL);
+#endif /* ! defined(__minix) */
 		pthread_mutex_lock(mutex);
 	} while (abstime == NULL && retval == 0);
 	pthread__testcancel(self);

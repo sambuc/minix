@@ -54,7 +54,9 @@ int	_sys___sigprocmask14(int, const sigset_t *, sigset_t *);
 int	_sys_sched_yield(void);
 
 __strong_alias(__libc_thr_sigsetmask,pthread_sigmask)
+#if !defined(__minix)
 __strong_alias(__sigprocmask14,pthread_sigmask)
+#endif /* !defined(__minix) */
 __strong_alias(__libc_thr_yield,pthread__sched_yield)
 
 int
@@ -140,6 +142,7 @@ pthread_kill(pthread_t thread, int sig)
 	return 0;
 }
 
+#if !defined(__minix)
 int
 pthread_sigmask(int how, const sigset_t *set, sigset_t *oset)
 {
@@ -147,6 +150,7 @@ pthread_sigmask(int how, const sigset_t *set, sigset_t *oset)
 		return errno;
 	return 0;
 }
+#endif /* !defined(__minix) */
 
 int
 pthread__sched_yield(void)

@@ -6,10 +6,10 @@
 #include <unistd.h>
 
 #ifdef __weak_alias
-__weak_alias(fork, _fork)
+__weak_alias(__fork, _fork)
 #endif
 
-pid_t fork(void)
+pid_t __fork(void)
 {
   message m;
 

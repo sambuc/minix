@@ -215,10 +215,11 @@ static size_t malloc_pagemask;
 #define ptr2idx(foo) \
     (((size_t)(uintptr_t)(foo) >> malloc_pageshift)-malloc_origo)
 
+#undef _MALLOC_LOCK /*LSC*/
 #ifndef _MALLOC_LOCK
 #define _MALLOC_LOCK()
 #endif
-
+#undef _MALLOC_UNLOCK /*LSC*/
 #ifndef _MALLOC_UNLOCK
 #define _MALLOC_UNLOCK()
 #endif

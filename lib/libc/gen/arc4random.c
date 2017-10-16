@@ -467,8 +467,10 @@ arc4random_prng_create(void)
 	prng = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANON, -1, 0);
 	if (prng == MAP_FAILED)
 		goto fail0;
+#if !defined(__minix)
 	if (minherit(prng, size, MAP_INHERIT_ZERO) == -1)
 		goto fail1;
+#endif /* !defined(__minix) */
 
 	return prng;
 

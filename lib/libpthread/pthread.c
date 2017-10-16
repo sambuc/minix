@@ -41,6 +41,9 @@ __RCSID("$NetBSD: pthread.c,v 1.147 2015/05/29 16:05:13 christos Exp $");
 #include <sys/lwpctl.h>
 #include <sys/resource.h>
 #include <sys/tls.h>
+#if defined(__minix)
+#include <minix/sys_config.h>
+#endif /* defined(__minix) */
 
 #include <assert.h>
 #include <dlfcn.h>
@@ -272,6 +275,7 @@ pthread__child_callback(void)
 	 * much. Anything that permits some pthread_* calls to work is
 	 * merely being polite.
 	 */
+	printf("%s:%d\n", __func__, __LINE__);
 	pthread__started = 0;
 }
 
@@ -379,11 +383,13 @@ pthread__getstack(pthread_t newthread, const pthread_attr_t *attr)
 	redzone = (char *)stackbase;
 	stackbase2 = (char *)stackbase + guardsize;
 #endif
+#if !defined(__minix) /* No support for mprotect yet */
 	if (allocated && guardsize &&
 	    mprotect(redzone, guardsize, PROT_NONE) == -1) {
 		munmap(stackbase, stacksize + guardsize);
 		return EPERM;
 	}
+#endif /* !defined(__minix) */
 	newthread->pt_stack.ss_size = stacksize;
 	newthread->pt_stack.ss_sp = stackbase2;
 	newthread->pt_guardsize = guardsize;
@@ -1075,7 +1081,11 @@ pthread__assertfunc(const char *file, int line, const char *function,
 	    function ? function : "",
 	    function ? "\"" : "");
 
+#if !defined(__minix)
 	_sys_write(STDERR_FILENO, buf, (size_t)len);
+#else
+	write(STDERR_FILENO, buf, (size_t)len);
+#endif /* !defined(__minix) */
 	(void)kill(getpid(), SIGABRT);
 
 	_exit(1);
@@ -1106,7 +1116,11 @@ pthread__errorfunc(const char *file, int line, const char *function,
 	    function ? "\"" : "");
 
 	if (pthread__diagassert & DIAGASSERT_STDERR)
+#if !defined(__minix)
 		_sys_write(STDERR_FILENO, buf, len);
+#else
+		write(STDERR_FILENO, buf, len);
+#endif /* !defined(__minix) */
 
 	if (pthread__diagassert & DIAGASSERT_SYSLOG)
 		syslog(LOG_DEBUG | LOG_USER, "%s", buf);
@@ -1278,16 +1292,22 @@ pthread__unpark_all(pthread_queue_t *queue, pthread_t self,
 static void
 pthread__initmainstack(void)
 {
+#if !defined(__minix)
 	struct rlimit slimit;
+#endif /* defined(__minix) */
 	const AuxInfo *aux;
 	size_t size;
 
 	_DIAGASSERT(_dlauxinfo() != NULL);
 
+#if !defined(__minix)
 	if (getrlimit(RLIMIT_STACK, &slimit) == -1)
 		err(EXIT_FAILURE,
 		    "Couldn't get stack resource consumption limits");
 	size = slimit.rlim_cur;
+#else
+	size = DEFAULT_STACK_LIMIT;
+#endif /* !defined(__minix) */
 	pthread__main->pt_stack.ss_size = size;
 
 	for (aux = _dlauxinfo(); aux->a_type != AT_NULL; ++aux) {

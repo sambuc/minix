@@ -64,7 +64,9 @@ SRCS+=	pthread_specific.c
 SRCS+=	pthread_spin.c
 SRCS+=	pthread_tsd.c
 SRCS+=	res_state.c
+.if !defined(__MINIX)
 SRCS+=	sem.c
+.endif # !defined(__MINIX)
 # Architecture-dependent files
 .if exists(${ARCHDIR}/pthread_md.S)
 SRCS+= pthread_md.S
@@ -75,6 +77,11 @@ SRCS+= pthread_md.S
 
 .if defined(__MINIX)
 SRCS+=		pthread_userspace.c
+.PATH.c:	${.CURDIR}/../../common/lib/libc/arch/${ARCHSUBDIR}/atomic
+.PATH.S:	${.CURDIR}/../../common/lib/libc/arch/${ARCHSUBDIR}/atomic
+.PATH.c:	${.CURDIR}/../../common/lib/libc/atomic
+.PATH.c:	${.CURDIR}/../libc/misc
+.include "../../common/lib/libc/arch/${ARCHSUBDIR}/atomic/Makefile.inc"
 .endif # defined(__MINIX)
 # The PTHREAD__COMPAT flag builds a libpthread that can be dropped
 # into a NetBSD 2/3/4 chroot with a NetBSD 5 or later kernel.
@@ -246,3 +253,4 @@ MLINKS+=	pthread_testcancel.3 pthread_setcanceltype.3
 # of the argument to setspecific() has to be discarded *somewhere*
 # before returning it from getspecific().
 CWARNFLAGS+= -Wno-cast-qual
+NOCLANGERROR=
