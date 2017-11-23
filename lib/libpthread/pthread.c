@@ -275,7 +275,6 @@ pthread__child_callback(void)
 	 * much. Anything that permits some pthread_* calls to work is
 	 * merely being polite.
 	 */
-	printf("%s:%d\n", __func__, __LINE__);
 	pthread__started = 0;
 }
 
@@ -1062,6 +1061,9 @@ pthread__errno(void)
 }
 
 ssize_t	_sys_write(int, const void *, size_t);
+#if defined(__minix)
+#define _sys_write(a,b,c) write(a,b,c)
+#endif /* defined(__minix) */
 
 void
 pthread__assertfunc(const char *file, int line, const char *function,
@@ -1081,11 +1083,7 @@ pthread__assertfunc(const char *file, int line, const char *function,
 	    function ? function : "",
 	    function ? "\"" : "");
 
-#if !defined(__minix)
 	_sys_write(STDERR_FILENO, buf, (size_t)len);
-#else
-	write(STDERR_FILENO, buf, (size_t)len);
-#endif /* !defined(__minix) */
 	(void)kill(getpid(), SIGABRT);
 
 	_exit(1);
@@ -1116,11 +1114,7 @@ pthread__errorfunc(const char *file, int line, const char *function,
 	    function ? "\"" : "");
 
 	if (pthread__diagassert & DIAGASSERT_STDERR)
-#if !defined(__minix)
 		_sys_write(STDERR_FILENO, buf, len);
-#else
-		write(STDERR_FILENO, buf, len);
-#endif /* !defined(__minix) */
 
 	if (pthread__diagassert & DIAGASSERT_SYSLOG)
 		syslog(LOG_DEBUG | LOG_USER, "%s", buf);
@@ -1350,7 +1344,7 @@ pthread__initmain(pthread_t *newt)
 		    4 * pthread__pagesize / 1024);
 
 	*newt = pthread__main;
-#if defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II) || !defined(__minix)
+#if defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II) || defined(__minix)
 #if defined(_PTHREAD_GETTCB_EXT)
 	pthread__main->pt_tls = _PTHREAD_GETTCB_EXT();
 #elif defined(__HAVE___LWP_GETTCB_FAST)
@@ -1359,7 +1353,7 @@ pthread__initmain(pthread_t *newt)
 	pthread__main->pt_tls = _lwp_getprivate();
 #endif
 	pthread__main->pt_tls->tcb_pthread = pthread__main;
-#endif /* defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II) || !defined(__minix) */
+#endif /* defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II) || defined(__minix) */
 }
 
 static signed int

@@ -40,10 +40,11 @@ struct lwp {
 	int flags;
 	const char * name;
 	ucontext_t context;
+	struct tls_tcb tls;
 };
 
 static struct lwp lwp_threads[MAX_THREAD_POOL];
-static volatile lwpid_t current_thread = -1;
+static volatile lwpid_t current_thread = 0;
 
 static int
 __minix_runnable(struct lwp* thread)
@@ -62,15 +63,9 @@ static void
 __minix_schedule(int signal __unused)
 {
 	static int last_pos = 0;
+	struct lwp* old = &lwp_threads[current_thread];
 	int pos;
 
-//	printf("%s:%d\n", __func__, __LINE__);
-	if (-1 == current_thread) {
-		/* No pthread scheduled yet, so nothing to do. */
-		return;
-	}
-
-//	printf("%s:%d\n", __func__, __LINE__);
 	/* Select Next thread to run. 
 	 * Simply scan the array looking for a schedulable thread, and
 	 * loopback to the start if we reach the end. */
@@ -81,21 +76,21 @@ __minix_schedule(int signal __unused)
 		}
 	}
 
-//	printf("%s:%d\n", __func__, __LINE__);
 	if (pos == last_pos) {
 		/* No other thread found to run, is the current one
 		 * still runnable? */	
 		if (!__minix_runnable(&lwp_threads[pos])) {
-			assert(!"No runnable threads to schedule!");
+			return; /* "No runnable threads to schedule. */
 		}
 	}
 
-//	printf("%s:%d\n", __func__, __LINE__);
+	/* Point the current thread to the thread picked. */
+	current_thread = pos;
+
 	/* Restore the next context of the thread picked. */
 	last_pos = pos;
 
-//	printf("%s:%d\n", __func__, __LINE__);
-	(void)setcontext(&(lwp_threads[pos].context));
+	(void)swapcontext(&(old->context), &(lwp_threads[pos].context));
 }
 
 void __pthread_init_minix(void) __attribute__((__constructor__, __used__));
@@ -109,23 +104,19 @@ __pthread_init_minix(void)
         struct itimerval nit;
         struct itimerval oit;
 
+	memset(&old_action, 0, sizeof(old_action));
+	memset(&new_action, 0, sizeof(new_action));
+
         new_action.sa_handler = __minix_schedule;
         new_action.sa_flags = 0;
         r = sigaction(SIGVTALRM, &new_action, &old_action);
-
-        if (0 != r) {
-                int e = errno;
-        }
 
         nit.it_value.tv_sec = 0;
         nit.it_value.tv_usec = 1;
         nit.it_interval.tv_sec = 0;
         nit.it_interval.tv_usec = 10;
         r = setitimer(ITIMER_VIRTUAL, &nit, &oit);
-        if (0 != r) {
-                int e = errno;
-        }
-}	
+}
 
 lwpid_t
 _lwp_self(void)
@@ -263,12 +254,13 @@ _lwp_getname(lwpid_t target, char * name, size_t len)
 void *
 _lwp_getprivate(void)
 {
-	return NULL;
+	return &lwp_threads[current_thread].tls;
 }
 
 void
 _lwp_setprivate(void *cookie)
 {
+	/* Not supported */
 }
 
 int
@@ -300,7 +292,6 @@ _lwp_unpark_all(const lwpid_t * targets, size_t ntargets, const void * hint)
 		lwp_threads[targets[i]].flags |= LW_UNPARKED;
 	}
 
-	printf("%s:%d\n", __func__, __LINE__);
 	return 0;
 }
 
@@ -330,8 +321,11 @@ _lwp_kill(lwpid_t thread, int signal)
 int
 _lwp_exit(void)
 {
-	// FIXME
-	return -1;	
+	lwp_threads[current_thread].flags &= ~SLOT_IN_USE;
+	__minix_schedule(SIGVTALRM);
+
+	/* We reach this only if there is nothing left to schedule. */
+	exit(0);
 }
 
 int
@@ -352,7 +346,7 @@ _lwp_ctl(int features, struct lwpctl **address)
 int
 _sys_sched_yield(void)
 {
-	// FIXME
+	__minix_schedule(SIGVTALRM);
 	return -1;
 }
 
