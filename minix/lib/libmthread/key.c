@@ -181,10 +181,3 @@ void mthread_cleanup_values(void)
 	}
   } while (found);
 }
-
-/* pthread compatibility layer. */
-__weak_alias(pthread_key_create, mthread_key_create)
-__weak_alias(pthread_key_delete, mthread_key_delete)
-__weak_alias(pthread_getspecific, mthread_getspecific)
-__weak_alias(pthread_setspecific, mthread_setspecific)
-

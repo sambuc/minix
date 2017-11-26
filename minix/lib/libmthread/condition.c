@@ -269,7 +269,3 @@ mthread_mutex_t *mutex;
 
   return(0);
 }
-
-/* pthread compatibility layer. */
-__weak_alias(pthread_cond_init, mthread_cond_init)
-

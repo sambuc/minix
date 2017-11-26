@@ -207,9 +207,3 @@ void mthread_yield_all(void)
   /* Done yielding all threads. */
   yield_all = 0;
 }
-
-/* pthread compatibility layer. */
-__weak_alias(pthread_yield, mthread_yield)
-__weak_alias(sched_yield, mthread_yield)
-__weak_alias(pthread_yield_all, mthread_yield_all)
-

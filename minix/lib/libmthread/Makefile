@@ -10,7 +10,6 @@ SRCS=	\
 	key.c \
 	misc.c \
 	mutex.c \
-	pthread_compat.c \
 	queue.c \
 	rwlock.c \
 	scheduler.c \

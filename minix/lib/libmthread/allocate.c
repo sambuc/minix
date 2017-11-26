@@ -538,13 +538,3 @@ static void mthread_trampoline(void)
   r = (tcb->m_proc)(tcb->m_arg);
   mthread_exit(r); 
 }
-
-/* pthread compatibility layer. */
-__weak_alias(pthread_create, mthread_create)
-__weak_alias(pthread_detach, mthread_detach)
-__weak_alias(pthread_equal, mthread_equal)
-__weak_alias(pthread_exit, mthread_exit)
-__weak_alias(pthread_join, mthread_join)
-__weak_alias(pthread_once, mthread_once)
-__weak_alias(pthread_self, mthread_self)
-
