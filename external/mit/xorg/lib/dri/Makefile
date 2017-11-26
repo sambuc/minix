@@ -25,9 +25,6 @@ CPPFLAGS+= \
 
 #CPPFLAGS+=	-D_NETBSD_SOURCE -DPTHREADS
 .if defined(__MINIX)
-CPPFLAGS+=	-DHAVE_PTHREAD=1
-LDADD+=		-lmthread
-DPADD+=		 ${LIBMTHREAD}
 CWARNFLAGS.clang+=	-Wno-\#warnings
 #LSC: For clang 3.4
 CWARNFLAGS.clang+=	-Wno-attributes

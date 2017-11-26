@@ -109,8 +109,8 @@ CPPFLAGS+=	-DHAVE_CONFIG_H \
 		-I${X11SRCDIR.pixman}/pixman
 
 # With pixman 0.28.3, HAVE_PTHREAD_SETSPECIFIC is much faster than TLS
-.if !defined(__MINIX)
-CPPFLAGS+=	-DHAVE_PTHREAD_SETSPECIFIC
+.if defined(__MINIX)
+#CPPFLAGS+=	-DHAVE_PTHREAD_SETSPECIFIC
 #CPPFLAGS+=	-DTLS=__thread
 .else
 # LSC: No thread support on minix

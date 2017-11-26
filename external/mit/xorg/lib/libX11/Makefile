@@ -96,13 +96,9 @@ FILESDIR=	${X11LIBDIR}
 
 XlibConf.h: XlibConf.h.in
 	${_MKTARGET_CREATE}
-.if !defined(__MINIX)
 	${TOOL_SED} -e 's/#undef XTHREADS/#define XTHREADS 1/' \
 		    -e 's/#undef XUSE_MTSAFE_API/#define XUSE_MTSAFE_API 1/' \
 		< ${.ALLSRC} > ${.TARGET}
-.else
-	${TOOL_CAT} ${.ALLSRC} > ${.TARGET}
-.endif # !defined(__MINIX)
 
 CLEANFILES+=	XlibConf.h
 

@@ -36,11 +36,6 @@ DPADD+=	${LIBXAW} ${LIBXMU} ${LIBXT} ${LIBSM} ${LIBICE} ${LIBXINERAMA}
 LDADD+=	-lXpm -lXext -lX11 -lcurses -lterminfo -lutil
 DPADD+=	${LIBXPM} ${LIBXEXT} ${LIBX11} ${LIBCURSES} ${LIBTERMINFO} ${LIBUTIL}
 
-.if defined(__MINIX)
-LDADD+= -lmthread
-DPADD+= ${LIBMTHREAD}
-.endif # defined(__MINIX)
-
 SUBDIR=	resize uxterm
 
 .PATH:	${X11SRCDIR.${PROG}}

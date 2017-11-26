@@ -14,9 +14,8 @@ SRCS+=	glinfo_common.c glxinfo.c
 
 CPPFLAGS+=${X11FLAGS.THREADS} -DDO_GLU
 
-#__MINIX: No pthread
-LDADD+=	-lGL -lXext -lX11 -lm
-DPADD+=	${LIBGL} ${LIBXEXT} ${LIBX11} ${LIBM}
+LDADD+=	-lGL -lXext -lX11 -lpthread -lm
+DPADD+=	${LIBGL} ${LIBXEXT} ${LIBX11} ${LIBPTHREAD} ${LIBM}
 
 .PATH:	${X11SRCDIR.mesa-demos}/src/xdemos
 

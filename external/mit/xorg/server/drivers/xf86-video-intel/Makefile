@@ -25,7 +25,6 @@ SRCS+=		i810_video.c
 SRCS+=		i810_wmark.c
 SRCS+=		i810_xaa.c
 
-.if !defined(__MINIX)
 # sna
 .PATH:	${X11SRCDIR.${DRIVER}}/src/sna
 SRCS+=		blt.c
@@ -105,7 +104,6 @@ SRCS+=		fbspan.c
 SRCS+=		fbstipple.c
 SRCS+=		fbtile.c
 SRCS+=		fbutil.c
-.endif # !defined(__MINIX)
 
 # uxa
 .PATH:	${X11SRCDIR.${DRIVER}}/src/uxa
@@ -192,8 +190,7 @@ CPPFLAGS+=	-DDRI_DRIVER_PATH=\"${DRI_DRIVER_PATH:Q}\"
 CFLAGS+=	-fvisibility=hidden
 
 LIBDPLIBS+=	drm_intel	${.CURDIR}/../../../lib/libdrm_intel
-# MINIX: No pthread
-#LIBDPLIBS+=	pthread		${NETBSDSRCDIR}/lib/libpthread
+LIBDPLIBS+=	pthread		${NETBSDSRCDIR}/lib/libpthread
 
 .include "../Makefile.xf86-driver"
 

@@ -114,11 +114,7 @@ SRCS.nurbtess=	\
 	searchTree.cc
 .PATH:		${GLUDIR}/libnurbs/nurbtess
 
-.if !defined(__MINIX)
 CPPFLAGS+=	-DPTHREADS -DUSE_XSHM -DHZ=100 -DNDEBUG -DLIBRARYBUILD
-.else
-CPPFLAGS+=	-DUSE_XSHM -DHZ=100 -DNDEBUG -DLIBRARYBUILD
-.endif # !defined(__MINIX)
 CPPFLAGS+=	-I${GLUDIR}/include \
 		-I${GLUDIR}/libnurbs/internals \
 		-I${GLUDIR}/libnurbs/interface \
@@ -127,11 +123,7 @@ CPPFLAGS+=	-I${GLUDIR}/include \
 SRCS=		${SRCS.libutil} ${SRCS.libtess} \
 		${SRCS.interface} ${SRCS.internals} ${SRCS.nurbtess}
 
-.if !defined(__MINIX)
 CFLAGS+=	-fno-strict-aliasing -fvisibility=hidden -pthread
-.else
-CFLAGS+=	-fno-strict-aliasing -fvisibility=hidden
-.endif # !defined(__MINIX)
 
 .PATH:		${X11SRCDIR.glu}/include/GL
 INCS=	glu.h glu_mangle.h

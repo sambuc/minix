@@ -145,13 +145,10 @@ CPPFLAGS+=	\
 	-DYYTEXT_POINTER=1
 
 CFLAGS+=	-fvisibility=hidden -fno-strict-aliasing -fno-builtin-memcmp
-.if !defined(__MINIX)
 CFLAGS+=	-pthread
-.else
-LDADD+= -lmthread
-DPADD+= ${LIBMTHREAD}
+.if defined(__MINIX)
 CWARNFLAGS.clang+=	-Wno-\#warnings
-.endif # !defined(__MINIX)
+.endif # defined(__MINIX)
 
 LIBDPLIBS=	Xext		${.CURDIR}/../libXext \
 		X11		${.CURDIR}/../libX11/dynamic \

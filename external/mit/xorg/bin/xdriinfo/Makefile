@@ -6,9 +6,8 @@ PROG=	xdriinfo
 
 SRCS=	xdriinfo.c
 
-#LSC: No pthreads on MINIX!
-LDADD+=	-lGL -lXext -lX11
-DPADD+=	${LIBGL} ${LIBXEXT} ${LIBX11}
+LDADD+=	-lGL -lXext -lX11 -lpthread
+DPADD+=	${LIBGL} ${LIBXEXT} ${LIBX11} ${LIBPTHREAD}
 
 .PATH:	${X11SRCDIR.${PROG}} ${X11SRCDIR.${PROG}}/man
 

@@ -8,9 +8,8 @@ PROG=	glxgears
 
 CPPFLAGS+=${X11FLAGS.THREADS}
 
-#LSC: NO pthread on minix!
-LDADD+=	-lGL -lXext -lX11 -lm
-DPADD+=	${LIBGL} ${LIBXEXT} ${LIBX11} ${LIBM}
+LDADD+=	-lGL -lXext -lX11 -lpthread -lm
+DPADD+=	${LIBGL} ${LIBXEXT} ${LIBX11} ${LIBPTHREAD} ${LIBM}
 
 .PATH:	${X11SRCDIR.mesa-demos}/src/xdemos
 

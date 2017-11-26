@@ -7,11 +7,6 @@ PROG=	xlsatoms
 LDADD+=	-lxcb
 DPADD+=	${LIBXCB}
 
-.if defined(__MINIX)
-LDADD+= -lmthread
-DPADD+= ${LIBMTHREAD}
-.endif # defined(__MINIX)
-
 .PATH:	${X11SRCDIR.${PROG}}
 .PATH:	${X11SRCDIR.${PROG}}/man
 

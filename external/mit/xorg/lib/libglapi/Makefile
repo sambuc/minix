@@ -51,13 +51,7 @@ CPPFLAGS+=	${X11FLAGS.THREADLIB}
 
 .include "${.CURDIR}/../libGL/mesa-ver.mk"
 
-.if !defined(__MINIX)
 CFLAGS+=	-fno-strict-aliasing -fvisibility=hidden -pthread -fno-builtin-memcmp
-.else
-CFLAGS+=	-fno-strict-aliasing -fvisibility=hidden -fno-builtin-memcmp
-LDADD+= -lmthread
-DPADD+= ${LIBMTHREAD}
-.endif # !defined(__MINIX)
 
 CPPFLAGS+=	\
 	-DPACKAGE_NAME=\"Mesa\" \
