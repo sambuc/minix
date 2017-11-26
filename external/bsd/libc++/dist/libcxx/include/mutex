@@ -173,9 +173,7 @@ template<class Callable, class ...Args>
 */
 
 #include <__config>
-#if !defined(_LIBCPP_HAS_NO_THREADS) && defined(__minix)
 #include <__mutex_base>
-#endif // !defined(_LIBCPP_HAS_NO_THREADS) && defined(__minix)
 #include <functional>
 #include <memory>
 #ifndef _LIBCPP_HAS_NO_VARIADICS

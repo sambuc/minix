@@ -29,15 +29,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
-
-#if !defined(__minix)
 #include <pthread.h>
-#else
-#define _MTHREADIFY_PTHREADS 1 
-#include <minix/mthread.h>
-#define LIBCXXRT_WEAK_LOCKS 1
-#endif /* !defined(__minix) */
-
 #include "typeinfo.h"
 #include "dwarf_eh.h"
 #include "atomic.h"

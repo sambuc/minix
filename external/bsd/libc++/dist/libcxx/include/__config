@@ -90,10 +90,6 @@
 # define _LIBCPP_HAS_QUICK_EXIT
 #endif  // __NetBSD__
 
-#if defined(__minix)
-# define _LIBCPP_HAS_NO_THREADS 1
-#endif  // defined(__minix)
-
 #ifdef _WIN32
 #  define _LIBCPP_LITTLE_ENDIAN 1
 #  define _LIBCPP_BIG_ENDIAN    0

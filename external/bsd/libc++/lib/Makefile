@@ -8,16 +8,14 @@ NOLINT=		# defined
 
 .PATH: ${LIBCXX_SRCDIR}/src
 
-#__MINIX: Unsupported for now: shared_mutex.cpp
 SRCS=	algorithm.cpp bind.cpp chrono.cpp condition_variable.cpp debug.cpp \
 	exception.cpp future.cpp hash.cpp ios.cpp iostream.cpp locale.cpp \
 	memory.cpp mutex.cpp new.cpp optional.cpp random.cpp regex.cpp \
-	stdexcept.cpp \
+	shared_mutex.cpp stdexcept.cpp \
 	string.cpp strstream.cpp system_error.cpp thread.cpp \
 	utility.cpp valarray.cpp
 # typeinfo.cc: prefer libcxxrt's version
 
-#__MINIX: Unsupported for now:
 LIBCXXRT_SRCS+= \
 	auxhelper.cc dynamic_cast.cc exception.cc guard.cc \
 	stdexcept.cc terminate.cc typeinfo.cc libelftc_dem_gnu3.c
