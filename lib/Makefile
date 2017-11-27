@@ -78,7 +78,7 @@ SUBDIR+=	\
 		libbz2 \
 		libcrypt \
 		libintl libkvm libm \
-		libpci libprop \
+		libpci libprop libpthread \
 		libpuffs librmt \
 		libtelnet libterminfo \
 		libutil libwrap libz
