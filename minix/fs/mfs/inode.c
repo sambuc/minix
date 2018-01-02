@@ -439,10 +439,10 @@ int norm;			/* TRUE = do not swap bytes; FALSE = swap */
 	dip->d2_uid    = (i16_t) conv2(norm,rip->i_uid);
 	dip->d2_nlinks = (uint16_t) conv2(norm,rip->i_nlinks);
 	dip->d2_gid    = (uint16_t) conv2(norm,rip->i_gid);
-	dip->d2_size   = (i32_t) conv4(norm,rip->i_size);
-	dip->d2_atime  = (i32_t) conv4(norm,rip->i_atime);
-	dip->d2_ctime  = (i32_t) conv4(norm,rip->i_ctime);
-	dip->d2_mtime  = (i32_t) conv4(norm,rip->i_mtime);
+	dip->d2_size   = (int32_t) conv4(norm,rip->i_size);
+	dip->d2_atime  = (int32_t) conv4(norm,rip->i_atime);
+	dip->d2_ctime  = (int32_t) conv4(norm,rip->i_ctime);
+	dip->d2_mtime  = (int32_t) conv4(norm,rip->i_mtime);
 	for (i = 0; i < V2_NR_TZONES; i++)
 		dip->d2_zone[i] = (zone_t) conv4(norm, (long) rip->i_zone[i]);
   }

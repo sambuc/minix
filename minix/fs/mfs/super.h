@@ -29,7 +29,7 @@ EXTERN struct super_block {
   zone1_t s_firstdatazone_old;	/* number of first data zone (small) */
   short s_log_zone_size;	/* log2 of blocks/zone */
   unsigned short s_flags;	/* FS state flags */
-  i32_t s_max_size;		/* maximum file size on this device */
+  int32_t s_max_size;		/* maximum file size on this device */
   zone_t s_zones;		/* number of zones (replaces s_nzones in V2) */
   short s_magic;		/* magic number to recognize super-blocks */
 

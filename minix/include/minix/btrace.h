@@ -27,7 +27,7 @@ typedef struct {
   uint32_t size;			/* request size, ioctl request, or access */
   uint64_t position;		/* starting disk position */
   uint32_t flags;			/* transfer flags */
-  i32_t result;			/* request result; OK, bytes, or error */
+  int32_t result;			/* request result; OK, bytes, or error */
   uint32_t start_time;		/* request service start time (us) */
   uint32_t finish_time;		/* request service completion time (us) */
 } btrace_entry;			/* (32 bytes) */

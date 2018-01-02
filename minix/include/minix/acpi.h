@@ -24,7 +24,7 @@ struct acpi_get_irq_req {
 /* response from acpi to acpi_get_irq_req */
 struct acpi_get_irq_resp {
 	endpoint_t 	m_source; /* message header */
-	i32_t		irq;
+	int32_t		irq;
 	uint32_t		__padding[7];
 };
 

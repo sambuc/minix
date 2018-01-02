@@ -31,7 +31,7 @@ struct VMMDevRequestHeader {
 	uint32_t size;
 	uint32_t version;
 	uint32_t type;
-	i32_t result;
+	int32_t result;
 	uint32_t reserved[2];
 };
 
@@ -58,7 +58,7 @@ struct VMMDevEvents {
 struct VMMDevHGCMHeader {
 	struct VMMDevRequestHeader header;
 	uint32_t flags;
-	i32_t result;
+	int32_t result;
 };
 
 #define VMMDEV_HGCM_SVCLOC_LOCALHOST_EXISTING 2

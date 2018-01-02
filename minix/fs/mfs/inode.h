@@ -22,7 +22,7 @@ EXTERN struct inode {
   uint16_t i_nlinks;		/* how many links to this file */
   uint16_t i_uid;			/* user id of the file's owner */
   uint16_t i_gid;			/* group number */
-  i32_t i_size;			/* current file size in bytes */
+  int32_t i_size;			/* current file size in bytes */
   uint32_t i_atime;		/* time of last access (V2 only) */
   uint32_t i_mtime;		/* when was file data last changed */
   uint32_t i_ctime;		/* when was inode itself changed (V2 only)*/
