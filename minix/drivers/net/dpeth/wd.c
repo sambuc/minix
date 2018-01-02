@@ -259,7 +259,7 @@ static int we_16bitboard(dpeth_t *dep)
  * 8 bit board.
  */
   unsigned int icr;
-  u8_t tlb;
+  uint8_t tlb;
 
   icr = inb_we(dep, EPL_ICR);
 
@@ -292,7 +292,7 @@ static int we_16bitslot(dpeth_t *dep)
 static int we_ultra(dpeth_t *dep)
 {
 /* Determine if we has an '790 chip.  */
-  u8_t tlb;
+  uint8_t tlb;
 
   tlb = inb_we(dep, EPL_TLB);
   return tlb == E_TLB_SMC8216C;

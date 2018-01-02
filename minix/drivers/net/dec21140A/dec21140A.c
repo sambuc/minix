@@ -34,7 +34,7 @@ static void de_reset(const dpeth_t *);
 static void de_hw_conf(const dpeth_t *);
 static void de_start(const dpeth_t *);
 static void de_setup_frame(const dpeth_t *, const netdriver_addr_t *);
-static u16_t de_read_rom(const dpeth_t *, u8_t, u8_t);
+static u16_t de_read_rom(const dpeth_t *, uint8_t, uint8_t);
 
 static dpeth_t de_state;
 
@@ -137,7 +137,7 @@ static int de_probe(dpeth_t *dep, unsigned int skip)
   return TRUE;
 }
 
-static u16_t de_read_rom(const dpeth_t *dep, u8_t addr, u8_t nbAddrBits)
+static u16_t de_read_rom(const dpeth_t *dep, uint8_t addr, uint8_t nbAddrBits)
 {
   u16_t retVal = 0;
   int i;
@@ -294,7 +294,7 @@ static void de_init_buf(dpeth_t *dep)
       descr_vir += sizeof(de_descr_t);
 
       /* assign space for buffer */
-      loc_descr->buf1 = (u8_t*)buffer_vir;
+      loc_descr->buf1 = (uint8_t*)buffer_vir;
       buffer_vir += (i==DESCR_RECV ? DE_RECV_BUF_SIZE : DE_SEND_BUF_SIZE);
       loc_descr->buf2 = 0;
       loc_descr++;

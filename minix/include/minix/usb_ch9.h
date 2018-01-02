@@ -46,9 +46,9 @@
 
 #include <sys/types.h>
 
-typedef u8_t uByte;
-typedef u8_t uWord[2];
-typedef u8_t uDWord[4];
+typedef uint8_t uByte;
+typedef uint8_t uWord[2];
+typedef uint8_t uDWord[4];
 
 #define USETW2(w,h,l) ((w)[0] = (u_int8_t)(l), (w)[1] = (u_int8_t)(h))
 

@@ -283,7 +283,7 @@ void arch_init(void)
  *===========================================================================*/
 void do_ser_debug(void)
 {
-	u8_t c, lsr;
+	uint8_t c, lsr;
 
 #if CONFIG_OXPCIE
 	{

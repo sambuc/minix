@@ -44,7 +44,7 @@ static u16_t slp_typb = 0;
 
 static int acpi_check_csum(struct acpi_sdt_header * tb, size_t size)
 {
-	u8_t total = 0;
+	uint8_t total = 0;
 	int i;
 	for (i = 0; i < size; i++)
 		total += ((unsigned char *)tb)[i];
@@ -149,11 +149,11 @@ static void * acpi_madt_get_typed_item(struct acpi_madt_hdr * hdr,
 					unsigned char type,
 					unsigned idx)
 {
-	u8_t * t, * end;
+	uint8_t * t, * end;
 	int i;
 
-	t = (u8_t *) hdr + sizeof(struct acpi_madt_hdr);
-	end = (u8_t *) hdr + hdr->hdr.length;
+	t = (uint8_t *) hdr + sizeof(struct acpi_madt_hdr);
+	end = (uint8_t *) hdr + hdr->hdr.length;
 
 	i = 0;
 	while(t < end) {
@@ -173,11 +173,11 @@ static void * acpi_madt_get_typed_item(struct acpi_madt_hdr * hdr,
 static void * acpi_madt_get_item(struct acpi_madt_hdr * hdr,
 				unsigned idx)
 {
-	u8_t * t, * end;
+	uint8_t * t, * end;
 	int i;
 
-	t = (u8_t *) hdr + sizeof(struct acpi_madt_hdr);
-	end = (u8_t *) hdr + hdr->hdr.length;
+	t = (uint8_t *) hdr + sizeof(struct acpi_madt_hdr);
+	end = (uint8_t *) hdr + hdr->hdr.length;
 
 	for(i = 0 ; i <= idx && t < end; i++) {
 		if (i == idx)
@@ -229,9 +229,9 @@ static int get_acpi_rsdp(void)
 
 static void acpi_init_poweroff(void)
 {
-	u8_t *ptr = NULL;
-	u8_t *start = NULL;
-	u8_t *end = NULL;
+	uint8_t *ptr = NULL;
+	uint8_t *start = NULL;
+	uint8_t *end = NULL;
 	struct acpi_fadt_header *fadt_header = NULL;
 	struct acpi_rsdt * dsdt_header = NULL;
 	char *msg = NULL;
@@ -255,7 +255,7 @@ static void acpi_init_poweroff(void)
 	pm1a_cnt_blk = fadt_header->pm1a_cnt_blk;
 	pm1b_cnt_blk = fadt_header->pm1b_cnt_blk;
 
-	ptr = start = (u8_t *) dsdt_header->data;
+	ptr = start = (uint8_t *) dsdt_header->data;
 	end = start + dsdt_header->hdr.length - 4;
 
 	/* See http://forum.osdev.org/viewtopic.php?t=16990 */

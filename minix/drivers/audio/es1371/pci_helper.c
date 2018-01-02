@@ -41,7 +41,7 @@ u32_t pci_inl(u16_t port) {
 }
 
 
-void pci_outb(u16_t port, u8_t value) {
+void pci_outb(u16_t port, uint8_t value) {
 	int s;
 	if ((s=sys_outb(port, value)) !=OK)
 		printf("%s: warning, sys_outb failed: %d\n", DRIVER_NAME, s);

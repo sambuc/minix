@@ -6,16 +6,16 @@
 #include "cmi8738.h"
 
 /* I/O function */
-static u8_t my_inb(u32_t port) {
+static uint8_t my_inb(u32_t port) {
 	u32_t value;
 	int r;
 #ifdef DMA_BASE_IOMAP
-	value = *(volatile u8_t *)(port);
+	value = *(volatile uint8_t *)(port);
 #else
 	if ((r = sys_inb(port, &value)) != OK)
 		printf("SDR: sys_inb failed: %d\n", r);
 #endif
-	return (u8_t)value;
+	return (uint8_t)value;
 }
 #define sdr_in8(port, offset) (my_inb((port) + (offset)))
 
@@ -48,9 +48,9 @@ static u32_t my_inl(u32_t port) {
 static void my_outb(u32_t port, u32_t value) {
 	int r;
 #ifdef DMA_BASE_IOMAP
-	*(volatile u8_t *)(port) = value;
+	*(volatile uint8_t *)(port) = value;
 #else
-	if ((r = sys_outb(port, (u8_t)value)) != OK)
+	if ((r = sys_outb(port, (uint8_t)value)) != OK)
 		printf("SDR: sys_outb failed: %d\n", r);
 #endif
 }

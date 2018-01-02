@@ -137,7 +137,7 @@ void do_get_irq(message *m)
 static void add_irq(struct pci_bridge * bridge,
 			unsigned dev,
 			unsigned pin,
-			u8_t irq)
+			uint8_t irq)
 {
 	assert(dev < PCI_MAX_DEVICES && pin < PCI_MAX_PINS);
 

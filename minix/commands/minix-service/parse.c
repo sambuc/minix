@@ -574,7 +574,7 @@ static void do_pci_device(config_t *cpe, struct rs_start *rs_start)
 
 static void do_pci_class(config_t *cpe, struct rs_start *rs_start)
 {
-	u8_t baseclass, subclass, interface;
+	uint8_t baseclass, subclass, interface;
 	u32_t class_id, mask;
 	char *check;
 

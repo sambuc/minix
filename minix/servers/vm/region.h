@@ -28,8 +28,8 @@ struct phys_block {
 
 	/* first in list of phys_regions that reference this block */
 	struct phys_region	*firstregion;	
-	u8_t			refcount;	/* Refcount of these pages */
-	u8_t			flags;
+	uint8_t			refcount;	/* Refcount of these pages */
+	uint8_t			flags;
 };
 
 #define PBF_INCACHE		0x01

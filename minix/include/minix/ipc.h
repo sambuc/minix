@@ -719,7 +719,7 @@ typedef struct {
 	int fd;
 	int backlog;
 
-	u8_t padding[48];
+	uint8_t padding[48];
 } mess_lc_vfs_listen;
 _ASSERT_MSG_SIZE(mess_lc_vfs_listen);
 
@@ -2387,15 +2387,15 @@ typedef struct {
 	ino_t ino;
 	void *block;
 	u32_t *flags_ptr;
-	u8_t pages;
-	u8_t flags;
+	uint8_t pages;
+	uint8_t flags;
 	uint8_t padding[12];
 } mess_vmmcp;
 _ASSERT_MSG_SIZE(mess_vmmcp);
 
 typedef struct {
 	void *addr;
-	u8_t flags;
+	uint8_t flags;
 	uint8_t padding[51];
 } mess_vmmcp_reply;
 _ASSERT_MSG_SIZE(mess_vmmcp_reply);
@@ -2667,7 +2667,7 @@ typedef struct noxfer_message {
 		mess_vmmcp		m_vmmcp;
 		mess_vmmcp_reply	m_vmmcp_reply;
 
-		u8_t size[56];	/* message payload may have 56 bytes at most */
+		uint8_t size[56];	/* message payload may have 56 bytes at most */
 	};
 } message __ALIGNED(16);
 

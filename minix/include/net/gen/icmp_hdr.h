@@ -18,15 +18,15 @@ typedef struct icmp_ip_id
 
 typedef struct icmp_ram		/* RFC 1256 */
 {
-	u8_t	iram_na;
-	u8_t	iram_aes;
+	uint8_t	iram_na;
+	uint8_t	iram_aes;
 	u16_t	iram_lt;
 } icmp_ram_t;
 
 typedef struct icmp_pp
 {
-	u8_t	ipp_ptr;
-	u8_t	ipp_unused[3];
+	uint8_t	ipp_ptr;
+	uint8_t	ipp_unused[3];
 } icmp_pp_t;
 
 typedef struct icmp_mtu		/* RFC 1191 */
@@ -37,7 +37,7 @@ typedef struct icmp_mtu		/* RFC 1191 */
 
 typedef struct icmp_hdr
 {
-	u8_t ih_type, ih_code;
+	uint8_t ih_type, ih_code;
 	u16_t ih_chksum;
 	union
 	{
@@ -51,7 +51,7 @@ typedef struct icmp_hdr
 	union
 	{
 		icmp_ip_id_t ihd_ipid;
-		u8_t uhd_data[1];
+		uint8_t uhd_data[1];
 	} ih_dun;
 } icmp_hdr_t;
 

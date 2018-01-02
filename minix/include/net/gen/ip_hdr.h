@@ -7,12 +7,12 @@ server/ip/gen/ip_hdr.h
 
 typedef struct ip_hdr
 {
-	u8_t ih_vers_ihl,
+	uint8_t ih_vers_ihl,
 		ih_tos;
 	u16_t ih_length,
 		ih_id,
 		ih_flags_fragoff;
-	u8_t ih_ttl,
+	uint8_t ih_ttl,
 		ih_proto;
 	u16_t ih_hdr_chk;
 	ipaddr_t ih_src,

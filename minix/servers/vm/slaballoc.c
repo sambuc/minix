@@ -78,7 +78,7 @@
 
 static int pages = 0;
 
-typedef u8_t element_t;
+typedef uint8_t element_t;
 #define BITS_FULL (~(element_t)0)
 typedef element_t elements_t[USEELEMENTS];
 
@@ -116,7 +116,7 @@ struct sdh {
 #define NOJUNK 0xc0ffee
 
 struct slabdata {
-	u8_t 	data[DATABYTES];
+	uint8_t 	data[DATABYTES];
 	struct	sdh sdh;
 };
 

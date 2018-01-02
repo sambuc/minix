@@ -5,18 +5,18 @@ struct iso9660_dir_record {
 	/*
 	 * ISO standard directory record.
 	 */
-	u8_t length;                    /* The length of the record */
-	u8_t ext_attr_rec_length;
+	uint8_t length;                    /* The length of the record */
+	uint8_t ext_attr_rec_length;
 	u32_t loc_extent_l;             /* The same data (in this case loc_extent)is */
 	u32_t loc_extent_m;             /* saved in two ways. The first puts the le- */
 	u32_t data_length_l;            /* ast significant byte first, the second */
 	u32_t data_length_m;            /* does the opposite */
-	u8_t rec_date[7];               /* => recording date */
-	u8_t file_flags;                /* => flags of the file */
-	u8_t file_unit_size;            /* set of blocks in interleave mode */
-	u8_t inter_gap_size;            /* gap between file units in interleave mode */
+	uint8_t rec_date[7];               /* => recording date */
+	uint8_t file_flags;                /* => flags of the file */
+	uint8_t file_unit_size;            /* set of blocks in interleave mode */
+	uint8_t inter_gap_size;            /* gap between file units in interleave mode */
 	u32_t vol_seq_number;           /* volume sequence number: not used */
-	u8_t length_file_id;            /* Length name file */
+	uint8_t length_file_id;            /* Length name file */
 	char file_id[ISO9660_MAX_FILE_ID_LEN]; /* file name */
 } __attribute__((packed));
 
@@ -24,10 +24,10 @@ struct rrii_dir_record {
 	/*
 	 * Rock Ridge directory record extensions.
 	 */
-	u8_t mtime[7];          /* stat.st_mtime */
-	u8_t atime[7];          /* stat.st_atime */
-	u8_t ctime[7];          /* stat.st_ctime */
-	u8_t birthtime[7];      /* stat.st_birthtime */
+	uint8_t mtime[7];          /* stat.st_mtime */
+	uint8_t atime[7];          /* stat.st_atime */
+	uint8_t ctime[7];          /* stat.st_ctime */
+	uint8_t birthtime[7];      /* stat.st_birthtime */
 
 	mode_t d_mode;          /* file mode */
 	uid_t uid;              /* user ID of the file's owner */

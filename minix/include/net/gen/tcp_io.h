@@ -72,7 +72,7 @@ typedef struct nwio_tcpopt
 typedef struct tcp_cookie
 {
 	u32_t tc_ref;
-	u8_t tc_secret[TC_SECRET_SIZE];
+	uint8_t tc_secret[TC_SECRET_SIZE];
 } tcp_cookie_t;
 
 #endif /* __SERVER__IP__GEN__TCP_IO_H__ */

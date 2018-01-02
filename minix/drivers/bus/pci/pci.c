@@ -48,10 +48,10 @@ static struct pcibus
 
 	int pb_devind;
 	int pb_busnr;
-	u8_t (*pb_rreg8)(int busind, int devind, int port);
+	uint8_t (*pb_rreg8)(int busind, int devind, int port);
 	u16_t (*pb_rreg16)(int busind, int devind, int port);
 	u32_t (*pb_rreg32)(int busind, int devind, int port);
-	void (*pb_wreg8)(int busind, int devind, int port, u8_t value);
+	void (*pb_wreg8)(int busind, int devind, int port, uint8_t value);
 	void (*pb_wreg16)(int busind, int devind, int port, u16_t value);
 	void (*pb_wreg32)(int busind, int devind, int port, u32_t value);
 	u16_t (*pb_rsts)(int busind);
@@ -61,19 +61,19 @@ static int nr_pcibus= 0;
 
 static struct pcidev
 {
-	u8_t pd_busnr;
-	u8_t pd_dev;
-	u8_t pd_func;
-	u8_t pd_baseclass;
-	u8_t pd_subclass;
-	u8_t pd_infclass;
+	uint8_t pd_busnr;
+	uint8_t pd_dev;
+	uint8_t pd_func;
+	uint8_t pd_baseclass;
+	uint8_t pd_subclass;
+	uint8_t pd_infclass;
 	u16_t pd_vid;
 	u16_t pd_did;
 	u16_t pd_sub_vid;
 	u16_t pd_sub_did;
-	u8_t pd_ilr;
+	uint8_t pd_ilr;
 
-	u8_t pd_inuse;
+	uint8_t pd_inuse;
 	endpoint_t pd_proc;
 
 	struct bar
@@ -125,7 +125,7 @@ pci_inl(u16_t port) {
 }
 
 static void
-pci_outb(u16_t port, u8_t value) {
+pci_outb(u16_t port, uint8_t value) {
 	int s;
 	if ((s=sys_outb(port, value)) !=OK)
 		printf("PCI: warning, sys_outb failed: %d\n", s);
@@ -145,10 +145,10 @@ pci_outl(u16_t port, u32_t value) {
 		printf("PCI: warning, sys_outl failed: %d\n", s);
 }
 
-static u8_t
+static uint8_t
 pcii_rreg8(int busind, int devind, int port)
 {
-	u8_t v;
+	uint8_t v;
 	int s;
 
 	v= PCII_RREG8_(pcibus[busind].pb_busnr,
@@ -206,7 +206,7 @@ pcii_rreg32(int busind, int devind, int port)
 }
 
 static void
-pcii_wreg8(int busind, int devind, int port, u8_t value)
+pcii_wreg8(int busind, int devind, int port, uint8_t value)
 {
 	int s;
 #if 0
@@ -312,7 +312,7 @@ get_busind(int busnr)
 /*===========================================================================*
  *			Unprotected helper functions			     *
  *===========================================================================*/
-static u8_t
+static uint8_t
 __pci_attr_r8(int devind, int port)
 {
 	int busnr, busind;
@@ -343,7 +343,7 @@ __pci_attr_r32(int devind, int port)
 }
 
 static void
-__pci_attr_w8(int devind, int port, u8_t value)
+__pci_attr_w8(int devind, int port, uint8_t value)
 {
 	int busnr, busind;
 
@@ -417,7 +417,7 @@ pcii_wsts(int busind, u16_t value)
 }
 
 static int
-is_duplicate(u8_t busnr, u8_t dev, u8_t func)
+is_duplicate(uint8_t busnr, uint8_t dev, uint8_t func)
 {
 	int i;
 
@@ -463,7 +463,7 @@ pci_vid_name(u16_t vid)
 
 
 static void
-print_hyper_cap(int devind, u8_t capptr)
+print_hyper_cap(int devind, uint8_t capptr)
 {
 	u32_t v;
 	u16_t cmd;
@@ -530,7 +530,7 @@ print_hyper_cap(int devind, u8_t capptr)
 static void
 print_capabilities(int devind)
 {
-	u8_t status, capptr, type, next, subtype;
+	uint8_t status, capptr, type, next, subtype;
 	const char *str;
 
 	/* Check capabilities bit in the device status register */
@@ -659,7 +659,7 @@ static int
 do_amd_isabr(int devind)
 {
 	int i, busnr, dev, func, xdevind, irq, edge;
-	u8_t levmask;
+	uint8_t levmask;
 	u16_t pciirq;
 
 	/* Find required function */
@@ -734,7 +734,7 @@ static int
 do_via_isabr(int devind)
 {
 	int i, irq, edge;
-	u8_t levmask;
+	uint8_t levmask;
 
 	levmask= __pci_attr_r8(devind, VIA_ISABR_EL);
 	irq= 0;	/* lint */
@@ -1523,8 +1523,8 @@ probe_bus(int busind)
 	uint32_t t3;
 #endif
 	u16_t vid, did, sts, sub_vid, sub_did;
-	u8_t headt;
-	u8_t baseclass, subclass, infclass;
+	uint8_t headt;
+	uint8_t baseclass, subclass, infclass;
 	int devind, busnr;
 	const char *s, *dstr;
 
@@ -1785,7 +1785,7 @@ do_pcibridge(int busind)
 	int devind, busnr;
 	int ind, type;
 	u16_t vid, did;
-	u8_t sbusn, baseclass, subclass, infclass, headt;
+	uint8_t sbusn, baseclass, subclass, infclass, headt;
 	u32_t t3;
 
 	vid= did= 0;	/* lint */
@@ -2184,7 +2184,7 @@ map_service(struct rprocpub *rpub)
  *				_pci_find_dev				     *
  *===========================================================================*/
 int
-_pci_find_dev(u8_t bus, u8_t dev, u8_t func, int *devindp)
+_pci_find_dev(uint8_t bus, uint8_t dev, uint8_t func, int *devindp)
 {
 	int devind;
 
@@ -2379,7 +2379,7 @@ _pci_ids(int devind, u16_t *vidp, u16_t *didp)
  *				_pci_rescan_bus				     *
  *===========================================================================*/
 void
-_pci_rescan_bus(u8_t busnr)
+_pci_rescan_bus(uint8_t busnr)
 {
 	int busind;
 
@@ -2472,7 +2472,7 @@ _pci_get_bar(int devind, int port, u32_t *base, u32_t *size,
  *				_pci_attr_r8				     *
  *===========================================================================*/
 int
-_pci_attr_r8(int devind, int port, u8_t *vp)
+_pci_attr_r8(int devind, int port, uint8_t *vp)
 {
 	if (devind < 0 || devind >= nr_pcidev)
 		return EINVAL;
@@ -2517,7 +2517,7 @@ _pci_attr_r32(int devind, int port, u32_t *vp)
  *				_pci_attr_w8				     *
  *===========================================================================*/
 int
-_pci_attr_w8(int devind, int port, u8_t value)
+_pci_attr_w8(int devind, int port, uint8_t value)
 {
 	if (devind < 0 || devind >= nr_pcidev)
 		return EINVAL;

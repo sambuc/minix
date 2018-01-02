@@ -24,19 +24,19 @@
 
 /* Common command block */
 struct command {
-  u8_t	precomp;	/* REG_PRECOMP, etc. */
-  u8_t	count;
-  u8_t	sector;
-  u8_t	cyl_lo;
-  u8_t	cyl_hi;
-  u8_t	ldh;
-  u8_t	command;
+  uint8_t	precomp;	/* REG_PRECOMP, etc. */
+  uint8_t	count;
+  uint8_t	sector;
+  uint8_t	cyl_lo;
+  uint8_t	cyl_hi;
+  uint8_t	ldh;
+  uint8_t	command;
 
   /* The following at for LBA48 */
-  u8_t	count_prev;
-  u8_t	sector_prev;
-  u8_t	cyl_lo_prev;
-  u8_t	cyl_hi_prev;
+  uint8_t	count_prev;
+  uint8_t	sector_prev;
+  uint8_t	cyl_lo_prev;
+  uint8_t	cyl_hi_prev;
 };
 
 /* Timeouts and max retries. */
@@ -84,7 +84,7 @@ int w_command;			/* current command in execution */
 static int w_drive;			/* selected drive */
 static struct device *w_dv;		/* device's base and size */
 
-static u8_t *tmp_buf;
+static uint8_t *tmp_buf;
 
 #define ATA_DMA_SECTORS	64
 #define ATA_DMA_BUF_SIZE	(ATA_DMA_SECTORS*SECTOR_SIZE)
@@ -98,8 +98,8 @@ struct prdte
 {
 	phys_bytes prdte_base;
 	u16_t prdte_count;
-	u8_t prdte_reserved;
-	u8_t prdte_flags;
+	uint8_t prdte_reserved;
+	uint8_t prdte_flags;
 };
 
 #define PRDT_BYTES (sizeof(struct prdte) * N_PRDTE)
@@ -137,7 +137,7 @@ static int at_intr_wait(void);
 static int w_waitfor(int mask, int value);
 static int w_waitfor_dma(unsigned int mask, unsigned int value);
 static void w_geometry(devminor_t minor, struct part_geom *entry);
-static int atapi_sendpacket(u8_t *packet, unsigned cnt, int do_dma);
+static int atapi_sendpacket(uint8_t *packet, unsigned cnt, int do_dma);
 static int atapi_intr_wait(int dma, size_t max);
 static int atapi_open(void);
 static void atapi_close(void);
@@ -356,7 +356,7 @@ static void w_init(int devind, u16_t vid, u16_t did)
  * from the PCI slot if it is there.
  */
   int r, irq, native_hook, compat_hook, is_ide, nhooks;
-  u8_t bcr, scr, interface;
+  uint8_t bcr, scr, interface;
   u16_t cr;
   u32_t base_cmd, base_ctl, base_dma;
 
@@ -1745,7 +1745,7 @@ static void atapi_close(void)
 static void sense_request(void)
 {
 	int r, i;
-	static u8_t sense[100], packet[ATAPI_PACKETSIZE];
+	static uint8_t sense[100], packet[ATAPI_PACKETSIZE];
 
 	packet[0] = SCSI_SENSE;
 	packet[1] = 0;
@@ -1790,7 +1790,7 @@ static int atapi_transfer(
   unsigned long block;
   u64_t dv_size = w_dv->dv_size;
   unsigned nbytes, nblocks, before, chunk;
-  static u8_t packet[ATAPI_PACKETSIZE];
+  static uint8_t packet[ATAPI_PACKETSIZE];
   size_t addr_offset = 0;
   int dmabytes = 0, piobytes = 0;
   ssize_t total = 0;
@@ -1974,7 +1974,7 @@ static int atapi_transfer(
  *				atapi_sendpacket			     *
  *===========================================================================*/
 static int atapi_sendpacket(packet, cnt, do_dma)
-u8_t *packet;
+uint8_t *packet;
 unsigned cnt;
 int do_dma;
 {

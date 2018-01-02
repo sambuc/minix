@@ -172,7 +172,7 @@ do_shmat(message * m)
 void
 update_refcount_and_destroy(void)
 {
-	u8_t rc;
+	uint8_t rc;
 	unsigned int i;
 
 	for (i = 0; i < shm_list_nr; i++) {
@@ -180,7 +180,7 @@ update_refcount_and_destroy(void)
 			continue;
 
 		rc = vm_getrefcount(sef_self(), (void *)shm_list[i].page);
-		if (rc == (u8_t)-1) {
+		if (rc == (uint8_t)-1) {
 			printf("IPC: can't find physical region.\n");
 			continue;
 		}

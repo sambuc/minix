@@ -143,7 +143,7 @@ static struct port_state {
 
 	volatile u32_t *reg;	/* memory-mapped port registers */
 
-	u8_t *mem_base;		/* primary memory buffer virtual address */
+	uint8_t *mem_base;		/* primary memory buffer virtual address */
 	phys_bytes mem_phys;	/* primary memory buffer physical address */
 	vir_bytes mem_size;	/* primary memory buffer size */
 
@@ -152,12 +152,12 @@ static struct port_state {
 	phys_bytes fis_phys;	/* FIS receive buffer physical address */
 	u32_t *cl_base;		/* command list buffer virtual address */
 	phys_bytes cl_phys;	/* command list buffer physical address */
-	u8_t *ct_base[NR_CMDS];	/* command table virtual address */
+	uint8_t *ct_base[NR_CMDS];	/* command table virtual address */
 	phys_bytes ct_phys[NR_CMDS];	/* command table physical address */
-	u8_t *tmp_base;		/* temporary storage buffer virtual address */
+	uint8_t *tmp_base;		/* temporary storage buffer virtual address */
 	phys_bytes tmp_phys;	/* temporary storage buffer physical address */
 
-	u8_t *pad_base;		/* sector padding buffer virtual address */
+	uint8_t *pad_base;		/* sector padding buffer virtual address */
 	phys_bytes pad_phys;	/* sector padding buffer physical address */
 	vir_bytes pad_size;	/* sector padding buffer size */
 
@@ -229,7 +229,7 @@ static int ahci_exiting = FALSE;		/* exit after last close? */
 #define millis_to_hz(ms)	(((ms) * sys_hz() + 999) / 1000)
 
 static void port_set_cmd(struct port_state *ps, int cmd, cmd_fis_t *fis,
-	u8_t packet[ATAPI_PACKET_SIZE], prd_t *prdt, int nr_prds, int write);
+	uint8_t packet[ATAPI_PACKET_SIZE], prd_t *prdt, int nr_prds, int write);
 static void port_issue(struct port_state *ps, int cmd, clock_t timeout);
 static int port_exec(struct port_state *ps, int cmd, clock_t timeout);
 static void port_timeout(int arg);
@@ -265,7 +265,7 @@ static struct blockdriver ahci_dtab = {
  *				atapi_exec				     *
  *===========================================================================*/
 static int atapi_exec(struct port_state *ps, int cmd,
-	u8_t packet[ATAPI_PACKET_SIZE], size_t size, int write)
+	uint8_t packet[ATAPI_PACKET_SIZE], size_t size, int write)
 {
 	/* Execute an ATAPI command. Return OK or error.
 	 */
@@ -304,7 +304,7 @@ static int atapi_test_unit(struct port_state *ps, int cmd)
 {
 	/* Test whether the ATAPI device and medium are ready.
 	 */
-	u8_t packet[ATAPI_PACKET_SIZE];
+	uint8_t packet[ATAPI_PACKET_SIZE];
 
 	memset(packet, 0, sizeof(packet));
 	packet[0] = ATAPI_CMD_TEST_UNIT;
@@ -320,7 +320,7 @@ static int atapi_request_sense(struct port_state *ps, int cmd, int *sense)
 	/* Request error (sense) information from an ATAPI device, and return
 	 * the sense key. The additional sense codes are not used at this time.
 	 */
-	u8_t packet[ATAPI_PACKET_SIZE];
+	uint8_t packet[ATAPI_PACKET_SIZE];
 	int r;
 
 	memset(packet, 0, sizeof(packet));
@@ -348,7 +348,7 @@ static int atapi_load_eject(struct port_state *ps, int cmd, int load)
 {
 	/* Load or eject a medium in an ATAPI device.
 	 */
-	u8_t packet[ATAPI_PACKET_SIZE];
+	uint8_t packet[ATAPI_PACKET_SIZE];
 
 	memset(packet, 0, sizeof(packet));
 	packet[0] = ATAPI_CMD_START_STOP;
@@ -364,7 +364,7 @@ static int atapi_read_capacity(struct port_state *ps, int cmd)
 {
 	/* Retrieve the LBA count and sector size of an ATAPI medium.
 	 */
-	u8_t packet[ATAPI_PACKET_SIZE], *buf;
+	uint8_t packet[ATAPI_PACKET_SIZE], *buf;
 	int r;
 
 	memset(packet, 0, sizeof(packet));
@@ -495,7 +495,7 @@ static int atapi_transfer(struct port_state *ps, int cmd, u64_t start_lba,
 	/* Perform data transfer from or to an ATAPI device.
 	 */
 	cmd_fis_t fis;
-	u8_t packet[ATAPI_PACKET_SIZE];
+	uint8_t packet[ATAPI_PACKET_SIZE];
 
 	/* Fill in a Register Host to Device FIS. */
 	memset(&fis, 0, sizeof(fis));
@@ -773,7 +773,7 @@ static int gen_set_wcache(struct port_state *ps, int enable)
 /*===========================================================================*
  *				ct_set_fis				     *
  *===========================================================================*/
-static vir_bytes ct_set_fis(u8_t *ct, cmd_fis_t *fis, unsigned int tag)
+static vir_bytes ct_set_fis(uint8_t *ct, cmd_fis_t *fis, unsigned int tag)
 {
 	/* Fill in the Frame Information Structure part of a command table,
 	 * and return the resulting FIS size (in bytes). We only support the
@@ -811,7 +811,7 @@ static vir_bytes ct_set_fis(u8_t *ct, cmd_fis_t *fis, unsigned int tag)
 /*===========================================================================*
  *				ct_set_packet				     *
  *===========================================================================*/
-static void ct_set_packet(u8_t *ct, u8_t packet[ATAPI_PACKET_SIZE])
+static void ct_set_packet(uint8_t *ct, uint8_t packet[ATAPI_PACKET_SIZE])
 {
 	/* Fill in the packet part of a command table.
 	 */
@@ -822,7 +822,7 @@ static void ct_set_packet(u8_t *ct, u8_t packet[ATAPI_PACKET_SIZE])
 /*===========================================================================*
  *				ct_set_prdt				     *
  *===========================================================================*/
-static void ct_set_prdt(u8_t *ct, prd_t *prdt, int nr_prds)
+static void ct_set_prdt(uint8_t *ct, prd_t *prdt, int nr_prds)
 {
 	/* Fill in the PRDT part of a command table.
 	 */
@@ -843,12 +843,12 @@ static void ct_set_prdt(u8_t *ct, prd_t *prdt, int nr_prds)
  *				port_set_cmd				     *
  *===========================================================================*/
 static void port_set_cmd(struct port_state *ps, int cmd, cmd_fis_t *fis,
-	u8_t packet[ATAPI_PACKET_SIZE], prd_t *prdt, int nr_prds, int write)
+	uint8_t packet[ATAPI_PACKET_SIZE], prd_t *prdt, int nr_prds, int write)
 {
 	/* Prepare the given command for execution, by constructing a command
 	 * table and setting up a command list entry pointing to the table.
 	 */
-	u8_t *ct;
+	uint8_t *ct;
 	u32_t *cl;
 	vir_bytes size;
 
@@ -1916,7 +1916,7 @@ static void port_alloc(struct port_state *ps)
 	ps->fis_phys = ps->mem_phys + fis_off;
 	assert(ps->fis_phys % AHCI_FIS_SIZE == 0);
 
-	ps->tmp_base = (u8_t *) (ps->mem_base + tmp_off);
+	ps->tmp_base = (uint8_t *) (ps->mem_base + tmp_off);
 	ps->tmp_phys = ps->mem_phys + tmp_off;
 	assert(ps->tmp_phys % AHCI_TMP_ALIGN == 0);
 
@@ -1987,7 +1987,7 @@ static void port_init(struct port_state *ps)
 	for (i = 0; i < NR_CMDS; i++)
 		init_timer(&ps->cmd_info[i].timer);
 
-	ps->reg = (u32_t *) ((u8_t *) hba_state.base +
+	ps->reg = (u32_t *) ((uint8_t *) hba_state.base +
 		AHCI_MEM_BASE_SIZE + AHCI_MEM_PORT_SIZE * (ps - port_state));
 
 	/* Allocate memory for the port. */

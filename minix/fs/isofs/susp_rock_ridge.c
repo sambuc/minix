@@ -48,11 +48,11 @@ void parse_susp_rock_ridge_sl(struct rrii_dir_record *dir, char *buffer, int len
 	/* Parse a Rock Ridge SUSP symbolic link entry (SL). */
 	int offset = 0;
 	int slink_size;
-	u8_t flags, component_length;
+	uint8_t flags, component_length;
 
 	while (offset + 2 <= length) {
-		flags = *((u8_t*)(buffer + offset));
-		component_length = *((u8_t*)(buffer + offset + 1));
+		flags = *((uint8_t*)(buffer + offset));
+		component_length = *((uint8_t*)(buffer + offset + 1));
 
 		/* Add directory separator if necessary. */
 		if (strcmp(dir->slink_rrip, "") != 0 &&
@@ -135,8 +135,8 @@ int parse_susp_rock_ridge(struct rrii_dir_record *dir, char *buffer)
 {
 	/* Parse Rock Ridge SUSP entries for a directory entry. */
 	char susp_signature[2];
-	u8_t susp_length;
-	u8_t susp_version;
+	uint8_t susp_length;
+	uint8_t susp_version;
 
 	int rrii_name_current_size;
 	int rrii_name_append_size;
@@ -149,8 +149,8 @@ int parse_susp_rock_ridge(struct rrii_dir_record *dir, char *buffer)
 
 	susp_signature[0] = buffer[0];
 	susp_signature[1] = buffer[1];
-	susp_length = *((u8_t*)buffer + 2);
-	susp_version = *((u8_t*)buffer + 3);
+	susp_length = *((uint8_t*)buffer + 2);
+	susp_version = *((uint8_t*)buffer + 3);
 
 	if ((susp_signature[0] == 'P') && (susp_signature[1] == 'X') &&
 	    (susp_length >= 36) && (susp_version >= 1)) {

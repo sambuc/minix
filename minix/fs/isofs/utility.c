@@ -49,7 +49,7 @@ size_t get_extent_absolute_block_id(struct dir_extent *e, size_t block) {
 	return e->location + block - extent_offset;
 }
 
-time_t date7_to_time_t(const u8_t *date) {
+time_t date7_to_time_t(const uint8_t *date) {
 	/*
 	 * This function converts from the ISO 9660 7-byte time format to a
 	 * time_t.

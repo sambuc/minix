@@ -17,7 +17,7 @@ static void lan8710a_tick(void);
 
 static void lan8710a_enable_interrupt(int interrupt);
 static void lan8710a_map_regs(void);
-static void lan8710a_dma_config_tx(u8_t desc_idx);
+static void lan8710a_dma_config_tx(uint8_t desc_idx);
 static void lan8710a_dma_reset_init(void);
 static void lan8710a_init_addr(netdriver_addr_t *addr, unsigned int instance);
 static void lan8710a_init_desc(void);
@@ -342,7 +342,7 @@ lan8710a_stop(void)
  *				lan8710a_dma_config_tx			      *
  *============================================================================*/
 static void
-lan8710a_dma_config_tx(u8_t desc_idx)
+lan8710a_dma_config_tx(uint8_t desc_idx)
 {
 	phys_bytes phys_addr;
 	int i;
@@ -416,7 +416,7 @@ lan8710a_init_desc(void)
 	lan8710a_desc_t *p_rx_desc;
 	lan8710a_desc_t *p_tx_desc;
 	phys_bytes   buf_phys_addr;
-	u8_t i;
+	uint8_t i;
 
 	/* Attempt to allocate. */
 	if ((lan8710a_state.p_rx_buf = alloc_contig((LAN8710A_NUM_RX_DESC
@@ -704,7 +704,7 @@ lan8710a_send(struct netdriver_data * data, size_t size)
 {
 	lan8710a_t *e = &lan8710a_state;
 	lan8710a_desc_t *p_tx_desc;
-	u8_t *buf;
+	uint8_t *buf;
 
 	/* setup descriptors */
 	p_tx_desc = &(e->tx_desc[e->tx_desc_idx]);
@@ -757,7 +757,7 @@ lan8710a_recv(struct netdriver_data * data, size_t max)
 	lan8710a_t *e = &lan8710a_state;
 	lan8710a_desc_t *p_rx_desc;
 	u32_t flags;
-	u8_t *buf;
+	uint8_t *buf;
 	size_t off, size, chunk;
 
 	/*

@@ -50,7 +50,7 @@ int do_vdevio(struct proc * caller, message * m_ptr)
   switch (io_type) {
       case _DIO_BYTE:
 	bytes = vec_size * sizeof(pvb_pair_t);
-	io_size= sizeof(u8_t);
+	io_size= sizeof(uint8_t);
 	break;
       case _DIO_WORD:
 	bytes = vec_size * sizeof(pvw_pair_t);

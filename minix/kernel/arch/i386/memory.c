@@ -991,7 +991,7 @@ void release_address_space(struct proc *pr)
 /* computes a checksum of a buffer of a given length. The byte sum must be zero */
 int platform_tbl_checksum_ok(void *ptr, unsigned int length)
 {
-	u8_t total = 0;
+	uint8_t total = 0;
 	unsigned int i;
 	for (i = 0; i < length; i++)
 		total += ((unsigned char *)ptr)[i];

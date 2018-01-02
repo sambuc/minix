@@ -177,7 +177,7 @@ static u32_t ioapic_read(u32_t ioa_base, u32_t reg)
 	return *(volatile u32_t *)(ioa_base + IOAPIC_IOWIN);
 }
 
-static void ioapic_write(u32_t ioa_base, u8_t reg, u32_t val)
+static void ioapic_write(u32_t ioa_base, uint8_t reg, u32_t val)
 {
 	*((volatile u32_t *)(ioa_base + IOAPIC_IOREGSEL)) = reg;
 	*((volatile u32_t *)(ioa_base + IOAPIC_IOWIN)) = val;
@@ -208,8 +208,8 @@ static void ioapic_redirt_entry_read(void * ioapic_addr,
 					u32_t *hi,
 					u32_t *lo)
 {
-	*lo = ioapic_read((u32_t)ioapic_addr, (u8_t) (IOAPIC_REDIR_TABLE + entry * 2));
-	*hi = ioapic_read((u32_t)ioapic_addr, (u8_t) (IOAPIC_REDIR_TABLE + entry * 2 + 1));
+	*lo = ioapic_read((u32_t)ioapic_addr, (uint8_t) (IOAPIC_REDIR_TABLE + entry * 2));
+	*hi = ioapic_read((u32_t)ioapic_addr, (uint8_t) (IOAPIC_REDIR_TABLE + entry * 2 + 1));
 
 }
 #endif
@@ -223,8 +223,8 @@ static void ioapic_redirt_entry_write(void * ioapic_addr,
 	VERBOSE_APIC(printf("IO apic redir entry %3d "
 				"write 0x%08x 0x%08x\n", entry, hi, lo));
 #endif
-	ioapic_write((u32_t)ioapic_addr, (u8_t) (IOAPIC_REDIR_TABLE + entry * 2 + 1), hi);
-	ioapic_write((u32_t)ioapic_addr, (u8_t) (IOAPIC_REDIR_TABLE + entry * 2), lo);
+	ioapic_write((u32_t)ioapic_addr, (uint8_t) (IOAPIC_REDIR_TABLE + entry * 2 + 1), hi);
+	ioapic_write((u32_t)ioapic_addr, (uint8_t) (IOAPIC_REDIR_TABLE + entry * 2), lo);
 }
 
 #define apic_read_tmr_vector(vec) \
@@ -528,7 +528,7 @@ void lapic_set_timer_one_shot(const u32_t usec)
 	/* sleep in micro seconds */
 	u32_t lvtt;
 	u32_t ticks_per_us;
-	const u8_t cpu = cpuid;
+	const uint8_t cpu = cpuid;
 
 	ticks_per_us = (lapic_bus_freq[cpu] / 1000000) * config_apic_timer_x;
 
@@ -547,7 +547,7 @@ void lapic_set_timer_periodic(const unsigned freq)
 	/* sleep in micro seconds */
 	u32_t lvtt;
 	u32_t lapic_ticks_per_clock_tick;
-	const u8_t cpu = cpuid;
+	const uint8_t cpu = cpuid;
 
 	lapic_ticks_per_clock_tick = (lapic_bus_freq[cpu] / freq) * config_apic_timer_x;
 

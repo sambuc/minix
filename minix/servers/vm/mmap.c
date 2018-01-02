@@ -465,7 +465,7 @@ int do_get_refcount(message *m)
 	int r, n;
 	struct vmproc *vmp;
 	endpoint_t target;
-	u8_t cnt;
+	uint8_t cnt;
 	vir_bytes addr;
 
 	target = m->m_lsys_vm_getref.endpt;

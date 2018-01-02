@@ -9,7 +9,7 @@ pci_rescan_bus.c
 /*===========================================================================*
  *				pci_rescan_bus				     *
  *===========================================================================*/
-void pci_rescan_bus(u8_t busnr)
+void pci_rescan_bus(uint8_t busnr)
 {
 	int r;
 	message m;

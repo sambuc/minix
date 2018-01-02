@@ -11,8 +11,8 @@ typedef struct tcp_hdr
 	tcpport_t th_dstport;
 	u32_t th_seq_nr;
 	u32_t th_ack_nr;
-	u8_t th_data_off;
-	u8_t th_flags;
+	uint8_t th_data_off;
+	uint8_t th_flags;
 	u16_t th_window;
 	u16_t th_chksum;
 	u16_t th_urgptr;
@@ -31,7 +31,7 @@ typedef struct tcp_hdr
 typedef struct tcp_hdropt
 {
 	int tho_opt_siz;
-	u8_t tho_data[TCP_MAX_HDR_SIZE-TCP_MIN_HDR_SIZE];
+	uint8_t tho_data[TCP_MAX_HDR_SIZE-TCP_MIN_HDR_SIZE];
 } tcp_hdropt_t;
 
 #define TCP_OPT_EOL	 0

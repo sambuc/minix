@@ -6,10 +6,10 @@
 #define __NET__GEN__DHCP_H__
 
 typedef struct dhcp {
-	u8_t		op;		/* Message opcode/type. */
-	u8_t		htype;		/* Hardware address type. */
-	u8_t		hlen;		/* Hardware address length. */
-	u8_t		hops;		/* Hop count when relaying. */
+	uint8_t		op;		/* Message opcode/type. */
+	uint8_t		htype;		/* Hardware address type. */
+	uint8_t		hlen;		/* Hardware address length. */
+	uint8_t		hops;		/* Hop count when relaying. */
 	u32_t		xid;		/* Transaction ID. */
 	u16_t		secs;		/* Seconds past since client began. */
 	u16_t		flags;		/* Flags. */
@@ -17,11 +17,11 @@ typedef struct dhcp {
 	ipaddr_t	yiaddr;		/* "Your" IP address. */
 	ipaddr_t	siaddr;		/* Boot server IP address. */
 	ipaddr_t	giaddr;		/* Relay agent (gateway) IP address. */
-	u8_t		chaddr[16];	/* Client hardware address. */
-	u8_t		sname[64];	/* Server host name. */
-	u8_t		file[128];	/* Boot file. */
+	uint8_t		chaddr[16];	/* Client hardware address. */
+	uint8_t		sname[64];	/* Server host name. */
+	uint8_t		file[128];	/* Boot file. */
 	u32_t		magic;		/* Magic number. */
-	u8_t		options[308];	/* Optional parameters. */
+	uint8_t		options[308];	/* Optional parameters. */
 } dhcp_t;
 
 /* DHCP operations and stuff: */
@@ -68,6 +68,6 @@ typedef struct dhcp {
 
 void dhcp_init(dhcp_t *_dp);
 int dhcp_settag(dhcp_t *_dp, int _tag, void *_data, size_t _len);
-int dhcp_gettag(dhcp_t *_dp, int _searchtag, u8_t **_pdata, size_t *_plen);
+int dhcp_gettag(dhcp_t *_dp, int _searchtag, uint8_t **_pdata, size_t *_plen);
 
 #endif /* __NET__GEN__DHCP_H__ */

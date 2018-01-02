@@ -82,7 +82,7 @@ static u32_t pci_inl(u16_t port) {
 	return value;
 }
 
-static void pci_outb(u16_t port, u8_t value) {
+static void pci_outb(u16_t port, uint8_t value) {
 	int s;
 	if ((s=sys_outb(port, value)) !=OK)
 		printf("ACPI: warning, sys_outb failed: %d\n", s);
@@ -958,7 +958,7 @@ AcpiOsReadPciConfiguration (
 
 	switch (Width) {
 		case 8:
-			*(u8_t *)Value = PCII_RREG8_(PciId->Bus, PciId->Device,
+			*(uint8_t *)Value = PCII_RREG8_(PciId->Bus, PciId->Device,
 					PciId->Function, Register);
 			break;
 		case 16:

@@ -165,7 +165,7 @@ size_t hgfs_writebuf(char **ptr)
  */
   u32_t off;
 
-  off = RPC_HDR_SIZE + sizeof(u32_t) + sizeof(u8_t) + sizeof(u32_t) * 3;
+  off = RPC_HDR_SIZE + sizeof(u32_t) + sizeof(uint8_t) + sizeof(u32_t) * 3;
 
   RPC_RESET;
   RPC_ADVANCE(off);

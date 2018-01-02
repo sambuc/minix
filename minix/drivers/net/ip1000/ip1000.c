@@ -34,7 +34,7 @@ static int dev_init_io(u32_t *base);
 static int dev_init_mii(u32_t *base);
 static void dev_intr_control(u32_t *base, int flag);
 static void dev_rx_tx_control(u32_t *base, int flag);
-static void dev_get_addr(u32_t *base, u8_t *pa);
+static void dev_get_addr(u32_t *base, uint8_t *pa);
 static int dev_check_link(u32_t *base);
 static void dev_set_rec_mode(u32_t *base, int mode);
 static void dev_start_tx(u32_t *base);
@@ -77,7 +77,7 @@ static u16_t read_eeprom(u32_t base, int addr) {
 static u16_t read_phy_reg(u32_t base, int phy_addr, int phy_reg) {
 	int i, j, fieldlen[8];
 	u32_t field[8];
-	u8_t data, polar;
+	uint8_t data, polar;
 
 	field[0] = 0xffffffff;		fieldlen[0] = 32;
 	field[1] = 0x0001;		fieldlen[1] = 2;
@@ -130,7 +130,7 @@ static u16_t read_phy_reg(u32_t base, int phy_addr, int phy_reg) {
 static void write_phy_reg(u32_t base, int phy_addr, int phy_reg, u16_t val) {
 	int i, j, fieldlen[8];
 	u32_t field[8];
-	u8_t data, polar;
+	uint8_t data, polar;
 
 	field[0] = 0xffffffff;		fieldlen[0] = 32;
 	field[1] = 0x0001;		fieldlen[1] = 2;
@@ -212,7 +212,7 @@ static int dev_init_io(u32_t *base) {
  * -- Return OK means success, Others means failure */
 static int dev_init_mii(u32_t *base) {
 	int i, phyaddr;
-	u8_t revision;
+	uint8_t revision;
 	u16_t phyctrl, cr1000, length, address, value;
 	u16_t *param;
 	u32_t status, base0 = base[0];
@@ -234,7 +234,7 @@ static int dev_init_mii(u32_t *base) {
 
 	param = &PhyParam[0];
 	length = (*param) & 0x00ff;
-	revision = (u8_t)((*param) >> 8);
+	revision = (uint8_t)((*param) >> 8);
 	param++;
 	while (length != 0) {
 		if (g_driver.revision == revision) {
@@ -250,7 +250,7 @@ static int dev_init_mii(u32_t *base) {
 		else {
 			param += length / 2;
 			length = *param & 0x00ff;
-			revision = (u8_t)((*param) >> 8);
+			revision = (uint8_t)((*param) >> 8);
 			param++;
 		}
 	}
@@ -280,18 +280,18 @@ static void dev_rx_tx_control(u32_t *base, int flag) {
 }
 
 /* Get MAC address to the array 'pa' (### GET_MAC_ADDR ###) */
-static void dev_get_addr(u32_t *base, u8_t *pa) {
+static void dev_get_addr(u32_t *base, uint8_t *pa) {
 	u32_t i, sta_addr[3], base0 = base[0];
 	for (i = 0; i < 3; i++)	 {
 		sta_addr[i] = read_eeprom(base0, 16 + i);
 		ndr_out16(base0, (REG_STA_ADDR0 + i * 2), sta_addr[i]);
 	}
-	pa[0] = (u8_t)(ndr_in16(base0, REG_STA_ADDR0) & 0x00ff);
-	pa[1] = (u8_t)((ndr_in16(base0, REG_STA_ADDR0) & 0xff00) >> 8);
-	pa[2] = (u8_t)(ndr_in16(base0, REG_STA_ADDR1) & 0x00ff);
-	pa[3] = (u8_t)((ndr_in16(base0, REG_STA_ADDR1) & 0xff00) >> 8);
-	pa[4] = (u8_t)(ndr_in16(base0, REG_STA_ADDR2) & 0x00ff);
-	pa[5] = (u8_t)((ndr_in16(base0, REG_STA_ADDR2) & 0xff00) >> 8);
+	pa[0] = (uint8_t)(ndr_in16(base0, REG_STA_ADDR0) & 0x00ff);
+	pa[1] = (uint8_t)((ndr_in16(base0, REG_STA_ADDR0) & 0xff00) >> 8);
+	pa[2] = (uint8_t)(ndr_in16(base0, REG_STA_ADDR1) & 0x00ff);
+	pa[3] = (uint8_t)((ndr_in16(base0, REG_STA_ADDR1) & 0xff00) >> 8);
+	pa[4] = (uint8_t)(ndr_in16(base0, REG_STA_ADDR2) & 0x00ff);
+	pa[5] = (uint8_t)((ndr_in16(base0, REG_STA_ADDR2) & 0xff00) >> 8);
 }
 
 /* Check link status (### CHECK_LINK ###)
@@ -655,8 +655,8 @@ static int dev_probe(NDR_driver *pdev, int instance) {
 	int devind, ioflag, i;
 	u16_t cr, vid, did;
 	u32_t bar, size, base;
-	u8_t irq, rev;
-	u8_t *reg;
+	uint8_t irq, rev;
+	uint8_t *reg;
 
 	/* Find pci device */
 	pci_init();
@@ -797,7 +797,7 @@ err_real_reset:
 
 /* Configure MAC address */
 static void dev_conf_addr(NDR_driver *pdev, netdriver_addr_t *addr) {
-	u8_t pa[6];
+	uint8_t pa[6];
 
 	/* Get MAC address */
 	/* ### GET_MAC_ADDR ### */

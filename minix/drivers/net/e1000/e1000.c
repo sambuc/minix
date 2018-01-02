@@ -854,7 +854,7 @@ eeprom_ich(e1000_t * e, int reg)
 	u32_t flash_linear_addr;
 	u32_t flash_data = 0;
 	int ret_val = -1;
-	u8_t count = 0;
+	uint8_t count = 0;
 	u16_t data = 0;
 
 	E1000_DEBUG(3, ("e1000_read_flash_data_ich8lan"));

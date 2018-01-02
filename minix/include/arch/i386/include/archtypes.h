@@ -10,17 +10,17 @@
 struct segdesc_s {		/* segment descriptor for protected mode */
   u16_t limit_low;
   u16_t base_low;
-  u8_t base_middle;
-  u8_t access;		/* |P|DL|1|X|E|R|A| */
-  u8_t granularity;	/* |G|X|0|A|LIMT| */
-  u8_t base_high;
+  uint8_t base_middle;
+  uint8_t access;		/* |P|DL|1|X|E|R|A| */
+  uint8_t granularity;	/* |G|X|0|A|LIMT| */
+  uint8_t base_high;
 } __attribute__((packed));
 
 struct gatedesc_s {
   u16_t offset_low;
   u16_t selector;
-  u8_t pad;                     /* |000|XXXXX| ig & trpg, |XXXXXXXX| task g */
-  u8_t p_dpl_type;              /* |P|DL|0|TYPE| */
+  uint8_t pad;                     /* |000|XXXXX| ig & trpg, |XXXXXXXX| task g */
+  uint8_t p_dpl_type;              /* |P|DL|0|TYPE| */
   u16_t offset_high;
 } __attribute__((packed));
 
@@ -37,10 +37,10 @@ typedef struct segframe {
 } segframe_t;
 
 struct cpu_info {
-	u8_t	vendor;
-	u8_t	family;
-	u8_t	model;
-	u8_t	stepping;
+	uint8_t	vendor;
+	uint8_t	family;
+	uint8_t	model;
+	uint8_t	stepping;
 	u32_t	freq;		/* in MHz */
 	u32_t	flags[2];
 };

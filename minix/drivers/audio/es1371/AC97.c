@@ -340,7 +340,7 @@ static void set_nice_volume(void) {
 }
 
 
-static int get_volume(u8_t *left, u8_t *right, int cmd) {
+static int get_volume(uint8_t *left, uint8_t *right, int cmd) {
 	u16_t value = 0;
 
 	AC97_read_unsynced(dev, (u16_t)cmd, &value);
@@ -395,8 +395,8 @@ int AC97_get_set_volume(struct volume_level *level, int flag) {
 
 static int AC97_get_volume(struct volume_level *level) {
 	int cmd;
-	u8_t left;
-	u8_t right;
+	uint8_t left;
+	uint8_t right;
 
 	switch(level->device) {
 		case Master:

@@ -43,7 +43,7 @@ static unsigned my_inl(u16_t port) {
 #define rl_inw(port, offset)	(my_inw((port) + (offset)))
 #define rl_inl(port, offset)	(my_inl((port) + (offset)))
 
-static void my_outb(u16_t port, u8_t value) {
+static void my_outb(u16_t port, uint8_t value) {
 	int s;
 	if ((s=sys_outb(port, value)) !=OK)
 		printf("RTL8139: warning, sys_outb failed: %d\n", s);
@@ -260,7 +260,7 @@ static int rl_probe(re_t *rep, unsigned int skip)
 	int r, devind;
 	u16_t cr, vid, did;
 	u32_t bar;
-	u8_t ilr;
+	uint8_t ilr;
 #if VERBOSE
 	const char *dname;
 #endif
@@ -798,7 +798,7 @@ static void rl_check_ints(re_t *rep)
 static unsigned int rl_get_link(uint32_t *media)
 {
 	port_t port;
-	u8_t msr;
+	uint8_t msr;
 	u16_t mii_ctrl;
 	re_t *rep;
 
@@ -832,7 +832,7 @@ static void rl_report_link(re_t *rep)
 {
 	port_t port;
 	u16_t mii_ctrl, mii_status, mii_ana, mii_anlpa, mii_ane, mii_extstat;
-	u8_t msr;
+	uint8_t msr;
 	int f, link_up;
 
 	port= rep->re_base_port;
@@ -1123,7 +1123,7 @@ static void mii_print_stat_speed(u16_t stat, u16_t extstat)
 static void rl_clear_rx(re_t *rep)
 {
 	port_t port;
-	u8_t cr;
+	uint8_t cr;
 
 	rep->re_clear_rx= FALSE;
 	port= rep->re_base_port;

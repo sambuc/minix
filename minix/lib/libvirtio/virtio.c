@@ -76,7 +76,7 @@ struct virtio_device {
 	u16_t  port;				/* io port */
 
 	struct virtio_feature *features;	/* host / guest features */
-	u8_t num_features;			/* max 32 */
+	uint8_t num_features;			/* max 32 */
 
 	struct virtio_queue *queues;		/* our queues */
 	u16_t num_queues;

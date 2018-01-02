@@ -51,9 +51,9 @@ void usage(void)
 
 int main(int argc, char *argv[])
 {
-  static u8_t font[256][32];
-  static u8_t font_file[256 * (16+14+8) + 1];
-  u8_t *ff;
+  static uint8_t font[256][32];
+  static uint8_t font_file[256 * (16+14+8) + 1];
+  uint8_t *ff;
   int fd, size, tsize, ch, ln;
   struct winsize ws;
 

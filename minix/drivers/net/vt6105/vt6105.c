@@ -34,7 +34,7 @@ static int dev_init_io(u32_t *base);
 static int dev_init_mii(u32_t *base);
 static void dev_intr_control(u32_t *base, int flag);
 static void dev_rx_tx_control(u32_t *base, int flag);
-static void dev_get_addr(u32_t *base, u8_t *pa);
+static void dev_get_addr(u32_t *base, uint8_t *pa);
 static int dev_check_link(u32_t *base);
 static void dev_set_rec_mode(u32_t *base, int mode);
 static void dev_start_tx(u32_t *base);
@@ -76,7 +76,7 @@ static int dev_real_reset(u32_t *base) {
  * -- Return OK means success, Others means failure */
 static int dev_init_io(u32_t *base) {
 	u32_t base0 = base[0];
-	u8_t stick;
+	uint8_t stick;
 	stick = ndr_in8(base0, REG_STICK);
 	ndr_out8(base0, REG_STICK, stick & 0xfc);
 	ndr_out16(base0, REG_BCR, 0x0006);
@@ -124,7 +124,7 @@ static void dev_rx_tx_control(u32_t *base, int flag) {
 }
 
 /* Get MAC address to the array 'pa' (### GET_MAC_ADDR ###) */
-static void dev_get_addr(u32_t *base, u8_t *pa) {
+static void dev_get_addr(u32_t *base, uint8_t *pa) {
 	u32_t i, base0 = base[0];
 	for (i = 0; i < 6; i++)
 		pa[i] = ndr_in8(base0, REG_ADDR + i);
@@ -463,8 +463,8 @@ static int dev_probe(NDR_driver *pdev, int instance) {
 	int devind, ioflag, i;
 	u16_t cr, vid, did;
 	u32_t bar, size, base;
-	u8_t irq, rev;
-	u8_t *reg;
+	uint8_t irq, rev;
+	uint8_t *reg;
 
 	/* Find pci device */
 	pci_init();
@@ -605,7 +605,7 @@ err_real_reset:
 
 /* Configure MAC address */
 static void dev_conf_addr(NDR_driver *pdev, netdriver_addr_t *addr) {
-	u8_t pa[6];
+	uint8_t pa[6];
 
 	/* Get MAC address */
 	/* ### GET_MAC_ADDR ### */

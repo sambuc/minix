@@ -270,7 +270,7 @@ static int dev_probe(void) {
 	int devind, i, ioflag;
 	u32_t device, bar, size, base;
 	u16_t vid, did, temp;
-	u8_t *reg;
+	uint8_t *reg;
 
 	pci_init();
 	device = pci_first_dev(&devind, &vid, &did);

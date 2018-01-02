@@ -62,7 +62,7 @@ read_frclock(u32_t *frclk)
 	assert(frclk);
 	assert(minix_kerninfo->arm_frclock);
 	assert(minix_kerninfo->arm_frclock->tcrr);
-	*frclk = *(volatile u32_t *)((u8_t *)
+	*frclk = *(volatile u32_t *)((uint8_t *)
 	    minix_kerninfo->arm_frclock->tcrr);
 }
 

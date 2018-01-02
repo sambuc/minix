@@ -41,7 +41,7 @@ static void lance_init_hw(ether_card_t *ec, netdriver_addr_t *addr,
 	unsigned int instance);
 
 /* Accesses Lance Control and Status Registers */
-static u8_t in_byte(port_t port);
+static uint8_t in_byte(port_t port);
 static u16_t in_word(port_t port);
 static void out_word(port_t port, u16_t value);
 static u16_t read_csr(port_t ioaddr, u16_t csrno);
@@ -838,7 +838,7 @@ static void lance_init_hw(ether_card_t *ec, netdriver_addr_t *addr,
 /*===========================================================================*
  *                              in_byte                                      *
  *===========================================================================*/
-static u8_t in_byte(port_t port)
+static uint8_t in_byte(port_t port)
 {
 	int r;
 	u32_t value;

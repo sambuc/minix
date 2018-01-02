@@ -241,15 +241,15 @@
  * the contents of this structure are later converted to an actual FIS.
  */
 typedef struct {
-	u8_t cf_cmd;		/* Command */
-	u8_t cf_feat;		/* Features */
+	uint8_t cf_cmd;		/* Command */
+	uint8_t cf_feat;		/* Features */
 	u32_t cf_lba;		/* LBA (24-bit) */
-	u8_t cf_dev;		/* Device */
+	uint8_t cf_dev;		/* Device */
 	u32_t cf_lba_exp;	/* LBA (exp) (24-bit) */
-	u8_t cf_feat_exp;	/* Features (exp) */
-	u8_t cf_sec;		/* Sector Count */
-	u8_t cf_sec_exp;	/* Sector Count (exp) */
-	u8_t cf_ctl;		/* Control */
+	uint8_t cf_feat_exp;	/* Features (exp) */
+	uint8_t cf_sec;		/* Sector Count */
+	uint8_t cf_sec_exp;	/* Sector Count (exp) */
+	uint8_t cf_ctl;		/* Control */
 } cmd_fis_t;
 
 /* Physical Region Descriptor (PRD). For internal and sys_vumap() use only;

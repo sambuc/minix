@@ -154,10 +154,10 @@ Created:	before Dec 28, 1992 by Philip Homburg
 
 typedef struct dp_rcvhdr
 {
-	u8_t dr_status;			/* Copy of rsr                       */
-	u8_t dr_next;			/* Pointer to next packet            */
-	u8_t dr_rbcl;			/* Receive Byte Count Low            */
-	u8_t dr_rbch;			/* Receive Byte Count High           */
+	uint8_t dr_status;			/* Copy of rsr                       */
+	uint8_t dr_next;			/* Pointer to next packet            */
+	uint8_t dr_rbcl;			/* Receive Byte Count Low            */
+	uint8_t dr_rbch;			/* Receive Byte Count High           */
 } dp_rcvhdr_t;
 
 #define DP_PAGESIZE	256

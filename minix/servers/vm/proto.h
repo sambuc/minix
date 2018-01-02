@@ -178,7 +178,7 @@ int map_ph_writept(struct vmproc *vmp, struct vir_region *vr,
 
 struct vir_region* map_region_lookup_type(struct vmproc *vmp, u32_t flags);
 int map_get_phys(struct vmproc *vmp, vir_bytes addr, phys_bytes *r);
-int map_get_ref(struct vmproc *vmp, vir_bytes addr, u8_t *cnt);
+int map_get_ref(struct vmproc *vmp, vir_bytes addr, uint8_t *cnt);
 unsigned int physregions(struct vir_region *vr);
 
 void get_usage_info(struct vmproc *vmp, struct vm_usage_info *vui);

@@ -112,7 +112,7 @@ struct proc {
 	union ixfer_params{
 		struct {
 			vir_bytes 	start, length;	/* memory range */
-			u8_t		writeflag;	/* nonzero for write access */
+			uint8_t		writeflag;	/* nonzero for write access */
 		} check;
 	} params;
 	/* VM result when available */

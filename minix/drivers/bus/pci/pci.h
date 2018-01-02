@@ -47,9 +47,9 @@ int _pci_first_dev(struct rs_pci *aclp, int *devindp, u16_t *vidp,
 	u16_t *didp);
 int _pci_next_dev(struct rs_pci *aclp, int *devindp, u16_t *vidp, u16_t
 	*didp);
-int _pci_find_dev(u8_t bus, u8_t dev, u8_t func, int *devindp);
+int _pci_find_dev(uint8_t bus, uint8_t dev, uint8_t func, int *devindp);
 
-void _pci_rescan_bus(u8_t busnr);
+void _pci_rescan_bus(uint8_t busnr);
 const char *_pci_dev_name(u16_t vid, u16_t did);
 
 
@@ -59,12 +59,12 @@ int _pci_slot_name(int devind, char **cpp);
 int _pci_ids(int devind, u16_t *vidp, u16_t *didp);
 
 /* PCI Config Read functions */
-int _pci_attr_r8(int devind, int port, u8_t *vp);
+int _pci_attr_r8(int devind, int port, uint8_t *vp);
 int _pci_attr_r16(int devind, int port, u16_t *vp);
 int _pci_attr_r32(int devind, int port, u32_t *vp);
 
 /* PCI Config Write functions */
-int _pci_attr_w8(int devind, int port, u8_t value);
+int _pci_attr_w8(int devind, int port, uint8_t value);
 int _pci_attr_w16(int devind, int port, u16_t value);
 int _pci_attr_w32(int devind, int port, u32_t value);
 

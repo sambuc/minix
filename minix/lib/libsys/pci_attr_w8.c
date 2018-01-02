@@ -9,7 +9,7 @@ pci_attr_w8.c
 /*===========================================================================*
  *				pci_attr_w8				     *
  *===========================================================================*/
-void pci_attr_w8(int devind, int port, u8_t value)
+void pci_attr_w8(int devind, int port, uint8_t value)
 {
 	int r;
 	message m;

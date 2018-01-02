@@ -75,7 +75,7 @@ typedef struct fxp
 
 	irq_hook_t fxp_hook;
 	struct sc fxp_stat;
-	u8_t fxp_conf_bytes[CC_BYTES_NR];
+	uint8_t fxp_conf_bytes[CC_BYTES_NR];
 } fxp_t;
 
 /* fxp_type */
@@ -123,9 +123,9 @@ static void fxp_report_link(fxp_t *fp);
 static u16_t eeprom_read(fxp_t *fp, int reg);
 static void eeprom_addrsize(fxp_t *fp);
 static u16_t mii_read(fxp_t *fp, int reg);
-static u8_t do_inb(port_t port);
+static uint8_t do_inb(port_t port);
 static u32_t do_inl(port_t port);
-static void do_outb(port_t port, u8_t v);
+static void do_outb(port_t port, uint8_t v);
 static void do_outl(port_t port, u32_t v);
 static void tell_iommu(vir_bytes start, size_t size, int pci_bus, int
 	pci_dev, int pci_func);
@@ -236,7 +236,7 @@ static int fxp_probe(fxp_t *fp, int skip)
 	int r, devind;
 	u16_t vid, did, cr;
 	u32_t bar;
-	u8_t ilr, rev;
+	uint8_t ilr, rev;
 	const char *str;
 #if VERBOSE
 	const char *dname;
@@ -792,7 +792,7 @@ static int fxp_send(struct netdriver_data *data, size_t size)
 static void fxp_check_restart(fxp_t *fp)
 {
 	port_t port;
-	u8_t scb_status;
+	uint8_t scb_status;
 
 	if (!fp->fxp_rx_need_restart)
 		return;
@@ -936,7 +936,7 @@ int check_idle;
 {
 	spin_t spin;
 	port_t port;
-	u8_t scb_cmd;
+	uint8_t scb_cmd;
 
 	port= fp->fxp_base_port;
 
@@ -976,7 +976,7 @@ int check_idle;
 {
 	spin_t spin;
 	port_t port;
-	u8_t scb_cmd;
+	uint8_t scb_cmd;
 
 	port= fp->fxp_base_port;
 
@@ -1128,7 +1128,7 @@ static void fxp_check_ints(fxp_t *fp)
 	port_t port;
 	u32_t busaddr;
 	u16_t tx_status;
-	u8_t scb_status;
+	uint8_t scb_status;
 	struct tx *txp;
 
 	netdriver_recv();
@@ -1702,7 +1702,7 @@ static u16_t mii_read(fxp_t *fp, int reg)
 	return v & CM_DATA_MASK;
 }
 
-static u8_t do_inb(port_t port)
+static uint8_t do_inb(port_t port)
 {
 	int r;
 	u32_t value;
@@ -1724,7 +1724,7 @@ static u32_t do_inl(port_t port)
 	return value;
 }
 
-static void do_outb(port_t port, u8_t value)
+static void do_outb(port_t port, uint8_t value)
 {
 	int r;
 

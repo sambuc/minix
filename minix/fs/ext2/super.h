@@ -55,7 +55,7 @@ EXTERN struct super_block {
     u32_t  s_feature_compat;       /* compatible feature set */
     u32_t  s_feature_incompat;     /* incompatible feature set */
     u32_t  s_feature_ro_compat;    /* readonly-compatible feature set */
-    u8_t   s_uuid[16];             /* 128-bit uuid for volume */
+    uint8_t   s_uuid[16];             /* 128-bit uuid for volume */
     char   s_volume_name[16];      /* volume name */
     char   s_last_mounted[64];     /* directory where last mounted */
     u32_t  s_algorithm_usage_bitmap; /* For compression */
@@ -63,19 +63,19 @@ EXTERN struct super_block {
      * Performance hints.  Directory preallocation should only
      * happen if the EXT2_COMPAT_PREALLOC flag is on.
      */
-    u8_t    s_prealloc_blocks;      /* Nr of blocks to try to preallocate*/
-    u8_t    s_prealloc_dir_blocks;  /* Nr to preallocate for dirs */
+    uint8_t    s_prealloc_blocks;      /* Nr of blocks to try to preallocate*/
+    uint8_t    s_prealloc_dir_blocks;  /* Nr to preallocate for dirs */
     u16_t   s_padding1;
     /*
      * Journaling support valid if EXT3_FEATURE_COMPAT_HAS_JOURNAL set.
      */
-    u8_t    s_journal_uuid[16];     /* uuid of journal superblock */
+    uint8_t    s_journal_uuid[16];     /* uuid of journal superblock */
     u32_t   s_journal_inum;         /* inode number of journal file */
     u32_t   s_journal_dev;          /* device number of journal file */
     u32_t   s_last_orphan;          /* start of list of inodes to delete */
     u32_t   s_hash_seed[4];         /* HTREE hash seed */
-    u8_t    s_def_hash_version;     /* Default hash version to use */
-    u8_t    s_reserved_char_pad;
+    uint8_t    s_def_hash_version;     /* Default hash version to use */
+    uint8_t    s_reserved_char_pad;
     u16_t   s_reserved_word_pad;
     u32_t   s_default_mount_opts;
     u32_t   s_first_meta_bg;        /* First metablock block group */
@@ -87,7 +87,7 @@ EXTERN struct super_block {
     u32_t   s_gdb_count;            /* Number of group descriptor blocks */
     u32_t   s_desc_per_block;       /* Number of group descriptors per block */
     u32_t   s_groups_count;         /* Number of groups in the fs */
-    u8_t    s_blocksize_bits;       /* Used to calculate offsets
+    uint8_t    s_blocksize_bits;       /* Used to calculate offsets
                                      * (e.g. inode block),
                                      * always s_log_block_size+10.
                                      */

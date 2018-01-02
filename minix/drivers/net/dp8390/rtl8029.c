@@ -34,7 +34,7 @@ int skip;
 	int r, devind;
 	u16_t vid, did;
 	u32_t bar;
-	u8_t ilr;
+	uint8_t ilr;
 	const char *dname;
 
 	pci_init();
@@ -80,7 +80,7 @@ int skip;
 static void rtl_init(dep)
 dpeth_t *dep;
 {
-	u8_t reg_a, reg_b, cr, config0, config2, config3;
+	uint8_t reg_a, reg_b, cr, config0, config2, config3;
 
 #if DEBUG
 	printf("rtl_init called\n");

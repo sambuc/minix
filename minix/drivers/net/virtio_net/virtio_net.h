@@ -59,7 +59,7 @@
 
 struct virtio_net_config {
 	/* The config defining mac address (if VIRTIO_NET_F_MAC) */
-	u8_t mac[6];
+	uint8_t mac[6];
 	/* See VIRTIO_NET_F_STATUS and VIRTIO_NET_S_* above */
 	u16_t status;
 } __attribute__((packed));
@@ -69,13 +69,13 @@ struct virtio_net_config {
 struct virtio_net_hdr {
 #define VIRTIO_NET_HDR_F_NEEDS_CSUM	1	// Use csum_start, csum_offset
 #define VIRTIO_NET_HDR_F_DATA_VALID	2	// Csum is valid
-	u8_t flags;
+	uint8_t flags;
 #define VIRTIO_NET_HDR_GSO_NONE		0	// Not a GSO frame
 #define VIRTIO_NET_HDR_GSO_TCPV4	1	// GSO frame, IPv4 TCP (TSO)
 #define VIRTIO_NET_HDR_GSO_UDP		3	// GSO frame, IPv4 UDP (UFO)
 #define VIRTIO_NET_HDR_GSO_TCPV6	4	// GSO frame, IPv6 TCP
 #define VIRTIO_NET_HDR_GSO_ECN		0x80	// TCP has ECN set
-	u8_t gso_type;
+	uint8_t gso_type;
 	u16_t hdr_len;		/* Ethernet + IP + tcp/udp hdrs */
 	u16_t gso_size;		/* Bytes to append to hdr_len per frame */
 	u16_t csum_start;	/* Position to start checksumming from */
@@ -97,11 +97,11 @@ struct virtio_net_hdr_mrg_rxbuf {
  * command goes in between.
  */
 struct virtio_net_ctrl_hdr {
-	u8_t class;
-	u8_t cmd;
+	uint8_t class;
+	uint8_t cmd;
 } __attribute__((packed));
 
-typedef u8_t virtio_net_ctrl_ack;
+typedef uint8_t virtio_net_ctrl_ack;
 
 #define VIRTIO_NET_OK     0
 #define VIRTIO_NET_ERR    1
@@ -139,7 +139,7 @@ typedef u8_t virtio_net_ctrl_ack;
 struct virtio_net_ctrl_mac {
 	u32_t entries;
 #define ETH_ALEN 6
-	u8_t macs[][ETH_ALEN];
+	uint8_t macs[][ETH_ALEN];
 } __attribute__((packed));
 
 #define VIRTIO_NET_CTRL_MAC    1

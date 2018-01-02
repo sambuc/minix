@@ -192,7 +192,7 @@ struct tss_s {
   reg_t ldt;
   u16_t trap;
   u16_t iobase;
-/* u8_t iomap[0]; */
+/* uint8_t iomap[0]; */
 } __attribute__((packed));
 
 void enable_iop(struct proc *pp);

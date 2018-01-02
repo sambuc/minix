@@ -1340,7 +1340,7 @@ int map_get_phys(struct vmproc *vmp, vir_bytes addr, phys_bytes *r)
 /*========================================================================*
  *				map_get_ref				  *
  *========================================================================*/
-int map_get_ref(struct vmproc *vmp, vir_bytes addr, u8_t *cnt)
+int map_get_ref(struct vmproc *vmp, vir_bytes addr, uint8_t *cnt)
 {
 	struct vir_region *vr;
 

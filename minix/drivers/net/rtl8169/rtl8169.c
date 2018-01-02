@@ -126,7 +126,7 @@ static unsigned my_inl(u16_t port)
 #define rl_inw(port, offset)	(my_inw((port) + (offset)))
 #define rl_inl(port, offset)	(my_inl((port) + (offset)))
 
-static void my_outb(u16_t port, u8_t value)
+static void my_outb(u16_t port, uint8_t value)
 {
 	int s;
 
@@ -402,7 +402,7 @@ static int rl_probe(re_t *rep, unsigned int skip)
 	int r, devind;
 	u16_t vid, did;
 	u32_t bar;
-	u8_t ilr;
+	uint8_t ilr;
 #if VERBOSE
 	const char *dname;
 #endif
@@ -1057,7 +1057,7 @@ static void rl_check_ints(re_t *rep)
 static unsigned int rl_get_link(uint32_t *media)
 {
 	re_t *rep;
-	u8_t mii_status;
+	uint8_t mii_status;
 
 	rep = &re_state;
 
@@ -1088,7 +1088,7 @@ static unsigned int rl_get_link(uint32_t *media)
 static void rl_report_link(re_t *rep)
 {
 	port_t port;
-	u8_t mii_status;
+	uint8_t mii_status;
 
 	port = rep->re_base_port;
 

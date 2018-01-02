@@ -12,8 +12,8 @@ int parse_susp(struct rrii_dir_record *dir, char *buffer)
 {
 	/* Parse fundamental SUSP entries */
 	char susp_signature[2];
-	u8_t susp_length;
-	u8_t susp_version;
+	uint8_t susp_length;
+	uint8_t susp_version;
 	u32_t ca_block_nr;
 	u32_t ca_offset;
 	u32_t ca_length;
@@ -22,8 +22,8 @@ int parse_susp(struct rrii_dir_record *dir, char *buffer)
 
 	susp_signature[0] = buffer[0];
 	susp_signature[1] = buffer[1];
-	susp_length = *((u8_t*)buffer + 2);
-	susp_version = *((u8_t*)buffer + 3);
+	susp_length = *((uint8_t*)buffer + 2);
+	susp_version = *((uint8_t*)buffer + 3);
 
 	if ((susp_signature[0] == 'C') && (susp_signature[1] == 'E') &&
 	    (susp_length >= 28) && (susp_version >= 1)) {
@@ -88,7 +88,7 @@ void parse_susp_buffer(struct rrii_dir_record *dir, char *buffer, u32_t size)
 	 * routed from here to the relevant handling functions.
 	 */
 	char susp_signature[2];
-	u8_t susp_length;
+	uint8_t susp_length;
 
 	int parser_return;
 
@@ -99,7 +99,7 @@ void parse_susp_buffer(struct rrii_dir_record *dir, char *buffer, u32_t size)
 
 		susp_signature[0] = buffer[0];
 		susp_signature[1] = buffer[1];
-		susp_length = *((u8_t*)buffer + 2);
+		susp_length = *((uint8_t*)buffer + 2);
 
 		/* Check if SUSP entry is present. */
 		if (((susp_signature[0] == 0) && (susp_signature[1] == 0)) ||

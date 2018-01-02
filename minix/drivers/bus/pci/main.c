@@ -117,7 +117,7 @@ static void
 do_find_dev(message *mp)
 {
 	int r, devind;
-	u8_t bus, dev, func;
+	uint8_t bus, dev, func;
 
 	bus= mp->m1_i1;
 	dev= mp->m1_i2;
@@ -341,7 +341,7 @@ static void
 do_attr_r8(message *mp)
 {
 	int r, devind, port;
-	u8_t v;
+	uint8_t v;
 
 	devind= mp->m2_i1;
 	port= mp->m2_i2;
@@ -419,7 +419,7 @@ static void
 do_attr_w8(message *mp)
 {
 	int r, devind, port;
-	u8_t v;
+	uint8_t v;
 
 	devind= mp->m2_i1;
 	port= mp->m2_i2;

@@ -9,7 +9,7 @@ pci_find_dev.c
 /*===========================================================================*
  *				pci_find_dev				     *
  *===========================================================================*/
-int pci_find_dev(u8_t bus, u8_t dev, u8_t func, int *devindp)
+int pci_find_dev(uint8_t bus, uint8_t dev, uint8_t func, int *devindp)
 {
 	int r;
 	message m;

@@ -114,8 +114,8 @@ typedef struct e1000
 {
     int irq;			  /**< Interrupt Request Vector. */
     int irq_hook;                 /**< Interrupt Request Vector Hook. */
-    u8_t *regs;		  	  /**< Memory mapped hardware registers. */
-    u8_t *flash;		  /**< Optional flash memory. */
+    uint8_t *regs;		  	  /**< Memory mapped hardware registers. */
+    uint8_t *flash;		  /**< Optional flash memory. */
     u32_t flash_base_addr;	  /**< Flash base address. */
     u16_t (*eeprom_read)(struct e1000 *, int reg);
 				  /**< Function to read the EEPROM. */

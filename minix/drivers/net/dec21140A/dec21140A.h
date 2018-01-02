@@ -32,8 +32,8 @@ typedef struct de_descr {
 
 typedef struct de_local_descr {
   de_descr_t *descr;
-  u8_t *buf1;
-  u8_t *buf2;
+  uint8_t *buf1;
+  uint8_t *buf2;
 } de_loc_descr_t;
 
 typedef struct dpeth {
@@ -45,9 +45,9 @@ typedef struct dpeth {
 
   /* Space reservation. We will allocate all structures later in the code.
      here we just make sure we have the space we need at compile time */
-  u8_t sendrecv_descr_buf[(DE_NB_SEND_DESCR+DE_NB_RECV_DESCR)*
+  uint8_t sendrecv_descr_buf[(DE_NB_SEND_DESCR+DE_NB_RECV_DESCR)*
 			  sizeof(de_descr_t)];
-  u8_t sendrecv_buf[DE_NB_SEND_DESCR*DE_SEND_BUF_SIZE +
+  uint8_t sendrecv_buf[DE_NB_SEND_DESCR*DE_SEND_BUF_SIZE +
 		    DE_NB_RECV_DESCR*DE_RECV_BUF_SIZE];
   phys_bytes sendrecv_descr_phys_addr[2];
   de_loc_descr_t descr[2][MAX(DE_NB_RECV_DESCR, DE_NB_SEND_DESCR)];
@@ -59,7 +59,7 @@ typedef struct dpeth {
   /* Serial ROM */
 #define SROM_BITWIDTH 6
 
-  u8_t srom[((1<<SROM_BITWIDTH)-1)*2];    /* Space to read in 
+  uint8_t srom[((1<<SROM_BITWIDTH)-1)*2];    /* Space to read in 
 					     all the configuration ROM */
 } dpeth_t;
 

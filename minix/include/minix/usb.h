@@ -32,13 +32,13 @@ struct usb_device_id {
 	u16_t idProduct;
 	u32_t bcdDevice;
 
-	u8_t  bDeviceClass;
-	u8_t  bDeviceSubClass;
-	u8_t  bDeviceProtocol;
+	uint8_t  bDeviceClass;
+	uint8_t  bDeviceSubClass;
+	uint8_t  bDeviceProtocol;
 
-	u8_t  bInterfaceClass;
-	u8_t  bInterfaceSubClass;
-	u8_t  bInterfaceProtocol;
+	uint8_t  bInterfaceClass;
+	uint8_t  bInterfaceSubClass;
+	uint8_t  bInterfaceProtocol;
 };
 
 struct usb_iso_packet_desc {
@@ -96,8 +96,8 @@ struct usb_urb {
 };
 
 struct usb_ctrlrequest {
-        u8_t bRequestType; 
-        u8_t bRequest;
+        uint8_t bRequestType; 
+        uint8_t bRequest;
         u16_t wValue;
 		u16_t wIndex;
         u16_t wLength;

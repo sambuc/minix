@@ -20,7 +20,7 @@ Created:	Dec 2005 by Philip Homburg
 static struct port
 {
 	int p_devind;
-	u8_t p_cb_busnr;
+	uint8_t p_cb_busnr;
 	u16_t p_exca_port;
 #if USE_INTS
 	int p_irq;
@@ -138,7 +138,7 @@ static int hw_probe(int skip)
  *===========================================================================*/
 static void hw_init(struct port *pp, int devind)
 {
-	u8_t v8;
+	uint8_t v8;
 	u16_t v16;
 	u32_t v32;
 #if USE_INTS
@@ -250,7 +250,7 @@ static void do_int(struct port *pp)
 		socket_5v, socket_3v, socket_Xv, socket_Yv;
 	spin_t spin;
 	u32_t csr_event, csr_present, csr_control;
-	u8_t v8;
+	uint8_t v8;
 	u16_t v16;
 #if USE_INTS
 	int r;

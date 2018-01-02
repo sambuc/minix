@@ -94,7 +94,7 @@ static int virtio_blk_device(devminor_t minor, device_id_t *id);
 static int virtio_blk_flush(void);
 static void virtio_blk_terminate(void);
 static void virtio_blk_cleanup(void);
-static int virtio_blk_status2error(u8_t status);
+static int virtio_blk_status2error(uint8_t status);
 static int virtio_blk_alloc_requests(void);
 static void virtio_blk_free_requests(void);
 static int virtio_blk_feature_setup(void);
@@ -351,7 +351,7 @@ virtio_blk_transfer(devminor_t minor, int write, u64_t position,
 
 	/* Put the status at the end */
 	phys[pcnt + 1].vp_addr = status_phys + tid * sizeof(status_vir[0]);
-	phys[pcnt + 1].vp_size = sizeof(u8_t);
+	phys[pcnt + 1].vp_size = sizeof(uint8_t);
 
 	/* Status always needs write access */
 	phys[1 + pcnt].vp_addr |= 1;
@@ -546,7 +546,7 @@ virtio_blk_cleanup(void)
 }
 
 static int
-virtio_blk_status2error(u8_t status)
+virtio_blk_status2error(uint8_t status)
 {
 	/* Convert a status from the host to an error */
 	switch (status) {

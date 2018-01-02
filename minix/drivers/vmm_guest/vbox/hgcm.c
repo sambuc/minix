@@ -458,7 +458,7 @@ static int store_pages(int conn, int req, vbox_param_t *inp, size_t *offp)
 		return OK;
 
 	pagelist = (struct VMMDevHGCMPageList *)
-		(((u8_t *) hgcm_conn[conn].req[req].ptr) + *offp);
+		(((uint8_t *) hgcm_conn[conn].req[req].ptr) + *offp);
 
 	pagelist->flags = 0;
 	if (inp->ptr.dir & VBOX_DIR_IN)

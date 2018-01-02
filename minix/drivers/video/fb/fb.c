@@ -350,7 +350,7 @@ paint_restartlogo(int minor)
 static void
 paint_centered(int minor, char *data, int width, int height)
 {
-	u8_t pixel[3];
+	uint8_t pixel[3];
 	u32_t i, min_x, min_y, max_x, max_y, x_painted = 0, rows = 0;
 	int r, bytespp;
 	struct device dev;

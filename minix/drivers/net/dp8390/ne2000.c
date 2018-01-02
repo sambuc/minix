@@ -22,15 +22,15 @@ extern u32_t system_hz;
 
 #define MILLIS_TO_TICKS(m)  (((m)*system_hz/1000)+1)
 
-typedef int(*testf_t) (dpeth_t *dep, int pos, u8_t *pat);
+typedef int(*testf_t) (dpeth_t *dep, int pos, uint8_t *pat);
 
-static u8_t	pat0[]= { 0x00, 0x00, 0x00, 0x00 };
-static u8_t	pat1[]= { 0xFF, 0xFF, 0xFF, 0xFF };
-static u8_t	pat2[]= { 0xA5, 0x5A, 0x69, 0x96 };
-static u8_t	pat3[]= { 0x96, 0x69, 0x5A, 0xA5 };
+static uint8_t	pat0[]= { 0x00, 0x00, 0x00, 0x00 };
+static uint8_t	pat1[]= { 0xFF, 0xFF, 0xFF, 0xFF };
+static uint8_t	pat2[]= { 0xA5, 0x5A, 0x69, 0x96 };
+static uint8_t	pat3[]= { 0x96, 0x69, 0x5A, 0xA5 };
 
-static int test_8(dpeth_t *dep, int pos, u8_t *pat);
-static int test_16(dpeth_t *dep, int pos, u8_t *pat);
+static int test_8(dpeth_t *dep, int pos, uint8_t *pat);
+static int test_16(dpeth_t *dep, int pos, uint8_t *pat);
 static void ne_stop(dpeth_t *dep);
 static void milli_delay(unsigned long millis);
 
@@ -198,9 +198,9 @@ dpeth_t *dep;
 static int test_8(dep, pos, pat)
 dpeth_t *dep;
 int pos;
-u8_t *pat;
+uint8_t *pat;
 {
-	u8_t buf[4];
+	uint8_t buf[4];
 	int i;
 	int r;
 
@@ -250,9 +250,9 @@ u8_t *pat;
 static int test_16(dep, pos, pat)
 dpeth_t *dep;
 int pos;
-u8_t *pat;
+uint8_t *pat;
 {
-	u8_t buf[4];
+	uint8_t buf[4];
 	int i;
 	int r;
 

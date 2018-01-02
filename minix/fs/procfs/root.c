@@ -118,7 +118,7 @@ static void
 root_pci(void)
 {
 	u16_t vid, did, subvid, subdid;
-	u8_t bcr, scr, pifr, rev;
+	uint8_t bcr, scr, pifr, rev;
 	char *slot_name, *dev_name;
 	int r, devind;
 	static int first = TRUE;

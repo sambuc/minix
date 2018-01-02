@@ -31,9 +31,9 @@ typedef struct nwio_ipopt
 	u32_t nwio_flags;
 	ipaddr_t nwio_rem;
 	ip_hdropt_t nwio_hdropt;
-	u8_t nwio_tos;
-	u8_t nwio_ttl;
-	u8_t nwio_df;
+	uint8_t nwio_tos;
+	uint8_t nwio_ttl;
+	uint8_t nwio_df;
 	ipproto_t nwio_proto;
 } nwio_ipopt_t;
 

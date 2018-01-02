@@ -170,8 +170,8 @@ struct ias
 	u16_t ias_status;
 	u16_t ias_command;
 	u32_t ias_linkaddr;
-	u8_t ias_ethaddr[6];
-	u8_t ias_reserved[2];
+	uint8_t ias_ethaddr[6];
+	uint8_t ias_reserved[2];
 };
 
 /* Configure (2) */
@@ -181,7 +181,7 @@ struct cbl_conf
 	u16_t cc_status;
 	u16_t cc_command;
 	u32_t cc_linkaddr;
-	u8_t cc_bytes[CC_BYTES_NR];
+	uint8_t cc_bytes[CC_BYTES_NR];
 };
 
 /* Byte 0 */
@@ -427,9 +427,9 @@ struct tx
 	u32_t tx_linkaddr;
 	u32_t tx_tbda;
 	u16_t tx_size;
-	u8_t tx_tthresh;
-	u8_t tx_ntbd;
-	u8_t tx_buf[NDEV_ETH_PACKET_MAX_TAGGED];
+	uint8_t tx_tthresh;
+	uint8_t tx_ntbd;
+	uint8_t tx_buf[NDEV_ETH_PACKET_MAX_TAGGED];
 };
 
 #define TXS_C		0x8000	/* Transmit DMA has completed */
@@ -506,7 +506,7 @@ struct rfd
 	u32_t rfd_reserved;
 	u16_t rfd_res;
 	u16_t rfd_size;
-	u8_t rfd_buf[NDEV_ETH_PACKET_MAX_TAGGED];
+	uint8_t rfd_buf[NDEV_ETH_PACKET_MAX_TAGGED];
 };
 
 #define RFDS_C		0x8000	/* Frame Reception Completed */

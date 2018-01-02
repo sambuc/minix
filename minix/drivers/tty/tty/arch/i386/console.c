@@ -913,7 +913,7 @@ tty_t *tp;
 /* Initialize the screen driver. */
   console_t *cons;
   u16_t bios_columns, bios_crtbase, bios_fontlines;
-  u8_t bios_rows;
+  uint8_t bios_rows;
   int line;
   int s;
   static int vdu_initialized = 0;

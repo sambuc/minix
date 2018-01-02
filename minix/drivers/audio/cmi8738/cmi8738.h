@@ -93,7 +93,7 @@ typedef struct aud_sub_dev_conf_t {
 	u32_t sign;
 	u32_t busy;
 	u32_t fragment_size;
-	u8_t format;
+	uint8_t format;
 } aud_sub_dev_conf_t;
 
 typedef struct DEV_STRUCT {

@@ -36,24 +36,24 @@ typedef struct {
     u32_t  i_faddr;        /* Fragment address */
     union {
         struct {
-            u8_t    l_i_frag;       /* Fragment number */
-            u8_t    l_i_fsize;      /* Fragment size */
+            uint8_t    l_i_frag;       /* Fragment number */
+            uint8_t    l_i_fsize;      /* Fragment size */
             u16_t   i_pad1;
             u16_t  l_i_uid_high;   /* these 2 fields    */
             u16_t  l_i_gid_high;   /* were reserved2[0] */
             u32_t   l_i_reserved2;
         } linux2;
         struct {
-            u8_t    h_i_frag;       /* Fragment number */
-            u8_t    h_i_fsize;      /* Fragment size */
+            uint8_t    h_i_frag;       /* Fragment number */
+            uint8_t    h_i_fsize;      /* Fragment size */
             u16_t  h_i_mode_high;
             u16_t  h_i_uid_high;
             u16_t  h_i_gid_high;
             u32_t  h_i_author;
         } hurd2;
         struct {
-            u8_t    m_i_frag;       /* Fragment number */
-            u8_t    m_i_fsize;      /* Fragment size */
+            uint8_t    m_i_frag;       /* Fragment number */
+            uint8_t    m_i_fsize;      /* Fragment size */
             u16_t   m_pad1;
             u32_t   m_i_reserved2[2];
         } masix2;
@@ -70,8 +70,8 @@ typedef struct {
 struct ext2_disk_dir_desc {
   u32_t     d_ino;
   u16_t     d_rec_len;
-  u8_t      d_name_len;
-  u8_t      d_file_type;
+  uint8_t      d_name_len;
+  uint8_t      d_file_type;
   char      d_name[1];
 };
 

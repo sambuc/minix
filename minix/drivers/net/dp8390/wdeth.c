@@ -309,7 +309,7 @@ dpeth_t *dep;
  * 8 bit board.
  */
 	int icr;
-	u8_t tlb;
+	uint8_t tlb;
 
 	icr= inb_we(dep, EPL_ICR);
 
@@ -345,7 +345,7 @@ static int we_ultra(dep)
 dpeth_t *dep;
 {
 /* Determine if we has an '790 chip.  */
-	u8_t tlb;
+	uint8_t tlb;
 
 	tlb= inb_we(dep, EPL_TLB);
 	return tlb == E_TLB_SMC8216T || tlb == E_TLB_SMC8216C;

@@ -7,8 +7,8 @@ server/ip/gen/psip_hdr.h
 
 typedef struct psip_io_hdr
 {
-	u8_t pih_flags;
-	u8_t pih_dummy[3];
+	uint8_t pih_flags;
+	uint8_t pih_dummy[3];
 	u32_t pih_nexthop;
 } psip_io_hdr_t;
 

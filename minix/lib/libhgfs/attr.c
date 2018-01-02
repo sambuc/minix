@@ -59,7 +59,7 @@ int hgfs_setattr(const char *path, struct sffs_attr *attr)
 {
 /* Set selected attributes of a file by path name.
  */
-  u8_t mask;
+  uint8_t mask;
 
   RPC_REQUEST(HGFS_REQ_SETATTR);
 

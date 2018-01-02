@@ -932,7 +932,7 @@ static void map_hw_buffer(dpeth_t *dep)
 		panic("map_hw_buffer: vm_map_phys failed");
 }
 
-u8_t inb(port_t port)
+uint8_t inb(port_t port)
 {
 	int r;
 	u32_t value;
@@ -957,7 +957,7 @@ u16_t inw(port_t port)
 	return (u16_t) value;
 }
 
-void outb(port_t port, u8_t value)
+void outb(port_t port, uint8_t value)
 {
 	int r;
 

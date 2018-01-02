@@ -155,7 +155,7 @@ unsigned long vm_getphys(endpoint_t endpt, void *addr)
 	return (unsigned long) m.m_lc_vm_getphys.ret_addr;
 }
 
-u8_t vm_getrefcount(endpoint_t endpt, void *addr)
+uint8_t vm_getrefcount(endpoint_t endpt, void *addr)
 {
 	message m;
 	int r;
@@ -166,7 +166,7 @@ u8_t vm_getrefcount(endpoint_t endpt, void *addr)
 
 	r = _syscall(VM_PROC_NR, VM_GETREF, &m);
 	if (r != OK)
-		return (u8_t) -1;
-	return (u8_t) m.m_lsys_vm_getref.retc;
+		return (uint8_t) -1;
+	return (uint8_t) m.m_lsys_vm_getref.retc;
 }
 

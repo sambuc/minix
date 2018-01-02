@@ -26,11 +26,11 @@ server/ip/gen/in.h
 #define IP_MC_ALL_SYSTEMS	0xE0000001	/* 224.0.0.1 */
 
 typedef u32_t ipaddr_t;
-typedef u8_t ipproto_t;
+typedef uint8_t ipproto_t;
 typedef struct ip_hdropt
 {
-	u8_t iho_opt_siz;
-	u8_t iho_data[IP_MAX_HDR_SIZE-IP_MIN_HDR_SIZE];
+	uint8_t iho_opt_siz;
+	uint8_t iho_data[IP_MAX_HDR_SIZE-IP_MIN_HDR_SIZE];
 } ip_hdropt_t;
 
 #endif /* __SERVER__IP__GEN__IN_H__ */

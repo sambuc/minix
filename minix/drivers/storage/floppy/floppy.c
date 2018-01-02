@@ -159,14 +159,14 @@
  * 3   720K    1.44M    9       80     300 RPM  250 kbps   PS/2, et al.
  */
 static struct density {
-	u8_t	secpt;		/* sectors per track */
-	u8_t	cyls;		/* tracks per side */
-	u8_t	steps;		/* steps per cylinder (2 = double step) */
-	u8_t	test;		/* sector to try for density test */
-	u8_t	rate;		/* data rate (2=250, 1=300, 0=500 kbps) */
+	uint8_t	secpt;		/* sectors per track */
+	uint8_t	cyls;		/* tracks per side */
+	uint8_t	steps;		/* steps per cylinder (2 = double step) */
+	uint8_t	test;		/* sector to try for density test */
+	uint8_t	rate;		/* data rate (2=250, 1=300, 0=500 kbps) */
 	clock_t	start_ms;	/* motor start (milliseconds) */
-	u8_t	gap;		/* gap size */
-	u8_t	spec1;		/* first specify byte (SRT/HUT) */
+	uint8_t	gap;		/* gap size */
+	uint8_t	spec1;		/* first specify byte (SRT/HUT) */
 } fdensity[NT] = {
 	{  9, 40, 1, 4*9, 2, 500, 0x2A, 0xDF },	/*  360K / 360K  */
 	{ 15, 80, 1,  14, 0, 500, 0x1B, 0xDF },	/*  1.2M / 1.2M  */
@@ -188,8 +188,8 @@ static struct density {
 #define b(d)	(1 << (d))	/* bit for density d. */
 
 static struct test_order {
-	u8_t	t_density;	/* floppy/drive type */
-	u8_t	t_class;	/* limit drive to this class of densities */
+	uint8_t	t_density;	/* floppy/drive type */
+	uint8_t	t_class;	/* limit drive to this class of densities */
 } test_order[NT-1] = {
 	{ 6,  b(3) | b(6) },		/* 1.44M  {720K, 1.44M} */
 	{ 1,  b(1) | b(4) | b(5) },	/* 1.2M   {1.2M, 360K, 720K} */
@@ -210,8 +210,8 @@ static struct floppy {		/* main drive struct, one entry per drive */
   unsigned fl_sector;		/* sector addressed */
   unsigned fl_head;		/* head number addressed */
   char fl_calibration;		/* CALIBRATED or UNCALIBRATED */
-  u8_t fl_density;		/* NO_DENS = ?, 0 = 360K; 1 = 360K/1.2M; etc.*/
-  u8_t fl_class;		/* bitmap for possible densities */
+  uint8_t fl_density;		/* NO_DENS = ?, 0 = 360K; 1 = 360K/1.2M; etc.*/
+  uint8_t fl_class;		/* bitmap for possible densities */
   minix_timer_t fl_tmr_stop;		/* timer to stop motor */
   struct device fl_geom;	/* Geometry of the drive */
   struct device fl_part[NR_PARTITIONS];  /* partition's base & size */
@@ -229,7 +229,7 @@ static unsigned f_sectors;	/* equal to f_dp->secpt (needed a lot) */
 u16_t f_busy;		/* BSY_IDLE, BSY_IO, BSY_WAKEN */
 static struct device *f_dv;	/* device's base and size */
 static struct disk_parameter_s fmt_param; /* parameters for format */
-static u8_t f_results[MAX_RESULTS];/* the controller can give lots of output */
+static uint8_t f_results[MAX_RESULTS];/* the controller can give lots of output */
 
 /* The floppy uses various timers. These are managed by the floppy driver
  * itself, because only a single synchronous alarm is available per process.
@@ -252,7 +252,7 @@ static void start_motor(void);
 static int seek(void);
 static int fdc_transfer(int do_write);
 static int fdc_results(void);
-static int fdc_command(const u8_t *cmd, int len);
+static int fdc_command(const uint8_t *cmd, int len);
 static void fdc_out(int val);
 static int recalibrate(void);
 static void f_reset(void);
@@ -461,7 +461,7 @@ static ssize_t f_transfer(
   unsigned long position;
   signed long uoffsets[MAX_SECTORS], *up;
   cp_grant_id_t ugrants[MAX_SECTORS], *ug = NULL;
-  u8_t cmd[3];
+  uint8_t cmd[3];
   ssize_t total;
 
   if (f_prepare(minor) == NULL) return(ENXIO);
@@ -808,7 +808,7 @@ static int seek(void)
   int r;
   message mess;
   int ipc_status;
-  u8_t cmd[3];
+  uint8_t cmd[3];
 
   /* Are we already on the correct cylinder? */
   if (fp->fl_calibration == UNCALIBRATED)
@@ -869,7 +869,7 @@ static int fdc_transfer(int do_write)
 
   struct floppy *fp = f_fp;
   int r, s;
-  u8_t cmd[9];
+  uint8_t cmd[9];
 
   /* Never attempt a transfer if the drive is uncalibrated or motor is off. */
   if (fp->fl_calibration == UNCALIBRATED) return(ERR_TRANSFER);
@@ -985,7 +985,7 @@ static int fdc_results(void)
  *				fdc_command				     *
  *===========================================================================*/
 static int fdc_command(
-  const u8_t *cmd,	/* command bytes */
+  const uint8_t *cmd,	/* command bytes */
   int len		/* command length */
 )
 {
@@ -1055,7 +1055,7 @@ static int recalibrate(void)
 
   struct floppy *fp = f_fp;
   int r;
-  u8_t cmd[2];
+  uint8_t cmd[2];
 
   /* Issue the RECALIBRATE command and wait for the interrupt. */
   cmd[0] = FDC_RECALIBRATE;	/* tell drive to recalibrate itself */
@@ -1106,7 +1106,7 @@ static void f_reset(void)
    *   3) the sense interrupt clears the interrupt (not clear which one).
    * and for some reason the reset does not work.
    */
-  (void) fdc_command((u8_t *) 0, 0);   /* need only the timer */
+  (void) fdc_command((uint8_t *) 0, 0);   /* need only the timer */
   motor_status = 0;
   pv_set(byte_out[0], DOR, 0);			/* strobe reset bit low */
   pv_set(byte_out[1], DOR, ENABLE_INT);		/* strobe it high again */
@@ -1219,7 +1219,7 @@ static int read_id(void)
 
   struct floppy *fp = f_fp;
   int result;
-  u8_t cmd[2];
+  uint8_t cmd[2];
 
   /* Never attempt a read id if the drive is uncalibrated or motor is off. */
   if (fp->fl_calibration == UNCALIBRATED) return(ERR_READ_ID);

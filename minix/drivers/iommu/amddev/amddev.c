@@ -46,10 +46,10 @@ Driver for the AMD Device Exclusion Vector (DEV)
 #define DEVF_ERR_ADDR_HI	7
 
 static int dev_devind;
-static u8_t dev_capptr;
-static u8_t *table;
+static uint8_t dev_capptr;
+static uint8_t *table;
 
-static int find_dev(int *devindp, u8_t *capaddrp);
+static int find_dev(int *devindp, uint8_t *capaddrp);
 static u32_t read_reg(int function, int index);
 static void write_reg(int function, int index, u32_t value);
 static void init_domain(int index);
@@ -200,10 +200,10 @@ static void sef_cb_signal_handler(int signo)
 /* Returns 0 if no device found, or 1 if a device is found. */
 static int find_dev(devindp, capaddrp)
 int *devindp;
-u8_t *capaddrp;
+uint8_t *capaddrp;
 {
 	int r, devind, first;
-	u8_t capptr, type, next, subtype;
+	uint8_t capptr, type, next, subtype;
 	u16_t vid, did, status;
 
 	pci_init();

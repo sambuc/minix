@@ -26,7 +26,7 @@ static int pool_ind[TOTAL_SOURCES];
 static SHA256_CTX pool_ctx[NR_POOLS];
 static unsigned samples= 0;
 static int got_seeded= 0;
-static u8_t random_key[2*AES_BLOCKSIZE];
+static uint8_t random_key[2*AES_BLOCKSIZE];
 static u32_t count_lo, count_hi;
 static u32_t reseed_count;
 
@@ -83,9 +83,9 @@ void *buf;
 size_t size;
 {
 	int n, r;
-	u8_t *cp;
+	uint8_t *cp;
 	rd_keyinstance key;
-	u8_t output[AES_BLOCKSIZE];
+	uint8_t output[AES_BLOCKSIZE];
 
 	r= rijndael_makekey(&key, sizeof(random_key), random_key);
 	assert(r == 0);
@@ -183,7 +183,7 @@ rd_keyinstance *keyp;
 void *data;
 {
 	int r;
-	u8_t input[AES_BLOCKSIZE];
+	uint8_t input[AES_BLOCKSIZE];
 
 	memset(input, '\0', sizeof(input));
 
@@ -207,7 +207,7 @@ static void reseed()
 {
 	int i;
 	SHA256_CTX ctx;
-	u8_t digest[SHA256_DIGEST_LENGTH];
+	uint8_t digest[SHA256_DIGEST_LENGTH];
 
 	if (samples < MIN_SAMPLES)
 		return;

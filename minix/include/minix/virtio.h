@@ -37,9 +37,9 @@
 /* Feature description */
 struct virtio_feature {
 	const char *name;
-	u8_t bit;
-	u8_t host_support;
-	u8_t guest_support;
+	uint8_t bit;
+	uint8_t host_support;
+	uint8_t guest_support;
 };
 
 /* Forward declaration of struct virtio_device.
@@ -117,10 +117,10 @@ int virtio_had_irq(struct virtio_device *dev);
 
 u32_t virtio_read32(struct virtio_device *dev, i32_t offset);
 u16_t virtio_read16(struct virtio_device *dev, i32_t offset);
-u8_t virtio_read8(struct virtio_device *dev, i32_t offset);
+uint8_t virtio_read8(struct virtio_device *dev, i32_t offset);
 void virtio_write32(struct virtio_device *dev, i32_t offset, u32_t val);
 void virtio_write16(struct virtio_device *dev, i32_t offset, u16_t val);
-void virtio_write8(struct virtio_device *dev, i32_t offset, u8_t val);
+void virtio_write8(struct virtio_device *dev, i32_t offset, uint8_t val);
 
 
 /*
@@ -132,9 +132,9 @@ void virtio_write8(struct virtio_device *dev, i32_t offset, u8_t val);
  */
 u32_t virtio_sread32(struct virtio_device *dev, i32_t offset);
 u16_t virtio_sread16(struct virtio_device *dev, i32_t offset);
-u8_t virtio_sread8(struct virtio_device *dev, i32_t offset);
+uint8_t virtio_sread8(struct virtio_device *dev, i32_t offset);
 void virtio_swrite32(struct virtio_device *dev, i32_t offset, u32_t val);
 void virtio_swrite16(struct virtio_device *dev, i32_t offset, u16_t val);
-void virtio_swrite8(struct virtio_device *dev, i32_t offset, u8_t val);
+void virtio_swrite8(struct virtio_device *dev, i32_t offset, uint8_t val);
 
 #endif /* _MINIX_VIRTIO_H */

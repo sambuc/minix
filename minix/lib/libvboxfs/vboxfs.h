@@ -116,12 +116,12 @@ typedef struct {
 
 typedef struct {
 	u32_t namemax;
-	u8_t remote;
-	u8_t casesens;
-	u8_t readonly;
-	u8_t unicode;
-	u8_t fscomp;
-	u8_t filecomp;
+	uint8_t remote;
+	uint8_t casesens;
+	uint8_t readonly;
+	uint8_t unicode;
+	uint8_t fscomp;
+	uint8_t filecomp;
 	u16_t reserved;
 } vboxfs_fsprops_t;
 

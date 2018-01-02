@@ -297,7 +297,7 @@ static void dump_segments(struct filp *f, Elf_Phdr phdrs[], int phnum)
   vir_bytes len;
   off_t off, seg_off;
   int r;
-  static u8_t buf[CLICK_SIZE];
+  static uint8_t buf[CLICK_SIZE];
 
   for (i = 1; i < phnum; i++) {
 	len = phdrs[i].p_memsz;

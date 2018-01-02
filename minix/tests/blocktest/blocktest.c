@@ -364,7 +364,7 @@ static void vir_xfer(dev_t minor, u64_t pos, iovec_t *iovec, int nr_req,
 	}
 }
 
-static void simple_xfer(dev_t minor, u64_t pos, u8_t *buf, size_t size,
+static void simple_xfer(dev_t minor, u64_t pos, uint8_t *buf, size_t size,
 	int write, ssize_t exp, result_t *res)
 {
 	/* Perform a transfer involving a single buffer.
@@ -377,7 +377,7 @@ static void simple_xfer(dev_t minor, u64_t pos, u8_t *buf, size_t size,
 	vir_xfer(minor, pos, &iov, 1, write, exp, res);
 }
 
-static void alloc_buf_and_grant(u8_t **ptr, cp_grant_id_t *grant,
+static void alloc_buf_and_grant(uint8_t **ptr, cp_grant_id_t *grant,
 	size_t size, int perms)
 {
 	/* Allocate a buffer suitable for DMA (i.e. contiguous) and create a
@@ -391,7 +391,7 @@ static void alloc_buf_and_grant(u8_t **ptr, cp_grant_id_t *grant,
 		panic("unable to allocate grant");
 }
 
-static void free_buf_and_grant(u8_t *ptr, cp_grant_id_t grant, size_t size)
+static void free_buf_and_grant(uint8_t *ptr, cp_grant_id_t grant, size_t size)
 {
 	/* Revoke a grant and free a buffer.
 	 */
@@ -408,7 +408,7 @@ static void bad_read1(void)
 	message mt, m;
 	iovec_s_t iovt, iov;
 	cp_grant_id_t grant, grant2, grant3;
-	u8_t *buf_ptr;
+	uint8_t *buf_ptr;
 	vir_bytes buf_size;
 	result_t res;
 
@@ -509,7 +509,7 @@ static void bad_read1(void)
 	cpf_revoke(grant);
 }
 
-static u32_t get_sum(u8_t *ptr, size_t size)
+static u32_t get_sum(uint8_t *ptr, size_t size)
 {
 	/* Compute a checksum over the given buffer.
 	 */
@@ -521,7 +521,7 @@ static u32_t get_sum(u8_t *ptr, size_t size)
 	return sum;
 }
 
-static u32_t fill_rand(u8_t *ptr, size_t size)
+static u32_t fill_rand(uint8_t *ptr, size_t size)
 {
 	/* Fill the given buffer with random data. Return a checksum over the
 	 * resulting data.
@@ -534,7 +534,7 @@ static u32_t fill_rand(u8_t *ptr, size_t size)
 	return get_sum(ptr, size);
 }
 
-static void test_sum(u8_t *ptr, size_t size, u32_t sum, int should_match,
+static void test_sum(uint8_t *ptr, size_t size, u32_t sum, int should_match,
 	result_t *res)
 {
 	/* If the test succeeded so far, check whether the given buffer does
@@ -563,7 +563,7 @@ static void bad_read2(void)
 	 * size exceed the per-operation size (128KB ?). On the other hand, we
 	 * then need to start checking partition sizes, possibly.
 	 */
-	u8_t *buf_ptr, *buf2_ptr, *buf3_ptr, c1, c2;
+	uint8_t *buf_ptr, *buf2_ptr, *buf3_ptr, c1, c2;
 	size_t buf_size, buf2_size, buf3_size;
 	cp_grant_id_t buf_grant, buf2_grant, buf3_grant, grant;
 	u32_t buf_sum, buf2_sum, buf3_sum;
@@ -834,7 +834,7 @@ static void bad_write(void)
 	 * If handled correctly, these requests will not actually write data.
 	 * This part of the test set is in need of further expansion.
 	 */
-	u8_t *buf_ptr, *buf2_ptr, *buf3_ptr;
+	uint8_t *buf_ptr, *buf2_ptr, *buf3_ptr;
 	size_t buf_size, buf2_size, buf3_size, sector_unalign;
 	cp_grant_id_t buf_grant, buf2_grant, buf3_grant;
 	cp_grant_id_t grant;
@@ -940,7 +940,7 @@ static void vector_and_large_sub(size_t small_size)
 	 * succeed.
 	 */
 	size_t large_size, buf_size, buf2_size;
-	u8_t *buf_ptr, *buf2_ptr;
+	uint8_t *buf_ptr, *buf2_ptr;
 	iovec_t iovec[NR_IOREQS];
 	u64_t base_pos;
 	result_t res;
@@ -1251,7 +1251,7 @@ static void read_limits(dev_t sub0_minor, dev_t sub1_minor, size_t sub_size)
 {
 	/* Test reads up to, across, and beyond partition limits.
 	 */
-	u8_t *buf_ptr;
+	uint8_t *buf_ptr;
 	size_t buf_size;
 	u32_t sum, sum2, sum3;
 	result_t res;
@@ -1366,7 +1366,7 @@ static void write_limits(dev_t sub0_minor, dev_t sub1_minor, size_t sub_size)
 	 * subpartitions. Note that the necessity to check the results using
 	 * readback, makes this more or less a superset of the read test.
 	 */
-	u8_t *buf_ptr;
+	uint8_t *buf_ptr;
 	size_t buf_size;
 	u32_t sum, sum2, sum3, sub1_sum;
 	result_t res;
@@ -1569,7 +1569,7 @@ static void real_limits(dev_t sub0_minor, dev_t sub1_minor, int part_secs)
 	/* Create our own subpartitions by writing a partition table, and
 	 * perform tests on the resulting real subpartitions.
 	 */
-	u8_t *buf_ptr;
+	uint8_t *buf_ptr;
 	size_t buf_size, sub_size;
 	struct part_geom subpart;
 	struct part_entry *entry;
@@ -1738,8 +1738,8 @@ static void part_limits(void)
 
 }
 
-static void unaligned_size_io(u64_t base_pos, u8_t *buf_ptr, size_t buf_size,
-	u8_t *sec_ptr[2], int sectors, int pattern, u32_t ssum[5])
+static void unaligned_size_io(u64_t base_pos, uint8_t *buf_ptr, size_t buf_size,
+	uint8_t *sec_ptr[2], int sectors, int pattern, u32_t ssum[5])
 {
 	/* Perform a single small-element I/O read, write, readback test.
 	 * The number of sectors and the pattern varies with each call.
@@ -1912,7 +1912,7 @@ static void unaligned_size(void)
 	/* Test sector-unaligned sizes in I/O vector elements. The total size
 	 * of the request, however, has to add up to the sector size.
 	 */
-	u8_t *buf_ptr, *sec_ptr[2];
+	uint8_t *buf_ptr, *sec_ptr[2];
 	size_t buf_size;
 	u32_t sum = 0L, ssum[5];
 	u64_t base_pos;
@@ -2010,7 +2010,7 @@ static void unaligned_pos1(void)
 	 * In the current context, the term "lead" means an unwanted first part
 	 * of a sector, and "trail" means an unwanted last part of a sector.
 	 */
-	u8_t *buf_ptr, *buf2_ptr;
+	uint8_t *buf_ptr, *buf2_ptr;
 	size_t buf_size, buf2_size, size;
 	u32_t sum, sum2;
 	u64_t base_pos;
@@ -2159,7 +2159,7 @@ static void unaligned_pos2(void)
 	 * tries to push the limits of the driver by completely filling an I/O
 	 * vector and going up to the maximum request size.
 	 */
-	u8_t *buf_ptr, *buf2_ptr;
+	uint8_t *buf_ptr, *buf2_ptr;
 	size_t buf_size, buf2_size, max_block;
 	u32_t sum = 0L, sum2 = 0L, rsum[NR_IOREQS];
 	u64_t base_pos;
@@ -2299,7 +2299,7 @@ static void sweep_area(u64_t base_pos)
 	 * address), reading and optionally writing in three-sector chunks, and
 	 * advancing one sector at a time.
 	 */
-	u8_t *buf_ptr;
+	uint8_t *buf_ptr;
 	size_t buf_size;
 	u32_t sum = 0L, ssum[8];
 	result_t res;
@@ -2389,7 +2389,7 @@ static void sweep_and_check(u64_t pos, int check_integ)
 	 * known data into it if that is allowed) before doing the sweep, and
 	 * test the integrity checksum against the disk contents afterwards.
 	 */
-	u8_t *buf_ptr;
+	uint8_t *buf_ptr;
 	size_t buf_size;
 	u32_t sum = 0L;
 	result_t res;

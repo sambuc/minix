@@ -68,5 +68,5 @@ void free_extent(struct dir_extent *extent);
 struct buf* read_extent_block(struct dir_extent *e, size_t block);
 size_t get_extent_absolute_block_id(struct dir_extent *e, size_t block);
 
-time_t date7_to_time_t(const u8_t *date);
+time_t date7_to_time_t(const uint8_t *date);
 void* alloc_mem(size_t s);

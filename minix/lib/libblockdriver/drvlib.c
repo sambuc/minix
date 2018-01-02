@@ -12,13 +12,13 @@
 #define ext_part(s)	((s) == 0x05 || (s) == 0x0F)
 
 static void parse_part_table(struct blockdriver *bdp, int device,
-	int style, int atapi, u8_t *tmp_buf);
+	int style, int atapi, uint8_t *tmp_buf);
 
 static void extpartition(struct blockdriver *bdp, int extdev,
-	unsigned long extbase, u8_t *tmp_buf);
+	unsigned long extbase, uint8_t *tmp_buf);
 
 static int get_part_table(struct blockdriver *bdp, int device,
-	unsigned long offset, struct part_entry *table, u8_t *tmp_buf);
+	unsigned long offset, struct part_entry *table, uint8_t *tmp_buf);
 
 static void sort(struct part_entry *table);
 
@@ -35,7 +35,7 @@ void partition(
 /* This routine is called on first open to initialize the partition tables
  * of a device.
  */
-  u8_t *tmp_buf;
+  uint8_t *tmp_buf;
 
   if ((*bdp->bdr_part)(device) == NULL)
 	return;
@@ -60,7 +60,7 @@ static void parse_part_table(
 	int device,             	/* device to partition */
 	int style,              	/* partitioning style: floppy, primary, sub. */
 	int atapi,              	/* atapi device */
-	u8_t *tmp_buf           	/* temporary buffer */
+	uint8_t *tmp_buf           	/* temporary buffer */
 )
 {
 /* This routine reads and parses a partition table.  It may be called
@@ -137,7 +137,7 @@ static void extpartition(
 	struct blockdriver *bdp,	/* device dependent entry points */
 	int extdev,             	/* extended partition to scan */
 	unsigned long extbase,  	/* sector offset of the base ext. partition */
-	u8_t *tmp_buf           	/* temporary buffer */
+	uint8_t *tmp_buf           	/* temporary buffer */
 )
 {
 /* Extended partitions cannot be ignored alas, because people like to move
@@ -188,7 +188,7 @@ static int get_part_table(
 	int device,
 	unsigned long offset,    	/* sector offset to the table */
 	struct part_entry *table,	/* four entries */
-	u8_t *tmp_buf)           	/* temporary buffer */
+	uint8_t *tmp_buf)           	/* temporary buffer */
 {
 /* Read the partition table for the device, return true iff there were no
  * errors.

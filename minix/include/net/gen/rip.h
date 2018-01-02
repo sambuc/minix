@@ -11,8 +11,8 @@ Created:	Aug 16, 1993 by Philip Homburg <philip@cs.vu.nl>
 
 typedef struct rip_hdr
 {
-	u8_t rh_command;
-	u8_t rh_version;
+	uint8_t rh_command;
+	uint8_t rh_version;
 	u16_t rh_zero;
 } rip_hdr_t;
 
