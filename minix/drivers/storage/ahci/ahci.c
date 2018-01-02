@@ -161,7 +161,7 @@ static struct port_state {
 	phys_bytes pad_phys;	/* sector padding buffer physical address */
 	vir_bytes pad_size;	/* sector padding buffer size */
 
-	u64_t lba_count;	/* number of valid Logical Block Addresses */
+	uint64_t lba_count;	/* number of valid Logical Block Addresses */
 	uint32_t sector_size;	/* medium sector size in bytes */
 
 	int open_count;		/* number of times this port is opened */
@@ -238,7 +238,7 @@ static void port_disconnect(struct port_state *ps);
 static char *ahci_portname(struct port_state *ps);
 static int ahci_open(devminor_t minor, int access);
 static int ahci_close(devminor_t minor);
-static ssize_t ahci_transfer(devminor_t minor, int do_write, u64_t position,
+static ssize_t ahci_transfer(devminor_t minor, int do_write, uint64_t position,
 	endpoint_t endpt, iovec_t *iovec, unsigned int count, int flags);
 static struct device *ahci_part(devminor_t minor);
 static void ahci_alarm(clock_t stamp);
@@ -376,7 +376,7 @@ static int atapi_read_capacity(struct port_state *ps, int cmd)
 
 	/* Store the number of LBA blocks and sector size. */
 	buf = ps->tmp_base;
-	ps->lba_count = (u64_t) ((buf[0] << 24) | (buf[1] << 16) |
+	ps->lba_count = (uint64_t) ((buf[0] << 24) | (buf[1] << 16) |
 		(buf[2] << 8) | buf[3]) + 1;
 	ps->sector_size =
 		(buf[4] << 24) | (buf[5] << 16) | (buf[6] << 8) | buf[7];
@@ -489,7 +489,7 @@ static int atapi_id_check(struct port_state *ps, uint16_t *buf)
 /*===========================================================================*
  *				atapi_transfer				     *
  *===========================================================================*/
-static int atapi_transfer(struct port_state *ps, int cmd, u64_t start_lba,
+static int atapi_transfer(struct port_state *ps, int cmd, uint64_t start_lba,
 	unsigned int count, int write, prd_t *prdt, int nr_prds)
 {
 	/* Perform data transfer from or to an ATAPI device.
@@ -554,10 +554,10 @@ static int ata_id_check(struct port_state *ps, uint16_t *buf)
 	}
 
 	/* Get number of LBA blocks, and sector size. */
-	ps->lba_count = ((u64_t) buf[ATA_ID_LBA3] << 48) |
-			((u64_t) buf[ATA_ID_LBA2] << 32) |
-			((u64_t) buf[ATA_ID_LBA1] << 16) |
-			 (u64_t) buf[ATA_ID_LBA0];
+	ps->lba_count = ((uint64_t) buf[ATA_ID_LBA3] << 48) |
+			((uint64_t) buf[ATA_ID_LBA2] << 32) |
+			((uint64_t) buf[ATA_ID_LBA1] << 16) |
+			 (uint64_t) buf[ATA_ID_LBA0];
 
 	/* Determine the queue depth of the device. */
 	if (hba_state.has_ncq &&
@@ -603,7 +603,7 @@ static int ata_id_check(struct port_state *ps, uint16_t *buf)
 /*===========================================================================*
  *				ata_transfer				     *
  *===========================================================================*/
-static int ata_transfer(struct port_state *ps, int cmd, u64_t start_lba,
+static int ata_transfer(struct port_state *ps, int cmd, uint64_t start_lba,
 	unsigned int count, int write, int force, prd_t *prdt, int nr_prds)
 {
 	/* Perform data transfer from or to an ATA device.
@@ -1136,7 +1136,7 @@ static int setup_prdt(struct port_state *ps, endpoint_t endpt,
 /*===========================================================================*
  *				port_transfer				     *
  *===========================================================================*/
-static ssize_t port_transfer(struct port_state *ps, u64_t pos, u64_t eof,
+static ssize_t port_transfer(struct port_state *ps, uint64_t pos, uint64_t eof,
 	endpoint_t endpt, iovec_s_t *iovec, int nr_req, int write, int flags)
 {
 	/* Perform an I/O transfer on a port.
@@ -1144,7 +1144,7 @@ static ssize_t port_transfer(struct port_state *ps, u64_t pos, u64_t eof,
 	prd_t prdt[NR_PRDS];
 	vir_bytes size, lead;
 	unsigned int count, nr_prds;
-	u64_t start_lba;
+	uint64_t start_lba;
 	int r, cmd;
 
 	/* Get the total request size from the I/O vector. */
@@ -2592,14 +2592,14 @@ static int ahci_close(devminor_t minor)
 /*===========================================================================*
  *				ahci_transfer				     *
  *===========================================================================*/
-static ssize_t ahci_transfer(devminor_t minor, int do_write, u64_t position,
+static ssize_t ahci_transfer(devminor_t minor, int do_write, uint64_t position,
 	endpoint_t endpt, iovec_t *iovec, unsigned int count, int flags)
 {
 	/* Perform data transfer on the selected device.
 	 */
 	struct port_state *ps;
 	struct device *dv;
-	u64_t pos, eof;
+	uint64_t pos, eof;
 
 	ps = ahci_get_port(minor);
 	dv = ahci_part(minor);

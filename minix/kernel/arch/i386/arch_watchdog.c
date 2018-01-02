@@ -16,7 +16,7 @@ static struct arch_watchdog amd_watchdog;
 
 static void intel_arch_watchdog_init(const unsigned cpu)
 {
-	u64_t cpuf;
+	uint64_t cpuf;
 	uint32_t val;
 
 	ia32_msr_write(INTEL_MSR_PERFMON_CRT0, 0, 0);
@@ -153,7 +153,7 @@ int i386_watchdog_start(void)
 
 static int intel_arch_watchdog_profile_init(const unsigned freq)
 {
-	u64_t cpuf;
+	uint64_t cpuf;
 
 	/* FIXME works only if all CPUs have the same freq */
 	cpuf = cpu_get_freq(cpuid);
@@ -186,7 +186,7 @@ static struct arch_watchdog intel_arch_watchdog = {
 
 static void amd_watchdog_init(const unsigned cpu)
 {
-	u64_t cpuf;
+	uint64_t cpuf;
 	uint32_t val;
 
 	ia32_msr_write(AMD_MSR_EVENT_CTR0, 0, 0);
@@ -217,7 +217,7 @@ static void amd_watchdog_reinit(const unsigned cpu)
 
 static int amd_watchdog_profile_init(const unsigned freq)
 {
-	u64_t cpuf;
+	uint64_t cpuf;
 
 	/* FIXME works only if all CPUs have the same freq */
 	cpuf = cpu_get_freq(cpuid);

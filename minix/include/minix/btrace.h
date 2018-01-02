@@ -25,7 +25,7 @@ enum {
 typedef struct {
   uint32_t request;		/* request code; one of BTR_xxx */
   uint32_t size;			/* request size, ioctl request, or access */
-  u64_t position;		/* starting disk position */
+  uint64_t position;		/* starting disk position */
   uint32_t flags;			/* transfer flags */
   i32_t result;			/* request result; OK, bytes, or error */
   uint32_t start_time;		/* request service start time (us) */

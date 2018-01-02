@@ -9,7 +9,7 @@
 #define LOG2PHYS(nr)	((nr)/NR_SUM_SEC*(NR_SUM_SEC+1) + (nr)%NR_SUM_SEC)
 
 #define POS2SEC(nr)	(unsigned long)((nr) / SECTOR_SIZE)
-#define SEC2POS(nr)	((u64_t)(nr) * SECTOR_SIZE)
+#define SEC2POS(nr)	((uint64_t)(nr) * SECTOR_SIZE)
 
 /* Data buffers. */
 static char *ext_array, *ext_buffer;	/* interspersed buffer */
@@ -312,7 +312,7 @@ static int check_sum(sector_t current_sector, size_t bytes_left)
 /*===========================================================================*
  *				check_write				     *
  *===========================================================================*/
-static int check_write(u64_t pos, size_t size)
+static int check_write(uint64_t pos, size_t size)
 {
 	/* Read back the data just written, from both disks if mirroring is
 	 * enabled, and check the result against the original. Return OK on
@@ -486,7 +486,7 @@ static void collapse_size(sector_t first_sector, size_t *sizep)
 /*===========================================================================*
  *				transfer				     *
  *===========================================================================*/
-int transfer(u64_t pos, char *buffer, size_t *sizep, int flag_rw)
+int transfer(uint64_t pos, char *buffer, size_t *sizep, int flag_rw)
 {
 	/* Transfer data in interspersed-checksum format. When writing, first
 	 * compute checksums, and read back the written data afterwards. When
@@ -494,7 +494,7 @@ int transfer(u64_t pos, char *buffer, size_t *sizep, int flag_rw)
 	 */
 	sector_t first_sector, nr_sectors;
 	size_t ext_size, req_size, res_size;
-	u64_t phys_pos;
+	uint64_t phys_pos;
 	int r;
 
 	/* If we don't use checksums or even checksum layout, simply pass on
@@ -604,7 +604,7 @@ int transfer(u64_t pos, char *buffer, size_t *sizep, int flag_rw)
 /*===========================================================================*
  *				convert					     *
  *===========================================================================*/
-u64_t convert(u64_t size)
+uint64_t convert(uint64_t size)
 {
 	/* Given a raw disk size, subtract the amount of disk space used for
 	 * checksums, resulting in the user-visible disk size.

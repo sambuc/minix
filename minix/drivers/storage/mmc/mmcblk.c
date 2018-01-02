@@ -46,7 +46,7 @@ static int block_open(devminor_t minor, int access);
 static int block_close(devminor_t minor);
 static int block_transfer(devminor_t minor,
     int do_write,
-    u64_t position,
+    uint64_t position,
     endpoint_t endpt, iovec_t * iov, unsigned int nr_req, int flags);
 
 static int block_ioctl(devminor_t minor, unsigned long request,
@@ -280,7 +280,7 @@ static int
 block_transfer(
     devminor_t minor,		/* minor device number */
     int do_write,		/* read or write? */
-    u64_t position,		/* offset on device to read or write */
+    uint64_t position,		/* offset on device to read or write */
     endpoint_t endpt,		/* process doing the request */
     iovec_t * iov,		/* pointer to read or write request vector */
     unsigned int nr_req,	/* length of request vector */

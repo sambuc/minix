@@ -27,7 +27,7 @@ struct buf {
    * If none, VMC_NO_INODE
    */
   ino_t lmfs_inode;
-  u64_t lmfs_inode_offset;
+  uint64_t lmfs_inode_offset;
 };
 
 void lmfs_markdirty(struct buf *bp);
@@ -41,10 +41,10 @@ void lmfs_set_blocksize(size_t blocksize);
 void lmfs_buf_pool(int new_nr_bufs);
 int lmfs_get_block(struct buf **bpp, dev_t dev, block64_t block, int how);
 int lmfs_get_block_ino(struct buf **bpp, dev_t dev, block64_t block, int how,
-	ino_t ino, u64_t off);
+	ino_t ino, uint64_t off);
 void lmfs_put_block(struct buf *bp);
 void lmfs_free_block(dev_t dev, block64_t block);
-void lmfs_zero_block_ino(dev_t dev, ino_t ino, u64_t off);
+void lmfs_zero_block_ino(dev_t dev, ino_t ino, uint64_t off);
 void lmfs_invalidate(dev_t device);
 void lmfs_prefetch(dev_t dev, const block64_t *blockset, unsigned int nblocks);
 void lmfs_setquiet(int q);

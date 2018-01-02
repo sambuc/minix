@@ -31,7 +31,7 @@ micros_to_ticks(uint32_t micros)
 {
         uint32_t ticks;
 
-        ticks = (uint32_t)(((u64_t)micros * sys_hz()) / 1000000);
+        ticks = (uint32_t)(((uint64_t)micros * sys_hz()) / 1000000);
         if(ticks < 1) ticks = 1;
 
         return ticks;

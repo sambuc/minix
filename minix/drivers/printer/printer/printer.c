@@ -82,7 +82,7 @@ static void prepare_output(void);
 static int do_probe(void);
 static void do_initialize(void);
 static int printer_open(devminor_t minor, int access, endpoint_t user_endpt);
-static ssize_t printer_write(devminor_t minor, u64_t position,
+static ssize_t printer_write(devminor_t minor, uint64_t position,
 	endpoint_t endpt, cp_grant_id_t grant, size_t size, int flags,
 	cdev_id_t id);
 static int printer_cancel(devminor_t minor, endpoint_t endpt, cdev_id_t id);
@@ -157,7 +157,7 @@ static int sef_cb_init_fresh(int UNUSED(type), sef_init_info_t *UNUSED(info))
 /*===========================================================================*
  *				do_write				     *
  *===========================================================================*/
-static ssize_t printer_write(devminor_t UNUSED(minor), u64_t UNUSED(position),
+static ssize_t printer_write(devminor_t UNUSED(minor), uint64_t UNUSED(position),
 	endpoint_t endpt, cp_grant_id_t grant, size_t size, int flags,
 	cdev_id_t id)
 {

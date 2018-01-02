@@ -8,13 +8,13 @@ extern void bdev_driver(dev_t dev, char *label);
 extern int bdev_open(dev_t dev, int access);
 extern int bdev_close(dev_t dev);
 
-extern ssize_t bdev_read(dev_t dev, u64_t pos, char *buf, size_t count,
+extern ssize_t bdev_read(dev_t dev, uint64_t pos, char *buf, size_t count,
 	int flags);
-extern ssize_t bdev_write(dev_t dev, u64_t pos, char *buf, size_t count,
+extern ssize_t bdev_write(dev_t dev, uint64_t pos, char *buf, size_t count,
 	int flags);
-extern ssize_t bdev_gather(dev_t dev, u64_t pos, iovec_t *vec, int count,
+extern ssize_t bdev_gather(dev_t dev, uint64_t pos, iovec_t *vec, int count,
 	int flags);
-extern ssize_t bdev_scatter(dev_t dev, u64_t pos, iovec_t *vec, int count,
+extern ssize_t bdev_scatter(dev_t dev, uint64_t pos, iovec_t *vec, int count,
 	int flags);
 extern int bdev_ioctl(dev_t dev, unsigned long request, void *buf,
 	endpoint_t user_endpt);
@@ -28,13 +28,13 @@ typedef void (*bdev_callback_t)(dev_t dev, bdev_id_t id, bdev_param_t param,
 
 extern void bdev_flush_asyn(dev_t dev);
 
-extern bdev_id_t bdev_read_asyn(dev_t dev, u64_t pos, char *buf, size_t count,
+extern bdev_id_t bdev_read_asyn(dev_t dev, uint64_t pos, char *buf, size_t count,
 	int flags, bdev_callback_t callback, bdev_param_t param);
-extern bdev_id_t bdev_write_asyn(dev_t dev, u64_t pos, char *buf, size_t count,
+extern bdev_id_t bdev_write_asyn(dev_t dev, uint64_t pos, char *buf, size_t count,
 	int flags, bdev_callback_t callback, bdev_param_t param);
-extern bdev_id_t bdev_gather_asyn(dev_t dev, u64_t pos, iovec_t *vec,
+extern bdev_id_t bdev_gather_asyn(dev_t dev, uint64_t pos, iovec_t *vec,
 	int count, int flags, bdev_callback_t callback, bdev_param_t param);
-extern bdev_id_t bdev_scatter_asyn(dev_t dev, u64_t pos, iovec_t *vec,
+extern bdev_id_t bdev_scatter_asyn(dev_t dev, uint64_t pos, iovec_t *vec,
 	int count, int flags, bdev_callback_t callback, bdev_param_t param);
 extern bdev_id_t bdev_ioctl_asyn(dev_t dev, unsigned long request, void *buf,
 	endpoint_t user_endpt, bdev_callback_t callback, bdev_param_t param);

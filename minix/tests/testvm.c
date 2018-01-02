@@ -29,7 +29,7 @@ int dowriteblock(int b, int blocksize, uint32_t seed, char *block)
 	int r;
 	char *bdata;
 	int mustset = 0;
-	u64_t dev_off = (u64_t) b * blocksize;
+	uint64_t dev_off = (uint64_t) b * blocksize;
 
 	if((bdata = vm_map_cacheblock(MYDEV, dev_off,
 		VMC_NO_INODE, 0, NULL, blocksize)) == MAP_FAILED) {
@@ -60,7 +60,7 @@ int dowriteblock(int b, int blocksize, uint32_t seed, char *block)
 int readblock(int b, int blocksize, uint32_t seed, char *block)
 {
 	char *bdata;
-	u64_t dev_off = (u64_t) b * blocksize;
+	uint64_t dev_off = (uint64_t) b * blocksize;
 
 	if((bdata = vm_map_cacheblock(MYDEV, dev_off,
 		VMC_NO_INODE, 0, NULL, blocksize)) == MAP_FAILED) {

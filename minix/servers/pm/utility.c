@@ -144,7 +144,7 @@ message *m_ptr;
 void
 set_rusage_times(struct rusage * r_usage, clock_t user_time, clock_t sys_time)
 {
-	u64_t usec;
+	uint64_t usec;
 
 	usec = user_time * 1000000 / sys_hz();
 	r_usage->ru_utime.tv_sec = usec / 1000000;

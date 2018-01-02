@@ -36,14 +36,14 @@ int error_convert(int err);
 
 /* file.c */
 int hgfs_open(const char *path, int flags, int mode, sffs_file_t *handle);
-ssize_t hgfs_read(sffs_file_t handle, char *buf, size_t size, u64_t offset);
-ssize_t hgfs_write(sffs_file_t handle, char *buf, size_t len, u64_t offset);
+ssize_t hgfs_read(sffs_file_t handle, char *buf, size_t size, uint64_t offset);
+ssize_t hgfs_write(sffs_file_t handle, char *buf, size_t len, uint64_t offset);
 int hgfs_close(sffs_file_t handle);
 size_t hgfs_readbuf(char **ptr);
 size_t hgfs_writebuf(char **ptr);
 
 /* info.c */
-int hgfs_queryvol(const char *path, u64_t *free, u64_t *total);
+int hgfs_queryvol(const char *path, uint64_t *free, uint64_t *total);
 
 /* link.c */
 int hgfs_mkdir(const char *path, int mode);

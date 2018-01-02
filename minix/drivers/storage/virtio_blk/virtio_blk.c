@@ -79,7 +79,7 @@ static phys_bytes status_phys;
 /* Prototypes */
 static int virtio_blk_open(devminor_t minor, int access);
 static int virtio_blk_close(devminor_t minor);
-static ssize_t virtio_blk_transfer(devminor_t minor, int write, u64_t position,
+static ssize_t virtio_blk_transfer(devminor_t minor, int write, uint64_t position,
 				   endpoint_t endpt, iovec_t *iovec,
 				   unsigned int cnt, int flags);
 static int virtio_blk_ioctl(devminor_t minor, unsigned long req,
@@ -235,7 +235,7 @@ prepare_vir_vec(endpoint_t endpt, struct vumap_vir *vir, iovec_s_t *iv,
 }
 
 static ssize_t
-virtio_blk_transfer(devminor_t minor, int write, u64_t position,
+virtio_blk_transfer(devminor_t minor, int write, uint64_t position,
 		    endpoint_t endpt, iovec_t *iovec, unsigned int cnt,
 		    int flags)
 {
@@ -251,8 +251,8 @@ virtio_blk_transfer(devminor_t minor, int write, u64_t position,
 	vir_bytes size = 0;
 	vir_bytes size_tmp = 0;
 	struct device *dv;
-	u64_t sector;
-	u64_t end_part;
+	uint64_t sector;
+	uint64_t end_part;
 	int r, pcnt = sizeof(phys) / sizeof(phys[0]);
 
 	iovec_s_t *iv = (iovec_s_t *)iovec;
@@ -639,7 +639,7 @@ virtio_blk_config(void)
 	/* capacity is always there */
 	sectors_low = virtio_sread32(blk_dev, 0);
 	sectors_high = virtio_sread32(blk_dev, 4);
-	blk_config.capacity = ((u64_t)sectors_high << 32) | sectors_low;
+	blk_config.capacity = ((uint64_t)sectors_high << 32) | sectors_low;
 
 	/* If this gets truncated, you have a big disk... */
 	size_mbs = (uint32_t)(blk_config.capacity * 512 / 1024 / 1024);

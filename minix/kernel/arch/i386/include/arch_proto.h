@@ -200,7 +200,7 @@ uint32_t read_cs(void);
 uint32_t read_ds(void);
 uint32_t read_ss(void);
 
-void add_memmap(kinfo_t *cbi, u64_t addr, u64_t len);
+void add_memmap(kinfo_t *cbi, uint64_t addr, uint64_t len);
 phys_bytes alloc_lowest(kinfo_t *cbi, phys_bytes len);
 void vm_enable_paging(void);
 void cut_memmap(kinfo_t *cbi, phys_bytes start, phys_bytes end);

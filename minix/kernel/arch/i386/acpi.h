@@ -35,7 +35,7 @@ struct acpi_generic_address {
 	uint8_t register_bit_width;
 	uint8_t register_bit_offset;
 	uint8_t access_size;
-	u64_t address;
+	uint64_t address;
 };
 
 struct acpi_fadt_header
@@ -82,8 +82,8 @@ struct acpi_fadt_header
 	struct acpi_generic_address reset_reg;
 	uint8_t reset_value;
 	uint8_t reserved2[3];
-	u64_t xfacs;
-	u64_t xdsdt;
+	uint64_t xfacs;
+	uint64_t xdsdt;
 	struct acpi_generic_address xpm1a_evt_blk;
 	struct acpi_generic_address xpm1b_evt_blk;
 	struct acpi_generic_address xpm1a_cnt_blk;

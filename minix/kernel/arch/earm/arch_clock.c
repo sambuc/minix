@@ -70,8 +70,8 @@ void cycles_accounting_init(void)
 
 void context_stop(struct proc * p)
 {
-	u64_t tsc, tsc_delta;
-	u64_t * __tsc_ctr_switch = get_cpulocal_var_ptr(tsc_ctr_switch);
+	uint64_t tsc, tsc_delta;
+	uint64_t * __tsc_ctr_switch = get_cpulocal_var_ptr(tsc_ctr_switch);
 	unsigned int cpu, tpt, counter;
 
 #ifdef CONFIG_SMP
@@ -184,27 +184,27 @@ int register_local_timer_handler(const irq_handler_t handler)
 	return bsp_register_timer_handler(handler);
 }
 
-u64_t ms_2_cpu_time(unsigned ms)
+uint64_t ms_2_cpu_time(unsigned ms)
 {
-	return (u64_t)tsc_per_ms[cpuid] * ms;
+	return (uint64_t)tsc_per_ms[cpuid] * ms;
 }
 
-unsigned cpu_time_2_ms(u64_t cpu_time)
+unsigned cpu_time_2_ms(uint64_t cpu_time)
 {
 	return (unsigned long)(cpu_time / tsc_per_ms[cpuid]);
 }
 
 short cpu_load(void)
 {
-	u64_t current_tsc, *current_idle;
-	u64_t tsc_delta, idle_delta, busy;
+	uint64_t current_tsc, *current_idle;
+	uint64_t tsc_delta, idle_delta, busy;
 	struct proc *idle;
 	short load;
 #ifdef CONFIG_SMP
 	unsigned cpu = cpuid;
 #endif
 
-	u64_t *last_tsc, *last_idle;
+	uint64_t *last_tsc, *last_idle;
 
 	last_tsc = get_cpu_var_ptr(cpu, cpu_last_tsc);
 	last_idle = get_cpu_var_ptr(cpu, cpu_last_idle);

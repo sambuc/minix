@@ -60,7 +60,7 @@
 /* Virtio ring descriptors: 16 bytes.  These can chain together via "next". */
 struct vring_desc {
 	/* Address (guest-physical). */
-	u64_t addr;
+	uint64_t addr;
 	/* Length. */
 	uint32_t len;
 	/* The flags as indicated above. */

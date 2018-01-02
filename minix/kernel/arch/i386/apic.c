@@ -148,7 +148,7 @@ vir_bytes lapic_eoi_addr;
 int bsp_lapic_id;
 
 static volatile unsigned probe_ticks;
-static	u64_t tsc0, tsc1;
+static	uint64_t tsc0, tsc1;
 static	uint32_t lapic_tctr0, lapic_tctr1;
 
 static unsigned apic_imcrp;
@@ -410,7 +410,7 @@ unsigned int apicid(void)
 static int calib_clk_handler(irq_hook_t * UNUSED(hook))
 {
 	uint32_t tcrt;
-	u64_t tsc;
+	uint64_t tsc;
 
 	probe_ticks++;
 	read_tsc_64(&tsc);
@@ -443,8 +443,8 @@ static int spurious_irq_handler(irq_hook_t * UNUSED(hook))
 static void apic_calibrate_clocks(unsigned cpu)
 {
 	uint32_t lvtt, val, lapic_delta;
-	u64_t tsc_delta;
-	u64_t cpu_freq;
+	uint64_t tsc_delta;
+	uint64_t cpu_freq;
 
 	irq_hook_t calib_clk, spurious_irq;
 

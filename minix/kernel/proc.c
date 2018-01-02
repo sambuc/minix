@@ -1726,7 +1726,7 @@ void dequeue(struct proc *rp)
   int q = rp->p_priority;		/* queue to use */
   struct proc **xpp;			/* iterate over queue */
   struct proc *prev_xp;
-  u64_t tsc, tsc_delta;
+  uint64_t tsc, tsc_delta;
 
   struct proc **rdy_tail;
 

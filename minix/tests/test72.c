@@ -104,7 +104,7 @@ static void allocate(int b)
 
 /* Fake some libblockdriver functions */
 ssize_t
-bdev_gather(dev_t dev, u64_t pos, iovec_t *vec, int count, int flags)
+bdev_gather(dev_t dev, uint64_t pos, iovec_t *vec, int count, int flags)
 {
 	int i, block;
 	size_t size, block_off;
@@ -133,7 +133,7 @@ bdev_gather(dev_t dev, u64_t pos, iovec_t *vec, int count, int flags)
 }
 
 ssize_t
-bdev_scatter(dev_t dev, u64_t pos, iovec_t *vec, int count, int flags)
+bdev_scatter(dev_t dev, uint64_t pos, iovec_t *vec, int count, int flags)
 {
 	int i, block;
 	size_t size, block_off;
@@ -162,7 +162,7 @@ bdev_scatter(dev_t dev, u64_t pos, iovec_t *vec, int count, int flags)
 }
 
 ssize_t
-bdev_read(dev_t dev, u64_t pos, char *data, size_t count, int flags)
+bdev_read(dev_t dev, uint64_t pos, char *data, size_t count, int flags)
 {
 	int block;
 

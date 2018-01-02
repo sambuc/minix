@@ -98,7 +98,7 @@ static int mappedfile_pagefault(struct vmproc *vmp, struct vir_region *region,
 	/* Totally new block? Create it. */
 	if(ph->ph->phys == MAP_NONE) {
 		struct cached_page *cp;
-		u64_t referenced_offset =
+		uint64_t referenced_offset =
 			region->param.file.offset + ph->offset;
 		if(region->param.file.fdref->ino == VMC_NO_INODE) {
 			cp = find_cached_page_bydev(region->param.file.fdref->dev,
@@ -189,7 +189,7 @@ int mappedfile_copy(struct vir_region *vr, struct vir_region *newvr)
 }
 
 int mappedfile_setfile(struct vmproc *owner,
-	struct vir_region *region, int fd, u64_t offset,
+	struct vir_region *region, int fd, uint64_t offset,
 	dev_t dev, ino_t ino, uint16_t clearend, int prefill, int mayclosefd)
 {
 	vir_bytes vaddr;
@@ -210,7 +210,7 @@ int mappedfile_setfile(struct vmproc *owner,
 	for(vaddr = 0; vaddr < region->length; vaddr+=VM_PAGE_SIZE) {
 		struct cached_page *cp = NULL;
 		struct phys_region *pr;
-		u64_t referenced_offset = offset + vaddr;
+		uint64_t referenced_offset = offset + vaddr;
 
 		if(roundup(vaddr+region->param.file.clearend,
 			VM_PAGE_SIZE) >= region->length) {

@@ -20,9 +20,9 @@
 
 static uint32_t calib_hz = 600000000;
 
-uint32_t tsc_64_to_micros(u64_t tsc)
+uint32_t tsc_64_to_micros(uint64_t tsc)
 {
-	u64_t tmp;
+	uint64_t tmp;
 
 	tmp =  tsc / calib_hz;
 	return (uint32_t) tmp;

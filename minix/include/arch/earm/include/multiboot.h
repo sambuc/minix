@@ -338,8 +338,8 @@ typedef struct multiboot_mod_list multiboot_module_t;
 struct multiboot_mmap_entry
 {
 	uint32_t size;
-	u64_t mm_base_addr;
-	u64_t mm_length;
+	uint64_t mm_base_addr;
+	uint64_t mm_length;
 #define MULTIBOOT_MEMORY_AVAILABLE              1
 #define MULTIBOOT_MEMORY_RESERVED               2
 	uint32_t type;

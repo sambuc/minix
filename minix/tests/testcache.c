@@ -147,7 +147,7 @@ dotest(int blocksize, int nblocks, int iterations)
 
 	assert(nblocks > 0 && nblocks <= MAXBLOCKS);
 
-	mb = (int) ((u64_t) blocksize * nblocks / 1024 / 1024);
+	mb = (int) ((uint64_t) blocksize * nblocks / 1024 / 1024);
 
 	if(!quietflag) { fprintf(stderr, "test: %d * %d = %dMB\n", blocksize, nblocks, mb); }
 
@@ -213,9 +213,9 @@ dotest(int blocksize, int nblocks, int iterations)
 }
 
 void
-get_fd_offset(int b, int blocksize, u64_t *file_offset, int *fd)
+get_fd_offset(int b, int blocksize, uint64_t *file_offset, int *fd)
 {
-        u64_t offset = (u64_t) b * blocksize;
+        uint64_t offset = (uint64_t) b * blocksize;
         int filenumber;
 
         filenumber = offset / MB / MBPERFILE;

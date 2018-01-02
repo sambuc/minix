@@ -160,7 +160,7 @@ static int read_edid(uint8_t * data, size_t count);
 /* libblockdriver callbacks */
 static int tda19988_blk_open(devminor_t minor, int access);
 static int tda19988_blk_close(devminor_t minor);
-static ssize_t tda19988_blk_transfer(devminor_t minor, int do_write, u64_t pos,
+static ssize_t tda19988_blk_transfer(devminor_t minor, int do_write, uint64_t pos,
     endpoint_t endpt, iovec_t * iov, unsigned int count, int flags);
 static int tda19988_blk_ioctl(devminor_t minor, unsigned long request,
     endpoint_t endpt, cp_grant_id_t grant, endpoint_t user_endpt);
@@ -215,12 +215,12 @@ tda19988_blk_close(devminor_t minor)
 }
 
 static ssize_t
-tda19988_blk_transfer(devminor_t minor, int do_write, u64_t pos64,
+tda19988_blk_transfer(devminor_t minor, int do_write, uint64_t pos64,
     endpoint_t endpt, iovec_t * iov, unsigned int nr_req, int flags)
 {
 	unsigned count;
 	struct device *dv;
-	u64_t dv_size;
+	uint64_t dv_size;
 	int r;
 	cp_grant_id_t grant;
 
@@ -860,8 +860,8 @@ sef_cb_init(int type, sef_init_info_t * UNUSED(info))
 		lu_state_restore();
 	}
 
-	geom[TDA19988_DEV].dv_base = ((u64_t) (0));
-	geom[TDA19988_DEV].dv_size = ((u64_t) (128));
+	geom[TDA19988_DEV].dv_base = ((uint64_t) (0));
+	geom[TDA19988_DEV].dv_size = ((uint64_t) (128));
 
 	/*
 	 * CEC Module

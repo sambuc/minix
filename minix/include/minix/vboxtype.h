@@ -23,7 +23,7 @@ typedef struct {
   vbox_type_t type;
   union {
 	uint32_t u32;
-	u64_t u64;
+	uint64_t u64;
 	struct {
 		cp_grant_id_t grant;
 		size_t off;

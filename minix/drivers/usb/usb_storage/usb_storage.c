@@ -66,7 +66,7 @@ static void mass_storage_task(void *);
 static int mass_storage_test(void);
 static int mass_storage_check_error(void);
 static int mass_storage_try_first_open(void);
-static int mass_storage_transfer_restrictions(u64_t, unsigned long);
+static int mass_storage_transfer_restrictions(uint64_t, unsigned long);
 static ssize_t mass_storage_write(unsigned long, endpoint_t, iovec_t *,
 				unsigned int, unsigned long);
 static ssize_t mass_storage_read(unsigned long, endpoint_t, iovec_t *,
@@ -75,7 +75,7 @@ static ssize_t mass_storage_read(unsigned long, endpoint_t, iovec_t *,
 /* Minix's libblockdriver callbacks */
 static int mass_storage_open(devminor_t, int);
 static int mass_storage_close(devminor_t);
-static ssize_t mass_storage_transfer(devminor_t, int, u64_t, endpoint_t,
+static ssize_t mass_storage_transfer(devminor_t, int, uint64_t, endpoint_t,
 					iovec_t *, unsigned int, int);
 static int mass_storage_ioctl(devminor_t, unsigned long, endpoint_t,
 				cp_grant_id_t, endpoint_t);
@@ -792,7 +792,7 @@ mass_storage_try_first_open()
  *    mass_storage_transfer_restrictions                                     *
  *===========================================================================*/
 static int
-mass_storage_transfer_restrictions(u64_t pos, unsigned long bytes)
+mass_storage_transfer_restrictions(uint64_t pos, unsigned long bytes)
 {
 	MASS_DEBUG_DUMP;
 
@@ -1251,13 +1251,13 @@ static int mass_storage_close(devminor_t minor)
 static ssize_t
 mass_storage_transfer(devminor_t minor,		/* device minor number */
 		int do_write,			/* 1 write, 0 read */
-		u64_t pos,			/* position of starting point */
+		uint64_t pos,			/* position of starting point */
 		endpoint_t endpt,		/* endpoint */
 		iovec_t * iov,			/* vector */
 		unsigned int iov_count,		/* how many vectors */
 		int UNUSED(flags))		/* transfer flags */
 {
-	u64_t temp_sector_number;
+	uint64_t temp_sector_number;
 	unsigned long bytes;
 	unsigned long sector_number;
 	unsigned int cur_iov_idx;

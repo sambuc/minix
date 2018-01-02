@@ -28,8 +28,8 @@
 
 /* Base and size of a partition in bytes. */
 struct device {
-	u64_t dv_base;
-	u64_t dv_size;
+	uint64_t dv_base;
+	uint64_t dv_size;
 };
 
 /* Generic receive function for all drivers. */

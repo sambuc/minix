@@ -15,7 +15,7 @@ int max_error = 4;
 
 
 static volatile int expect_SIGFPE;
-static u64_t i, j, k;
+static uint64_t i, j, k;
 static jmp_buf jmpbuf_SIGFPE, jmpbuf_main;
 
 static void err(int line)
@@ -33,7 +33,7 @@ static void err(int line)
 
 #define LENGTHOF(arr) (sizeof(arr) / sizeof(arr[0]))
 
-static u64_t getargval(int index, int *done)
+static uint64_t getargval(int index, int *done)
 {
 	uint32_t values[] = { 
 		/* corner cases */
@@ -110,10 +110,10 @@ static void handler_SIGFPE(int signum)
 	exit(-1);
 }
 
-static inline int bsr64(u64_t i)
+static inline int bsr64(uint64_t i)
 {
 	int index;
-	u64_t mask;
+	uint64_t mask;
 
 	for (index = 63, mask = 1ULL << 63; index >= 0; --index, mask >>= 1) {
 	    if (i & mask)
@@ -127,7 +127,7 @@ static void testmul(void)
 {
 	int kdone, kidx;
 	uint32_t ilo = ex64lo(i), jlo = ex64lo(j);
-	u64_t prod = i * j;
+	uint64_t prod = i * j;
 	int prodbits;
 		
 	/* compute maximum index of highest-order bit */
@@ -137,7 +137,7 @@ static void testmul(void)
 
 	/* compare to 32-bit multiplication if possible */	
 	if (ex64hi(i) == 0 && ex64hi(j) == 0) {
-		if (prod != (u64_t)ilo * jlo) ERR;
+		if (prod != (uint64_t)ilo * jlo) ERR;
 		
 		/* if there is no overflow we can check against pure 32-bit */
 		if (prodbits < 32 && prod != ilo * jlo) ERR;
@@ -166,7 +166,7 @@ static void testmul(void)
 	}
 }
 
-static void do_not_optimize_away(volatile u64_t * ptr)
+static void do_not_optimize_away(volatile uint64_t * ptr)
 {
 
 	/* TODO: does this actually do the job? */
@@ -176,7 +176,7 @@ static void do_not_optimize_away(volatile u64_t * ptr)
 static void testdiv0(void)
 {
 	int funcidx;
-	u64_t res;
+	uint64_t res;
 
 	assert(j == 0);
 
@@ -194,7 +194,7 @@ static void testdiv0(void)
 				default: assert(0);		ERR; break;
 			}
 
-			do_not_optimize_away((volatile u64_t *)&res);
+			do_not_optimize_away((volatile uint64_t *)&res);
 
 			/* if we reach this point there was no signal and an
 			 * error has been recorded
@@ -211,7 +211,7 @@ static void testdiv0(void)
 
 static void testdiv(void)
 {
-	u64_t q, r;
+	uint64_t q, r;
 #if TIMED
 	struct timeval tvstart, tvend;
 

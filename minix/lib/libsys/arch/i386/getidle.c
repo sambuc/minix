@@ -22,10 +22,10 @@
 #include <minix/syslib.h>
 #include <minix/minlib.h>
 
-static u64_t start, idle;
+static uint64_t start, idle;
 static int running = 0;
 
-static double make_double(u64_t d)
+static double make_double(uint64_t d)
 {
 /* Convert a 64-bit fixed point value into a double.
  * This whole thing should be replaced by something better eventually.
@@ -44,8 +44,8 @@ static double make_double(u64_t d)
 
 double getidle(void)
 {
-  u64_t stop, idle2;
-  u64_t idelta, tdelta;
+  uint64_t stop, idle2;
+  uint64_t idelta, tdelta;
   double ifp, tfp, rfp;
   int r;
 

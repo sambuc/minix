@@ -45,15 +45,15 @@ static vir_bytes m_vaddrs[NR_DEVS];
 
 static int openct[NR_DEVS];
 
-static ssize_t m_char_read(devminor_t minor, u64_t position, endpoint_t endpt,
+static ssize_t m_char_read(devminor_t minor, uint64_t position, endpoint_t endpt,
 	cp_grant_id_t grant, size_t size, int flags, cdev_id_t id);
-static ssize_t m_char_write(devminor_t minor, u64_t position, endpoint_t endpt,
+static ssize_t m_char_write(devminor_t minor, uint64_t position, endpoint_t endpt,
 	cp_grant_id_t grant, size_t size, int flags, cdev_id_t id);
 static int m_char_open(devminor_t minor, int access, endpoint_t user_endpt);
 static int m_char_close(devminor_t minor);
 
 static struct device *m_block_part(devminor_t minor);
-static ssize_t m_block_transfer(devminor_t minor, int do_write, u64_t position,
+static ssize_t m_block_transfer(devminor_t minor, int do_write, uint64_t position,
 	endpoint_t endpt, iovec_t *iov, unsigned int nr_req, int flags);
 static int m_block_open(devminor_t minor, int access);
 static int m_block_close(devminor_t minor);
@@ -186,11 +186,11 @@ static int m_is_block(devminor_t minor)
 /*===========================================================================*
  *				m_transfer_kmem				     *
  *===========================================================================*/
-static ssize_t m_transfer_kmem(devminor_t minor, int do_write, u64_t position,
+static ssize_t m_transfer_kmem(devminor_t minor, int do_write, uint64_t position,
 	endpoint_t endpt, cp_grant_id_t grant, size_t size)
 {
 /* Transfer from or to the KMEM device. */
-  u64_t dv_size, dev_vaddr;
+  uint64_t dv_size, dev_vaddr;
   int r;
 
   dv_size = m_geom[minor].dv_size;
@@ -215,7 +215,7 @@ static ssize_t m_transfer_kmem(devminor_t minor, int do_write, u64_t position,
 /*===========================================================================*
  *				m_transfer_mem				     *
  *===========================================================================*/
-static ssize_t m_transfer_mem(devminor_t minor, int do_write, u64_t position,
+static ssize_t m_transfer_mem(devminor_t minor, int do_write, uint64_t position,
 	endpoint_t endpt, cp_grant_id_t grant, size_t size)
 {
 /* Transfer from or to the MEM device. */
@@ -224,7 +224,7 @@ static ssize_t m_transfer_mem(devminor_t minor, int do_write, u64_t position,
   static char *vaddr;
   phys_bytes mem_phys, pagestart;
   size_t off, page_off, subcount;
-  u64_t dv_size;
+  uint64_t dv_size;
   int r;
 
   dv_size = m_geom[minor].dv_size;
@@ -284,7 +284,7 @@ static ssize_t m_transfer_mem(devminor_t minor, int do_write, u64_t position,
 /*===========================================================================*
  *				m_char_read				     *
  *===========================================================================*/
-static ssize_t m_char_read(devminor_t minor, u64_t position, endpoint_t endpt,
+static ssize_t m_char_read(devminor_t minor, uint64_t position, endpoint_t endpt,
 	cp_grant_id_t grant, size_t size, int UNUSED(flags),
 	cdev_id_t UNUSED(id))
 {
@@ -323,7 +323,7 @@ static ssize_t m_char_read(devminor_t minor, u64_t position, endpoint_t endpt,
 /*===========================================================================*
  *				m_char_write				     *
  *===========================================================================*/
-static ssize_t m_char_write(devminor_t minor, u64_t position, endpoint_t endpt,
+static ssize_t m_char_write(devminor_t minor, uint64_t position, endpoint_t endpt,
 	cp_grant_id_t grant, size_t size, int UNUSED(flags),
 	cdev_id_t UNUSED(id))
 {
@@ -417,7 +417,7 @@ static struct device *m_block_part(devminor_t minor)
 static int m_block_transfer(
   devminor_t minor,		/* minor device number */
   int do_write,			/* read or write? */
-  u64_t position,		/* offset on device to read or write */
+  uint64_t position,		/* offset on device to read or write */
   endpoint_t endpt,		/* process doing the request */
   iovec_t *iov,			/* pointer to read or write request vector */
   unsigned int nr_req,		/* length of request vector */
@@ -428,7 +428,7 @@ static int m_block_transfer(
   unsigned count;
   vir_bytes vir_offset = 0;
   struct device *dv;
-  u64_t dv_size;
+  uint64_t dv_size;
   int r;
   vir_bytes dev_vaddr;
   cp_grant_id_t grant;
@@ -545,7 +545,7 @@ static int m_block_ioctl(devminor_t minor, unsigned long request,
 	return s;
   if(is_imgrd)
   	ramdev_size = 0;
-  if(m_vaddrs[minor] && dv->dv_size == (u64_t) ramdev_size) {
+  if(m_vaddrs[minor] && dv->dv_size == (uint64_t) ramdev_size) {
 	return(OK);
   }
   /* openct is 1 for the ioctl(). */
@@ -556,7 +556,7 @@ static int m_block_ioctl(devminor_t minor, unsigned long request,
   }
   if(m_vaddrs[minor]) {
 	uint32_t a, o;
-	u64_t size;
+	uint64_t size;
 	int r;
 	if(ex64hi(dv->dv_size)) {
 		panic("huge old ramdisk");

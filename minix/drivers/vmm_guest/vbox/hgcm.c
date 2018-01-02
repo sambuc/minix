@@ -526,7 +526,7 @@ static int store_pages(int conn, int req, vbox_param_t *inp, size_t *offp)
 			assert(!(pvec[j].vp_addr & (PAGE_SIZE - 1)));
 
 			pagelist->addr[pagelist->count++] =
-				((u64_t)(pvec[j].vp_addr));
+				((uint64_t)(pvec[j].vp_addr));
 
 			if (pvec[j].vp_size > PAGE_SIZE) {
 				pvec[j].vp_addr += PAGE_SIZE;

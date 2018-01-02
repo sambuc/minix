@@ -73,7 +73,7 @@ void cache_lru_touch(struct cached_page *hb)
 	lru_add(hb);
 }
 
-static __inline uint32_t makehash(uint32_t p1, u64_t p2)
+static __inline uint32_t makehash(uint32_t p1, uint64_t p2)
 {
 	uint32_t offlo = ex64lo(p2), offhi = ex64hi(p2),
 		v = 0x12345678;
@@ -161,7 +161,7 @@ static void addcache_byino(struct cached_page *hb)
 }
 
 static void
-update_inohash(struct cached_page *hb, ino_t ino, u64_t ino_off)
+update_inohash(struct cached_page *hb, ino_t ino, uint64_t ino_off)
 {
 	assert(ino != VMC_NO_INODE);
 	if(hb->ino != VMC_NO_INODE) {
@@ -174,7 +174,7 @@ update_inohash(struct cached_page *hb, ino_t ino, u64_t ino_off)
 }
 
 struct cached_page *
-find_cached_page_bydev(dev_t dev, u64_t dev_off, ino_t ino, u64_t ino_off, int touchlru)
+find_cached_page_bydev(dev_t dev, uint64_t dev_off, ino_t ino, uint64_t ino_off, int touchlru)
 {
 	struct cached_page *hb;
 
@@ -195,7 +195,7 @@ find_cached_page_bydev(dev_t dev, u64_t dev_off, ino_t ino, u64_t ino_off, int t
 	return NULL;
 }
 
-struct cached_page *find_cached_page_byino(dev_t dev, ino_t ino, u64_t ino_off, int touchlru)
+struct cached_page *find_cached_page_byino(dev_t dev, ino_t ino, uint64_t ino_off, int touchlru)
 {
 	struct cached_page *hb;
 
@@ -213,7 +213,7 @@ struct cached_page *find_cached_page_byino(dev_t dev, ino_t ino, u64_t ino_off, 
 	return NULL;
 }
 
-int addcache(dev_t dev, u64_t dev_off, ino_t ino, u64_t ino_off, int flags,
+int addcache(dev_t dev, uint64_t dev_off, ino_t ino, uint64_t ino_off, int flags,
 	struct phys_block *pb)
 {
 	int hv_dev;

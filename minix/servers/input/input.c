@@ -11,7 +11,7 @@
 
 static int input_open(devminor_t, int, endpoint_t);
 static int input_close(devminor_t);
-static ssize_t input_read(devminor_t, u64_t, endpoint_t, cp_grant_id_t, size_t,
+static ssize_t input_read(devminor_t, uint64_t, endpoint_t, cp_grant_id_t, size_t,
 	int, cdev_id_t);
 static int input_ioctl(devminor_t, unsigned long, endpoint_t, cp_grant_id_t,
 	int, endpoint_t, cdev_id_t);
@@ -160,7 +160,7 @@ input_copy_events(endpoint_t endpt, cp_grant_id_t grant,
  * Read from an input device.
  */
 static ssize_t
-input_read(devminor_t minor, u64_t UNUSED(position), endpoint_t endpt,
+input_read(devminor_t minor, uint64_t UNUSED(position), endpoint_t endpt,
 	cp_grant_id_t grant, size_t size, int flags, cdev_id_t id)
 {
 	unsigned int event_count;

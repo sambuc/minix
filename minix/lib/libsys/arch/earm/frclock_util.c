@@ -13,13 +13,13 @@
 #define MICROHZ         1000000ULL	/* number of micros per second */
 #define MICROSPERTICK(h)	(MICROHZ/(h)) /* number of micros per HZ tick */
 
-static u64_t Hz;
+static uint64_t Hz;
 
 int
 micro_delay(uint32_t micros)
 {
 	struct minix_kerninfo *minix_kerninfo;
-        u64_t start, delta, delta_end;
+        uint64_t start, delta, delta_end;
 
 	Hz = sys_hz();
 	minix_kerninfo = get_minix_kerninfo();
@@ -48,7 +48,7 @@ micro_delay(uint32_t micros)
         return 0;
 }
 
-uint32_t frclock_64_to_micros(u64_t tsc)
+uint32_t frclock_64_to_micros(uint64_t tsc)
 {
         return (uint32_t)
             (tsc / (get_minix_kerninfo()->arm_frclock->hz / MICROHZ));
@@ -84,14 +84,14 @@ delta_frclock(uint32_t base, uint32_t cur)
 }
 
 void
-read_frclock_64(u64_t *frclk)
+read_frclock_64(uint64_t *frclk)
 {
 	read_frclock((uint32_t *) frclk);	
 }
 
-u64_t
-delta_frclock_64(u64_t base, u64_t cur)
+uint64_t
+delta_frclock_64(uint64_t base, uint64_t cur)
 {
-	return (u64_t) delta_frclock((uint32_t) base, (uint32_t) cur);
+	return (uint64_t) delta_frclock((uint32_t) base, (uint32_t) cur);
 }
 

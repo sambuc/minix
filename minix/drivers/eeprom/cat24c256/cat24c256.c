@@ -26,7 +26,7 @@ static i2c_addr_t valid_addrs[9] = {
 static int cat24c256_blk_open(devminor_t minor, int access);
 static int cat24c256_blk_close(devminor_t minor);
 static ssize_t cat24c256_blk_transfer(devminor_t minor, int do_write,
-    u64_t pos, endpoint_t endpt, iovec_t * iov, unsigned int count, int flags);
+    uint64_t pos, endpoint_t endpt, iovec_t * iov, unsigned int count, int flags);
 static int cat24c256_blk_ioctl(devminor_t minor, unsigned long request,
     endpoint_t endpt, cp_grant_id_t grant, endpoint_t user_endpt);
 static struct device *cat24c256_blk_part(devminor_t minor);
@@ -103,15 +103,15 @@ cat24c256_blk_close(devminor_t minor)
 }
 
 static ssize_t
-cat24c256_blk_transfer(devminor_t minor, int do_write, u64_t pos64,
+cat24c256_blk_transfer(devminor_t minor, int do_write, uint64_t pos64,
     endpoint_t endpt, iovec_t * iov, unsigned int nr_req, int flags)
 {
 	/* Read or write one the driver's block devices. */
 	unsigned int count;
 	struct device *dv;
-	u64_t dv_size;
+	uint64_t dv_size;
 	int r;
-	u64_t position;
+	uint64_t position;
 	cp_grant_id_t grant;
 	ssize_t total = 0;
 	vir_bytes offset;
@@ -424,8 +424,8 @@ sef_cb_init(int type, sef_init_info_t * UNUSED(info))
 		lu_state_restore();
 	}
 
-	geom[EEPROM_DEV].dv_base = ((u64_t) (0));
-	geom[EEPROM_DEV].dv_size = ((u64_t) (32768));
+	geom[EEPROM_DEV].dv_base = ((uint64_t) (0));
+	geom[EEPROM_DEV].dv_size = ((uint64_t) (32768));
 
 	/* look-up the endpoint for the bus driver */
 	bus_endpoint = i2cdriver_bus_endpoint(bus);

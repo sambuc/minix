@@ -8,10 +8,10 @@ struct cached_page {
 	 *  - ino may be unknown, i.e. VMC_NO_INODE
 	 */
 	dev_t dev;			/* which dev is it on */
-	u64_t dev_offset;		/* offset within dev */
+	uint64_t dev_offset;		/* offset within dev */
 
 	ino_t ino;			/* which ino is it about */
-	u64_t ino_offset;		/* offset within ino */
+	uint64_t ino_offset;		/* offset within ino */
 	int flags;			/* currently only VMSF_ONCE or 0 */
 	struct phys_block *page;	/* page ptr */
 	struct cached_page *older;	/* older in lru chain */

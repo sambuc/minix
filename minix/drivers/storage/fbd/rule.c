@@ -85,7 +85,7 @@ int rule_ctl(unsigned long request, endpoint_t endpt, cp_grant_id_t grant)
 /*===========================================================================*
  *				rule_match				     *
  *===========================================================================*/
-static int rule_match(struct fbd_rule *rule, u64_t pos, size_t size, int flag)
+static int rule_match(struct fbd_rule *rule, uint64_t pos, size_t size, int flag)
 {
 	/* Check whether the given rule matches the given parameters. As side
 	 * effect, update counters in the rule as appropriate.
@@ -112,7 +112,7 @@ static int rule_match(struct fbd_rule *rule, u64_t pos, size_t size, int flag)
 /*===========================================================================*
  *				rule_find				     *
  *===========================================================================*/
-int rule_find(u64_t pos, size_t size, int flag)
+int rule_find(uint64_t pos, size_t size, int flag)
 {
 	/* Find all matching rules, and return a hook mask. */
 	struct fbd_rule *rule;
@@ -150,7 +150,7 @@ int rule_find(u64_t pos, size_t size, int flag)
  *				rule_pre_hook				     *
  *===========================================================================*/
 void rule_pre_hook(iovec_t *iov, unsigned *count, size_t *size,
-	u64_t *pos)
+	uint64_t *pos)
 {
 	int i;
 
@@ -162,7 +162,7 @@ void rule_pre_hook(iovec_t *iov, unsigned *count, size_t *size,
 /*===========================================================================*
  *				rule_io_hook				     *
  *===========================================================================*/
-void rule_io_hook(char *buf, size_t size, u64_t pos, int flag)
+void rule_io_hook(char *buf, size_t size, uint64_t pos, int flag)
 {
 	int i;
 

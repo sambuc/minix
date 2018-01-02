@@ -20,7 +20,7 @@ int do_statvfs(struct statvfs *st)
  */
   struct inode *ino;
   char path[PATH_MAX];
-  u64_t bfree, btotal;
+  uint64_t bfree, btotal;
   int r;
 
   /* Unfortunately, we cannot be any more specific than this, because we are

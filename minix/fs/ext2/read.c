@@ -14,9 +14,9 @@
 #include <assert.h>
 
 
-static struct buf *rahead(struct inode *rip, block_t baseblock, u64_t
+static struct buf *rahead(struct inode *rip, block_t baseblock, uint64_t
 	position, unsigned bytes_ahead);
-static int rw_chunk(struct inode *rip, u64_t position, unsigned off,
+static int rw_chunk(struct inode *rip, uint64_t position, unsigned off,
 	size_t chunk, unsigned left, int call, struct fsdriver_data *data,
 	unsigned buf_off, unsigned int block_size, int *completed);
 
@@ -69,7 +69,7 @@ ssize_t fs_readwrite(ino_t ino_nr, struct fsdriver_data *data, size_t nrbytes,
 	}
 
 	/* Read or write 'chunk' bytes. */
-	r = rw_chunk(rip, ((u64_t)((unsigned long)position)), off, chunk,
+	r = rw_chunk(rip, ((uint64_t)((unsigned long)position)), off, chunk,
 		nrbytes, call, data, cum_io, block_size, &completed);
 
 	if (r != OK) break;
@@ -106,7 +106,7 @@ ssize_t fs_readwrite(ino_t ino_nr, struct fsdriver_data *data, size_t nrbytes,
 static int rw_chunk(rip, position, off, chunk, left, call, data, buf_off,
 	block_size, completed)
 register struct inode *rip;     /* pointer to inode for file to be rd/wr */
-u64_t position;                 /* position within file to read or write */
+uint64_t position;                 /* position within file to read or write */
 unsigned off;                   /* off within the current block */
 size_t chunk;                   /* number of bytes to read or write */
 unsigned left;                  /* max number of bytes wanted after position */
@@ -124,7 +124,7 @@ int *completed;                 /* number of bytes copied */
   block_t b;
   dev_t dev;
   ino_t ino = VMC_NO_INODE;
-  u64_t ino_off = rounddown(position, block_size);
+  uint64_t ino_off = rounddown(position, block_size);
 
   *completed = 0;
 
@@ -278,7 +278,7 @@ int opportunistic;
   return(b);
 }
 
-struct buf *get_block_map(register struct inode *rip, u64_t position)
+struct buf *get_block_map(register struct inode *rip, uint64_t position)
 {
 	struct buf *bp;
 	int r, block_size;
@@ -315,7 +315,7 @@ int mindex;                      /* index into *bp */
 static struct buf *rahead(rip, baseblock, position, bytes_ahead)
 register struct inode *rip;     /* pointer to inode for file to be read */
 block_t baseblock;              /* block at current position */
-u64_t position;                 /* position within file */
+uint64_t position;                 /* position within file */
 unsigned bytes_ahead;           /* bytes beyond position for immediate use */
 {
 /* Fetch a block from the cache or the device.  If a physical read is
@@ -334,7 +334,7 @@ unsigned bytes_ahead;           /* bytes beyond position for immediate use */
   dev_t dev;
   struct buf *bp = NULL;
   static block64_t read_q[LMFS_MAX_PREFETCH];
-  u64_t position_running;
+  uint64_t position_running;
 
   dev = rip->i_dev;
   assert(dev != NO_DEV);

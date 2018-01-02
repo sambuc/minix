@@ -114,8 +114,8 @@ static void parse_part_table(
 	if (pe->lowsec < base) pe->lowsec = base;
 	if (part_limit < pe->lowsec) part_limit = pe->lowsec;
 
-	dv->dv_base = (u64_t)pe->lowsec * SECTOR_SIZE;
-	dv->dv_size = (u64_t)(part_limit - pe->lowsec) * SECTOR_SIZE;
+	dv->dv_base = (uint64_t)pe->lowsec * SECTOR_SIZE;
+	dv->dv_size = (uint64_t)(part_limit - pe->lowsec) * SECTOR_SIZE;
 
 	if (style == P_PRIMARY) {
 		/* Each Minix primary partition can be subpartitioned. */
@@ -169,9 +169,9 @@ static void extpartition(
 		if (pe->sysind != NO_PART) {
 			if ((dv = (*bdp->bdr_part)(subdev)) == NULL) return;
 
-			dv->dv_base = (u64_t)(extbase + offset + pe->lowsec) *
+			dv->dv_base = (uint64_t)(extbase + offset + pe->lowsec) *
 								SECTOR_SIZE;
-			dv->dv_size = (u64_t)pe->size * SECTOR_SIZE;
+			dv->dv_size = (uint64_t)pe->size * SECTOR_SIZE;
 
 			/* Out of devices? */
 			if (++subdev % NR_PARTITIONS == 0) return;
@@ -194,10 +194,10 @@ static int get_part_table(
  * errors.
  */
   iovec_t iovec1;
-  u64_t position;
+  uint64_t position;
   int r;
 
-  position = (u64_t)offset * SECTOR_SIZE;
+  position = (uint64_t)offset * SECTOR_SIZE;
   iovec1.iov_addr = (vir_bytes) tmp_buf;
   iovec1.iov_size = CD_SECTOR_SIZE;
   r = (*bdp->bdr_transfer)(device, FALSE /*do_write*/, position, SELF,

@@ -61,7 +61,7 @@ EXTERN int config_no_apic; /* optionally turn off apic */
 EXTERN int config_apic_timer_x; /* apic timer slowdown factor */
 #endif
 
-EXTERN u64_t cpu_hz[CONFIG_MAX_CPUS];
+EXTERN uint64_t cpu_hz[CONFIG_MAX_CPUS];
 
 #define cpu_set_freq(cpu, freq)	do {cpu_hz[cpu] = freq;} while (0)
 #define cpu_get_freq(cpu)	cpu_hz[cpu]
@@ -83,8 +83,8 @@ EXTERN volatile int serial_debug_active;
 EXTERN struct cpu_info cpu_info[CONFIG_MAX_CPUS];
 
 /* BKL stats */
-EXTERN u64_t kernel_ticks[CONFIG_MAX_CPUS];
-EXTERN u64_t bkl_ticks[CONFIG_MAX_CPUS];
+EXTERN uint64_t kernel_ticks[CONFIG_MAX_CPUS];
+EXTERN uint64_t bkl_ticks[CONFIG_MAX_CPUS];
 EXTERN unsigned bkl_tries[CONFIG_MAX_CPUS];
 EXTERN unsigned bkl_succ[CONFIG_MAX_CPUS];
 

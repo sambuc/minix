@@ -100,17 +100,17 @@ extern int BACKUP_MINOR;
 
 /* sum.c */
 extern void sum_init(void);
-extern int transfer(u64_t pos, char *buffer, size_t *sizep, int flag_rw);
-extern u64_t convert(u64_t size);
+extern int transfer(uint64_t pos, char *buffer, size_t *sizep, int flag_rw);
+extern uint64_t convert(uint64_t size);
 
 /* driver.c */
 extern void driver_init(void);
 extern void driver_shutdown(void);
-extern u64_t get_raw_size(void);
+extern uint64_t get_raw_size(void);
 extern void reset_kills(void);
 extern int check_driver(int which);
 extern int bad_driver(int which, int type, int error);
-extern int read_write(u64_t pos, char *bufa, char *bufb, size_t *sizep,
+extern int read_write(uint64_t pos, char *bufa, char *bufb, size_t *sizep,
 	int flag_rw);
 extern void ds_event(void);
 

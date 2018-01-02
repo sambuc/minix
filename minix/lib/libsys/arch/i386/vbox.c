@@ -162,7 +162,7 @@ void vbox_set_u32(vbox_param_t *param, uint32_t value)
   param->u32 = value;
 }
 
-void vbox_set_u64(vbox_param_t *param, u64_t value)
+void vbox_set_u64(vbox_param_t *param, uint64_t value)
 {
 /* Set the given parameter to a 32-bit value.
  */
@@ -246,7 +246,7 @@ uint32_t vbox_get_u32(vbox_param_t *param)
   return param->u32;
 }
 
-u64_t vbox_get_u64(vbox_param_t *param)
+uint64_t vbox_get_u64(vbox_param_t *param)
 {
 /* Retrieve the 64-bit value from the given parameter.
  */

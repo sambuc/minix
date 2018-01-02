@@ -194,7 +194,7 @@ static int do_rdwt(struct blockdriver *bdp, message *mp)
 {
 /* Carry out a single read or write request. */
   iovec_t iovec1;
-  u64_t position;
+  uint64_t position;
   int do_write;
   ssize_t r;
 
@@ -224,7 +224,7 @@ static int do_vrdwt(struct blockdriver *bdp, message *mp, thread_id_t id)
 /* Carry out an device read or write to/from a vector of buffers. */
   iovec_t iovec[NR_IOREQS];
   unsigned int i, nr_req;
-  u64_t position;
+  uint64_t position;
   int do_write;
   ssize_t r, size;
 

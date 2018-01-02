@@ -109,7 +109,7 @@ int bdev_close(dev_t dev)
   return r;
 }
 
-static int bdev_rdwt_setup(int req, dev_t dev, u64_t pos, char *buf,
+static int bdev_rdwt_setup(int req, dev_t dev, uint64_t pos, char *buf,
   size_t count, int flags, message *m)
 {
 /* Set up a single-buffer read/write request.
@@ -151,7 +151,7 @@ static void bdev_rdwt_cleanup(const message *m)
   cpf_revoke(m->m_lbdev_lblockdriver_msg.grant);
 }
 
-static ssize_t bdev_rdwt(int req, dev_t dev, u64_t pos, char *buf,
+static ssize_t bdev_rdwt(int req, dev_t dev, uint64_t pos, char *buf,
   size_t count, int flags)
 {
 /* Perform a synchronous read or write call using a single buffer.
@@ -171,7 +171,7 @@ static ssize_t bdev_rdwt(int req, dev_t dev, u64_t pos, char *buf,
   return r;
 }
 
-static int bdev_vrdwt_setup(int req, dev_t dev, u64_t pos, iovec_t *vec,
+static int bdev_vrdwt_setup(int req, dev_t dev, uint64_t pos, iovec_t *vec,
   int count, int flags, message *m, iovec_s_t *gvec)
 {
 /* Set up a vectored read/write request.
@@ -249,7 +249,7 @@ static void bdev_vrdwt_cleanup(const message *m, iovec_s_t *gvec)
 	cpf_revoke(gvec[i].iov_grant);
 }
 
-static ssize_t bdev_vrdwt(int req, dev_t dev, u64_t pos, iovec_t *vec,
+static ssize_t bdev_vrdwt(int req, dev_t dev, uint64_t pos, iovec_t *vec,
   int count, int flags)
 {
 /* Perform a synchronous read or write call using a vector of buffers.
@@ -271,7 +271,7 @@ static ssize_t bdev_vrdwt(int req, dev_t dev, u64_t pos, iovec_t *vec,
   return r;
 }
 
-ssize_t bdev_read(dev_t dev, u64_t pos, char *buf, size_t count, int flags)
+ssize_t bdev_read(dev_t dev, uint64_t pos, char *buf, size_t count, int flags)
 {
 /* Perform a synchronous read call into a single buffer.
  */
@@ -279,7 +279,7 @@ ssize_t bdev_read(dev_t dev, u64_t pos, char *buf, size_t count, int flags)
   return bdev_rdwt(BDEV_READ, dev, pos, buf, count, flags);
 }
 
-ssize_t bdev_write(dev_t dev, u64_t pos, char *buf, size_t count, int flags)
+ssize_t bdev_write(dev_t dev, uint64_t pos, char *buf, size_t count, int flags)
 {
 /* Perform a synchronous write call from a single buffer.
  */
@@ -287,7 +287,7 @@ ssize_t bdev_write(dev_t dev, u64_t pos, char *buf, size_t count, int flags)
   return bdev_rdwt(BDEV_WRITE, dev, pos, buf, count, flags);
 }
 
-ssize_t bdev_gather(dev_t dev, u64_t pos, iovec_t *vec, int count, int flags)
+ssize_t bdev_gather(dev_t dev, uint64_t pos, iovec_t *vec, int count, int flags)
 {
 /* Perform a synchronous read call into a vector of buffers.
  */
@@ -295,7 +295,7 @@ ssize_t bdev_gather(dev_t dev, u64_t pos, iovec_t *vec, int count, int flags)
   return bdev_vrdwt(BDEV_GATHER, dev, pos, vec, count, flags);
 }
 
-ssize_t bdev_scatter(dev_t dev, u64_t pos, iovec_t *vec, int count, int flags)
+ssize_t bdev_scatter(dev_t dev, uint64_t pos, iovec_t *vec, int count, int flags)
 {
 /* Perform a synchronous write call from a vector of buffers.
  */
@@ -383,7 +383,7 @@ void bdev_flush_asyn(dev_t dev)
 	(void) bdev_wait_asyn(call->id);
 }
 
-static bdev_id_t bdev_rdwt_asyn(int req, dev_t dev, u64_t pos, char *buf,
+static bdev_id_t bdev_rdwt_asyn(int req, dev_t dev, uint64_t pos, char *buf,
 	size_t count, int flags, bdev_callback_t callback, bdev_param_t param)
 {
 /* Perform an asynchronous read or write call using a single buffer.
@@ -420,7 +420,7 @@ static bdev_id_t bdev_rdwt_asyn(int req, dev_t dev, u64_t pos, char *buf,
   return call->id;
 }
 
-static bdev_id_t bdev_vrdwt_asyn(int req, dev_t dev, u64_t pos, iovec_t *vec,
+static bdev_id_t bdev_vrdwt_asyn(int req, dev_t dev, uint64_t pos, iovec_t *vec,
 	int count, int flags, bdev_callback_t callback, bdev_param_t param)
 {
 /* Perform an asynchronous read or write call using a vector of buffers.
@@ -456,7 +456,7 @@ static bdev_id_t bdev_vrdwt_asyn(int req, dev_t dev, u64_t pos, iovec_t *vec,
   return call->id;
 }
 
-bdev_id_t bdev_read_asyn(dev_t dev, u64_t pos, char *buf, size_t count,
+bdev_id_t bdev_read_asyn(dev_t dev, uint64_t pos, char *buf, size_t count,
 	int flags, bdev_callback_t callback, bdev_param_t param)
 {
 /* Perform an asynchronous read call into a single buffer.
@@ -466,7 +466,7 @@ bdev_id_t bdev_read_asyn(dev_t dev, u64_t pos, char *buf, size_t count,
 	param);
 }
 
-bdev_id_t bdev_write_asyn(dev_t dev, u64_t pos, char *buf, size_t count,
+bdev_id_t bdev_write_asyn(dev_t dev, uint64_t pos, char *buf, size_t count,
 	int flags, bdev_callback_t callback, bdev_param_t param)
 {
 /* Perform an asynchronous write call from a single buffer.
@@ -476,7 +476,7 @@ bdev_id_t bdev_write_asyn(dev_t dev, u64_t pos, char *buf, size_t count,
 	param);
 }
 
-bdev_id_t bdev_gather_asyn(dev_t dev, u64_t pos, iovec_t *vec, int count,
+bdev_id_t bdev_gather_asyn(dev_t dev, uint64_t pos, iovec_t *vec, int count,
 	int flags, bdev_callback_t callback, bdev_param_t param)
 {
 /* Perform an asynchronous read call into a vector of buffers.
@@ -486,7 +486,7 @@ bdev_id_t bdev_gather_asyn(dev_t dev, u64_t pos, iovec_t *vec, int count,
 	param);
 }
 
-bdev_id_t bdev_scatter_asyn(dev_t dev, u64_t pos, iovec_t *vec, int count,
+bdev_id_t bdev_scatter_asyn(dev_t dev, uint64_t pos, iovec_t *vec, int count,
 	int flags, bdev_callback_t callback, bdev_param_t param)
 {
 /* Perform an asynchronous write call into a vector of buffers.

@@ -10,7 +10,7 @@
  */
 static int hello_open(devminor_t minor, int access, endpoint_t user_endpt);
 static int hello_close(devminor_t minor);
-static ssize_t hello_read(devminor_t minor, u64_t position, endpoint_t endpt,
+static ssize_t hello_read(devminor_t minor, uint64_t position, endpoint_t endpt,
     cp_grant_id_t grant, size_t size, int flags, cdev_id_t id);
 
 /* SEF functions and variables. */
@@ -45,11 +45,11 @@ static int hello_close(devminor_t UNUSED(minor))
     return OK;
 }
 
-static ssize_t hello_read(devminor_t UNUSED(minor), u64_t position,
+static ssize_t hello_read(devminor_t UNUSED(minor), uint64_t position,
     endpoint_t endpt, cp_grant_id_t grant, size_t size, int UNUSED(flags),
     cdev_id_t UNUSED(id))
 {
-    u64_t dev_size;
+    uint64_t dev_size;
     char *ptr;
     int ret;
     char *buf = HELLO_MESSAGE;
@@ -57,7 +57,7 @@ static ssize_t hello_read(devminor_t UNUSED(minor), u64_t position,
     printf("hello_read()\n");
 
     /* This is the total size of our device. */
-    dev_size = (u64_t) strlen(buf);
+    dev_size = (uint64_t) strlen(buf);
 
     /* Check for EOF, and possibly limit the read size. */
     if (position >= dev_size) return 0;		/* EOF */

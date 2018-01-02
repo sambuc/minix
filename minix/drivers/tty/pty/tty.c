@@ -36,9 +36,9 @@ static void tty_icancel(tty_t *tp);
 
 static int do_open(devminor_t minor, int access, endpoint_t user_endpt);
 static int do_close(devminor_t minor);
-static ssize_t do_read(devminor_t minor, u64_t position, endpoint_t endpt,
+static ssize_t do_read(devminor_t minor, uint64_t position, endpoint_t endpt,
 	cp_grant_id_t grant, size_t size, int flags, cdev_id_t id);
-static ssize_t do_write(devminor_t minor, u64_t position, endpoint_t endpt,
+static ssize_t do_write(devminor_t minor, uint64_t position, endpoint_t endpt,
 	cp_grant_id_t grant, size_t size, int flags, cdev_id_t id);
 static int do_cancel(devminor_t minor, endpoint_t endpt, cdev_id_t id);
 static int do_select(devminor_t minor, unsigned int ops, endpoint_t endpt);
@@ -223,7 +223,7 @@ static void tty_startup(void)
 /*===========================================================================*
  *				do_read					     *
  *===========================================================================*/
-static ssize_t do_read(devminor_t minor, u64_t UNUSED(position),
+static ssize_t do_read(devminor_t minor, uint64_t UNUSED(position),
 	endpoint_t endpt, cp_grant_id_t grant, size_t size, int flags,
 	cdev_id_t id)
 {
@@ -292,7 +292,7 @@ static ssize_t do_read(devminor_t minor, u64_t UNUSED(position),
 /*===========================================================================*
  *				do_write				     *
  *===========================================================================*/
-static ssize_t do_write(devminor_t minor, u64_t UNUSED(position),
+static ssize_t do_write(devminor_t minor, uint64_t UNUSED(position),
 	endpoint_t endpt, cp_grant_id_t grant, size_t size, int flags,
 	cdev_id_t id)
 {

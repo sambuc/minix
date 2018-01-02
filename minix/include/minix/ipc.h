@@ -83,7 +83,7 @@ typedef struct {
 _ASSERT_MSG_SIZE(mess_9);
 
 typedef struct {
-	u64_t m10ull1;
+	uint64_t m10ull1;
 	int m10i1, m10i2, m10i3, m10i4;
 	long m10l1, m10l2, m10l3;
 	uint8_t padding[20];
@@ -1712,8 +1712,8 @@ typedef struct {
 _ASSERT_MSG_SIZE(mess_netdrv_net_dl_task);
 
 typedef struct {
-	u64_t timestamp;	/* valid for every notify msg */
-	u64_t interrupts;	/* raised interrupts; valid if from HARDWARE */
+	uint64_t timestamp;	/* valid for every notify msg */
+	uint64_t interrupts;	/* raised interrupts; valid if from HARDWARE */
 	sigset_t sigset;	/* raised signals; valid if from SYSTEM */
 	uint8_t padding[24];
 } mess_notify;

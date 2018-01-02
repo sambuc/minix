@@ -118,7 +118,7 @@ static int w_identify(void);
 static char *w_name(void);
 static int w_specify(void);
 static int w_io_test(void);
-static ssize_t w_transfer(devminor_t minor, int do_write, u64_t position,
+static ssize_t w_transfer(devminor_t minor, int do_write, uint64_t position,
 	endpoint_t proc_nr, iovec_t *iov, unsigned int nr_req, int flags);
 static int com_out(struct command *cmd);
 static int com_out_ext(struct command *cmd);
@@ -141,7 +141,7 @@ static int atapi_sendpacket(uint8_t *packet, unsigned cnt, int do_dma);
 static int atapi_intr_wait(int dma, size_t max);
 static int atapi_open(void);
 static void atapi_close(void);
-static int atapi_transfer(int do_write, u64_t position, endpoint_t
+static int atapi_transfer(int do_write, uint64_t position, endpoint_t
 	endpt, iovec_t *iov, unsigned int nr_req);
 
 /* Entry points to this driver. */
@@ -742,7 +742,7 @@ static int w_identify(void)
   w_testing = 0;
 
   /* Size of the whole drive */
-  wn->part[0].dv_size = (u64_t)size * SECTOR_SIZE;
+  wn->part[0].dv_size = (uint64_t)size * SECTOR_SIZE;
 
   /* Reset/calibrate (where necessary) */
   if (w_specify() != OK && w_specify() != OK) {
@@ -996,7 +996,7 @@ static int error_dma(const struct wini *wn)
 static ssize_t w_transfer(
   devminor_t minor,		/* minor device to perform the transfer on */
   int do_write,			/* read or write? */
-  u64_t position,		/* offset on device to read or write */
+  uint64_t position,		/* offset on device to read or write */
   endpoint_t proc_nr,		/* process doing the request */
   iovec_t *iov,			/* pointer to read or write request vector */
   unsigned int nr_req,		/* length of request vector */
@@ -1008,7 +1008,7 @@ static ssize_t w_transfer(
   int r, s, errors, do_dma;
   unsigned long block;
   uint32_t w_status;
-  u64_t dv_size;
+  uint64_t dv_size;
   unsigned int n, nbytes;
   unsigned dma_buf_offset;
   ssize_t total = 0;
@@ -1729,8 +1729,9 @@ static int atapi_open(void)
 /* Should load and lock the device and obtain its size.  For now just set the
  * size of the device to something big.  What is really needed is a generic
  * SCSI layer that does all this stuff for ATAPI and SCSI devices (kjb). (XXX)
+ * .."something big" is now the maximum size of the largest type of DVD.
  */
-  w_wn->part[0].dv_size = (u64_t)(800L*1024) * 1024;
+  w_wn->part[0].dv_size = (uint64_t)(8500L*1024) * 1024;
   return(OK);
 }
 
@@ -1777,7 +1778,7 @@ static void sense_request(void)
  *===========================================================================*/
 static int atapi_transfer(
   int do_write,			/* read or write? */
-  u64_t position,		/* offset on device to read or write */
+  uint64_t position,		/* offset on device to read or write */
   endpoint_t proc_nr,		/* process doing the request */
   iovec_t *iov,			/* pointer to read or write request vector */
   unsigned int nr_req		/* length of request vector */
@@ -1786,9 +1787,9 @@ static int atapi_transfer(
   struct wini *wn = w_wn;
   iovec_t *iop, *iov_end = iov + nr_req;
   int r, s, errors, fresh;
-  u64_t pos;
+  uint64_t pos;
   unsigned long block;
-  u64_t dv_size = w_dv->dv_size;
+  uint64_t dv_size = w_dv->dv_size;
   unsigned nbytes, nblocks, before, chunk;
   static uint8_t packet[ATAPI_PACKETSIZE];
   size_t addr_offset = 0;

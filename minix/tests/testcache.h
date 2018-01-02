@@ -16,7 +16,7 @@ int readblock(int b, int blocksize, uint32_t seed, char *block);
 void testend(void);
 int dotest(int blocksize, int nblocks, int iterations);
 void cachequiet(int quiet);
-void get_fd_offset(int b, int blocksize, u64_t *file_offset, int *fd);
+void get_fd_offset(int b, int blocksize, uint64_t *file_offset, int *fd);
 void makefiles(int n);
 
 #define OK_BLOCK_GONE	-999
@@ -30,7 +30,7 @@ void makefiles(int n);
  */
 #define MBPERFILE 2000
 #define MB (1024*1024)
-#define MAXFILES ((u64_t) MAXBLOCKS * MAXBLOCKSIZE / MB / MBPERFILE + 1)
+#define MAXFILES ((uint64_t) MAXBLOCKS * MAXBLOCKSIZE / MB / MBPERFILE + 1)
 
 extern int fds[MAXFILES], bigflag;
 

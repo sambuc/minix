@@ -245,7 +245,7 @@ static void f_timeout(int arg);
 static struct device *f_prepare(devminor_t device);
 static struct device *f_part(devminor_t minor);
 static void f_cleanup(void);
-static ssize_t f_transfer(devminor_t minor, int do_write, u64_t position,
+static ssize_t f_transfer(devminor_t minor, int do_write, uint64_t position,
 	endpoint_t proc_nr, iovec_t *iov, unsigned int nr_req, int flags);
 static int dma_setup(int do_write);
 static void start_motor(void);
@@ -405,7 +405,7 @@ static struct device *f_prepare(devminor_t device)
   if (f_fp->fl_density < NT) {
 	f_dp = &fdensity[f_fp->fl_density];
 	f_sectors = f_dp->secpt;
-	f_fp->fl_geom.dv_size = (u64_t)(NR_HEADS * f_sectors * f_dp->cyls) * 
+	f_fp->fl_geom.dv_size = (uint64_t)(NR_HEADS * f_sectors * f_dp->cyls) * 
 								SECTOR_SIZE;
   }
 
@@ -444,7 +444,7 @@ static void f_cleanup(void)
 static ssize_t f_transfer(
   devminor_t minor,		/* minor device number */
   int do_write,			/* read or write? */
-  u64_t pos64,			/* offset on device to read or write */
+  uint64_t pos64,			/* offset on device to read or write */
   endpoint_t proc_nr,		/* process doing the request */
   iovec_t *iov,			/* pointer to read or write request vector */
   unsigned int nr_req,		/* length of request vector */
@@ -456,7 +456,7 @@ static ssize_t f_transfer(
   iovec_t *iop, *iov_end = iov + nr_req;
   int s, r, errors, nr;
   unsigned block, nbytes, count, chunk, sector;
-  u64_t dv_size;
+  uint64_t dv_size;
   vir_bytes user_offset, iov_offset = 0, iop_offset;
   unsigned long position;
   signed long uoffsets[MAX_SECTORS], *up;

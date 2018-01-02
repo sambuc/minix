@@ -138,9 +138,9 @@ static uint16_t PhyParam[] = {
 
 /* ======= Data Descriptor ======= */
 typedef struct NDR_desc {
-	u64_t next;
-	u64_t status;
-	u64_t frag_info;
+	uint64_t next;
+	uint64_t status;
+	uint64_t frag_info;
 } NDR_desc;
 
 /* Driver Data Structure */

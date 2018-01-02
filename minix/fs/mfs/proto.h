@@ -71,7 +71,7 @@ int fs_chown(ino_t ino, uid_t uid, gid_t gid, mode_t *mode);
 ssize_t fs_readwrite(ino_t ino_nr, struct fsdriver_data *data, size_t bytes,
 	off_t pos, int call);
 block_t read_map(struct inode *rip, off_t pos, int opportunistic);
-struct buf *get_block_map(register struct inode *rip, u64_t position);
+struct buf *get_block_map(register struct inode *rip, uint64_t position);
 zone_t rd_indir(struct buf *bp, int index);
 ssize_t fs_getdents(ino_t ino_nr, struct fsdriver_data *data, size_t bytes,
 	off_t *posp);

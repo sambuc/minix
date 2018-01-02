@@ -9,7 +9,7 @@ static struct driverinfo driver[2];
 static asynmsg_t amsgtable[2];
 
 static int size_known = 0;
-static u64_t disk_size;
+static uint64_t disk_size;
 
 static int problem_stats[BD_LAST] = { 0 };
 
@@ -81,7 +81,7 @@ static int driver_open(int which)
 		disk_size = part.size;
 		size_known = 1;
 		sectors = (unsigned long)(disk_size / SECTOR_SIZE);
-		if ((u64_t)sectors * SECTOR_SIZE != disk_size) {
+		if ((uint64_t)sectors * SECTOR_SIZE != disk_size) {
 			printf("Filter: partition too large\n");
 
 			return RET_REDO;
@@ -216,7 +216,7 @@ void driver_shutdown(void)
 /*===========================================================================*
  *				get_raw_size				     *
  *===========================================================================*/
-u64_t get_raw_size(void)
+uint64_t get_raw_size(void)
 {
 	/* Return the size of the raw disks as used by the filter driver.
 	 */
@@ -903,7 +903,7 @@ static void paired_revoke(const cp_grant_id_t *gids,
 /*===========================================================================*
  *				read_write				     *
  *===========================================================================*/
-int read_write(u64_t pos, char *bufa, char *bufb, size_t *sizep, int request)
+int read_write(uint64_t pos, char *bufa, char *bufb, size_t *sizep, int request)
 {
 	iovec_s_t vectors[2][NR_IOREQS];
 	message m1, m2;

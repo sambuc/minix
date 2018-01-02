@@ -45,7 +45,7 @@ int spin_check(spin_t *s)
 	 * implementation assumes that it is okay to spin a little bit too long
 	 * (up to a full clock tick extra).
 	 */
-	u64_t cur_tsc, tsc_delta;
+	uint64_t cur_tsc, tsc_delta;
 	clock_t now, micro_delta;
 
 	switch (s->s_state) {

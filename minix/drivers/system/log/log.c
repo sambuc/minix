@@ -20,9 +20,9 @@
 
 struct logdevice logdevices[NR_DEVS];
 
-static ssize_t log_read(devminor_t minor, u64_t position, endpoint_t endpt,
+static ssize_t log_read(devminor_t minor, uint64_t position, endpoint_t endpt,
 	cp_grant_id_t grant, size_t size, int flags, cdev_id_t id);
-static ssize_t log_write(devminor_t minor, u64_t position, endpoint_t endpt,
+static ssize_t log_write(devminor_t minor, uint64_t position, endpoint_t endpt,
 	cp_grant_id_t grant, size_t size, int flags, cdev_id_t id);
 static int log_open(devminor_t minor, int access, endpoint_t user_endpt);
 static int log_cancel(devminor_t minor, endpoint_t endpt, cdev_id_t id);
@@ -241,7 +241,7 @@ subread(struct logdevice *log, size_t size, endpoint_t endpt,
 /*===========================================================================*
  *				log_read				     *
  *===========================================================================*/
-static ssize_t log_read(devminor_t minor, u64_t UNUSED(position),
+static ssize_t log_read(devminor_t minor, uint64_t UNUSED(position),
 	endpoint_t endpt, cp_grant_id_t grant, size_t size, int flags,
 	cdev_id_t id)
 {
@@ -275,7 +275,7 @@ static ssize_t log_read(devminor_t minor, u64_t UNUSED(position),
 /*===========================================================================*
  *				log_write				     *
  *===========================================================================*/
-static ssize_t log_write(devminor_t minor, u64_t UNUSED(position),
+static ssize_t log_write(devminor_t minor, uint64_t UNUSED(position),
 	endpoint_t endpt, cp_grant_id_t grant, size_t size, int UNUSED(flags),
 	cdev_id_t UNUSED(id))
 {

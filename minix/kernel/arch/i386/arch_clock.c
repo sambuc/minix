@@ -35,7 +35,7 @@
 static irq_hook_t pic_timer_hook;		/* interrupt handler hook */
 
 static unsigned probe_ticks;
-static u64_t tsc0, tsc1;
+static uint64_t tsc0, tsc1;
 #define PROBE_TICKS	(system_hz / 10)
 
 static unsigned tsc_per_ms[CONFIG_MAX_CPUS];
@@ -75,7 +75,7 @@ void arch_timer_int_handler(void)
 
 static int calib_cpu_handler(irq_hook_t * UNUSED(hook))
 {
-	u64_t tsc;
+	uint64_t tsc;
 
 	probe_ticks++;
 	read_tsc_64(&tsc);
@@ -95,8 +95,8 @@ static int calib_cpu_handler(irq_hook_t * UNUSED(hook))
 
 static void estimate_cpu_freq(void)
 {
-	u64_t tsc_delta;
-	u64_t cpu_freq;
+	uint64_t tsc_delta;
+	uint64_t cpu_freq;
 
 	irq_hook_t calib_cpu;
 
@@ -207,8 +207,8 @@ void cycles_accounting_init(void)
 
 void context_stop(struct proc * p)
 {
-	u64_t tsc, tsc_delta;
-	u64_t * __tsc_ctr_switch = get_cpulocal_var_ptr(tsc_ctr_switch);
+	uint64_t tsc, tsc_delta;
+	uint64_t * __tsc_ctr_switch = get_cpulocal_var_ptr(tsc_ctr_switch);
 	unsigned int cpu, tpt, counter;
 #ifdef CONFIG_SMP
 	int must_bkl_unlock = 0;
@@ -224,7 +224,7 @@ void context_stop(struct proc * p)
 	 * for IDLE we must not hold the lock
 	 */
 	if (p == proc_addr(KERNEL)) {
-		u64_t tmp;
+		uint64_t tmp;
 
 		read_tsc_64(&tsc);
 		tmp = tsc - *__tsc_ctr_switch;
@@ -232,7 +232,7 @@ void context_stop(struct proc * p)
 		p->p_cycles = p->p_cycles + tmp;
 		must_bkl_unlock = 1;
 	} else {
-		u64_t bkl_tsc;
+		uint64_t bkl_tsc;
 		atomic_t succ;
 		
 		read_tsc_64(&bkl_tsc);
@@ -368,27 +368,27 @@ void context_stop_idle(void)
 #endif
 }
 
-u64_t ms_2_cpu_time(unsigned ms)
+uint64_t ms_2_cpu_time(unsigned ms)
 {
-	return (u64_t)tsc_per_ms[cpuid] * ms;
+	return (uint64_t)tsc_per_ms[cpuid] * ms;
 }
 
-unsigned cpu_time_2_ms(u64_t cpu_time)
+unsigned cpu_time_2_ms(uint64_t cpu_time)
 {
 	return (unsigned long)(cpu_time / tsc_per_ms[cpuid]);
 }
 
 short cpu_load(void)
 {
-	u64_t current_tsc, *current_idle;
-	u64_t tsc_delta, idle_delta, busy;
+	uint64_t current_tsc, *current_idle;
+	uint64_t tsc_delta, idle_delta, busy;
 	struct proc *idle;
 	short load;
 #ifdef CONFIG_SMP
 	unsigned cpu = cpuid;
 #endif
 
-	u64_t *last_tsc, *last_idle;
+	uint64_t *last_tsc, *last_idle;
 
 	last_tsc = get_cpu_var_ptr(cpu, cpu_last_tsc);
 	last_idle = get_cpu_var_ptr(cpu, cpu_last_idle);
@@ -418,7 +418,7 @@ short cpu_load(void)
 
 void busy_delay_ms(int ms)
 {
-	u64_t cycles = ms_2_cpu_time(ms), tsc0, tsc, tsc1;
+	uint64_t cycles = ms_2_cpu_time(ms), tsc0, tsc, tsc1;
 	read_tsc_64(&tsc0);
 	tsc1 = tsc0 + cycles;
 	do { read_tsc_64(&tsc); } while(tsc < tsc1);

@@ -43,7 +43,7 @@ vboxfs_open(const char *path, int flags, int mode, sffs_file_t *handle)
  * Read or write a chunk from or to a file.
  */
 static ssize_t
-read_write(vboxfs_handle_t handle, char *buf, size_t size, u64_t pos,
+read_write(vboxfs_handle_t handle, char *buf, size_t size, uint64_t pos,
 	int write)
 {
 	vbox_param_t param[5];
@@ -68,7 +68,7 @@ read_write(vboxfs_handle_t handle, char *buf, size_t size, u64_t pos,
  * Read from a file.
  */
 ssize_t
-vboxfs_read(sffs_file_t handle, char *buf, size_t size, u64_t pos)
+vboxfs_read(sffs_file_t handle, char *buf, size_t size, uint64_t pos)
 {
 	vboxfs_handle_t *handlep;
 
@@ -81,7 +81,7 @@ vboxfs_read(sffs_file_t handle, char *buf, size_t size, u64_t pos)
  * Write to a file.
  */
 ssize_t
-vboxfs_write(sffs_file_t handle, char *buf, size_t len, u64_t pos)
+vboxfs_write(sffs_file_t handle, char *buf, size_t len, uint64_t pos)
 {
 	vboxfs_handle_t *handlep;
 

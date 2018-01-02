@@ -74,7 +74,7 @@ struct proc {
 	int p_flags;
 	endpoint_t p_endpoint;
 	pid_t p_pid;
-	u64_t p_cpucycles[CPUTIMENAMES];
+	uint64_t p_cpucycles[CPUTIMENAMES];
 	int p_priority;
 	endpoint_t p_blocked;
 	clock_t p_user_time;
@@ -258,7 +258,7 @@ static int print_proc_summary(struct proc *pproc)
 
 struct tp {
 	struct proc *p;
-	u64_t ticks;
+	uint64_t ticks;
 };
 
 static int cmp_procs(const void *v1, const void *v2)
@@ -316,7 +316,7 @@ static struct tp *lookup(endpoint_t who, struct tp *tptab, int np)
 
 double ktotal = 0;
 
-static void print_proc(struct tp *tp, u64_t total_ticks)
+static void print_proc(struct tp *tp, uint64_t total_ticks)
 {
 	int euid = 0;
 	static struct passwd *who = NULL;
@@ -369,10 +369,10 @@ static char *cputimemodename(int cputimemode)
 	return name;
 }
 
-static u64_t cputicks(struct proc *p1, struct proc *p2, int timemode)
+static uint64_t cputicks(struct proc *p1, struct proc *p2, int timemode)
 {
 	int i;
-	u64_t t = 0;
+	uint64_t t = 0;
 	for(i = 0; i < CPUTIMENAMES; i++) {
 		if(!CPUTIME(timemode, i))
 			continue;
@@ -399,11 +399,11 @@ static void print_procs(int maxlines,
 	struct proc *proc1, struct proc *proc2, int cputimemode)
 {
 	int p, nprocs;
-	u64_t idleticks = 0;
-	u64_t kernelticks = 0;
-	u64_t systemticks = 0;
-	u64_t userticks = 0;
-	u64_t total_ticks = 0;
+	uint64_t idleticks = 0;
+	uint64_t kernelticks = 0;
+	uint64_t systemticks = 0;
+	uint64_t userticks = 0;
+	uint64_t total_ticks = 0;
 	int blockedseen = 0;
 	static struct tp *tick_procs = NULL;
 
@@ -417,7 +417,7 @@ static void print_procs(int maxlines,
 	}
 
 	for(p = nprocs = 0; p < nr_total; p++) {
-		u64_t uticks;
+		uint64_t uticks;
 		if(!(proc2[p].p_flags & USED))
 			continue;
 		tick_procs[nprocs].p = proc2 + p;

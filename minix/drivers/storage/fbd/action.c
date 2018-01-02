@@ -35,14 +35,14 @@ static uint32_t get_rand(uint32_t max)
 /*===========================================================================*
  *				get_range				     *
  *===========================================================================*/
-static size_t get_range(struct fbd_rule *rule, u64_t pos, size_t *size,
-	u64_t *skip)
+static size_t get_range(struct fbd_rule *rule, uint64_t pos, size_t *size,
+	uint64_t *skip)
 {
 	/* Compute the range within the given request range that is affected
 	 * by the given rule, and optionally the number of bytes preceding
 	 * the range that are also affected by the rule.
 	 */
-	u64_t delta;
+	uint64_t delta;
 	size_t off;
 	int to_eof;
 
@@ -54,7 +54,7 @@ static size_t get_range(struct fbd_rule *rule, u64_t pos, size_t *size,
 		off = 0;
 	}
 	else {
-		if (skip != NULL) *skip = ((u64_t)(0));
+		if (skip != NULL) *skip = ((uint64_t)(0));
 
 		delta = rule->start - pos;
 
@@ -105,9 +105,9 @@ static void limit_range(iovec_t *iov, unsigned *count, size_t size)
  *				action_io_corrupt			     *
  *===========================================================================*/
 static void action_io_corrupt(struct fbd_rule *rule, char *buf, size_t size,
-	u64_t pos, int UNUSED(flag))
+	uint64_t pos, int UNUSED(flag))
 {
-	u64_t skip;
+	uint64_t skip;
 	uint32_t val;
 
 	buf += get_range(rule, pos, &size, &skip);
@@ -152,7 +152,7 @@ static void action_io_corrupt(struct fbd_rule *rule, char *buf, size_t size,
  *				action_pre_error			     *
  *===========================================================================*/
 static void action_pre_error(struct fbd_rule *rule, iovec_t *iov,
-	unsigned *count, size_t *size, u64_t *pos)
+	unsigned *count, size_t *size, uint64_t *pos)
 {
 	/* Limit the request to the part that precedes the matched range. */
 	*size = get_range(rule, *pos, size, NULL);
@@ -175,7 +175,7 @@ static void action_post_error(struct fbd_rule *rule, size_t UNUSED(osize),
  *				action_pre_misdir			     *
  *===========================================================================*/
 static void action_pre_misdir(struct fbd_rule *rule, iovec_t *UNUSED(iov),
-	unsigned *UNUSED(count), size_t *UNUSED(size), u64_t *pos)
+	unsigned *UNUSED(count), size_t *UNUSED(size), uint64_t *pos)
 {
 	/* Randomize the request position to fall within the range (and have
 	 * the alignment) given by the rule.
@@ -195,14 +195,14 @@ static void action_pre_misdir(struct fbd_rule *rule, iovec_t *UNUSED(iov),
 		choice = 0;
 
 	*pos = rule->params.misdir.start +
-		((u64_t)choice * rule->params.misdir.align);
+		((uint64_t)choice * rule->params.misdir.align);
 }
 
 /*===========================================================================*
  *				action_pre_losttorn			     *
  *===========================================================================*/
 static void action_pre_losttorn(struct fbd_rule *rule, iovec_t *iov,
-	unsigned *count, size_t *size, u64_t *UNUSED(pos))
+	unsigned *count, size_t *size, uint64_t *UNUSED(pos))
 {
 	if (*size > rule->params.losttorn.lead)
 		*size = rule->params.losttorn.lead;
@@ -245,7 +245,7 @@ int action_mask(struct fbd_rule *rule)
  *				action_pre_hook				     *
  *===========================================================================*/
 void action_pre_hook(struct fbd_rule *rule, iovec_t *iov,
-	unsigned *count, size_t *size, u64_t *pos)
+	unsigned *count, size_t *size, uint64_t *pos)
 {
 	switch (rule->action) {
 	case FBD_ACTION_ERROR:
@@ -269,7 +269,7 @@ void action_pre_hook(struct fbd_rule *rule, iovec_t *iov,
  *				action_io_hook				     *
  *===========================================================================*/
 void action_io_hook(struct fbd_rule *rule, char *buf, size_t size,
-	u64_t pos, int flag)
+	uint64_t pos, int flag)
 {
 	switch (rule->action) {
 	case FBD_ACTION_CORRUPT:

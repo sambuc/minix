@@ -62,11 +62,11 @@ extern struct __cpu_local_vars {
 	int idle_interrupted; /* to interrupt busy-idle
 						     while profiling */
 
-	u64_t tsc_ctr_switch; /* when did we switched time accounting */
+	uint64_t tsc_ctr_switch; /* when did we switched time accounting */
 
 /* last values read from cpu when sending ooq msg to scheduler */
-	u64_t cpu_last_tsc;
-	u64_t cpu_last_idle;
+	uint64_t cpu_last_tsc;
+	uint64_t cpu_last_idle;
 
 
 	char fpu_presence; /* whether the cpu has FPU or not */

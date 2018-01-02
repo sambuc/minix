@@ -55,7 +55,7 @@ typedef struct vir_region {
 		struct {
 			int	inited;
 			struct fdref	*fdref;
-			u64_t	offset;
+			uint64_t	offset;
 			uint16_t	clearend;
 		} file;
 	} param;

@@ -19,7 +19,7 @@ static btrace_entry *trace_buf	= NULL;
 static size_t trace_size	= 0;
 static size_t trace_pos;
 static size_t trace_next;
-static u64_t trace_tsc;
+static uint64_t trace_tsc;
 
 /* Pointers to in-progress trace entries for each thread (all worker threads,
  * plus one for the main thread). Each pointer is set to NULL whenever no
@@ -34,7 +34,7 @@ static uint32_t trace_gettime(void)
 {
 /* Return the current time, in microseconds since the start of the trace.
  */
-  u64_t tsc;
+  uint64_t tsc;
 
   assert(trace_enabled);
 
@@ -170,7 +170,7 @@ void trace_start(thread_id_t id, message *m_ptr)
  */
   btrace_entry *entry;
   int req;
-  u64_t pos;
+  uint64_t pos;
   size_t size;
   int flags;
 

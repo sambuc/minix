@@ -73,7 +73,7 @@ static void sef_cb_signal_handler(int signo);
 
 static int filter_open(devminor_t minor, int access);
 static int filter_close(devminor_t minor);
-static ssize_t filter_transfer(devminor_t minor, int do_write, u64_t pos,
+static ssize_t filter_transfer(devminor_t minor, int do_write, uint64_t pos,
 	endpoint_t endpt, iovec_t *iov, unsigned int count, int flags);
 static int filter_ioctl(devminor_t minor, unsigned long request,
 	endpoint_t endpt, cp_grant_id_t grant, endpoint_t user_endpt);
@@ -146,7 +146,7 @@ static int vcarry(endpoint_t endpt, unsigned int grants, iovec_t *iov,
  *				filter_transfer				     *
  *===========================================================================*/
 static ssize_t filter_transfer(devminor_t UNUSED(minor), int do_write,
-	u64_t pos, endpoint_t endpt, iovec_t *iov, unsigned int count,
+	uint64_t pos, endpoint_t endpt, iovec_t *iov, unsigned int count,
 	int UNUSED(flags))
 {
 	size_t size, size_ret;

@@ -27,8 +27,8 @@ struct vmproc {
 #endif
 	vir_bytes	vm_total;
 	vir_bytes	vm_total_max;
-	u64_t		vm_minor_page_fault;
-	u64_t		vm_major_page_fault;
+	uint64_t		vm_minor_page_fault;
+	uint64_t		vm_major_page_fault;
 };
 
 /* Bits for vm_flags */

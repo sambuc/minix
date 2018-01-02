@@ -17,7 +17,7 @@ struct blockdriver {
   blockdriver_type_t bdr_type;
   int (*bdr_open)(devminor_t minor, int access);
   int (*bdr_close)(devminor_t minor);
-  ssize_t (*bdr_transfer)(devminor_t minor, int do_write, u64_t pos,
+  ssize_t (*bdr_transfer)(devminor_t minor, int do_write, uint64_t pos,
 	  endpoint_t endpt, iovec_t *iov, unsigned int count, int flags);
   int (*bdr_ioctl)(devminor_t minor, unsigned long request, endpoint_t endpt,
 	  cp_grant_id_t grant, endpoint_t user_endpt);

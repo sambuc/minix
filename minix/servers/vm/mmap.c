@@ -83,12 +83,12 @@ static struct vir_region *mmap_region(struct vmproc *vmp, vir_bytes addr,
 
 static int mmap_file(struct vmproc *vmp,
 	int vmfd, off_t file_offset, int flags,
-	ino_t ino, dev_t dev, u64_t filesize, vir_bytes addr, vir_bytes len,
+	ino_t ino, dev_t dev, uint64_t filesize, vir_bytes addr, vir_bytes len,
 	vir_bytes *retaddr, uint16_t clearend, int writable, int mayclosefd)
 {
 /* VFS has replied to a VMVFSREQ_FDLOOKUP request. */
 	struct vir_region *vr;
-	u64_t page_offset;
+	uint64_t page_offset;
 	int result = OK;
 	uint32_t vrflags = 0;
 
@@ -109,7 +109,7 @@ static int mmap_file(struct vmproc *vmp,
 
 #if 0
 	/* XXX ld.so relies on longer-than-file mapping */
-	if((u64_t) len + file_offset > filesize) {
+	if((uint64_t) len + file_offset > filesize) {
 		printf("VM: truncating mmap dev 0x%x ino %d beyond file size in %d; offset %llu, len %lu, size %llu; ",
 			dev, ino, vmp->vm_endpoint,
 			file_offset, len, filesize);
@@ -152,7 +152,7 @@ int do_vfs_mmap(message *m)
 	return mmap_file(vmp, m->m_vm_vfs_mmap.fd, m->m_vm_vfs_mmap.offset,
 		MAP_PRIVATE | MAP_FIXED,
 		m->m_vm_vfs_mmap.ino, m->m_vm_vfs_mmap.dev,
-		(u64_t) LONG_MAX * VM_PAGE_SIZE,
+		(uint64_t) LONG_MAX * VM_PAGE_SIZE,
 		m->m_vm_vfs_mmap.vaddr, m->m_vm_vfs_mmap.len, &v,
 		clearend, flags, 0);
 }
@@ -180,7 +180,7 @@ static void mmap_file_cont(struct vmproc *vmp, message *replymsg, void *cbarg,
 		result = mmap_file(vmp, replymsg->VMV_FD, origmsg->m_mmap.offset,
 			origmsg->m_mmap.flags, 
 			replymsg->VMV_INO, replymsg->VMV_DEV,
-			(u64_t) replymsg->VMV_SIZE_PAGES*PAGE_SIZE,
+			(uint64_t) replymsg->VMV_SIZE_PAGES*PAGE_SIZE,
 			(vir_bytes) origmsg->m_mmap.addr,
 			origmsg->m_mmap.len, &v, 0, writable, 1);
 	}

@@ -55,7 +55,7 @@ tsc_calibrate(void)
 int
 micro_delay(uint32_t micros)
 {
-	u64_t now, end;
+	uint64_t now, end;
 
 	/* Start of delay. */
 	read_tsc_64(&now);
@@ -63,7 +63,7 @@ micro_delay(uint32_t micros)
 	CALIBRATE;
 
 	/* We have to know when to end the delay. */
-	end = now + ((u64_t)micros * calib_mhz);
+	end = now + ((uint64_t)micros * calib_mhz);
 
 	/* If we have to wait for at least one HZ tick, use the regular
 	 * tickdelay first. Round downwards on purpose, so the average
@@ -81,9 +81,9 @@ micro_delay(uint32_t micros)
 	return OK;
 }
 
-uint32_t tsc_64_to_micros(u64_t tsc)
+uint32_t tsc_64_to_micros(uint64_t tsc)
 {
-	u64_t tmp;
+	uint64_t tmp;
 
 	CALIBRATE;
 
@@ -111,7 +111,7 @@ uint32_t tsc_get_khz(void)
 #define frclock_64_to_micros tsc_64_to_micros
 #define read_frclock_64 read_tsc_64
 
-u64_t delta_frclock_64(u64_t base, u64_t cur)
+uint64_t delta_frclock_64(uint64_t base, uint64_t cur)
 {
         return cur - base;
 }

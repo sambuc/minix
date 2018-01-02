@@ -6,7 +6,7 @@
 typedef struct {
 	int s_state;
 	uint32_t s_usecs;
-	u64_t s_base_tsc;
+	uint64_t s_base_tsc;
 	clock_t s_base_uptime;
 	int s_timeout;
 } spin_t;

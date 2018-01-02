@@ -43,7 +43,7 @@ struct VMMDevReportGuestInfo {
 
 struct VMMDevReqHostTime {
 	struct VMMDevRequestHeader header;
-	u64_t time;
+	uint64_t time;
 };
 
 #define VMMDEV_EVENT_HGCM	(1 << 1)
@@ -84,7 +84,7 @@ struct VMMDevHGCMPageList {
 	uint32_t flags;
 	uint16_t offset;
 	uint16_t count;
-	u64_t addr[1];
+	uint64_t addr[1];
 };
 
 #define VMMDEV_HGCM_PARAM_U32		1
@@ -95,7 +95,7 @@ struct VMMDevHGCMParam {
 	uint32_t type;
 	union {
 		uint32_t u32;
-		u64_t u64;
+		uint64_t u64;
 		struct {
 			uint32_t size;
 			union {

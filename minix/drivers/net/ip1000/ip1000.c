@@ -369,8 +369,8 @@ static void dev_init_rx_desc(NDR_desc *desc_start, int index, size_t buf_size,
 			phys_bytes buf_dma, int max_desc_num, phys_bytes desc_dma_start) {
 	NDR_desc *desc = desc_start + index;
 	desc->status = 0;
-	desc->frag_info = (u64_t)(buf_dma);
-	desc->frag_info |= ((u64_t)buf_size << 48) & RFI_FRAG_LEN;
+	desc->frag_info = (uint64_t)(buf_dma);
+	desc->frag_info |= ((uint64_t)buf_size << 48) & RFI_FRAG_LEN;
 	if (index == max_desc_num - 1)
 		desc->next = desc_dma_start;
 	else
@@ -382,7 +382,7 @@ static void dev_init_tx_desc(NDR_desc *desc_start, int index, size_t buf_size,
 			phys_bytes buf_dma, int max_desc_num, phys_bytes desc_dma_start) {
 	NDR_desc *desc = desc_start + index;
 	desc->status = TFS_TFD_DONE;
-	desc->frag_info = (u64_t)(buf_dma);
+	desc->frag_info = (uint64_t)(buf_dma);
 	if (index == max_desc_num - 1)
 		desc->next = desc_dma_start;
 	else
@@ -432,11 +432,11 @@ static void dev_set_rx_desc_done(uint32_t *base, NDR_desc *desc, int index) {
 static void dev_set_tx_desc_prepare(uint32_t *base, NDR_desc *desc, int index,
 									size_t data_size) {
 	desc->status = TFS_TFD_DONE;
-	desc->status |= (u64_t)(TFS_WORD_ALIGN | (TFS_FRAMEID & index)
+	desc->status |= (uint64_t)(TFS_WORD_ALIGN | (TFS_FRAMEID & index)
 					| (TFS_FRAG_COUNT & (1 << 24))) | TFS_TX_DMA_INDICATE;
-	desc->frag_info |= TFI_FRAG_LEN & ((u64_t)((data_size > 60 ? data_size : 60)
+	desc->frag_info |= TFI_FRAG_LEN & ((uint64_t)((data_size > 60 ? data_size : 60)
 							& 0xffff) << 48);
-	desc->status &= (u64_t)(~(TFS_TFD_DONE));
+	desc->status &= (uint64_t)(~(TFS_TFD_DONE));
 }
 
 /* Check whether Tx is OK from Tx descriptor (### CHECK_TX_OK_FROM_DESC ###)

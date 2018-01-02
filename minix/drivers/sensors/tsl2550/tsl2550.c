@@ -65,7 +65,7 @@ static int adc_read(int adc, uint8_t * val);
 static int measure_lux(uint32_t * lux);
 
 /* libchardriver callbacks */
-static ssize_t tsl2550_read(devminor_t minor, u64_t position, endpoint_t endpt,
+static ssize_t tsl2550_read(devminor_t minor, uint64_t position, endpoint_t endpt,
     cp_grant_id_t grant, size_t size, int flags, cdev_id_t id);
 static void tsl2550_other(message * m, int ipc_status);
 
@@ -274,10 +274,10 @@ tsl2550_init(void)
 }
 
 static ssize_t
-tsl2550_read(devminor_t UNUSED(minor), u64_t position, endpoint_t endpt,
+tsl2550_read(devminor_t UNUSED(minor), uint64_t position, endpoint_t endpt,
     cp_grant_id_t grant, size_t size, int UNUSED(flags), cdev_id_t UNUSED(id))
 {
-	u64_t dev_size;
+	uint64_t dev_size;
 	int bytes, r;
 	uint32_t lux;
 
@@ -289,7 +289,7 @@ tsl2550_read(devminor_t UNUSED(minor), u64_t position, endpoint_t endpt,
 	memset(buffer, '\0', BUFFER_LEN + 1);
 	snprintf(buffer, BUFFER_LEN, "%-16s: %d\n", "ILLUMINANCE", lux);
 
-	dev_size = (u64_t)strlen(buffer);
+	dev_size = (uint64_t)strlen(buffer);
 	if (position >= dev_size) return 0;
 	if (position + size > dev_size)
 		size = (size_t)(dev_size - position);

@@ -5,7 +5,7 @@
 /*===========================================================================*
  *				hgfs_queryvol				     *
  *===========================================================================*/
-int hgfs_queryvol(const char *path, u64_t *free, u64_t *total)
+int hgfs_queryvol(const char *path, uint64_t *free, uint64_t *total)
 {
 /* Retrieve information about available and total volume space associated with
  * a given path.

@@ -114,7 +114,7 @@ static uint8_t crc8(uint8_t crc, uint8_t byte);
 static int checksum(uint8_t * bytes, int nbytes, uint8_t expected_crc);
 
 /* libchardriver callbacks */
-static ssize_t sht21_read(devminor_t minor, u64_t position, endpoint_t endpt,
+static ssize_t sht21_read(devminor_t minor, uint64_t position, endpoint_t endpt,
     cp_grant_id_t grant, size_t size, int flags, cdev_id_t id);
 static void sht21_other(message * m, int ipc_status);
 
@@ -322,10 +322,10 @@ checksum(uint8_t * bytes, int nbytes, uint8_t expected_crc)
 }
 
 static ssize_t
-sht21_read(devminor_t UNUSED(minor), u64_t position, endpoint_t endpt,
+sht21_read(devminor_t UNUSED(minor), uint64_t position, endpoint_t endpt,
     cp_grant_id_t grant, size_t size, int UNUSED(flags), cdev_id_t UNUSED(id))
 {
-	u64_t dev_size;
+	uint64_t dev_size;
 	int bytes, r;
 
 	r = measure();
@@ -340,7 +340,7 @@ sht21_read(devminor_t UNUSED(minor), u64_t position, endpoint_t endpt,
 
 	log_trace(&log, "%s", buffer);
 
-	dev_size = (u64_t)strlen(buffer);
+	dev_size = (uint64_t)strlen(buffer);
 	if (position >= dev_size) return 0;
 	if (position + size > dev_size)
 		size = (size_t)(dev_size - position);

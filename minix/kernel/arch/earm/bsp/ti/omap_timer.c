@@ -16,7 +16,7 @@
 
 /* interrupt handler hook */
 static irq_hook_t omap3_timer_hook;
-static u64_t high_frc;
+static uint64_t high_frc;
 
 struct omap_timer_registers;
 
@@ -387,10 +387,10 @@ bsp_timer_int_handler(void)
 
 /* Use the free running clock as TSC */
 void
-read_tsc_64(u64_t * t)
+read_tsc_64(uint64_t * t)
 {
 	uint32_t now;
 	now = read_frc();
 	frc_overflow_check(now);
-	*t = (u64_t) now + (high_frc << 32);
+	*t = (uint64_t) now + (high_frc << 32);
 }

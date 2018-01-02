@@ -10,11 +10,11 @@
 
 #include <minix/u64.h>
 
-int minix_sizeup(char *name, u64_t *bytes);
+int minix_sizeup(char *name, uint64_t *bytes);
 
 struct part_geom {
-  u64_t base;		/* byte offset to the partition start */
-  u64_t size;		/* number of bytes in the partition */
+  uint64_t base;		/* byte offset to the partition start */
+  uint64_t size;		/* number of bytes in the partition */
   unsigned cylinders;	/* disk geometry */
   unsigned heads;
   unsigned sectors;

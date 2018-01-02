@@ -44,7 +44,7 @@ vboxfs_query_vol(const char *path, vboxfs_volinfo_t *volinfo)
  * Query volume information.
  */
 int
-vboxfs_queryvol(const char *path, u64_t *free, u64_t *total)
+vboxfs_queryvol(const char *path, uint64_t *free, uint64_t *total)
 {
 	vboxfs_volinfo_t volinfo;
 	int r;

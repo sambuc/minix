@@ -92,12 +92,12 @@ static int fs_bufs_heuristic(int minbufs, fsblkcnt_t btotal,
   /* remaining free memory is unused memory plus memory in used for cache,
    * as the cache can be evicted
    */
-  kbytes_remain_mem = (u64_t)(vsi.vsi_free + vsi.vsi_cached) *
+  kbytes_remain_mem = (uint64_t)(vsi.vsi_free + vsi.vsi_cached) *
 	vsi.vsi_pagesize / 1024;
 
   /* check fs usage. */
-  kbytes_used_fs  = (unsigned long)(((u64_t)bused * blocksize) / 1024);
-  kbytes_total_fs = (unsigned long)(((u64_t)btotal * blocksize) / 1024);
+  kbytes_used_fs  = (unsigned long)(((uint64_t)bused * blocksize) / 1024);
+  kbytes_total_fs = (unsigned long)(((uint64_t)btotal * blocksize) / 1024);
 
   /* heuristic for a desired cache size based on FS usage;
    * but never bigger than half of the total filesystem
@@ -296,7 +296,7 @@ static struct buf *find_block(dev_t dev, block64_t block)
  *				get_block_ino				     *
  *===========================================================================*/
 static int get_block_ino(struct buf **bpp, dev_t dev, block64_t block, int how,
-	ino_t ino, u64_t ino_off, size_t block_size)
+	ino_t ino, uint64_t ino_off, size_t block_size)
 {
 /* Check to see if the requested block is in the block cache.  The requested
  * block is identified by the block number in 'block' on device 'dev', counted
@@ -492,7 +492,7 @@ static int get_block_ino(struct buf **bpp, dev_t dev, block64_t block, int how,
  *				lmfs_get_block_ino			     *
  *===========================================================================*/
 int lmfs_get_block_ino(struct buf **bpp, dev_t dev, block64_t block, int how,
-	ino_t ino, u64_t ino_off)
+	ino_t ino, uint64_t ino_off)
 {
   return get_block_ino(bpp, dev, block, how, ino, ino_off, fs_block_size);
 }
@@ -652,7 +652,7 @@ void lmfs_free_block(dev_t dev, block64_t block)
 /*===========================================================================*
  *				lmfs_zero_block_ino			     *
  *===========================================================================*/
-void lmfs_zero_block_ino(dev_t dev, ino_t ino, u64_t ino_off)
+void lmfs_zero_block_ino(dev_t dev, ino_t ino, uint64_t ino_off)
 {
 /* Files may have holes. From an application perspective, these are just file
  * regions filled with zeroes. From a file system perspective however, holes

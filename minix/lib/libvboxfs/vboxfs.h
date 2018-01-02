@@ -18,7 +18,7 @@
 #define VBOXFS_INVALID_HANDLE	((vboxfs_handle_t) ~0LL)
 
 typedef uint32_t vboxfs_root_t;
-typedef u64_t vboxfs_handle_t;
+typedef uint64_t vboxfs_handle_t;
 
 typedef struct {
 	uint16_t size;
@@ -46,13 +46,13 @@ typedef struct {
 			uint32_t gid;
 			uint32_t nlinks;
 			uint32_t dev;
-			u64_t inode;
+			uint64_t inode;
 			uint32_t flags;
 			uint32_t gen;
 			uint32_t rdev;
 		};
 		struct {
-			u64_t easize;
+			uint64_t easize;
 		};
 	};
 } vboxfs_objattr_t;
@@ -62,12 +62,12 @@ typedef struct {
 #define VBOXFS_SET_MODE(type, perm)	((type) | ((perm) & ALLPERMS))
 
 typedef struct {
-	u64_t size;
-	u64_t disksize;
-	u64_t atime;
-	u64_t mtime;
-	u64_t ctime;
-	u64_t crtime;
+	uint64_t size;
+	uint64_t disksize;
+	uint64_t atime;
+	uint64_t mtime;
+	uint64_t ctime;
+	uint64_t crtime;
 	vboxfs_objattr_t attr;
 } vboxfs_objinfo_t;
 
@@ -126,8 +126,8 @@ typedef struct {
 } vboxfs_fsprops_t;
 
 typedef struct {
-	u64_t total;
-	u64_t free;
+	uint64_t total;
+	uint64_t free;
 	uint32_t blocksize;
 	uint32_t sectorsize;
 	uint32_t serial;

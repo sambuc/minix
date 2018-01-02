@@ -284,8 +284,8 @@ static int mdio_read(uint16_t port, int regaddr)
 
 static void rtl8169_update_stat(re_t *rep)
 {
-	static u64_t last_miss = 0, last_coll = 0;
-	u64_t miss, coll;
+	static uint64_t last_miss = 0, last_coll = 0;
+	uint64_t miss, coll;
 	port_t port;
 	int i;
 

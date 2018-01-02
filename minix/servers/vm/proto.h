@@ -221,10 +221,10 @@ int do_forgetcache(message *m);
 int do_clearcache(message *m);
 
 /* cache.c */
-struct cached_page *find_cached_page_bydev(dev_t dev, u64_t dev_off,
-	ino_t ino, u64_t ino_off, int touchlru);
-struct cached_page *find_cached_page_byino(dev_t dev, ino_t ino, u64_t ino_off, int touchlru);
-int addcache(dev_t dev, u64_t def_off, ino_t ino, u64_t ino_off, int flags,
+struct cached_page *find_cached_page_bydev(dev_t dev, uint64_t dev_off,
+	ino_t ino, uint64_t ino_off, int touchlru);
+struct cached_page *find_cached_page_byino(dev_t dev, ino_t ino, uint64_t ino_off, int touchlru);
+int addcache(dev_t dev, uint64_t def_off, ino_t ino, uint64_t ino_off, int flags,
 	struct phys_block *pb);
 void cache_sanitycheck_internal(void);
 int cache_freepages(int pages);
@@ -234,14 +234,14 @@ void rmcache(struct cached_page *cp);
 void clear_cache_bydev(dev_t dev);
 
 /* vfs.c */
-int vfs_request(int reqno, int fd, struct vmproc *vmp, u64_t offset,
+int vfs_request(int reqno, int fd, struct vmproc *vmp, uint64_t offset,
 	uint32_t len, vfs_callback_t reply_callback, void *cbarg, void *state,
 	int statelen);
 int do_vfs_reply(message *m);
 
 /* mem_file.c */
 int mappedfile_setfile(struct vmproc *owner, struct vir_region *region,
-	int fd, u64_t offset,
+	int fd, uint64_t offset,
 	dev_t dev, ino_t ino, uint16_t clearend, int prefill, int mayclose);
 
 /* fdref.c */

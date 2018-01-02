@@ -92,10 +92,10 @@ static void pty_finish(pty_t *pp);
 static int pty_master_open(devminor_t minor, int access,
 	endpoint_t user_endpt);
 static int pty_master_close(devminor_t minor);
-static ssize_t pty_master_read(devminor_t minor, u64_t position,
+static ssize_t pty_master_read(devminor_t minor, uint64_t position,
 	endpoint_t endpt, cp_grant_id_t grant, size_t size, int flags,
 	cdev_id_t id);
-static ssize_t pty_master_write(devminor_t minor, u64_t position,
+static ssize_t pty_master_write(devminor_t minor, uint64_t position,
 	endpoint_t endpt, cp_grant_id_t grant, size_t size, int flags,
 	cdev_id_t id);
 static int pty_master_ioctl(devminor_t minor, unsigned long request,
@@ -244,7 +244,7 @@ static int pty_master_close(devminor_t minor)
 /*===========================================================================*
  *				pty_master_read				     *
  *===========================================================================*/
-static ssize_t pty_master_read(devminor_t minor, u64_t UNUSED(position),
+static ssize_t pty_master_read(devminor_t minor, uint64_t UNUSED(position),
 	endpoint_t endpt, cp_grant_id_t grant, size_t size, int flags,
 	cdev_id_t id)
 {
@@ -292,7 +292,7 @@ static ssize_t pty_master_read(devminor_t minor, u64_t UNUSED(position),
 /*===========================================================================*
  *				pty_master_write			     *
  *===========================================================================*/
-static ssize_t pty_master_write(devminor_t minor, u64_t UNUSED(position),
+static ssize_t pty_master_write(devminor_t minor, uint64_t UNUSED(position),
 	endpoint_t endpt, cp_grant_id_t grant, size_t size, int flags,
 	cdev_id_t id)
 {

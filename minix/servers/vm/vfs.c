@@ -57,7 +57,7 @@ static void activate(void)
 /*===========================================================================*
  *                              vfs_request                                 *
  *===========================================================================*/
-int vfs_request(int reqno, int fd, struct vmproc *vmp, u64_t offset, uint32_t len,
+int vfs_request(int reqno, int fd, struct vmproc *vmp, uint64_t offset, uint32_t len,
 	vfs_callback_t reply_callback, void *cbarg, void *state, int statelen)
 {
 /* Perform an asynchronous request to VFS.

@@ -30,9 +30,9 @@
 static int msg_open(devminor_t minor_dev_nr, int access,
 	endpoint_t user_endpt);
 static int msg_close(int minor_dev_nr);
-static ssize_t msg_read(devminor_t minor, u64_t position, endpoint_t endpt,
+static ssize_t msg_read(devminor_t minor, uint64_t position, endpoint_t endpt,
 	cp_grant_id_t grant, size_t size, int flags, cdev_id_t id);
-static ssize_t msg_write(devminor_t minor, u64_t position, endpoint_t endpt,
+static ssize_t msg_write(devminor_t minor, uint64_t position, endpoint_t endpt,
 	cp_grant_id_t grant, size_t size, int flags, cdev_id_t id);
 static int msg_ioctl(devminor_t minor, unsigned long request, endpoint_t endpt,
 	cp_grant_id_t grant, int flags, endpoint_t user_endpt, cdev_id_t id);
@@ -391,7 +391,7 @@ static int msg_ioctl(devminor_t minor, unsigned long request, endpoint_t endpt,
 }
 
 
-static ssize_t msg_write(devminor_t minor, u64_t UNUSED(position),
+static ssize_t msg_write(devminor_t minor, uint64_t UNUSED(position),
 	endpoint_t endpt, cp_grant_id_t grant, size_t size, int UNUSED(flags),
 	cdev_id_t id)
 {
@@ -441,7 +441,7 @@ static ssize_t msg_write(devminor_t minor, u64_t UNUSED(position),
 }
 
 
-static ssize_t msg_read(devminor_t minor, u64_t UNUSED(position),
+static ssize_t msg_read(devminor_t minor, uint64_t UNUSED(position),
 	endpoint_t endpt, cp_grant_id_t grant, size_t size, int UNUSED(flags),
 	cdev_id_t id)
 {

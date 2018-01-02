@@ -25,9 +25,9 @@
  */
 static int fb_open(devminor_t minor, int access, endpoint_t user_endpt);
 static int fb_close(devminor_t minor);
-static ssize_t fb_read(devminor_t minor, u64_t pos, endpoint_t ep,
+static ssize_t fb_read(devminor_t minor, uint64_t pos, endpoint_t ep,
 	cp_grant_id_t gid, size_t size, int flags, cdev_id_t id);
-static ssize_t fb_write(devminor_t minor, u64_t pos, endpoint_t ep,
+static ssize_t fb_write(devminor_t minor, uint64_t pos, endpoint_t ep,
 	cp_grant_id_t gid, size_t size, int flags, cdev_id_t id);
 static int fb_ioctl(devminor_t minor, unsigned long request, endpoint_t ep,
 	cp_grant_id_t gid, int flags, endpoint_t user_ep, cdev_id_t id);
@@ -52,7 +52,7 @@ static struct chardriver fb_tab =
 
 /** Represents the /dev/fb device. */
 static int has_restarted = 0;
-static u64_t has_restarted_t1, has_restarted_t2;
+static uint64_t has_restarted_t1, has_restarted_t2;
 
 static int open_counter[FB_DEV_NR];		/* Open count */
 
@@ -97,7 +97,7 @@ fb_close(devminor_t minor)
 }
 
 static ssize_t
-fb_read(devminor_t minor, u64_t pos, endpoint_t ep, cp_grant_id_t gid,
+fb_read(devminor_t minor, uint64_t pos, endpoint_t ep, cp_grant_id_t gid,
 	size_t size, int UNUSED(flags), cdev_id_t UNUSED(id))
 {
 	struct device dev;
@@ -209,7 +209,7 @@ do_get_fixscreeninfo(int minor, endpoint_t ep, cp_grant_id_t gid)
 }
 
 static ssize_t
-fb_write(devminor_t minor, u64_t pos, endpoint_t ep, cp_grant_id_t gid,
+fb_write(devminor_t minor, uint64_t pos, endpoint_t ep, cp_grant_id_t gid,
 	size_t size, int UNUSED(flags), cdev_id_t UNUSED(id))
 {
 	struct device dev;
@@ -318,7 +318,7 @@ main(int argc, char *argv[])
 static int
 keep_displaying_restarted()
 {
-	u64_t delta;
+	uint64_t delta;
 	uint32_t micro_delta;
 
 	read_frclock_64(&has_restarted_t2);

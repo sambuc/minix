@@ -47,7 +47,7 @@
 char *buffer = NULL;
 size_t block_size = 0, mult_max = 0;
 size_t buffer_size;
-u64_t volume_size;
+uint64_t volume_size;
 char *str_vol_size;
 int rflag = 0, wflag = 0, oneflag = 0, variable = 0;
 

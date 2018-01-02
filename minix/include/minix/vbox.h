@@ -13,14 +13,14 @@ extern int vbox_call(vbox_conn_t conn, uint32_t function, vbox_param_t *param,
 	int count, int *code);
 
 extern void vbox_set_u32(vbox_param_t *param, uint32_t value);
-extern void vbox_set_u64(vbox_param_t *param, u64_t value);
+extern void vbox_set_u64(vbox_param_t *param, uint64_t value);
 extern void vbox_set_ptr(vbox_param_t *param, void *ptr, size_t size,
 	unsigned int dir);
 extern void vbox_set_grant(vbox_param_t *param, endpoint_t endpt,
 	cp_grant_id_t grant, size_t off, size_t size, unsigned int dir);
 
 extern uint32_t vbox_get_u32(vbox_param_t *param);
-extern u64_t vbox_get_u64(vbox_param_t *param);
+extern uint64_t vbox_get_u64(vbox_param_t *param);
 
 extern void vbox_put(vbox_param_t *param, int count);
 

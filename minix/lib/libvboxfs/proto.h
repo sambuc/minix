@@ -16,8 +16,8 @@ int vboxfs_closedir(sffs_dir_t handle);
 
 /* file.c */
 int vboxfs_open(const char *path, int flags, int mode, sffs_file_t *handle);
-ssize_t vboxfs_read(sffs_file_t handle, char *buf, size_t size, u64_t pos);
-ssize_t vboxfs_write(sffs_file_t handle, char *buf, size_t len, u64_t pos);
+ssize_t vboxfs_read(sffs_file_t handle, char *buf, size_t size, uint64_t pos);
+ssize_t vboxfs_write(sffs_file_t handle, char *buf, size_t len, uint64_t pos);
 int vboxfs_close(sffs_file_t handle);
 size_t vboxfs_buffer(char **ptr);
 
@@ -30,7 +30,7 @@ void vboxfs_close_file(vboxfs_handle_t handle);
 int vboxfs_getset_info(vboxfs_handle_t handle, uint32_t flags, void *data,
 	size_t size);
 int vboxfs_query_vol(const char *path, vboxfs_volinfo_t *volinfo);
-int vboxfs_queryvol(const char *path, u64_t *free, u64_t *total);
+int vboxfs_queryvol(const char *path, uint64_t *free, uint64_t *total);
 
 /* link.c */
 int vboxfs_mkdir(const char *path, int mode);

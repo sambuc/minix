@@ -13,7 +13,7 @@ typedef void *sffs_dir_t;		/* handle to directory search */
 struct sffs_attr {
   uint32_t a_mask;				/* which fields to retrieve/set */
   mode_t a_mode;			/* file type and permissions */
-  u64_t a_size;				/* file size */
+  uint64_t a_size;				/* file size */
   struct timespec a_crtime;		/* file creation time */
   struct timespec a_atime;		/* file access time */
   struct timespec a_mtime;		/* file modification time */
@@ -29,8 +29,8 @@ struct sffs_attr {
 
 struct sffs_table {
   int (*t_open)(const char *path, int flags, int mode, sffs_file_t *handle);
-  ssize_t (*t_read)(sffs_file_t handle, char *buf, size_t size, u64_t pos);
-  ssize_t (*t_write)(sffs_file_t handle, char *buf, size_t size, u64_t pos);
+  ssize_t (*t_read)(sffs_file_t handle, char *buf, size_t size, uint64_t pos);
+  ssize_t (*t_write)(sffs_file_t handle, char *buf, size_t size, uint64_t pos);
   int (*t_close)(sffs_file_t handle);
 
   size_t (*t_readbuf)(char **ptr);
@@ -49,7 +49,7 @@ struct sffs_table {
   int (*t_rmdir)(const char *path);
   int (*t_rename)(const char *opath, const char *npath);
 
-  int (*t_queryvol)(const char *path, u64_t *free, u64_t *total);
+  int (*t_queryvol)(const char *path, uint64_t *free, uint64_t *total);
 };
 
 struct sffs_params {

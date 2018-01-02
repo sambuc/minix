@@ -112,7 +112,7 @@ do_list(int fd)
 }
 
 static int
-scan_hex64(char * input, u64_t * val)
+scan_hex64(char * input, uint64_t * val)
 {
 	uint32_t lo, hi;
 	char buf[9];
@@ -139,7 +139,7 @@ scan_hex64(char * input, u64_t * val)
 }
 
 static int
-scan_range(char * input, u64_t * start, u64_t * end, int need_end)
+scan_range(char * input, uint64_t * start, uint64_t * end, int need_end)
 {
 	char *p;
 

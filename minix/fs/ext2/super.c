@@ -75,7 +75,7 @@ register struct super_block *sp; /* pointer to a superblock */
   /* group descriptors, sp->s_group_desc points to this. */
   static struct group_desc *group_descs;
   block_t gd_size; /* group descriptors table size in blocks */
-  u64_t gdt_position;
+  uint64_t gdt_position;
   size_t off, chunk;
 
   ondisk_superblock = (struct super_block *)mmap(NULL, SUPER_SIZE_D,
@@ -224,7 +224,7 @@ struct super_block *sp; /* pointer to a superblock */
 /* Write a superblock and gdt. */
   int r;
   block_t gd_size; /* group descriptors table size in blocks */
-  u64_t gdt_position;
+  uint64_t gdt_position;
   size_t off, chunk;
 
   if (sp->s_rd_only)

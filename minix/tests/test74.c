@@ -53,7 +53,7 @@ int max_error = 0;	/* make all e()'s fatal */
 int
 dowriteblock(int b, int blocksize, uint32_t seed, char *data)
 {
-	u64_t offset;
+	uint64_t offset;
 	int fd;
 
 	get_fd_offset(b, blocksize, &offset, &fd);
@@ -69,7 +69,7 @@ dowriteblock(int b, int blocksize, uint32_t seed, char *data)
 int
 readblock(int b, int blocksize, uint32_t seed, char *data)
 {
-	u64_t offset;
+	uint64_t offset;
 	int fd;
 	char *mmapdata;
 	int pread_first = random() % 2;

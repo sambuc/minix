@@ -7,7 +7,7 @@
  * VirtualBox' timestamps are in nanoseconds since the UNIX epoch.
  */
 static void
-get_time(struct timespec *tsp, u64_t nsecs)
+get_time(struct timespec *tsp, uint64_t nsecs)
 {
 
 	tsp->tv_sec = (unsigned long)(nsecs / 1000000000);
@@ -17,11 +17,11 @@ get_time(struct timespec *tsp, u64_t nsecs)
 /*
  * Convert a POSIX timespec structure to a VirtualBox timestamp.
  */
-static u64_t
+static uint64_t
 set_time(struct timespec *tsp)
 {
 
-	return ((u64_t)tsp->tv_sec * 1000000000) + tsp->tv_nsec;
+	return ((uint64_t)tsp->tv_sec * 1000000000) + tsp->tv_nsec;
 }
 
 /*
@@ -92,7 +92,7 @@ vboxfs_getattr(const char *path, struct sffs_attr *attr)
  * Set file size.
  */
 static int
-set_size(const char *path, u64_t size)
+set_size(const char *path, uint64_t size)
 {
 	vboxfs_objinfo_t info;
 	vboxfs_handle_t h;

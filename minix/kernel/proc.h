@@ -28,7 +28,7 @@ struct proc {
   volatile uint32_t p_misc_flags;	/* flags that do not suspend the process */
 
   char p_priority;		/* current process priority */
-  u64_t p_cpu_time_left;	/* time left to use the cpu */
+  uint64_t p_cpu_time_left;	/* time left to use the cpu */
   unsigned p_quantum_size_ms;	/* assigned time quantum in ms
 				   FIXME remove this */
   struct proc *p_scheduler;	/* who should get out of quantum msg */
@@ -46,8 +46,8 @@ struct proc {
 
   /* Accounting statistics that get passed to the process' scheduler */
   struct {
-	u64_t enter_queue;	/* time when enqueued (cycles) */
-	u64_t time_in_queue;	/* time spent in queue */
+	uint64_t enter_queue;	/* time when enqueued (cycles) */
+	uint64_t time_in_queue;	/* time spent in queue */
 	unsigned long dequeues;
 	unsigned long ipc_sync;
 	unsigned long ipc_async;
@@ -62,11 +62,11 @@ struct proc {
   clock_t p_virt_left;		/* number of ticks left on virtual timer */
   clock_t p_prof_left;		/* number of ticks left on profile timer */
 
-  u64_t p_cycles;		/* how many cycles did the process use */
-  u64_t p_kcall_cycles;		/* kernel cycles caused by this proc (kcall) */
-  u64_t p_kipc_cycles;		/* cycles caused by this proc (ipc) */
+  uint64_t p_cycles;		/* how many cycles did the process use */
+  uint64_t p_kcall_cycles;		/* kernel cycles caused by this proc (kcall) */
+  uint64_t p_kipc_cycles;		/* cycles caused by this proc (ipc) */
 
-  u64_t p_tick_cycles;		/* cycles accumulated for up to a clock tick */
+  uint64_t p_tick_cycles;		/* cycles accumulated for up to a clock tick */
   struct cpuavg p_cpuavg;	/* running CPU average, for ps(1) */
 
   struct proc *p_nextready;	/* pointer to next ready process */

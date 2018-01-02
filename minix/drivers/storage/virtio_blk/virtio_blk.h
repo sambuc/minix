@@ -46,7 +46,7 @@
 
 struct virtio_blk_config {
 	/* The capacity (in 512-byte sectors). */
-	u64_t capacity;
+	uint64_t capacity;
 	/* The maximum segment size (if VIRTIO_BLK_F_SIZE_MAX) */
 	uint32_t size_max;
 	/* The maximum number of segments (if VIRTIO_BLK_F_SEG_MAX) */
@@ -107,7 +107,7 @@ struct virtio_blk_outhdr {
 	/* io priority. */
 	uint32_t ioprio;
 	/* Sector (ie. 512 byte offset) */
-	u64_t sector;
+	uint64_t sector;
 };
 
 struct virtio_scsi_inhdr {

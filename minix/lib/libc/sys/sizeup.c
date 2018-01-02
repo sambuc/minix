@@ -27,7 +27,7 @@
  *===============================================================*/
 int minix_sizeup(device, bytes)
 char *device;
-u64_t *bytes;
+uint64_t *bytes;
 {
   int fd;
   struct part_geom entry;
@@ -42,9 +42,9 @@ u64_t *bytes;
         perror("sizeup ioctl");
         if(fstat(fd, &st) < 0) {
                 perror("fstat");
-                entry.size = ((u64_t)(0));
+                entry.size = ((uint64_t)(0));
         } else {
-                entry.size = ((u64_t)(st.st_size));
+                entry.size = ((uint64_t)(st.st_size));
         }
   }
   close(fd);

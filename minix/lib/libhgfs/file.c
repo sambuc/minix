@@ -55,7 +55,7 @@ ssize_t hgfs_read(
 	sffs_file_t handle,	/* handle to open file */
 	char *buf,         	/* data buffer or NULL */
 	size_t size,       	/* maximum number of bytes to read */
-	u64_t off          	/* file offset */
+	uint64_t off          	/* file offset */
 )
 {
 /* Read from an open file. Upon success, return the number of bytes read.
@@ -91,7 +91,7 @@ ssize_t hgfs_write(
 	sffs_file_t handle,	/* handle to open file */
 	char *buf,         	/* data buffer or NULL */
 	size_t len,        	/* number of bytes to write */
-	u64_t off          	/* file offset */
+	uint64_t off          	/* file offset */
 )
 {
 /* Write to an open file. Upon success, return the number of bytes written.

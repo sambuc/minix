@@ -195,7 +195,7 @@ struct k_randomness {
 
 /* ARM free-running timer information. */
 struct arm_frclock {
-	u64_t hz;		/* tcrr frequency */
+	uint64_t hz;		/* tcrr frequency */
 	uint32_t tcrr;		/* tcrr address */
 };
 

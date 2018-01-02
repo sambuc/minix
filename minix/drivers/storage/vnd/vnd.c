@@ -28,7 +28,7 @@ static unsigned int instance;
 
 static int vnd_open(devminor_t, int);
 static int vnd_close(devminor_t);
-static int vnd_transfer(devminor_t, int, u64_t, endpoint_t, iovec_t *,
+static int vnd_transfer(devminor_t, int, uint64_t, endpoint_t, iovec_t *,
 	unsigned int, int);
 static int vnd_ioctl(devminor_t, unsigned long, endpoint_t, cp_grant_id_t,
 	endpoint_t);
@@ -209,7 +209,7 @@ vnd_advance(iovec_s_t *iov, size_t *iov_offp, size_t bytes)
  * Perform data transfer on the selected device.
  */
 static int
-vnd_transfer(devminor_t minor, int do_write, u64_t position,
+vnd_transfer(devminor_t minor, int do_write, uint64_t position,
 	endpoint_t endpt, iovec_t *iovt, unsigned int nr_req, int flags)
 {
 	struct device *dv;
@@ -308,9 +308,9 @@ vnd_transfer(devminor_t minor, int do_write, u64_t position,
  * computed.
  */
 static int
-vnd_layout(u64_t size, struct vnd_ioctl *vnd)
+vnd_layout(uint64_t size, struct vnd_ioctl *vnd)
 {
-	u64_t sectors;
+	uint64_t sectors;
 
 	state.geom.base = 0ULL;
 
@@ -323,7 +323,7 @@ vnd_layout(u64_t size, struct vnd_ioctl *vnd)
 		state.geom.heads = vnd->vnd_geom.vng_ntracks;
 		state.geom.sectors = vnd->vnd_geom.vng_nsectors;
 
-		state.geom.size = (u64_t) state.geom.cylinders *
+		state.geom.size = (uint64_t) state.geom.cylinders *
 		    state.geom.heads * state.geom.sectors *
 		    vnd->vnd_geom.vng_secsize;
 		if (state.geom.size == 0 || state.geom.size > size)

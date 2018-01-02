@@ -83,7 +83,7 @@ phys_bytes alloc_lowest(kinfo_t *cbi, phys_bytes len)
 	return lowest;
 }
 
-void add_memmap(kinfo_t *cbi, u64_t addr, u64_t len)
+void add_memmap(kinfo_t *cbi, uint64_t addr, uint64_t len)
 {
         int m;
 #define LIMIT 0xFFFFF000
