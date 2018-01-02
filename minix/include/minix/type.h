@@ -1,19 +1,18 @@
 #ifndef _TYPE_H
 #define _TYPE_H
 
-#include <sys/types.h>
-#include <sys/endian.h>
-
-#include <machine/multiboot.h>
-
 #ifndef _MINIX_SYS_CONFIG_H
 #include <minix/sys_config.h>
 #endif
 
-#include <sys/sigtypes.h>
-
 #include <stdint.h>
 #include <stddef.h>
+
+#include <sys/sigtypes.h>
+#include <sys/times.h>
+#include <sys/timespec.h>
+
+#include <machine/multiboot.h>
 
 /* Type definitions. */
 typedef unsigned int vir_clicks; 	/*  virtual addr/length in clicks */

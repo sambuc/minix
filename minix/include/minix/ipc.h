@@ -1,11 +1,12 @@
 #ifndef _IPC_H
 #define _IPC_H
 
+#include <sys/types.h>
+#include <sys/signal.h>
+
 #include <minix/ipcconst.h>
 #include <minix/type.h>
 #include <minix/const.h>
-#include <sys/signal.h>
-#include <sys/types.h>
 
 /*==========================================================================* 
  * Types relating to messages. 						    *
