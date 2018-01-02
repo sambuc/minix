@@ -124,9 +124,9 @@ static uint16_t eeprom_read(fxp_t *fp, int reg);
 static void eeprom_addrsize(fxp_t *fp);
 static uint16_t mii_read(fxp_t *fp, int reg);
 static uint8_t do_inb(port_t port);
-static u32_t do_inl(port_t port);
+static uint32_t do_inl(port_t port);
 static void do_outb(port_t port, uint8_t v);
-static void do_outl(port_t port, u32_t v);
+static void do_outl(port_t port, uint32_t v);
 static void tell_iommu(vir_bytes start, size_t size, int pci_bus, int
 	pci_dev, int pci_func);
 
@@ -235,7 +235,7 @@ static int fxp_probe(fxp_t *fp, int skip)
 {
 	int r, devind;
 	uint16_t vid, did, cr;
-	u32_t bar;
+	uint32_t bar;
 	uint8_t ilr, rev;
 	const char *str;
 #if VERBOSE
@@ -1041,7 +1041,7 @@ fxp_t *fp;
 static void fxp_update_stats(void)
 {
 	fxp_t *fp;
-	u32_t *p;
+	uint32_t *p;
 
 	fp= fxp_state;
 
@@ -1126,7 +1126,7 @@ static void fxp_check_ints(fxp_t *fp)
 	int n, prev_tail;
 	int fxp_tx_tail, fxp_tx_nbuf, fxp_tx_threshold;
 	port_t port;
-	u32_t busaddr;
+	uint32_t busaddr;
 	uint16_t tx_status;
 	uint8_t scb_status;
 	struct tx *txp;
@@ -1326,7 +1326,7 @@ static void fxp_report_link(fxp_t *fp)
 	uint16_t mii_ctrl, mii_status, mii_id1, mii_id2,
 		mii_ana, mii_anlpa, mii_ane, mii_extstat,
 		mii_ms_ctrl, mii_ms_status, scr;
-	u32_t oui;
+	uint32_t oui;
 	int model, rev;
 	int f, link_up;
 
@@ -1680,7 +1680,7 @@ static uint16_t mii_read(fxp_t *fp, int reg)
 {
 	spin_t spin;
 	port_t port;
-	u32_t v;
+	uint32_t v;
 
 	port= fp->fxp_base_port;
 
@@ -1705,7 +1705,7 @@ static uint16_t mii_read(fxp_t *fp, int reg)
 static uint8_t do_inb(port_t port)
 {
 	int r;
-	u32_t value;
+	uint32_t value;
 
 	r= sys_inb(port, &value);
 	if (r != OK)
@@ -1713,10 +1713,10 @@ static uint8_t do_inb(port_t port)
 	return value;
 }
 
-static u32_t do_inl(port_t port)
+static uint32_t do_inl(port_t port)
 {
 	int r;
-	u32_t value;
+	uint32_t value;
 
 	r= sys_inl(port, &value);
 	if (r != OK)
@@ -1733,7 +1733,7 @@ static void do_outb(port_t port, uint8_t value)
 		panic("sys_outb failed: %d", r);
 }
 
-static void do_outl(port_t port, u32_t value)
+static void do_outl(port_t port, uint32_t value)
 {
 	int r;
 

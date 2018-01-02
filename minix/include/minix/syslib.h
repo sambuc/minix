@@ -32,7 +32,7 @@ int sys_enable_iop(endpoint_t proc_ep);
 int sys_exec(endpoint_t proc_ep, vir_bytes stack_ptr, vir_bytes progname,
 	vir_bytes pc, vir_bytes ps_str);
 int sys_fork(endpoint_t parent, endpoint_t child, endpoint_t *, 
-	u32_t vm, vir_bytes *);
+	uint32_t vm, vir_bytes *);
 int sys_clear(endpoint_t proc_ep);
 int sys_exit(void);
 int sys_trace(int req, endpoint_t proc_ep, long addr, long *data_p);
@@ -58,8 +58,8 @@ int sys_setgrant(cp_grant_t *grants, int ngrants);
 int sys_vm_setbuf(phys_bytes base, phys_bytes size, phys_bytes high);
 int sys_vm_map(endpoint_t proc_ep, int do_map, phys_bytes base,
 	phys_bytes size, phys_bytes offset);
-int sys_vmctl(endpoint_t who, int param, u32_t value);
-int sys_vmctl_get_pdbr(endpoint_t who, u32_t *pdbr);
+int sys_vmctl(endpoint_t who, int param, uint32_t value);
+int sys_vmctl_get_pdbr(endpoint_t who, uint32_t *pdbr);
 int sys_vmctl_get_memreq(endpoint_t *who, vir_bytes *mem, vir_bytes
 	*len, int *wrflag, endpoint_t *who_s, vir_bytes *mem_s, endpoint_t *);
 int sys_vmctl_enable_paging(void * data);
@@ -214,19 +214,19 @@ int sys_vinw(pvw_pair_t *pvw_pairs, int nr_ports);
 int sys_vinl(pvl_pair_t *pvl_pairs, int nr_ports);
 
 /* Shorthands for sys_out() system call. */
-#define sys_outb(p,v)	sys_out((p), (u32_t) (v), _DIO_BYTE)
-#define sys_outw(p,v)	sys_out((p), (u32_t) (v), _DIO_WORD)
-#define sys_outl(p,v)	sys_out((p), (u32_t) (v), _DIO_LONG)
-int sys_out(int port, u32_t value, int type);
+#define sys_outb(p,v)	sys_out((p), (uint32_t) (v), _DIO_BYTE)
+#define sys_outw(p,v)	sys_out((p), (uint32_t) (v), _DIO_WORD)
+#define sys_outl(p,v)	sys_out((p), (uint32_t) (v), _DIO_LONG)
+int sys_out(int port, uint32_t value, int type);
 
 /* Shorthands for sys_in() system call. */
 #define sys_inb(p,v)	sys_in((p), (v), _DIO_BYTE)
 #define sys_inw(p,v)	sys_in((p), (v), _DIO_WORD)
 #define sys_inl(p,v)	sys_in((p), (v), _DIO_LONG)
-int sys_in(int port, u32_t *value, int type);
+int sys_in(int port, uint32_t *value, int type);
 
 /* arm pinmux */
-int sys_padconf(u32_t padconf, u32_t mask, u32_t value);
+int sys_padconf(uint32_t padconf, uint32_t mask, uint32_t value);
 
 /* pci.c */
 void pci_init(void);
@@ -239,15 +239,15 @@ void pci_ids(int devind, uint16_t *vidp, uint16_t *didp);
 void pci_rescan_bus(uint8_t busnr);
 uint8_t pci_attr_r8(int devind, int port);
 uint16_t pci_attr_r16(int devind, int port);
-u32_t pci_attr_r32(int devind, int port);
+uint32_t pci_attr_r32(int devind, int port);
 void pci_attr_w8(int devind, int port, uint8_t value);
 void pci_attr_w16(int devind, int port, uint16_t value);
-void pci_attr_w32(int devind, int port, u32_t value);
+void pci_attr_w32(int devind, int port, uint32_t value);
 char *pci_dev_name(uint16_t vid, uint16_t did);
 char *pci_slot_name(int devind);
 int pci_set_acl(struct rs_pci *rs_pci);
 int pci_del_acl(endpoint_t proc_ep);
-int pci_get_bar(int devind, int port, u32_t *base, u32_t *size, int
+int pci_get_bar(int devind, int port, uint32_t *base, uint32_t *size, int
 	*ioflag);
 
 /* Profiling. */

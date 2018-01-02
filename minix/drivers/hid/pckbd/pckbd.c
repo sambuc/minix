@@ -65,7 +65,7 @@ kbd_watchdog(int arg __unused)
 static void
 kbd_send(void)
 {
-	u32_t sb;
+	uint32_t sb;
 	int r;
 
 	if (!kbdout.avail)
@@ -110,7 +110,7 @@ kbd_send(void)
 static int
 scan_keyboard(unsigned char *bp, int *isauxp)
 {
-	u32_t b, sb;
+	uint32_t b, sb;
 	int r;
 
 	if ((r = sys_inb(KB_STATUS, &sb)) != OK) {
@@ -151,7 +151,7 @@ static int
 kb_wait(void)
 {
 	spin_t spin;
-	u32_t status;
+	uint32_t status;
 	int r, isaux;
 	unsigned char byte;
 
@@ -226,7 +226,7 @@ kbc_cmd1(int cmd, int data)
 static int
 kbc_read(void)
 {
-	u32_t byte, status;
+	uint32_t byte, status;
 	spin_t spin;
 	int r;
 
@@ -373,7 +373,7 @@ kbd_process(unsigned char scode)
 static void
 kbdaux_process(unsigned char scode)
 {
-	u32_t delta;
+	uint32_t delta;
 	int i;
 
 	if (aux_counter == 0 && !(scode & 0x08))

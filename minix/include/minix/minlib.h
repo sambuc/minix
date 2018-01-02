@@ -11,7 +11,7 @@ void std_err(const char *_s);
 void prints(const char *_s, ...);
 int fsversion(char *_dev, char *_prog);
 int getprocessor(void);
-void _cpuid(u32_t *eax, u32_t *ebx, u32_t *ecx, u32_t *edx);
+void _cpuid(uint32_t *eax, uint32_t *ebx, uint32_t *ecx, uint32_t *edx);
 int load_mtab(char *_prog_name);
 int get_mtab_entry(char dev[PATH_MAX], char mount_point[PATH_MAX],
 			char type[MNTNAMELEN], char flags[MNTFLAGLEN]);
@@ -20,7 +20,7 @@ int servxcheck(unsigned long peer, const char *service,
 const char *servxfile(const char *file);
 
 /* read_tsc() and friends */
-void read_tsc(u32_t *hi, u32_t *lo);
+void read_tsc(uint32_t *hi, uint32_t *lo);
 void read_tsc_64(u64_t *t);
 
 /* return values for fsversion */

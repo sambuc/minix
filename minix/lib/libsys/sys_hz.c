@@ -8,9 +8,9 @@
 
 #include "sysutil.h"
 
-static u32_t Hz;
+static uint32_t Hz;
 
-u32_t
+uint32_t
 sys_hz(void)
 {
 	if(Hz <= 0) {
@@ -26,12 +26,12 @@ sys_hz(void)
 	return Hz;
 }
 
-u32_t
-micros_to_ticks(u32_t micros)
+uint32_t
+micros_to_ticks(uint32_t micros)
 {
-        u32_t ticks;
+        uint32_t ticks;
 
-        ticks = (u32_t)(((u64_t)micros * sys_hz()) / 1000000);
+        ticks = (uint32_t)(((u64_t)micros * sys_hz()) / 1000000);
         if(ticks < 1) ticks = 1;
 
         return ticks;

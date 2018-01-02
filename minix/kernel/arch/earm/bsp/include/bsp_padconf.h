@@ -4,7 +4,7 @@
 #ifndef __ASSEMBLY__
 
 void bsp_padconf_init(void);
-int bsp_padconf_set(u32_t padconf, u32_t mask, u32_t value);
+int bsp_padconf_set(uint32_t padconf, uint32_t mask, uint32_t value);
 
 #endif /* __ASSEMBLY__ */
 

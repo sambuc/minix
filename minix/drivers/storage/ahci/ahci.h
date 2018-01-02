@@ -133,7 +133,7 @@
 
 /* Command List constants. */
 #define AHCI_CL_ENTRY_SIZE	32		/* Command List header size */
-#define AHCI_CL_ENTRY_DWORDS	(AHCI_CL_ENTRY_SIZE / sizeof(u32_t))
+#define AHCI_CL_ENTRY_DWORDS	(AHCI_CL_ENTRY_SIZE / sizeof(uint32_t))
 
 #define AHCI_CL_PRDTL_SHIFT	16		/* PRD Table Length */
 #define AHCI_CL_PREFETCHABLE	(1L << 7)	/* Prefetchable */
@@ -230,7 +230,7 @@
 #define AHCI_CL_SIZE	1024		/* size of command list buffer */
 #define AHCI_TMP_SIZE	ATA_ID_SIZE	/* size of temporary storage buffer */
 #define AHCI_TMP_ALIGN	2		/* required alignment for temp buf */
-#define AHCI_CT_SIZE	(128 + NR_PRDS * sizeof(u32_t) * 4)
+#define AHCI_CT_SIZE	(128 + NR_PRDS * sizeof(uint32_t) * 4)
 					/* size of command table buffer */
 #define AHCI_CT_ALIGN	128		/* required alignment for CT buffer */
 
@@ -243,9 +243,9 @@
 typedef struct {
 	uint8_t cf_cmd;		/* Command */
 	uint8_t cf_feat;		/* Features */
-	u32_t cf_lba;		/* LBA (24-bit) */
+	uint32_t cf_lba;		/* LBA (24-bit) */
 	uint8_t cf_dev;		/* Device */
-	u32_t cf_lba_exp;	/* LBA (exp) (24-bit) */
+	uint32_t cf_lba_exp;	/* LBA (exp) (24-bit) */
 	uint8_t cf_feat_exp;	/* Features (exp) */
 	uint8_t cf_sec;		/* Sector Count */
 	uint8_t cf_sec_exp;	/* Sector Count (exp) */

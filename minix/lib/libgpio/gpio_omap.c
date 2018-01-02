@@ -379,7 +379,7 @@ omap_message_hook(message * m)
 	return OK;
 }
 
-static int revision_matches(u32_t board_id,u32_t rev) {
+static int revision_matches(uint32_t board_id,uint32_t rev) {
 	/* figures out if the collected resition matches the one expected
 	 * from the board */
 	if (BOARD_IS_BBXM(board_id)){
@@ -403,7 +403,7 @@ static int revision_matches(u32_t board_id,u32_t rev) {
 static int
 omap_gpio_init(struct gpio_driver *gpdrv)
 {
-	u32_t revision;
+	uint32_t revision;
 	int i;
 	struct minix_mem_range mr;
 	struct omap_gpio_bank *bank;

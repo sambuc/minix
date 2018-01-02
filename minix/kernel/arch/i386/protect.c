@@ -26,14 +26,14 @@ struct segdesc_s gdt[GDT_SIZE] __aligned(DESC_SIZE);
 struct gatedesc_s idt[IDT_SIZE] __aligned(DESC_SIZE);
 struct tss_s tss[CONFIG_MAX_CPUS];
 
-u32_t k_percpu_stacks[CONFIG_MAX_CPUS];
+uint32_t k_percpu_stacks[CONFIG_MAX_CPUS];
 
 int prot_init_done = 0;
 
 phys_bytes vir2phys(void *vir)
 {
 	extern char _kern_vir_base, _kern_phys_base;	/* in kernel.lds */
-	u32_t offset = (vir_bytes) &_kern_vir_base -
+	uint32_t offset = (vir_bytes) &_kern_vir_base -
 		(vir_bytes) &_kern_phys_base;
 	return (phys_bytes)vir - offset;
 }
@@ -184,12 +184,12 @@ int tss_init(unsigned cpu, void * kernel_stack)
 	if(minix_feature_flags & MKF_I386_INTEL_SYSENTER) {
 	  ia32_msr_write(INTEL_MSR_SYSENTER_CS, 0, KERN_CS_SELECTOR);
   	  ia32_msr_write(INTEL_MSR_SYSENTER_ESP, 0, t->sp0);
-  	  ia32_msr_write(INTEL_MSR_SYSENTER_EIP, 0, (u32_t) ipc_entry_sysenter);
+  	  ia32_msr_write(INTEL_MSR_SYSENTER_EIP, 0, (uint32_t) ipc_entry_sysenter);
   	}
 
 	/* Set up AMD SYSCALL support if available. */
 	if(minix_feature_flags & MKF_I386_AMD_SYSCALL) {
-		u32_t msr_lo, msr_hi;
+		uint32_t msr_lo, msr_hi;
 
 		/* set SYSCALL ENABLE bit in EFER MSR */
 		ia32_msr_read(AMD_MSR_EFER, &msr_hi, &msr_lo);
@@ -199,8 +199,8 @@ int tss_init(unsigned cpu, void * kernel_stack)
 		/* set STAR register value */
 #define set_star_cpu(forcpu) if(cpu == forcpu) {				\
 		ia32_msr_write(AMD_MSR_STAR,					\
-		  ((u32_t)USER_CS_SELECTOR << 16) | (u32_t)KERN_CS_SELECTOR,	\
-		  (u32_t) ipc_entry_syscall_cpu ## forcpu); }
+		  ((uint32_t)USER_CS_SELECTOR << 16) | (uint32_t)KERN_CS_SELECTOR,	\
+		  (uint32_t) ipc_entry_syscall_cpu ## forcpu); }
 		set_star_cpu(0);
 		set_star_cpu(1);
 		set_star_cpu(2);
@@ -331,9 +331,9 @@ void prot_init(void)
   memset(idt, 0, sizeof(idt));
 
   /* Build GDT, IDT, IDT descriptors. */
-  gdt_desc.base = (u32_t) gdt;
+  gdt_desc.base = (uint32_t) gdt;
   gdt_desc.limit = sizeof(gdt)-1;
-  idt_desc.base = (u32_t) idt;
+  idt_desc.base = (uint32_t) idt;
   idt_desc.limit = sizeof(idt)-1;
   tss_init(0, &k_boot_stktop);
 

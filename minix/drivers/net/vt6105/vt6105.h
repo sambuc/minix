@@ -85,18 +85,18 @@
 
 /* ======= Data Descriptor ======= */
 typedef struct NDR_desc {
-	u32_t status;
-	u32_t length;
-	u32_t addr;
-	u32_t next;
+	uint32_t status;
+	uint32_t length;
+	uint32_t addr;
+	uint32_t next;
 } NDR_desc;
 
 /* Driver Data Structure */
 typedef struct NDR_driver {
 	char *dev_name;			/* Device name */
 	uint16_t vid, did;			/* Vendor and device ID */
-	u32_t devind;			/* Device index */
-	u32_t base[6];			/* Base address */
+	uint32_t devind;			/* Device index */
+	uint32_t base[6];			/* Base address */
 	char irq;				/* IRQ number */
 	char revision;			/* Revision ID */
 

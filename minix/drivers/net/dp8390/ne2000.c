@@ -18,7 +18,7 @@ Created:	March 15, 1994 by Philip Homburg <philip@f-mnx.phicoh.com>
 
 #define N 100
 
-extern u32_t system_hz;
+extern uint32_t system_hz;
 
 #define MILLIS_TO_TICKS(m)  (((m)*system_hz/1000)+1)
 

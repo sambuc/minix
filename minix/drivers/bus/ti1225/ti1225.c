@@ -140,7 +140,7 @@ static void hw_init(struct port *pp, int devind)
 {
 	uint8_t v8;
 	uint16_t v16;
-	u32_t v32;
+	uint32_t v32;
 #if USE_INTS
 	int r, irq;
 #endif
@@ -249,7 +249,7 @@ static void do_int(struct port *pp)
 	int devind, vcc_5v, vcc_3v, vcc_Xv, vcc_Yv,
 		socket_5v, socket_3v, socket_Xv, socket_Yv;
 	spin_t spin;
-	u32_t csr_event, csr_present, csr_control;
+	uint32_t csr_event, csr_present, csr_control;
 	uint8_t v8;
 	uint16_t v16;
 #if USE_INTS

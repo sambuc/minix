@@ -86,7 +86,7 @@ int vbox_close(vbox_conn_t conn)
   return m.VBOX_RESULT;
 }
 
-int vbox_call(vbox_conn_t conn, u32_t function, vbox_param_t *param, int count,
+int vbox_call(vbox_conn_t conn, uint32_t function, vbox_param_t *param, int count,
   int *code)
 {
 /* Call a VirtualBox HGCM function. The caller must set up all buffer grants.
@@ -153,7 +153,7 @@ int vbox_call(vbox_conn_t conn, u32_t function, vbox_param_t *param, int count,
   return m.VBOX_RESULT;
 }
 
-void vbox_set_u32(vbox_param_t *param, u32_t value)
+void vbox_set_u32(vbox_param_t *param, uint32_t value)
 {
 /* Set the given parameter to a 32-bit value.
  */
@@ -237,7 +237,7 @@ void vbox_put(vbox_param_t *param, int count)
   }
 }
 
-u32_t vbox_get_u32(vbox_param_t *param)
+uint32_t vbox_get_u32(vbox_param_t *param)
 {
 /* Retrieve the 32-bit value from the given parameter.
  */

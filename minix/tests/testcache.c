@@ -26,22 +26,22 @@ extern int quietflag;
 int fds[MAXFILES];
 
 static void
-genblock(int b, char *blockdata, int blocksize, u32_t seed)
+genblock(int b, char *blockdata, int blocksize, uint32_t seed)
 {
-	u32_t *p = (u32_t *) blockdata,
-		*plimit = (u32_t *) (blockdata + blocksize),
+	uint32_t *p = (uint32_t *) blockdata,
+		*plimit = (uint32_t *) (blockdata + blocksize),
 		i = 0;
 
 	srandom(seed ^ b);
 
-	for(p = (u32_t *) blockdata; p < plimit; p++) {
+	for(p = (uint32_t *) blockdata; p < plimit; p++) {
 		i++;
 		*p = random();
 	}
 }
 
 static int
-checkblock(int b, int blocksize, u32_t seed)
+checkblock(int b, int blocksize, uint32_t seed)
 {
 	static char data[MAXBLOCKSIZE], expected_data[MAXBLOCKSIZE];
 	int r;
@@ -66,7 +66,7 @@ checkblock(int b, int blocksize, u32_t seed)
 }
 
 static int
-writeblock(int b, int blocksize, u32_t seed)
+writeblock(int b, int blocksize, uint32_t seed)
 {
 	static char data[MAXBLOCKSIZE];
 
@@ -101,7 +101,7 @@ makepermutation(int nblocks, int *permutation)
 }
 
 static int
-checkblocks(int nblocks, int blocksize, u32_t seed)
+checkblocks(int nblocks, int blocksize, uint32_t seed)
 {
 	int b;
 	int nrandom = nblocks * 3;
@@ -142,7 +142,7 @@ dotest(int blocksize, int nblocks, int iterations)
 	int nrandom = nblocks * iterations;
 	static int perm1[MAXBLOCKS], perm2[MAXBLOCKS];
 	static int newblock[MAXBLOCKS];
-	u32_t seed = random(), newseed;
+	uint32_t seed = random(), newseed;
 	int mb;
 
 	assert(nblocks > 0 && nblocks <= MAXBLOCKS);

@@ -634,7 +634,7 @@ virtio_blk_feature_setup(void)
 static int
 virtio_blk_config(void)
 {
-	u32_t sectors_low, sectors_high, size_mbs;
+	uint32_t sectors_low, sectors_high, size_mbs;
 
 	/* capacity is always there */
 	sectors_low = virtio_sread32(blk_dev, 0);
@@ -642,7 +642,7 @@ virtio_blk_config(void)
 	blk_config.capacity = ((u64_t)sectors_high << 32) | sectors_low;
 
 	/* If this gets truncated, you have a big disk... */
-	size_mbs = (u32_t)(blk_config.capacity * 512 / 1024 / 1024);
+	size_mbs = (uint32_t)(blk_config.capacity * 512 / 1024 / 1024);
 	dprintf(("Capacity: %d MB", size_mbs));
 
 	/* do feature setup */

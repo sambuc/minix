@@ -28,7 +28,7 @@ enum {
 	STATE_UPTIME		/* use the clock to spin */
 };
 
-void spin_init(spin_t *s, u32_t usecs)
+void spin_init(spin_t *s, uint32_t usecs)
 {
 	/* Initialize the given spin state structure, set to spin at most the
 	 * given number of microseconds.

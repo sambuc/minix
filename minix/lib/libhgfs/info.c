@@ -10,7 +10,7 @@ int hgfs_queryvol(const char *path, u64_t *free, u64_t *total)
 /* Retrieve information about available and total volume space associated with
  * a given path.
  */
-  u32_t lo, hi;
+  uint32_t lo, hi;
   int r;
 
   RPC_REQUEST(HGFS_REQ_QUERYVOL);

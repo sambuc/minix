@@ -26,12 +26,12 @@ struct gatedesc_s {
 
 struct desctableptr_s {
   uint16_t limit;
-  u32_t base;
+  uint32_t base;
 } __attribute__((packed));
 
 typedef struct segframe {
 	reg_t	p_cr3;		/* page table root */
-	u32_t	*p_cr3_v;
+	uint32_t	*p_cr3_v;
 	char	*fpu_state;
 	int	p_kern_trap_style;
 } segframe_t;
@@ -41,11 +41,11 @@ struct cpu_info {
 	uint8_t	family;
 	uint8_t	model;
 	uint8_t	stepping;
-	u32_t	freq;		/* in MHz */
-	u32_t	flags[2];
+	uint32_t	freq;		/* in MHz */
+	uint32_t	flags[2];
 };
 
-typedef u32_t atomic_t;	/* access to an aligned 32bit value is atomic on i386 */
+typedef uint32_t atomic_t;	/* access to an aligned 32bit value is atomic on i386 */
 
 #endif /* #ifndef _I386_TYPES_H */
 

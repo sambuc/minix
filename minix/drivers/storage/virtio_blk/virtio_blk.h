@@ -48,9 +48,9 @@ struct virtio_blk_config {
 	/* The capacity (in 512-byte sectors). */
 	u64_t capacity;
 	/* The maximum segment size (if VIRTIO_BLK_F_SIZE_MAX) */
-	u32_t size_max;
+	uint32_t size_max;
 	/* The maximum number of segments (if VIRTIO_BLK_F_SEG_MAX) */
-	u32_t seg_max;
+	uint32_t seg_max;
 	/* geometry the device (if VIRTIO_BLK_F_GEOMETRY) */
 	struct virtio_blk_geometry {
 		uint16_t cylinders;
@@ -59,7 +59,7 @@ struct virtio_blk_config {
 	} geometry;
 
 	/* block size of device (if VIRTIO_BLK_F_BLK_SIZE) */
-	u32_t blk_size;
+	uint32_t blk_size;
 
 	/* the next 4 entries are guarded by VIRTIO_BLK_F_TOPOLOGY  */
 	/* exponent for physical block per logical block. */
@@ -69,7 +69,7 @@ struct virtio_blk_config {
 	/* minimum I/O size without performance penalty in logical blocks. */
 	uint16_t min_io_size;
 	/* optimal sustained I/O size in logical blocks. */
-	u32_t opt_io_size;
+	uint32_t opt_io_size;
 
 } __attribute__((packed));
 
@@ -103,18 +103,18 @@ struct virtio_blk_config {
 /* This is the first element of the read scatter-gather list. */
 struct virtio_blk_outhdr {
 	/* VIRTIO_BLK_T* */
-	u32_t type;
+	uint32_t type;
 	/* io priority. */
-	u32_t ioprio;
+	uint32_t ioprio;
 	/* Sector (ie. 512 byte offset) */
 	u64_t sector;
 };
 
 struct virtio_scsi_inhdr {
-	u32_t errors;
-	u32_t data_len;
-	u32_t sense_len;
-	u32_t residual;
+	uint32_t errors;
+	uint32_t data_len;
+	uint32_t sense_len;
+	uint32_t residual;
 };
 
 /* And this is the final byte of the write scatter-gather list. */

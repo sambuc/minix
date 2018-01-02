@@ -1008,7 +1008,7 @@ void ds_event()
 {
 	char key[DS_MAX_KEYLEN];
 	char *blkdriver_prefix = "drv.blk.";
-	u32_t value;
+	uint32_t value;
 	int type;
 	endpoint_t owner_endpoint;
 	int r;

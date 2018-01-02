@@ -142,9 +142,9 @@ PUBLIC void *(*magic_real_mmap64)(void *start, size_t length, int prot, int flag
 #include <minix/vm.h>
 
 PUBLIC void *magic_vm_map_cacheblock(__MA_ARGS__ dev_t dev, off_t dev_offset,
-    ino_t ino, off_t ino_offset, u32_t *flags, int blocksize);
+    ino_t ino, off_t ino_offset, uint32_t *flags, int blocksize);
 PUBLIC void *(*magic_real_vm_map_cacheblock)(dev_t dev, off_t dev_offset,
-    ino_t ino, off_t ino_offset, u32_t *flags, int blocksize);
+    ino_t ino, off_t ino_offset, uint32_t *flags, int blocksize);
 #endif
 
 /* wrappers to skip alloction */

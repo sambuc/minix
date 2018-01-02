@@ -133,8 +133,8 @@ virtio_net_probe(unsigned int skip)
 static void
 virtio_net_config(netdriver_addr_t * addr)
 {
-	u32_t mac14;
-	u32_t mac56;
+	uint32_t mac14;
+	uint32_t mac56;
 	int i;
 
 	if (virtio_host_supports(net_dev, VIRTIO_NET_F_MAC)) {
@@ -152,7 +152,7 @@ virtio_net_config(netdriver_addr_t * addr)
 	}
 
 	if (virtio_host_supports(net_dev, VIRTIO_NET_F_STATUS)) {
-		dput(("Current Status %x", (u32_t)virtio_sread16(net_dev, 6)));
+		dput(("Current Status %x", (uint32_t)virtio_sread16(net_dev, 6)));
 	} else {
 		dput(("No status"));
 	}

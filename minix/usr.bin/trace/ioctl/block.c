@@ -188,7 +188,7 @@ block_ioctl_arg(struct trace_proc * proc, unsigned long req, void * ptr,
 		if (ptr == NULL)
 			return IF_OUT;
 
-		put_value(proc, NULL, "%"PRIu32, *(u32_t *)ptr);
+		put_value(proc, NULL, "%"PRIu32, *(uint32_t *)ptr);
 		return IF_ALL;
 
 	case VNDIOCSET:

@@ -627,7 +627,7 @@ static void handle_int_read(int sub_dev_nr)
 
 
 static int get_started(sub_dev_t *sub_dev_ptr) {
-	u32_t i;
+	uint32_t i;
 
 	/* enable interrupt messages from MINIX */
 	if ((i=sys_irqenable(&irq_hook_id)) != OK) {
@@ -756,7 +756,7 @@ static int init_buffers(sub_dev_t *sub_dev_ptr)
 	char *base;
 	size_t size;
 	unsigned left;
-	u32_t i;
+	uint32_t i;
 	phys_bytes ph;
 
 	/* allocate dma buffer space */

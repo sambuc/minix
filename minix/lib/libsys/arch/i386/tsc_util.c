@@ -25,7 +25,7 @@
 			panic("calibrate failed: %d", r); \
 	}
 
-static u32_t calib_mhz, Hz = 0;
+static uint32_t calib_mhz, Hz = 0;
 static int calibrated = 0;
 
 int
@@ -53,7 +53,7 @@ tsc_calibrate(void)
 }
 
 int
-micro_delay(u32_t micros)
+micro_delay(uint32_t micros)
 {
 	u64_t now, end;
 
@@ -81,7 +81,7 @@ micro_delay(u32_t micros)
 	return OK;
 }
 
-u32_t tsc_64_to_micros(u64_t tsc)
+uint32_t tsc_64_to_micros(u64_t tsc)
 {
 	u64_t tmp;
 
@@ -96,12 +96,12 @@ u32_t tsc_64_to_micros(u64_t tsc)
 	}
 }
 
-u32_t tsc_to_micros(u32_t low, u32_t high)
+uint32_t tsc_to_micros(uint32_t low, uint32_t high)
 {
 	return tsc_64_to_micros(make64(low, high));
 }
 
-u32_t tsc_get_khz(void)
+uint32_t tsc_get_khz(void)
 {
 	CALIBRATE;
 

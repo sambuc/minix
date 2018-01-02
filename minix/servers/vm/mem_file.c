@@ -85,7 +85,7 @@ static int mappedfile_pagefault(struct vmproc *vmp, struct vir_region *region,
 	struct phys_region *ph, int write, vfs_callback_t cb,
 	void *state, int statelen, int *io)
 {
-	u32_t allocflags;
+	uint32_t allocflags;
 	int procfd = region->param.file.fdref->fd;
 
 	allocflags = vrallocflags(region->flags);

@@ -163,7 +163,7 @@ static ssize_t printer_write(devminor_t UNUSED(minor), u64_t UNUSED(position),
 {
 /* The printer is used by sending write requests to it. Process one. */
   int retries;
-  u32_t status;
+  uint32_t status;
 
   /* Reject command if last write is not yet finished, the count is not
    * positive, or we're asked not to block.
@@ -350,7 +350,7 @@ static void printer_intr(unsigned int UNUSED(mask))
  * IRQ yet! 
  */
 
-  u32_t status;
+  uint32_t status;
   pvb_pair_t char_out[3];
 
   if (oleft == 0) {

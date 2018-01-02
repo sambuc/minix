@@ -17,8 +17,8 @@
 
 #include "dec21140A.h"
 
-static u32_t io_inl(uint16_t);
-static void io_outl(uint16_t, u32_t);
+static uint32_t io_inl(uint16_t);
+static void io_outl(uint16_t, uint32_t);
 
 static int do_init(unsigned int, netdriver_addr_t *, uint32_t *,
 	unsigned int *);
@@ -141,8 +141,8 @@ static uint16_t de_read_rom(const dpeth_t *dep, uint8_t addr, uint8_t nbAddrBits
 {
   uint16_t retVal = 0;
   int i;
-  u32_t csr = 0;
-  u32_t csr2 = 0; /* csr2 is used to hold constant values that are
+  uint32_t csr = 0;
+  uint32_t csr2 = 0; /* csr2 is used to hold constant values that are
 		     setup in the init phase, it makes this a little
 		     more readable, the following macro is also just
 		     to clear up the code a little.*/
@@ -201,7 +201,7 @@ static uint16_t de_read_rom(const dpeth_t *dep, uint8_t addr, uint8_t nbAddrBits
 
 static ssize_t do_recv(struct netdriver_data *data, size_t max)
 {
-  u32_t size;
+  uint32_t size;
   dpeth_t *dep;
   de_loc_descr_t *descr;
 
@@ -313,7 +313,7 @@ static void de_init_buf(dpeth_t *dep)
 		   (phys_bytes *) &(loc_descr->descr->des[DES_BUF1]));
       if(r != OK) panic("umap failed: %d", r);
       loc_descr->descr->des[DES_BUF2] = 0;
-      memset(&loc_descr->descr->des[DES0],0,sizeof(u32_t));
+      memset(&loc_descr->descr->des[DES0],0,sizeof(uint32_t));
       loc_descr->descr->des[DES1] = temp;
       if(j==( (i==DESCR_RECV?DE_NB_RECV_DESCR:DE_NB_SEND_DESCR)-1))
 	loc_descr->descr->des[DES1] |= DES1_ER;
@@ -361,7 +361,7 @@ static void de_init_buf(dpeth_t *dep)
 static void do_intr(unsigned int __unused mask)
 {
   dpeth_t *dep;
-  u32_t val;
+  uint32_t val;
 
   dep = &de_state;
 
@@ -395,7 +395,7 @@ static void do_stop(void)
 
 static void de_hw_conf(const dpeth_t *dep)
 {
-  u32_t val;
+  uint32_t val;
 
   /* CSR0 - global host bus prop */
   val = CSR0_BAR | CSR0_CAL_8;
@@ -421,7 +421,7 @@ static void de_hw_conf(const dpeth_t *dep)
 
 static void de_start(const dpeth_t *dep)
 {
-  u32_t val;
+  uint32_t val;
   val = io_inl(CSR_ADDR(dep, CSR6)) | CSR6_ST | CSR6_SR;
   io_outl(CSR_ADDR(dep, CSR6), val);
 }
@@ -429,7 +429,7 @@ static void de_start(const dpeth_t *dep)
 static void de_setup_frame(const dpeth_t *dep, const netdriver_addr_t *addr)
 {
   int i;
-  u32_t val;
+  uint32_t val;
 
   /* this is not perfect... we assume pass all multicast and only
      filter non-multicast frames */
@@ -492,16 +492,16 @@ static int do_send(struct netdriver_data *data, size_t size)
   return OK;
 }
 
-static u32_t io_inl(uint16_t port)
+static uint32_t io_inl(uint16_t port)
 {
-  u32_t value;
+  uint32_t value;
   int rc;
   if ((rc = sys_inl(port, &value)) != OK)
     panic("sys_inl failed: %d", rc);
   return value;
 }
 
-static void io_outl(uint16_t port, u32_t value)
+static void io_outl(uint16_t port, uint32_t value)
 {
   int rc;
   if ((rc = sys_outl(port, value)) != OK)

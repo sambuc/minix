@@ -82,7 +82,7 @@ static const char * x86_flag[] = {
  * Output a space-separated list of supported CPU flags.  x86 only.
  */
 static void
-print_x86_cpu_flags(u32_t * flags)
+print_x86_cpu_flags(uint32_t * flags)
 {
 	int i, j;
 

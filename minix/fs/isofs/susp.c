@@ -14,9 +14,9 @@ int parse_susp(struct rrii_dir_record *dir, char *buffer)
 	char susp_signature[2];
 	uint8_t susp_length;
 	uint8_t susp_version;
-	u32_t ca_block_nr;
-	u32_t ca_offset;
-	u32_t ca_length;
+	uint32_t ca_block_nr;
+	uint32_t ca_offset;
+	uint32_t ca_length;
 	struct buf *ca_bp;
 	int r;
 
@@ -34,9 +34,9 @@ int parse_susp(struct rrii_dir_record *dir, char *buffer)
 		 * continuation area, and infinite recursion is not checked.
 		 */
 
-		ca_block_nr = *((u32_t*)(buffer + 4));
-		ca_offset = *((u32_t*)(buffer + 12));
-		ca_length = *((u32_t*)(buffer + 20));
+		ca_block_nr = *((uint32_t*)(buffer + 4));
+		ca_offset = *((uint32_t*)(buffer + 12));
+		ca_length = *((uint32_t*)(buffer + 20));
 
 		/* Truncate continuation area to fit one logical block. */
 		if (ca_offset >= v_pri.logical_block_size_l) {
@@ -80,7 +80,7 @@ int parse_susp(struct rrii_dir_record *dir, char *buffer)
 	return EINVAL;
 }
 
-void parse_susp_buffer(struct rrii_dir_record *dir, char *buffer, u32_t size)
+void parse_susp_buffer(struct rrii_dir_record *dir, char *buffer, uint32_t size)
 {
 	/*
 	 * Parse a SUSP system use entry for the ISO 9660.

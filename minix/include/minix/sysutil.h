@@ -57,25 +57,25 @@ int getuptime(clock_t *ticks, clock_t *realtime, time_t *boottime);
 clock_t getticks(void);
 int tickdelay(clock_t ticks);
 int tsc_calibrate(void);
-u32_t sys_hz(void);
+uint32_t sys_hz(void);
 double getidle(void);
 void util_stacktrace(void);
-int micro_delay(u32_t micros);
-u32_t tsc_64_to_micros(u64_t tsc);
-u32_t tsc_to_micros(u32_t low, u32_t high);
-u32_t tsc_get_khz(void);
-u32_t micros_to_ticks(u32_t micros);
+int micro_delay(uint32_t micros);
+uint32_t tsc_64_to_micros(u64_t tsc);
+uint32_t tsc_to_micros(uint32_t low, uint32_t high);
+uint32_t tsc_get_khz(void);
+uint32_t micros_to_ticks(uint32_t micros);
 time_t clock_time(struct timespec *tv);
 #if defined(__arm__)
-void read_frclock(u32_t *frclk);
-u32_t delta_frclock(u32_t base, u32_t cur);
+void read_frclock(uint32_t *frclk);
+uint32_t delta_frclock(uint32_t base, uint32_t cur);
 #endif
 void read_frclock_64(u64_t *frclk);
 u64_t delta_frclock_64(u64_t base, u64_t cur);
-u32_t frclock_64_to_micros(u64_t tsc);
+uint32_t frclock_64_to_micros(u64_t tsc);
 void ser_putc(char c);
 void get_randomness(struct k_randomness *, int);
-u32_t sqrt_approx(u32_t);
+uint32_t sqrt_approx(uint32_t);
 
 int stime(time_t *_top);
 

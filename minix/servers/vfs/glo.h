@@ -19,7 +19,7 @@ EXTERN int verbose;
 
 EXTERN dev_t ROOT_DEV;		/* device number of the root device */
 EXTERN int ROOT_FS_E;           /* kernel endpoint of the root FS proc */
-EXTERN u32_t system_hz;		/* system clock frequency. */
+EXTERN uint32_t system_hz;		/* system clock frequency. */
 
 /* The parameters of the call are kept here. */
 EXTERN message m_in;		/* the input message itself */

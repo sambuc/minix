@@ -517,7 +517,7 @@ static int m_block_ioctl(devminor_t minor, unsigned long request,
  * - MIOCRAMSIZE: to set the size of the RAM disk.
  */
   struct device *dv;
-  u32_t ramdev_size;
+  uint32_t ramdev_size;
   int s;
   void *mem;
   int is_imgrd = 0;
@@ -555,7 +555,7 @@ static int m_block_ioctl(devminor_t minor, unsigned long request,
 	return(EBUSY);
   }
   if(m_vaddrs[minor]) {
-	u32_t a, o;
+	uint32_t a, o;
 	u64_t size;
 	int r;
 	if(ex64hi(dv->dv_size)) {

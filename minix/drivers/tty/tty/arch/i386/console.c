@@ -756,7 +756,7 @@ int reg;			/* which register pair to set */
 unsigned *val;			/* 16-bit value to set it to */
 {
   char v1, v2;
-  u32_t v;
+  uint32_t v;
 /* Get a register pair inside the 6845.  */
   sys_outb(vid_port + INDEX, reg); 
   sys_inb(vid_port + DATA, &v); 
@@ -797,7 +797,7 @@ static void beep()
  */
   static minix_timer_t tmr_stop_beep;
   pvb_pair_t char_out[3];
-  u32_t port_b_val;
+  uint32_t port_b_val;
   
   if (beep_disabled()) return;
 
@@ -868,7 +868,7 @@ clock_t dur;
  */
   static minix_timer_t tmr_stop_beep;
   pvb_pair_t char_out[3];
-  u32_t port_b_val;
+  uint32_t port_b_val;
 
   if (beep_disabled()) return;
   
@@ -898,7 +898,7 @@ clock_t dur;
 static void stop_beep(int arg __unused)
 {
 /* Turn off the beeper by turning off bits 0 and 1 in PORT_B. */
-  u32_t port_b_val;
+  uint32_t port_b_val;
   if (sys_inb(PORT_B, &port_b_val)==OK && 
 	sys_outb(PORT_B, (port_b_val & ~3))==OK)
 		beeping = FALSE;

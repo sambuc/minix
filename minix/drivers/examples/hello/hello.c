@@ -82,7 +82,7 @@ static int sef_cb_lu_state_save(int UNUSED(state), int UNUSED(flags)) {
 
 static int lu_state_restore() {
 /* Restore the state. */
-    u32_t value;
+    uint32_t value;
 
     ds_retrieve_u32("open_counter", &value);
     ds_delete_u32("open_counter");

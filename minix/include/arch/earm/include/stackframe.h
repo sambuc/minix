@@ -3,7 +3,7 @@
 
 #include <sys/types.h>
 
-typedef u32_t reg_t;         /* machine register */
+typedef uint32_t reg_t;         /* machine register */
 
 struct stackframe_s {
 	reg_t retreg;                 /*  r0 */

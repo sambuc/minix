@@ -20,7 +20,7 @@
 
 #if ENABLE_3C503
 
-extern u32_t system_hz;
+extern uint32_t system_hz;
 
 #define MILLIS_TO_TICKS(m)  (((m)*system_hz/1000)+1)
 

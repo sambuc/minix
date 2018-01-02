@@ -29,7 +29,7 @@ EXTERN __attribute__((weak)) int __vm_init_fresh;
 #define SEF_DEBUG_HEADER_MAXLEN 50
 static int sef_debug_init = 0;
 static time_t sef_debug_boottime = 0;
-static u32_t sef_debug_system_hz = 0;
+static uint32_t sef_debug_system_hz = 0;
 static time_t sef_debug_time_sec = 0;
 static time_t sef_debug_time_us = 0;
 static char sef_debug_header_buff[SEF_DEBUG_HEADER_MAXLEN];

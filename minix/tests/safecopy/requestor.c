@@ -11,8 +11,8 @@ char *buf;
  *===========================================================================*/
 int test(size_t size)
 {
-	u32_t low1, high1;
-	u32_t low2, high2;
+	uint32_t low1, high1;
+	uint32_t low2, high2;
 	int r;
 
 	/* Timing. */

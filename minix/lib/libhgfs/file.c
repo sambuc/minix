@@ -64,11 +64,11 @@ ssize_t hgfs_read(
   int r;
 
   RPC_REQUEST(HGFS_REQ_READ);
-  RPC_NEXT32 = (u32_t)handle;
+  RPC_NEXT32 = (uint32_t)handle;
   RPC_NEXT32 = ex64lo(off);
   RPC_NEXT32 = ex64hi(off);
 
-  max = RPC_BUF_SIZE - RPC_LEN - sizeof(u32_t);
+  max = RPC_BUF_SIZE - RPC_LEN - sizeof(uint32_t);
   RPC_NEXT32 = (size < max) ? size : max;
 
   if ((r = rpc_query()) != OK)
@@ -99,7 +99,7 @@ ssize_t hgfs_write(
   int r;
 
   RPC_REQUEST(HGFS_REQ_WRITE);
-  RPC_NEXT32 = (u32_t)handle;
+  RPC_NEXT32 = (uint32_t)handle;
   RPC_NEXT8 = 0;		/* append flag */
   RPC_NEXT32 = ex64lo(off);
   RPC_NEXT32 = ex64hi(off);
@@ -127,7 +127,7 @@ int hgfs_close(
  */
 
   RPC_REQUEST(HGFS_REQ_CLOSE);
-  RPC_NEXT32 = (u32_t)handle;
+  RPC_NEXT32 = (uint32_t)handle;
 
   return rpc_query();
 }
@@ -142,9 +142,9 @@ size_t hgfs_readbuf(char **ptr)
  * size. The results are static, but must only be used directly prior to a
  * hgfs_read() call (with a NULL data buffer address).
  */
-  u32_t off;
+  uint32_t off;
 
-  off = RPC_HDR_SIZE + sizeof(u32_t);
+  off = RPC_HDR_SIZE + sizeof(uint32_t);
 
   RPC_RESET;
   RPC_ADVANCE(off);
@@ -163,9 +163,9 @@ size_t hgfs_writebuf(char **ptr)
  * size. The results are static, but must only be used immediately after a
  * hgfs_write() call (with a NULL data buffer address).
  */
-  u32_t off;
+  uint32_t off;
 
-  off = RPC_HDR_SIZE + sizeof(u32_t) + sizeof(uint8_t) + sizeof(u32_t) * 3;
+  off = RPC_HDR_SIZE + sizeof(uint32_t) + sizeof(uint8_t) + sizeof(uint32_t) * 3;
 
   RPC_RESET;
   RPC_ADVANCE(off);

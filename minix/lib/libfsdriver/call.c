@@ -227,7 +227,7 @@ static ssize_t
 builtin_peek(const struct fsdriver * __restrict fdp, ino_t ino_nr,
 	size_t nbytes, off_t pos)
 {
-	static u32_t flags = 0;	/* storage for the VMMC_ flags of all blocks */
+	static uint32_t flags = 0;	/* storage for the VMMC_ flags of all blocks */
 	static off_t dev_off = 0; /* fake device offset, see below */
 	struct fsdriver_data data;
 	char *buf;

@@ -91,7 +91,7 @@ PUBLIC void *(*magic_real_mmap64)(void *start, size_t length, int prot, int flag
     int fd, off_t pgoffset) = &mmap64;
 #else
 PUBLIC void *(*magic_real_vm_map_cacheblock)(dev_t dev, off_t dev_offset,
-    ino_t ino, off_t ino_offset, u32_t *flags, int blocksize) = &vm_map_cacheblock;
+    ino_t ino, off_t ino_offset, uint32_t *flags, int blocksize) = &vm_map_cacheblock;
 #endif
 
 /* Use magic_real* functions in the rest of the file. */
@@ -2061,7 +2061,7 @@ PUBLIC void *magic_mmap64(__MA_ARGS__ void *start, size_t length, int prot, int 
  *                               magic_vm_map_cacheblock                                *
  *===========================================================================*/
 PUBLIC void *magic_vm_map_cacheblock(__MA_ARGS__ dev_t dev, off_t dev_offset,
-    ino_t ino, off_t ino_offset, u32_t *flags, int length)
+    ino_t ino, off_t ino_offset, uint32_t *flags, int length)
 {
     void *ptr, *data_ptr, *aligned_ptr;
     int dsentry_flags = MAGIC_STATE_MAP;

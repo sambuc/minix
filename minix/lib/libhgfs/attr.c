@@ -13,7 +13,7 @@ void attr_get(struct sffs_attr *attr)
  * in the given attr structure.
  */
   mode_t mode;
-  u32_t size_lo, size_hi;
+  uint32_t size_lo, size_hi;
 
   mode = (RPC_NEXT32) ? S_IFDIR : S_IFREG;
 

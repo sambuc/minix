@@ -24,7 +24,7 @@ static struct cached_page *cache_hash_bydev[HASHSIZE];
 static struct cached_page *cache_hash_byino[HASHSIZE];
 static struct cached_page *lru_oldest = NULL, *lru_newest = NULL;
 
-static u32_t cached_pages = 0;
+static uint32_t cached_pages = 0;
 
 static void lru_rm(struct cached_page *hb)
 {
@@ -73,9 +73,9 @@ void cache_lru_touch(struct cached_page *hb)
 	lru_add(hb);
 }
 
-static __inline u32_t makehash(u32_t p1, u64_t p2)
+static __inline uint32_t makehash(uint32_t p1, u64_t p2)
 {
-	u32_t offlo = ex64lo(p2), offhi = ex64hi(p2),
+	uint32_t offlo = ex64lo(p2), offhi = ex64hi(p2),
 		v = 0x12345678;
 	hash_mix(p1, offlo, offhi);
 	hash_final(offlo, offhi, v);

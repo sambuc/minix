@@ -24,7 +24,7 @@ int source;
   source %= RANDOM_SOURCES;
   if (rand->bin[source].r_size >= RANDOM_ELEMENTS) return;
   r_next= rand->bin[source].r_next;  
-  read_tsc((u32_t *) &tsc_high, (u32_t *) &tsc_low);
+  read_tsc((uint32_t *) &tsc_high, (uint32_t *) &tsc_low);
   rand->bin[source].r_buf[r_next] = tsc_low;  
   if (rand->bin[source].r_size < RANDOM_ELEMENTS) {  
         rand->bin[source].r_size ++;  

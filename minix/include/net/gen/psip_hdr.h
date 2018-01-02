@@ -9,7 +9,7 @@ typedef struct psip_io_hdr
 {
 	uint8_t pih_flags;
 	uint8_t pih_dummy[3];
-	u32_t pih_nexthop;
+	uint32_t pih_nexthop;
 } psip_io_hdr_t;
 
 #define PF_LOC_REM_MASK	1

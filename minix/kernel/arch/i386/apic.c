@@ -142,14 +142,14 @@ static struct irq io_apic_irq[NR_IRQ_VECTORS];
 #define VERBOSE_APIC(x) x
 
 int ioapic_enabled;
-u32_t lapic_addr_vaddr;
+uint32_t lapic_addr_vaddr;
 vir_bytes lapic_addr;
 vir_bytes lapic_eoi_addr;
 int bsp_lapic_id;
 
 static volatile unsigned probe_ticks;
 static	u64_t tsc0, tsc1;
-static	u32_t lapic_tctr0, lapic_tctr1;
+static	uint32_t lapic_tctr0, lapic_tctr1;
 
 static unsigned apic_imcrp;
 static const unsigned nlints = 0;
@@ -164,23 +164,23 @@ void arch_eoi(void)
  * arch specific cpulocals. As this variable is write-once-read-only it is ok to
  * have at as an array until we resolve the cpulocals properly
  */
-static u32_t lapic_bus_freq[CONFIG_MAX_CPUS];
+static uint32_t lapic_bus_freq[CONFIG_MAX_CPUS];
 /* the probe period will be roughly 100ms */
 #define PROBE_TICKS	(system_hz / 10)
 
 #define IOAPIC_IOREGSEL	0x0
 #define IOAPIC_IOWIN	0x10
 
-static u32_t ioapic_read(u32_t ioa_base, u32_t reg)
+static uint32_t ioapic_read(uint32_t ioa_base, uint32_t reg)
 {
-	*((volatile u32_t *)(ioa_base + IOAPIC_IOREGSEL)) = (reg & 0xff);
-	return *(volatile u32_t *)(ioa_base + IOAPIC_IOWIN);
+	*((volatile uint32_t *)(ioa_base + IOAPIC_IOREGSEL)) = (reg & 0xff);
+	return *(volatile uint32_t *)(ioa_base + IOAPIC_IOWIN);
 }
 
-static void ioapic_write(u32_t ioa_base, uint8_t reg, u32_t val)
+static void ioapic_write(uint32_t ioa_base, uint8_t reg, uint32_t val)
 {
-	*((volatile u32_t *)(ioa_base + IOAPIC_IOREGSEL)) = reg;
-	*((volatile u32_t *)(ioa_base + IOAPIC_IOWIN)) = val;
+	*((volatile uint32_t *)(ioa_base + IOAPIC_IOREGSEL)) = reg;
+	*((volatile uint32_t *)(ioa_base + IOAPIC_IOWIN)) = val;
 }
 
 void lapic_microsec_sleep(unsigned count);
@@ -188,7 +188,7 @@ void apic_idt_init(const int reset);
 
 static void ioapic_enable_pin(vir_bytes ioapic_addr, int pin)
 {
-	u32_t lo = ioapic_read(ioapic_addr, IOAPIC_REDIR_TABLE + pin * 2);
+	uint32_t lo = ioapic_read(ioapic_addr, IOAPIC_REDIR_TABLE + pin * 2);
 
 	lo &= ~APIC_ICR_INT_MASK;
 	ioapic_write(ioapic_addr, IOAPIC_REDIR_TABLE + pin * 2, lo);
@@ -196,7 +196,7 @@ static void ioapic_enable_pin(vir_bytes ioapic_addr, int pin)
 
 static void ioapic_disable_pin(vir_bytes ioapic_addr, int pin)
 {
-	u32_t lo = ioapic_read(ioapic_addr, IOAPIC_REDIR_TABLE + pin * 2);
+	uint32_t lo = ioapic_read(ioapic_addr, IOAPIC_REDIR_TABLE + pin * 2);
 
 	lo |= APIC_ICR_INT_MASK;
 	ioapic_write(ioapic_addr, IOAPIC_REDIR_TABLE + pin * 2, lo);
@@ -205,26 +205,26 @@ static void ioapic_disable_pin(vir_bytes ioapic_addr, int pin)
 #if 0
 static void ioapic_redirt_entry_read(void * ioapic_addr,
 					int entry,
-					u32_t *hi,
-					u32_t *lo)
+					uint32_t *hi,
+					uint32_t *lo)
 {
-	*lo = ioapic_read((u32_t)ioapic_addr, (uint8_t) (IOAPIC_REDIR_TABLE + entry * 2));
-	*hi = ioapic_read((u32_t)ioapic_addr, (uint8_t) (IOAPIC_REDIR_TABLE + entry * 2 + 1));
+	*lo = ioapic_read((uint32_t)ioapic_addr, (uint8_t) (IOAPIC_REDIR_TABLE + entry * 2));
+	*hi = ioapic_read((uint32_t)ioapic_addr, (uint8_t) (IOAPIC_REDIR_TABLE + entry * 2 + 1));
 
 }
 #endif
 
 static void ioapic_redirt_entry_write(void * ioapic_addr,
 					int entry,
-					u32_t hi,
-					u32_t lo)
+					uint32_t hi,
+					uint32_t lo)
 {
 #if 0
 	VERBOSE_APIC(printf("IO apic redir entry %3d "
 				"write 0x%08x 0x%08x\n", entry, hi, lo));
 #endif
-	ioapic_write((u32_t)ioapic_addr, (uint8_t) (IOAPIC_REDIR_TABLE + entry * 2 + 1), hi);
-	ioapic_write((u32_t)ioapic_addr, (uint8_t) (IOAPIC_REDIR_TABLE + entry * 2), lo);
+	ioapic_write((uint32_t)ioapic_addr, (uint8_t) (IOAPIC_REDIR_TABLE + entry * 2 + 1), hi);
+	ioapic_write((uint32_t)ioapic_addr, (uint8_t) (IOAPIC_REDIR_TABLE + entry * 2), lo);
 }
 
 #define apic_read_tmr_vector(vec) \
@@ -251,7 +251,7 @@ static void ioapic_eoi_level(struct irq * irq)
 	 */
 	if (!lapic_test_delivery_val(tmr, irq->vector)) {
 		int is_masked;
-		u32_t lo;
+		uint32_t lo;
 		
 		panic("EDGE instead of LEVEL!");
 
@@ -294,7 +294,7 @@ void ioapic_eoi(int irq)
 		irq_8259_eoi(irq);
 }
  
-void ioapic_set_id(u32_t addr, unsigned int id)
+void ioapic_set_id(uint32_t addr, unsigned int id)
 {
 	ioapic_write(addr, IOAPIC_ID, id << 24);
 }
@@ -318,17 +318,17 @@ static void ioapic_disable(struct io_apic * ioapic)
 	unsigned p;
 	
 	for (p = 0; p < io_apic->pins; p++) {
-		u32_t low_32, hi_32;
-		low_32 = ioapic_read((u32_t)ioapic->addr,
+		uint32_t low_32, hi_32;
+		low_32 = ioapic_read((uint32_t)ioapic->addr,
 				(uint8_t) (IOAPIC_REDIR_TABLE + p * 2));
-		hi_32 = ioapic_read((u32_t)ioapic->addr,
+		hi_32 = ioapic_read((uint32_t)ioapic->addr,
 				(uint8_t) (IOAPIC_REDIR_TABLE + p * 2 + 1));
 
 		if (!(low_32 & APIC_ICR_INT_MASK)) {
 			low_32 |= APIC_ICR_INT_MASK;
-			ioapic_write((u32_t)ioapic->addr,
+			ioapic_write((uint32_t)ioapic->addr,
 				(uint8_t) (IOAPIC_REDIR_TABLE + p * 2 + 1), hi_32);
-			ioapic_write((u32_t)ioapic->addr,
+			ioapic_write((uint32_t)ioapic->addr,
 				(uint8_t) (IOAPIC_REDIR_TABLE + p * 2), low_32);
 		}
 	}
@@ -409,7 +409,7 @@ unsigned int apicid(void)
 
 static int calib_clk_handler(irq_hook_t * UNUSED(hook))
 {
-	u32_t tcrt;
+	uint32_t tcrt;
 	u64_t tsc;
 
 	probe_ticks++;
@@ -442,7 +442,7 @@ static int spurious_irq_handler(irq_hook_t * UNUSED(hook))
 
 static void apic_calibrate_clocks(unsigned cpu)
 {
-	u32_t lvtt, val, lapic_delta;
+	uint32_t lvtt, val, lapic_delta;
 	u64_t tsc_delta;
 	u64_t cpu_freq;
 
@@ -523,11 +523,11 @@ static void apic_calibrate_clocks(unsigned cpu)
 	BOOT_VERBOSE(cpu_print_freq(cpuid));
 }
 
-void lapic_set_timer_one_shot(const u32_t usec)
+void lapic_set_timer_one_shot(const uint32_t usec)
 {
 	/* sleep in micro seconds */
-	u32_t lvtt;
-	u32_t ticks_per_us;
+	uint32_t lvtt;
+	uint32_t ticks_per_us;
 	const uint8_t cpu = cpuid;
 
 	ticks_per_us = (lapic_bus_freq[cpu] / 1000000) * config_apic_timer_x;
@@ -545,8 +545,8 @@ void lapic_set_timer_one_shot(const u32_t usec)
 void lapic_set_timer_periodic(const unsigned freq)
 {
 	/* sleep in micro seconds */
-	u32_t lvtt;
-	u32_t lapic_ticks_per_clock_tick;
+	uint32_t lvtt;
+	uint32_t lapic_ticks_per_clock_tick;
 	const uint8_t cpu = cpuid;
 
 	lapic_ticks_per_clock_tick = (lapic_bus_freq[cpu] / freq) * config_apic_timer_x;
@@ -563,7 +563,7 @@ void lapic_set_timer_periodic(const unsigned freq)
 
 void lapic_stop_timer(void)
 {
-	u32_t lvtt;
+	uint32_t lvtt;
 	lvtt = lapic_read(LAPIC_LVTTR);
 	lapic_write(LAPIC_LVTTR, lvtt | APIC_LVTT_MASK);
 	/* zero the current counter so it can be restarted again */
@@ -585,7 +585,7 @@ void lapic_microsec_sleep(unsigned count)
 		arch_pause();
 }
 
-static  u32_t lapic_errstatus(void)
+static  uint32_t lapic_errstatus(void)
 {
 	lapic_write(LAPIC_ESR, 0);
 	return lapic_read(LAPIC_ESR);
@@ -594,7 +594,7 @@ static  u32_t lapic_errstatus(void)
 #ifdef CONFIG_SMP
 static int lapic_disable_in_msr(void)
 {
-	u32_t msr_hi, msr_lo;
+	uint32_t msr_hi, msr_lo;
 
 	ia32_msr_read(IA32_APIC_BASE, &msr_hi, &msr_lo);
 
@@ -608,7 +608,7 @@ static int lapic_disable_in_msr(void)
 void lapic_disable(void)
 {
 	/* Disable current APIC and close interrupts from PIC */
-	u32_t val;
+	uint32_t val;
 
 	if (!lapic_addr)
 		return;
@@ -644,12 +644,12 @@ void lapic_disable(void)
 
 static int lapic_enable_in_msr(void)
 {
-	u32_t msr_hi, msr_lo;
+	uint32_t msr_hi, msr_lo;
 
 	ia32_msr_read(IA32_APIC_BASE, &msr_hi, &msr_lo);
 
 #if 0
-	u32_t addr;
+	uint32_t addr;
 	/*FIXME this is a problem on AP */
 	/*
 	 * FIXME if the location is different (unlikely) then the one we expect,
@@ -673,7 +673,7 @@ static int lapic_enable_in_msr(void)
 
 int lapic_enable(unsigned cpu)
 {
-	u32_t val, nlvt;
+	uint32_t val, nlvt;
 
 	if (!lapic_addr)
 		return 0;
@@ -867,7 +867,7 @@ static void lapic_set_dummy_handlers(void)
 /* Build descriptors for interrupt gates in IDT. */
 void apic_idt_init(const int reset)
 {
-	u32_t val;
+	uint32_t val;
 
 	/* Set up idt tables for smp mode.
 	 */
@@ -964,7 +964,7 @@ int detect_ioapics(void)
 
 void apic_send_ipi(unsigned vector, unsigned cpu, int type)
 {
-	u32_t icr1, icr2;
+	uint32_t icr1, icr2;
 
 	if (ncpus == 1)
 		/* no need of sending an IPI */
@@ -1004,13 +1004,13 @@ void apic_send_ipi(unsigned vector, unsigned cpu, int type)
 int apic_send_startup_ipi(unsigned cpu, phys_bytes trampoline)
 {
 	int timeout;
-	u32_t errstatus = 0;
+	uint32_t errstatus = 0;
 	int i;
 
 	/* INIT-SIPI-SIPI sequence */
 
 	for (i = 0; i < 2; i++) {
-		u32_t val;
+		uint32_t val;
 		
 		/* clear err status */
 		lapic_errstatus();
@@ -1023,7 +1023,7 @@ int apic_send_startup_ipi(unsigned cpu, phys_bytes trampoline)
 		/* send SIPI */
 		val = lapic_read(LAPIC_ICR1) & 0xFFF32000;
 		val |= APIC_ICR_LEVEL_ASSERT |APIC_ICR_DM_STARTUP;
-		val |= (((u32_t)trampoline >> 12)&0xff);
+		val |= (((uint32_t)trampoline >> 12)&0xff);
 		lapic_write(LAPIC_ICR1, val);
 
 		timeout = 1000;
@@ -1049,13 +1049,13 @@ int apic_send_startup_ipi(unsigned cpu, phys_bytes trampoline)
 
 int apic_send_init_ipi(unsigned cpu, phys_bytes trampoline) 
 {
-	u32_t ptr, errstatus = 0;
+	uint32_t ptr, errstatus = 0;
 	int timeout;
 
 	/* set the warm reset vector */
-	ptr = (u32_t)(trampoline & 0xF);
+	ptr = (uint32_t)(trampoline & 0xF);
 	phys_copy(0x467, vir2phys(&ptr), sizeof(uint16_t ));
-	ptr = (u32_t)(trampoline >> 4);
+	ptr = (uint32_t)(trampoline >> 4);
 	phys_copy(0x469, vir2phys(&ptr), sizeof(uint16_t ));
 
 	/* set shutdown code */
@@ -1170,9 +1170,9 @@ static eoi_method_t set_eoi_method(unsigned irq)
 		return ioapic_eoi_level;
 }
 
-void set_irq_redir_low(unsigned irq, u32_t * low)
+void set_irq_redir_low(unsigned irq, uint32_t * low)
 {
-	u32_t val = 0;
+	uint32_t val = 0;
 
 	/* clear the polarity, trigger, mask and vector fields */
 	val &= ~(APIC_ICR_VECTOR | APIC_ICR_INT_MASK |
@@ -1212,7 +1212,7 @@ void ioapic_set_irq(unsigned irq)
 		if (io_apic[ioa].gsi_base <= irq &&
 				io_apic[ioa].gsi_base +
 				io_apic[ioa].pins > irq) {
-			u32_t hi_32, low_32;
+			uint32_t hi_32, low_32;
 
 			io_apic_irq[irq].ioa = &io_apic[ioa];
 			io_apic_irq[irq].pin = irq - io_apic[ioa].gsi_base;
@@ -1252,7 +1252,7 @@ void ioapic_reset_pic(void)
 
 static void irq_lapic_status(int irq)
 {
-	u32_t lo;
+	uint32_t lo;
 	reg_t tmr, irr, isr;
 	int vector;
 	struct irq * intr;

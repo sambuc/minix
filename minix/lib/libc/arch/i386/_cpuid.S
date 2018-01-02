@@ -1,7 +1,7 @@
 /* _cpuid() - interface to cpuid instruction */
 
 
-/* void _cpuid(u32_t *eax, u32_t *ebx, u32_t *ecx, u32_t *edx); */
+/* void _cpuid(uint32_t *eax, uint32_t *ebx, uint32_t *ecx, uint32_t *edx); */
 /* 0 for OK, nonzero for unsupported */
 
 #include <machine/asm.h>

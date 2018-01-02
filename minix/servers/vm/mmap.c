@@ -34,10 +34,10 @@
 
 
 static struct vir_region *mmap_region(struct vmproc *vmp, vir_bytes addr,
-	u32_t vmm_flags, size_t len, u32_t vrflags,
+	uint32_t vmm_flags, size_t len, uint32_t vrflags,
 	mem_type_t *mt, int execpriv)
 {
-	u32_t mfflags = 0;
+	uint32_t mfflags = 0;
 	struct vir_region *vr = NULL;
 
 	if(vmm_flags & MAP_LOWER16M) vrflags |= VR_LOWER16MB;
@@ -90,7 +90,7 @@ static int mmap_file(struct vmproc *vmp,
 	struct vir_region *vr;
 	u64_t page_offset;
 	int result = OK;
-	u32_t vrflags = 0;
+	uint32_t vrflags = 0;
 
 	if(writable) vrflags |= VR_WRITABLE;
 
@@ -368,7 +368,7 @@ int do_remap(message *m)
 	int dn, sn;
 	vir_bytes da, sa;
 	size_t size;
-	u32_t flags;
+	uint32_t flags;
 	struct vir_region *src_region, *vr;
 	struct vmproc *dvmp, *svmp;
 	int r;

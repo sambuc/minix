@@ -79,13 +79,13 @@ static struct log log = {
 #define HSMMCSD_0_FREQ_50MHZ  50000000	/* 50MHz */
 
 void
-mmc_set32(vir_bytes reg, u32_t mask, u32_t value)
+mmc_set32(vir_bytes reg, uint32_t mask, uint32_t value)
 {
 	assert(reg >= 0 && reg <= mmchs->io_size);
 	set32(mmchs->io_base + reg, mask, value);
 }
 
-u32_t
+uint32_t
 mmc_read32(vir_bytes reg)
 {
 	assert(reg >= 0 && reg <= mmchs->io_size);
@@ -93,20 +93,20 @@ mmc_read32(vir_bytes reg)
 }
 
 void
-mmc_write32(vir_bytes reg, u32_t value)
+mmc_write32(vir_bytes reg, uint32_t value)
 {
 	assert(reg >= 0 && reg <= mmchs->io_size);
 	write32(mmchs->io_base + reg, value);
 }
 
 void
-mmchs_set_bus_freq(u32_t freq)
+mmchs_set_bus_freq(uint32_t freq)
 {
-	u32_t freq_in = HSMMCSD_0_IN_FREQ;
-	u32_t freq_out = freq;
+	uint32_t freq_in = HSMMCSD_0_IN_FREQ;
+	uint32_t freq_out = freq;
 
 	/* Calculate and program the divisor */
-	u32_t clkd = div_roundup(freq_in, freq_out);
+	uint32_t clkd = div_roundup(freq_in, freq_out);
 	clkd = (clkd < 2) ? 2 : clkd;
 	clkd = (clkd > 1023) ? 1023 : clkd;
 

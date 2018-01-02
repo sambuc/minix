@@ -218,7 +218,7 @@ int do_rs_update(message *m_ptr)
 static int rs_memctl_make_vm_instance(struct vmproc *new_vm_vmp)
 {
 	int r;
-	u32_t flags;
+	uint32_t flags;
 	int verify;
 	struct vmproc *this_vm_vmp;
 

@@ -134,7 +134,7 @@ int runqueues_ok(void)
 #endif
 
 char *
-rtsflagstr(const u32_t flags)
+rtsflagstr(const uint32_t flags)
 {
 	static char str[100];
 	str[0] = '\0';
@@ -161,7 +161,7 @@ rtsflagstr(const u32_t flags)
 }
 
 char *
-miscflagstr(const u32_t flags)
+miscflagstr(const uint32_t flags)
 {
 	static char str[100];
 	str[0] = '\0';

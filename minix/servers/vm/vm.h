@@ -29,7 +29,7 @@
 #define MARK do { if(mark) { printf("%d\n", __LINE__); } } while(0)
 
 /* special value for v in pt_allocmap */
-#define AM_AUTO         ((u32_t) -1)
+#define AM_AUTO         ((uint32_t) -1)
 
 /* How noisy are we supposed to be? */
 #define VERBOSE		0

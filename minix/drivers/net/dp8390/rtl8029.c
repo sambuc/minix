@@ -33,7 +33,7 @@ int skip;
 {
 	int r, devind;
 	uint16_t vid, did;
-	u32_t bar;
+	uint32_t bar;
 	uint8_t ilr;
 	const char *dname;
 

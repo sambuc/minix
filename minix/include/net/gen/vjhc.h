@@ -53,7 +53,7 @@ Created:	Nov 15, 1993 by Philip Homburg <philip@cs.vu.nl>
 		(cp) += 3; \
 	} \
 	else \
-		(l)= htonl(ntohl((l)) + (u32_t)*(cp)++); \
+		(l)= htonl(ntohl((l)) + (uint32_t)*(cp)++); \
 }
 
 #define VJHC_DECODES(cp, s) \

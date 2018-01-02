@@ -189,7 +189,7 @@ serial_out(rs232_t *rs, int offset, int val)
 static void
 rs_reset(rs232_t *rs)
 {
-	u32_t syss;
+	uint32_t syss;
 
 	serial_out(rs, OMAP3_SYSC, UART_SYSC_SOFTRESET);
 

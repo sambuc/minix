@@ -27,8 +27,8 @@ static SHA256_CTX pool_ctx[NR_POOLS];
 static unsigned samples= 0;
 static int got_seeded= 0;
 static uint8_t random_key[2*AES_BLOCKSIZE];
-static u32_t count_lo, count_hi;
-static u32_t reseed_count;
+static uint32_t count_lo, count_hi;
+static uint32_t reseed_count;
 
 static void add_sample(int source, unsigned long sample);
 static void data_block(rd_keyinstance *keyp, void *data);

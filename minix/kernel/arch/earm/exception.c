@@ -38,8 +38,8 @@ static void proc_stacktrace_execute(struct proc *whichproc, reg_t v_bp, reg_t pc
 static void pagefault( struct proc *pr,
 			reg_t *saved_lr,
 			int is_nested,
-			u32_t pagefault_addr,
-			u32_t pagefault_status)
+			uint32_t pagefault_addr,
+			uint32_t pagefault_status)
 {
 	int in_physcopy = 0, in_memset = 0;
 

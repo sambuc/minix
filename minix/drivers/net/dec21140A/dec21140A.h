@@ -27,7 +27,7 @@ Created: 09/01/2009   Nicolas Tittley (first.last @ gmail DOT com)
 #define DE_SETUP_FRAME_SIZE 192
 
 typedef struct de_descr {
-  u32_t des[4];
+  uint32_t des[4];
 } de_descr_t;
 
 typedef struct de_local_descr {

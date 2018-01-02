@@ -10,7 +10,7 @@ typedef struct dhcp {
 	uint8_t		htype;		/* Hardware address type. */
 	uint8_t		hlen;		/* Hardware address length. */
 	uint8_t		hops;		/* Hop count when relaying. */
-	u32_t		xid;		/* Transaction ID. */
+	uint32_t		xid;		/* Transaction ID. */
 	uint16_t		secs;		/* Seconds past since client began. */
 	uint16_t		flags;		/* Flags. */
 	ipaddr_t	ciaddr;		/* Client IP address. */
@@ -20,7 +20,7 @@ typedef struct dhcp {
 	uint8_t		chaddr[16];	/* Client hardware address. */
 	uint8_t		sname[64];	/* Server host name. */
 	uint8_t		file[128];	/* Boot file. */
-	u32_t		magic;		/* Magic number. */
+	uint32_t		magic;		/* Magic number. */
 	uint8_t		options[308];	/* Optional parameters. */
 } dhcp_t;
 

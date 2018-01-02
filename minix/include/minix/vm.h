@@ -21,13 +21,13 @@ int vm_update(endpoint_t src_e, endpoint_t dst_e, int flags);
 int vm_memctl(endpoint_t ep, int req, void** addr, size_t *len);
 int vm_prepare(endpoint_t src_e, endpoint_t dst_e, int flags);
 int minix_vfs_mmap(endpoint_t who, off_t offset, size_t len,
-        dev_t dev, ino_t ino, int fd, u32_t vaddr, uint16_t clearend, uint16_t
+        dev_t dev, ino_t ino, int fd, uint32_t vaddr, uint16_t clearend, uint16_t
 	flags);
 
 void *minix_mmap_for(endpoint_t forwhom,
         void *addr, size_t len, int prot, int flags, int fd, off_t offset);
 int minix_vfs_mmap(endpoint_t who, off_t offset, size_t len,
-        dev_t dev, ino_t ino, int fd, u32_t vaddr, uint16_t clearend,
+        dev_t dev, ino_t ino, int fd, uint32_t vaddr, uint16_t clearend,
         uint16_t flags);
 
 /* minix vfs mmap flags */
@@ -73,10 +73,10 @@ int vm_procctl_clear(endpoint_t ep);
 int vm_procctl_handlemem(endpoint_t ep, vir_bytes m1, vir_bytes m2, int wr);
 
 int vm_set_cacheblock(void *block, dev_t dev, off_t dev_offset,
-        ino_t ino, off_t ino_offset, u32_t *flags, int blocksize,
+        ino_t ino, off_t ino_offset, uint32_t *flags, int blocksize,
         int setflags);
 void *vm_map_cacheblock(dev_t dev, off_t dev_offset,
-        ino_t ino, off_t ino_offset, u32_t *flags, int blocksize);
+        ino_t ino, off_t ino_offset, uint32_t *flags, int blocksize);
 int vm_forget_cacheblock(dev_t dev, off_t dev_offset, int blocksize);
 int vm_clear_cache(dev_t dev);
 

@@ -23,13 +23,13 @@ enum {
 
 /* Block trace entry. */
 typedef struct {
-  u32_t request;		/* request code; one of BTR_xxx */
-  u32_t size;			/* request size, ioctl request, or access */
+  uint32_t request;		/* request code; one of BTR_xxx */
+  uint32_t size;			/* request size, ioctl request, or access */
   u64_t position;		/* starting disk position */
-  u32_t flags;			/* transfer flags */
+  uint32_t flags;			/* transfer flags */
   i32_t result;			/* request result; OK, bytes, or error */
-  u32_t start_time;		/* request service start time (us) */
-  u32_t finish_time;		/* request service completion time (us) */
+  uint32_t start_time;		/* request service start time (us) */
+  uint32_t finish_time;		/* request service completion time (us) */
 } btrace_entry;			/* (32 bytes) */
 
 /* This is the number of btrace_entry structures copied out at once using the

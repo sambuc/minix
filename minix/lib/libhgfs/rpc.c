@@ -61,7 +61,7 @@ int rpc_query(void)
 
   if (len <= 2) return OK;
 
-  RPC_ADVANCE(sizeof(u32_t)); /* Skip over id field. */
+  RPC_ADVANCE(sizeof(uint32_t)); /* Skip over id field. */
   err = RPC_NEXT32;
 
   return error_convert(err);

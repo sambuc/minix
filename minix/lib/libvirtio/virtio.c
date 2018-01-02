@@ -55,10 +55,10 @@ struct virtio_queue {
 
 	void *vaddr;				/* virtual addr of ring */
 	phys_bytes paddr;			/* physical addr of ring */
-	u32_t page;				/* physical guest page */
+	uint32_t page;				/* physical guest page */
 
 	uint16_t num;				/* number of descriptors */
-	u32_t ring_size;			/* size of ring in bytes */
+	uint32_t ring_size;			/* size of ring in bytes */
 	struct vring vring;
 
 	uint16_t free_num;				/* free descriptors */
@@ -187,7 +187,7 @@ err:
 static int
 init_device(int devind, struct virtio_device *dev)
 {
-	u32_t base, size;
+	uint32_t base, size;
 	int iof, r;
 
 	pci_reserve(devind);
@@ -222,7 +222,7 @@ init_device(int devind, struct virtio_device *dev)
 static int
 exchange_features(struct virtio_device *dev)
 {
-	u32_t guest_features = 0, host_features = 0;
+	uint32_t guest_features = 0, host_features = 0;
 	struct virtio_feature *f;
 
 	host_features = virtio_read32(dev, VIRTIO_HOST_F_OFF);
@@ -834,7 +834,7 @@ u##xx##_t								\
 virtio_read##xx(struct virtio_device *dev, i32_t off)			\
 {									\
 	int r;								\
-	u32_t ret;							\
+	uint32_t ret;							\
 	if ((r = sys_in##suff(dev->port + off, &ret)) != OK)		\
 		panic("%s: Read failed %d %d r=%d", dev->name,		\
 						    dev->port,		\
@@ -871,7 +871,7 @@ u##xx##_t								\
 virtio_sread##xx(struct virtio_device *dev, i32_t off)			\
 {									\
 	int r;								\
-	u32_t ret;							\
+	uint32_t ret;							\
 	off += VIRTIO_DEV_SPECIFIC_OFF; 				\
 									\
 	if (dev->msi)							\

@@ -44,7 +44,7 @@
 #define ORDER_HIGHEST	ORDER_MEMORY
 int order = ORDER_CPU;
 
-u32_t system_hz;
+uint32_t system_hz;
 
 /* name of cpu cycle types, in the order they appear in /psinfo. */
 const char *cputimenames[] = { "user", "ipc", "kernelcall" };
@@ -616,7 +616,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	system_hz = (u32_t) sysconf(_SC_CLK_TCK);
+	system_hz = (uint32_t) sysconf(_SC_CLK_TCK);
 
 	getkinfo();
 

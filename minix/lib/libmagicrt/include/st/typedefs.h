@@ -25,7 +25,7 @@
     typedef int32_t*        PREFIX ## i32_ptr_t
 
 #define ST_DECLARE_STD_PTRINT_TYPEDEFS(PREFIX)      \
-    typedef uint32_t        PREFIX ## u32_t;        \
+    typedef uint32_t        PREFIX ## uint32_t;        \
     typedef int             PREFIX ## int_t;        \
     typedef long            PREFIX ## long_t;       \
     typedef unsigned int    PREFIX ## uint_t;       \

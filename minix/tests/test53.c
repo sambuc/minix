@@ -35,7 +35,7 @@ static void err(int line)
 
 static u64_t getargval(int index, int *done)
 {
-	u32_t values[] = { 
+	uint32_t values[] = { 
 		/* corner cases */
 		0, 
 		1,
@@ -126,7 +126,7 @@ static inline int bsr64(u64_t i)
 static void testmul(void)
 {
 	int kdone, kidx;
-	u32_t ilo = ex64lo(i), jlo = ex64lo(j);
+	uint32_t ilo = ex64lo(i), jlo = ex64lo(j);
 	u64_t prod = i * j;
 	int prodbits;
 		

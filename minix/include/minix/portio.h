@@ -14,7 +14,7 @@ unsigned inw(uint16_t _port);
 unsigned inl(uint16_t _port);
 void outb(uint16_t _port, uint8_t _value);
 void outw(uint16_t _port, uint16_t _value);
-void outl(uint16_t _port, u32_t _value);
+void outl(uint16_t _port, uint32_t _value);
 void intr_disable(void);
 void intr_enable(void);
 

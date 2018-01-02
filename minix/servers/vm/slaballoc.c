@@ -95,7 +95,7 @@ typedef element_t elements_t[USEELEMENTS];
 
 struct sdh {
 #if SANITYCHECKS
-	u32_t magic1;
+	uint32_t magic1;
 #endif
 	int freeguess;
 	struct slabdata *next, *prev;
@@ -103,7 +103,7 @@ struct sdh {
 	phys_bytes phys;
 #if SANITYCHECKS
 	int writable;	/* data item number or WRITABLE_* */
-	u32_t magic2;
+	uint32_t magic2;
 #endif
 	uint16_t nused;	/* Number of data items used in this slab. */
 };
@@ -316,7 +316,7 @@ void *slaballoc(int bytes)
 	nojunkwarning--;
 	assert(!nojunkwarning);
 #endif
-	*(u32_t *) ret = NOJUNK;
+	*(uint32_t *) ret = NOJUNK;
 #if MEMPROTECT
 	slablock(ret, bytes);
 #endif
@@ -364,7 +364,7 @@ static inline int objstats(void *mem, int bytes,
 	OBJSTATSCHECK((char *) mem >= (char *) VM_PAGE_SIZE);
 
 #if SANITYCHECKS
-	if(*(u32_t *) mem == JUNK && !nojunkwarning) {
+	if(*(uint32_t *) mem == JUNK && !nojunkwarning) {
 		util_stacktrace();
 		printf("VM: WARNING: JUNK seen in slab object, likely freed\n");
 	}
@@ -418,7 +418,7 @@ void slabfree(void *mem, int bytes)
 	}
 
 #if SANITYCHECKS
-	if(*(u32_t *) mem == JUNK) {
+	if(*(uint32_t *) mem == JUNK) {
 		printf("VM: WARNING: likely double free, JUNK seen\n");
 	}
 #endif
@@ -430,7 +430,7 @@ void slabfree(void *mem, int bytes)
 #if JUNKFREE
 	memset(mem, 0xa6, bytes);
 #endif
-	*(u32_t *) mem = JUNK;
+	*(uint32_t *) mem = JUNK;
 	nojunkwarning++;
 #if MEMPROTECT
 	slablock(mem, bytes);

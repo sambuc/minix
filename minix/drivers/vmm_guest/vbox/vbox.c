@@ -20,7 +20,7 @@
 static void *vir_ptr;
 static phys_bytes phys_ptr;
 static port_t port;
-static u32_t ticks;
+static uint32_t ticks;
 static int interval;
 static int drift;
 

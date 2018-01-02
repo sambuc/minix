@@ -2,10 +2,10 @@
 #include <minix/minlib.h>
 
 void
-read_tsc(u32_t *hi, u32_t *lo)
+read_tsc(uint32_t *hi, uint32_t *lo)
 {
 /* Read Clock Cycle Counter (CCNT). Intel calls it Time Stamp Counter (TSC) */
-	u32_t ccnt;
+	uint32_t ccnt;
 
 	/* Get value from the Performance Monitors Cycle Counter Register.
 	 * See ARM Architecture Reference Manual B5.1.113.

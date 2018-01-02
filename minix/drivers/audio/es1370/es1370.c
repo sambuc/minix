@@ -30,15 +30,15 @@
 /* prototypes of private functions */
 static int detect_hw(void);
 static int disable_int(int sub_dev);
-static int set_stereo(u32_t stereo, int sub_dev);
-static int set_bits(u32_t nr_of_bits, int sub_dev);
-static int set_sample_rate(u32_t rate, int sub_dev);
-static int set_sign(u32_t val, int sub_dev);
-static int get_max_frag_size(u32_t * val, int *len, int sub_dev);
-static int set_frag_size(u32_t fragment_size, int sub_dev);
+static int set_stereo(uint32_t stereo, int sub_dev);
+static int set_bits(uint32_t nr_of_bits, int sub_dev);
+static int set_sample_rate(uint32_t rate, int sub_dev);
+static int set_sign(uint32_t val, int sub_dev);
+static int get_max_frag_size(uint32_t * val, int *len, int sub_dev);
+static int set_frag_size(uint32_t fragment_size, int sub_dev);
 static int set_int_cnt(int sub_dev);
-static int free_buf(u32_t *val, int *len, int sub_dev);
-static int get_samples_in_buf(u32_t *val, int *len, int sub_dev);
+static int free_buf(uint32_t *val, int *len, int sub_dev);
+static int get_samples_in_buf(uint32_t *val, int *len, int sub_dev);
 static int get_set_volume(struct volume_level *level, int *len, int
 	sub_dev, int flag);
 static int reset(int sub_dev);
@@ -168,7 +168,7 @@ int drv_init_hw (void) {
 
 
 static int detect_hw(void) {
-	u32_t device;
+	uint32_t device;
 	int devind;
 	uint16_t v_id, d_id;
 
@@ -224,7 +224,7 @@ int drv_reset() {
 
 
 int drv_start(int sub_dev, int UNUSED(DmaMode)) {
-	u32_t enable_bit, result = 0;
+	uint32_t enable_bit, result = 0;
 
 	/* Write default values to device in case user failed to configure.
 	   If user did configure properly, everything is written twice.
@@ -265,7 +265,7 @@ int drv_start(int sub_dev, int UNUSED(DmaMode)) {
 
 int drv_stop(int sub_dev)
 {
-	u32_t enable_bit;
+	uint32_t enable_bit;
 	int status;
 
 	switch(sub_dev) {
@@ -292,15 +292,15 @@ int drv_io_ctl(unsigned long request, void * val, int * len, int sub_dev) {
 
 	switch(request) {
 		case DSPIORATE:	
-			status = set_sample_rate(*((u32_t *) val), sub_dev); break;
+			status = set_sample_rate(*((uint32_t *) val), sub_dev); break;
 		case DSPIOSTEREO:	       
-			status = set_stereo(*((u32_t *) val), sub_dev); break;
+			status = set_stereo(*((uint32_t *) val), sub_dev); break;
 		case DSPIOBITS:	         
-			status = set_bits(*((u32_t *) val), sub_dev); break;
+			status = set_bits(*((uint32_t *) val), sub_dev); break;
 		case DSPIOSIZE:	         
-			status = set_frag_size(*((u32_t *) val), sub_dev); break;
+			status = set_frag_size(*((uint32_t *) val), sub_dev); break;
 		case DSPIOSIGN:	         
-			status = set_sign(*((u32_t *) val), sub_dev); break;
+			status = set_sign(*((uint32_t *) val), sub_dev); break;
 		case DSPIOMAX:           
 			status = get_max_frag_size(val, len, sub_dev); break;
 		case DSPIORESET:         
@@ -331,16 +331,16 @@ int drv_get_irq(char *irq) {
 }
 
 
-int drv_get_frag_size(u32_t *frag_size, int sub_dev) {
+int drv_get_frag_size(uint32_t *frag_size, int sub_dev) {
 	*frag_size = aud_conf[sub_dev].fragment_size;
 	return OK;  
 }
 
 
-int drv_set_dma(u32_t dma, u32_t length, int chan) {
+int drv_set_dma(uint32_t dma, uint32_t length, int chan) {
 	/* dma length in bytes, 
 	   max is 64k long words for es1370 = 256k bytes */
-	u32_t page, frame_count_reg, dma_add_reg;
+	uint32_t page, frame_count_reg, dma_add_reg;
 
 	switch(chan) {
 		case ADC1_CHAN: page = ADC_MEM_PAGE;
@@ -368,7 +368,7 @@ int drv_set_dma(u32_t dma, u32_t length, int chan) {
 	 * addressable.
 	 * It expects length -1
 	 */
-	pci_outl(reg(frame_count_reg), (u32_t) (length - 1));
+	pci_outl(reg(frame_count_reg), (uint32_t) (length - 1));
 
 	return OK;
 }
@@ -381,8 +381,8 @@ int drv_int_sum(void) {
 
 
 int drv_int(int sub_dev) {
-	u32_t int_status;
-	u32_t bit;
+	uint32_t int_status;
+	uint32_t bit;
 
 	/* return status of interrupt bit of specified channel*/
 	switch (sub_dev) {
@@ -418,7 +418,7 @@ int drv_reenable_int(int chan) {
 
 
 int drv_pause(int sub_dev) { 
-	u32_t pause_bit;
+	uint32_t pause_bit;
 
 	disable_int(sub_dev); /* don't send interrupts */
 
@@ -437,7 +437,7 @@ int drv_pause(int sub_dev) {
 
 
 int drv_resume(int sub_dev) {
-	u32_t pause_bit = 0;
+	uint32_t pause_bit = 0;
 
 	drv_reenable_int(sub_dev); /* enable interrupts */
 
@@ -455,7 +455,7 @@ int drv_resume(int sub_dev) {
 }
 
 
-static int set_bits(u32_t nr_of_bits, int sub_dev) {
+static int set_bits(uint32_t nr_of_bits, int sub_dev) {
 	/* set format bits for specified channel. */
 	uint16_t size_16_bit, ser_interface;
 
@@ -479,7 +479,7 @@ static int set_bits(u32_t nr_of_bits, int sub_dev) {
 }
 
 
-static int set_stereo(u32_t stereo, int sub_dev) {
+static int set_stereo(uint32_t stereo, int sub_dev) {
 	/* set format bits for specified channel. */
 	uint16_t stereo_bit, ser_interface;
 
@@ -501,12 +501,12 @@ static int set_stereo(u32_t stereo, int sub_dev) {
 }
 
 
-static int set_sign(u32_t UNUSED(val), int UNUSED(sub_dev)) {
+static int set_sign(uint32_t UNUSED(val), int UNUSED(sub_dev)) {
 	return OK;
 }
 
 
-static int set_frag_size(u32_t fragment_size, int sub_dev_nr) {
+static int set_frag_size(uint32_t fragment_size, int sub_dev_nr) {
 	if (fragment_size > (sub_dev[sub_dev_nr].DmaSize / 
 				sub_dev[sub_dev_nr].NrOfDmaFragments) || 
 			fragment_size < sub_dev[sub_dev_nr].MinFragmentSize) {
@@ -518,9 +518,9 @@ static int set_frag_size(u32_t fragment_size, int sub_dev_nr) {
 }
 
 
-static int set_sample_rate(u32_t rate, int sub_dev) {
+static int set_sample_rate(uint32_t rate, int sub_dev) {
 	/* currently only 44.1kHz */
-	u32_t controlRegister;
+	uint32_t controlRegister;
 
 	if (rate > MAX_RATE || rate < MIN_RATE) {
 		return EINVAL;
@@ -573,7 +573,7 @@ static int set_int_cnt(int chan) {
 }
 
 
-static int get_max_frag_size(u32_t * val, int * len, int sub_dev_nr) {
+static int get_max_frag_size(uint32_t * val, int * len, int sub_dev_nr) {
 	*len = sizeof(*val);
 	*val = (sub_dev[sub_dev_nr].DmaSize / 
 			sub_dev[sub_dev_nr].NrOfDmaFragments);
@@ -597,7 +597,7 @@ static int disable_int(int chan) {
 }
 
 
-static int get_samples_in_buf (u32_t *samples_in_buf, int *len, int chan) {
+static int get_samples_in_buf (uint32_t *samples_in_buf, int *len, int chan) {
 	uint16_t samp_ct_reg; 
 	uint16_t curr_samp_ct_reg;
 	uint16_t curr_samp_ct; /* counts back from SAMP_CT till 0 */
@@ -621,7 +621,7 @@ static int get_samples_in_buf (u32_t *samples_in_buf, int *len, int chan) {
 	(void) pci_inw(reg(samp_ct_reg));
 	curr_samp_ct = pci_inw(reg(curr_samp_ct_reg));
 
-	*samples_in_buf = (u32_t) (sub_dev[chan].BufLength * 8192) + 
+	*samples_in_buf = (uint32_t) (sub_dev[chan].BufLength * 8192) + 
 		curr_samp_ct;
 
 	return OK;
@@ -629,7 +629,7 @@ static int get_samples_in_buf (u32_t *samples_in_buf, int *len, int chan) {
 
 
 /* returns 1 if there are free buffers */
-static int free_buf (u32_t *val, int *len, int sub_dev_nr) {
+static int free_buf (uint32_t *val, int *len, int sub_dev_nr) {
 	*len = sizeof(*val);
 	if (sub_dev[sub_dev_nr].BufLength ==
 			sub_dev[sub_dev_nr].NrOfExtraBuffers) {

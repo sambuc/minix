@@ -7,7 +7,7 @@ Created:	Jan 2001 by Philip Homburg <philip@f-mnx.phicoh.com>
 typedef struct nwio_arp
 {
 	int nwa_entno;
-	u32_t nwa_flags;
+	uint32_t nwa_flags;
 	ipaddr_t nwa_ipaddr;
 	ether_addr_t nwa_ethaddr;
 } nwio_arp_t;

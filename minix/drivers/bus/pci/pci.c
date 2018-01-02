@@ -50,10 +50,10 @@ static struct pcibus
 	int pb_busnr;
 	uint8_t (*pb_rreg8)(int busind, int devind, int port);
 	uint16_t (*pb_rreg16)(int busind, int devind, int port);
-	u32_t (*pb_rreg32)(int busind, int devind, int port);
+	uint32_t (*pb_rreg32)(int busind, int devind, int port);
 	void (*pb_wreg8)(int busind, int devind, int port, uint8_t value);
 	void (*pb_wreg16)(int busind, int devind, int port, uint16_t value);
-	void (*pb_wreg32)(int busind, int devind, int port, u32_t value);
+	void (*pb_wreg32)(int busind, int devind, int port, uint32_t value);
 	uint16_t (*pb_rsts)(int busind);
 	void (*pb_wsts)(int busind, uint16_t value);
 } pcibus[NR_PCIBUS];
@@ -80,8 +80,8 @@ static struct pcidev
 	{
 		int pb_flags;
 		int pb_nr;
-		u32_t pb_base;
-		u32_t pb_size;
+		uint32_t pb_base;
+		uint32_t pb_size;
 	} pd_bar[BAM_NR];
 	int pd_bar_nr;
 } pcidev[NR_PCIDEV];
@@ -99,7 +99,7 @@ static struct machine machine;
  *===========================================================================*/
 static unsigned
 pci_inb(uint16_t port) {
-	u32_t value;
+	uint32_t value;
 	int s;
 	if ((s=sys_inb(port, &value)) !=OK)
 		printf("PCI: warning, sys_inb failed: %d\n", s);
@@ -108,7 +108,7 @@ pci_inb(uint16_t port) {
 
 static unsigned
 pci_inw(uint16_t port) {
-	u32_t value;
+	uint32_t value;
 	int s;
 	if ((s=sys_inw(port, &value)) !=OK)
 		printf("PCI: warning, sys_inw failed: %d\n", s);
@@ -117,7 +117,7 @@ pci_inw(uint16_t port) {
 
 static unsigned
 pci_inl(uint16_t port) {
-	u32_t value;
+	uint32_t value;
 	int s;
 	if ((s=sys_inl(port, &value)) !=OK)
 		printf("PCI: warning, sys_inl failed: %d\n", s);
@@ -139,7 +139,7 @@ pci_outw(uint16_t port, uint16_t value) {
 }
 
 static void
-pci_outl(uint16_t port, u32_t value) {
+pci_outl(uint16_t port, uint32_t value) {
 	int s;
 	if ((s=sys_outl(port, value)) !=OK)
 		printf("PCI: warning, sys_outl failed: %d\n", s);
@@ -185,10 +185,10 @@ pcii_rreg16(int busind, int devind, int port)
 	return v;
 }
 
-static u32_t
+static uint32_t
 pcii_rreg32(int busind, int devind, int port)
 {
-	u32_t v;
+	uint32_t v;
 	int s;
 
 	v= PCII_RREG32_(pcibus[busind].pb_busnr,
@@ -240,7 +240,7 @@ pcii_wreg16(int busind, int devind, int port, uint16_t value)
 }
 
 static void
-pcii_wreg32(int busind, int devind, int port, u32_t value)
+pcii_wreg32(int busind, int devind, int port, uint32_t value)
 {
 	int s;
 #if 0
@@ -332,7 +332,7 @@ __pci_attr_r16(int devind, int port)
 	return pcibus[busind].pb_rreg16(busind, devind, port);
 }
 
-static u32_t
+static uint32_t
 __pci_attr_r32(int devind, int port)
 {
 	int busnr, busind;
@@ -363,7 +363,7 @@ __pci_attr_w16(int devind, int port, uint16_t value)
 }
 
 static void
-__pci_attr_w32(int devind, int port, u32_t value)
+__pci_attr_w32(int devind, int port, uint32_t value)
 {
 	int busnr, busind;
 
@@ -465,7 +465,7 @@ pci_vid_name(uint16_t vid)
 static void
 print_hyper_cap(int devind, uint8_t capptr)
 {
-	u32_t v;
+	uint32_t v;
 	uint16_t cmd;
 	int type0, type1;
 
@@ -580,7 +580,7 @@ print_capabilities(int devind)
  *				ISA Bridge Helpers			     *
  *===========================================================================*/
 static void
-update_bridge4dev_io(int devind, u32_t io_base, u32_t io_size)
+update_bridge4dev_io(int devind, uint32_t io_base, uint32_t io_size)
 {
 	int busnr, busind, type, br_devind;
 	uint16_t v16;
@@ -617,7 +617,7 @@ static int
 do_piix(int devind)
 {
 	int i, s, irqrc, irq;
-	u32_t elcr1, elcr2, elcr;
+	uint32_t elcr1, elcr2, elcr;
 
 #if DEBUG
 	printf("in piix\n");
@@ -789,7 +789,7 @@ do_isabridge(int busind)
 {
 	int i, j, r, type, busnr, unknown_bridge, bridge_dev;
 	uint16_t vid, did;
-	u32_t t3;
+	uint32_t t3;
 	const char *dstr;
 
 	unknown_bridge= -1;
@@ -1009,7 +1009,7 @@ static int
 record_bar(int devind, int bar_nr, int last)
 {
 	int reg, prefetch, type, dev_bar_nr, width;
-	u32_t bar, bar2;
+	uint32_t bar, bar2;
 	uint16_t cmd;
 
 	/* Start by assuming that this is a 32-bit bar, taking up one DWORD. */
@@ -1221,7 +1221,7 @@ record_bars_normal(int devind)
 static void
 record_bars_bridge(int devind)
 {
-	u32_t base, limit, size;
+	uint32_t base, limit, size;
 
 	/* The generic BAR area of PCI-to-PCI bridges is two DWORDs in size.
 	 * It may contain up to two 32-bit BARs, or one 64-bit BAR.
@@ -1270,7 +1270,7 @@ record_bars_bridge(int devind)
 static void
 record_bars_cardbus(int devind)
 {
-	u32_t base, limit, size;
+	uint32_t base, limit, size;
 
 	/* The generic BAR area of CardBus devices is one DWORD in size. */
 	record_bars(devind, PCI_BAR);
@@ -1320,7 +1320,7 @@ static void
 complete_bars(void)
 {
 	int i, j, bar_nr, reg;
-	u32_t memgap_low, memgap_high, iogap_low, iogap_high, io_high,
+	uint32_t memgap_low, memgap_high, iogap_low, iogap_high, io_high,
 		base, size, v32, diff1, diff2;
 	kinfo_t kinfo;
 
@@ -1437,7 +1437,7 @@ complete_bars(void)
 			if (size < PAGE_SIZE)
 				size= PAGE_SIZE;
 			base= memgap_high-size;
-			base &= ~(u32_t)(size-1);
+			base &= ~(uint32_t)(size-1);
 			if (base < memgap_low)
 				panic("memory base too low: %d", base);
 			memgap_high= base;
@@ -1466,7 +1466,7 @@ complete_bars(void)
 				continue;
 			size= pcidev[i].pd_bar[j].pb_size;
 			base= iogap_high-size;
-			base &= ~(u32_t)(size-1);
+			base &= ~(uint32_t)(size-1);
 
 			/* Assume that ISA compatibility is required. Only
 			 * use the lowest 256 bytes out of every 1024 bytes.
@@ -1786,7 +1786,7 @@ do_pcibridge(int busind)
 	int ind, type;
 	uint16_t vid, did;
 	uint8_t sbusn, baseclass, subclass, infclass, headt;
-	u32_t t3;
+	uint32_t t3;
 
 	vid= did= 0;	/* lint */
 	busnr= pcibus[busind].pb_busnr;
@@ -1927,7 +1927,7 @@ pci_intel_init(void)
 	 * Two times the value 0xffff suggests a system without a (compatible)
 	 * PCI controller.
 	 */
-	u32_t bus, dev, func;
+	uint32_t bus, dev, func;
 	uint16_t vid, did;
 	int s, i, r, busind, busnr;
 	const char *dstr;
@@ -2040,7 +2040,7 @@ visible(struct rs_pci *aclp, int devind)
 {
 	uint16_t acl_sub_vid, acl_sub_did;
 	int i;
-	u32_t class_id;
+	uint32_t class_id;
 
 	if (!aclp)
 		return TRUE;	/* Should be changed when ACLs become
@@ -2441,7 +2441,7 @@ _pci_dev_name(uint16_t vid, uint16_t did)
  *				_pci_get_bar				     *
  *===========================================================================*/
 int
-_pci_get_bar(int devind, int port, u32_t *base, u32_t *size,
+_pci_get_bar(int devind, int port, uint32_t *base, uint32_t *size,
 	int *ioflag)
 {
 	int i, reg;
@@ -2502,7 +2502,7 @@ _pci_attr_r16(int devind, int port, uint16_t *vp)
  *				_pci_attr_r32				     *
  *===========================================================================*/
 int
-_pci_attr_r32(int devind, int port, u32_t *vp)
+_pci_attr_r32(int devind, int port, uint32_t *vp)
 {
 	if (devind < 0 || devind >= nr_pcidev)
 		return EINVAL;
@@ -2547,7 +2547,7 @@ _pci_attr_w16(int devind, int port, uint16_t value)
  *				_pci_attr_w32				     *
  *===========================================================================*/
 int
-_pci_attr_w32(int devind, int port, u32_t value)
+_pci_attr_w32(int devind, int port, uint32_t value)
 {
 	if (devind < 0 || devind >= nr_pcidev)
 		return EINVAL;

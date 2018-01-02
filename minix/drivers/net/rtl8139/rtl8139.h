@@ -467,7 +467,7 @@ typedef struct re
 		phys_bytes ret_buf;
 		char * v_ret_buf;
 	} re_tx[N_TX_BUF];
-	u32_t re_ertxth;	/* Early Tx Threshold */
+	uint32_t re_ertxth;	/* Early Tx Threshold */
 
 	int re_hook_id;			/* IRQ hook id at kernel */
 } re_t;

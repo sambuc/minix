@@ -196,7 +196,7 @@ struct k_randomness {
 /* ARM free-running timer information. */
 struct arm_frclock {
 	u64_t hz;		/* tcrr frequency */
-	u32_t tcrr;		/* tcrr address */
+	uint32_t tcrr;		/* tcrr address */
 };
 
 /* The userland ABI portion of general information exposed by the kernel.
@@ -227,12 +227,12 @@ struct minix_kerninfo {
 	 * layout of the 'kinfo' structure.
 	 */
 #define KERNINFO_MAGIC 0xfc3b84bf
-	u32_t kerninfo_magic;
-	u32_t minix_feature_flags;	/* features in minix kernel */
-	u32_t ki_flags;			/* what is present in this struct */
-	u32_t flags_unused2;
-	u32_t flags_unused3;
-	u32_t flags_unused4;
+	uint32_t kerninfo_magic;
+	uint32_t minix_feature_flags;	/* features in minix kernel */
+	uint32_t ki_flags;			/* what is present in this struct */
+	uint32_t flags_unused2;
+	uint32_t flags_unused3;
+	uint32_t flags_unused4;
 	struct kinfo		*kinfo;			/* see note above! */
 	struct machine		*machine;		/* NOT userland ABI */
 	struct kmessages	*kmessages;		/* NOT userland ABI */

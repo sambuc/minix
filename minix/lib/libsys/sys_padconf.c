@@ -2,7 +2,7 @@
 
 #include "syslib.h"
 
-int sys_padconf(u32_t padconf, u32_t mask, u32_t value)
+int sys_padconf(uint32_t padconf, uint32_t mask, uint32_t value)
 {
         message m;
 

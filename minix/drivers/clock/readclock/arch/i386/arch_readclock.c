@@ -213,7 +213,7 @@ arch_get_time(struct tm *t, int flags)
 static int
 read_register(int reg_addr)
 {
-	u32_t r;
+	uint32_t r;
 
 	if (sys_outb(RTC_INDEX, reg_addr) != OK) {
 		log_warn(&log, "outb failed of %x\n", RTC_INDEX);

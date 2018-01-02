@@ -2,6 +2,6 @@
 
 struct channel {
   uint16_t id;
-  u32_t cookie1;
-  u32_t cookie2;
+  uint32_t cookie1;
+  uint32_t cookie2;
 };

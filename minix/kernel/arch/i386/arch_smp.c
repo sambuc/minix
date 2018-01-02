@@ -28,12 +28,12 @@ void trampoline(void);
  * They have to be in location which is reachable using absolute addressing in
  * 16-bit mode
  */
-extern volatile u32_t __ap_id, __ap_pt;
+extern volatile uint32_t __ap_id, __ap_pt;
 extern volatile struct desctableptr_s __ap_gdt, __ap_idt;
-extern u32_t __ap_gdt_tab, __ap_idt_tab;
+extern uint32_t __ap_gdt_tab, __ap_idt_tab;
 extern void * __trampoline_end;
 
-extern u32_t busclock[CONFIG_MAX_CPUS];
+extern uint32_t busclock[CONFIG_MAX_CPUS];
 extern int panicking;
 
 static int volatile ap_cpu_ready;
@@ -56,10 +56,10 @@ extern int prot_init_done;	/* Indicates they are ready */
 
 static phys_bytes trampoline_base;
 
-static u32_t ap_lin_addr(void *vaddr)
+static uint32_t ap_lin_addr(void *vaddr)
 {
 	assert(trampoline_base);
-	return (u32_t) vaddr - (u32_t) &trampoline + trampoline_base;
+	return (uint32_t) vaddr - (uint32_t) &trampoline + trampoline_base;
 }
 
 /*
@@ -100,13 +100,13 @@ extern int booting_cpu;	/* tell protect.c what to do */
 static void smp_start_aps(void)
 {
 	unsigned cpu;
-	u32_t biosresetvector;
+	uint32_t biosresetvector;
 	phys_bytes __ap_id_phys;
 	struct proc *bootstrap_pt = get_cpulocal_var(ptproc);
 
 	/* TODO hack around the alignment problem */
 
-	phys_copy(0x467, (phys_bytes) &biosresetvector, sizeof(u32_t));
+	phys_copy(0x467, (phys_bytes) &biosresetvector, sizeof(uint32_t));
 
 	/* set the bios shutdown code to 0xA */
 	outb(RTC_INDEX, 0xF);
@@ -124,7 +124,7 @@ static void smp_start_aps(void)
 		(phys_bytes) &__ap_id - (phys_bytes)&trampoline;
 
 	/* setup the warm reset vector */
-	phys_copy((phys_bytes) &trampoline_base, 0x467, sizeof(u32_t));
+	phys_copy((phys_bytes) &trampoline_base, 0x467, sizeof(uint32_t));
 
 	/* okay, we're ready to go.  boot all of the ap's now.  we loop through
 	 * using the processor's apic id values.
@@ -160,7 +160,7 @@ static void smp_start_aps(void)
 		}
 	}
 
-	phys_copy((phys_bytes) &biosresetvector, 0x467, sizeof(u32_t));
+	phys_copy((phys_bytes) &biosresetvector, 0x467, sizeof(uint32_t));
 
 	outb(RTC_INDEX, 0xF);
 	outb(RTC_IO, 0);

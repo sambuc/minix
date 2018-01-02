@@ -147,8 +147,8 @@ typedef struct NDR_desc {
 typedef struct NDR_driver {
 	char *dev_name;			/* Device name */
 	uint16_t vid, did;			/* Vendor and device ID */
-	u32_t devind;			/* Device index */
-	u32_t base[6];			/* Base address */
+	uint32_t devind;			/* Device index */
+	uint32_t base[6];			/* Base address */
 	char irq;				/* IRQ number */
 	char revision;			/* Revision ID */
 

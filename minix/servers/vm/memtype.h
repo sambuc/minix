@@ -25,7 +25,7 @@ typedef struct mem_type {
 	int (*ev_sanitycheck)(struct phys_region *pr, const char *file, int line);
         int (*ev_copy)(struct vir_region *vr, struct vir_region *newvr);
         int (*ev_lowshrink)(struct vir_region *vr, vir_bytes len);
-	u32_t (*regionid)(struct vir_region *vr);
+	uint32_t (*regionid)(struct vir_region *vr);
         int (*refcount)(struct vir_region *vr);
         int (*pt_flags)(struct vir_region *vr); /* page table flags */
 } mem_type_t;

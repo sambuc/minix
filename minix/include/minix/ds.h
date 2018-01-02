@@ -34,8 +34,8 @@
 /* ds.c */
 
 /* U32 */
-int ds_publish_u32(const char *name, u32_t val, int flags);
-int ds_retrieve_u32(const char *name, u32_t *val);
+int ds_publish_u32(const char *name, uint32_t val, int flags);
+int ds_retrieve_u32(const char *name, uint32_t *val);
 int ds_delete_u32(const char *ds_name);
 
 /* STRING */

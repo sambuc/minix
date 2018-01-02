@@ -38,8 +38,8 @@ static void setup_mbi(multiboot_info_t *mbi, char *bootargs);
 int kernel_may_alloc = 1;
 
 /* kernel bss */
-extern u32_t _edata;
-extern u32_t _end;
+extern uint32_t _edata;
+extern uint32_t _end;
 
 /* kernel unpaged bss */
 extern char _kern_unpaged_edata;
@@ -193,7 +193,7 @@ void setup_mbi(multiboot_info_t *mbi, char *bootargs)
 	mbi->flags = MULTIBOOT_INFO_MODS | MULTIBOOT_INFO_MEM_MAP |
 			MULTIBOOT_INFO_CMDLINE;
 	mbi->mi_mods_count = MB_MODS_NR;
-	mbi->mods_addr = (u32_t)&mb_modlist;
+	mbi->mods_addr = (uint32_t)&mb_modlist;
 
 	int i;
 	for (i = 0; i < MB_MODS_NR; ++i) {
@@ -204,9 +204,9 @@ void setup_mbi(multiboot_info_t *mbi, char *bootargs)
 	}
 
 	/* morph the bootargs into multiboot */
-	mbi->cmdline = (u32_t) bootargs;
+	mbi->cmdline = (uint32_t) bootargs;
 
-	mbi->mmap_addr =(u32_t)&mb_memmap;
+	mbi->mmap_addr =(uint32_t)&mb_memmap;
 	mbi->mmap_length = sizeof(mb_memmap);
 
 	mb_memmap.size = sizeof(multiboot_memory_map_t);
@@ -378,8 +378,8 @@ kinfo_t *pre_init(int argc, char **argv)
 	   from head.S */
 	   
 	/* Clear BSS */
-	memset(&_edata, 0, (u32_t)&_end - (u32_t)&_edata);
-        memset(&_kern_unpaged_edata, 0, (u32_t)&_kern_unpaged_end - (u32_t)&_kern_unpaged_edata);
+	memset(&_edata, 0, (uint32_t)&_end - (uint32_t)&_edata);
+        memset(&_kern_unpaged_edata, 0, (uint32_t)&_kern_unpaged_end - (uint32_t)&_kern_unpaged_edata);
 
 	/* we get called in a c like fashion where the first arg
          * is the program name (load address) and the rest are

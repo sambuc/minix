@@ -138,8 +138,8 @@ int runqueues_ok(void);
 #define runqueues_ok_local() runqueues_ok_cpu(cpuid)
 int runqueues_ok_cpu(unsigned cpu);
 #endif
-char *rtsflagstr(u32_t flags);
-char *miscflagstr(u32_t flags);
+char *rtsflagstr(uint32_t flags);
+char *miscflagstr(uint32_t flags);
 char *schedulerstr(struct proc *scheduler);
 /* prints process information */
 void print_proc(struct proc *pp);
@@ -165,14 +165,14 @@ int do_diagctl(struct proc * caller, message *m);
 
 #if SPROFILE
 /* profile.c */
-void init_profile_clock(u32_t);
+void init_profile_clock(uint32_t);
 void stop_profile_clock(void);
 #endif
 
 /* functions defined in architecture-dependent files. */
 void prot_init(void);
 void arch_post_init(void);
-void arch_set_secondary_ipc_return(struct proc *, u32_t val);
+void arch_set_secondary_ipc_return(struct proc *, uint32_t val);
 phys_bytes phys_copy(phys_bytes source, phys_bytes dest, phys_bytes
 	count);
 void phys_copy_fault(void);
@@ -206,21 +206,21 @@ int is_fpu(void);
 void ser_putc(char);
 __dead void arch_shutdown(int);
 void restore_user_context(struct proc * p);
-void read_tsc(u32_t *high, u32_t *low);
-int arch_init_profile_clock(u32_t freq);
+void read_tsc(uint32_t *high, uint32_t *low);
+int arch_init_profile_clock(uint32_t freq);
 void arch_stop_profile_clock(void);
 void arch_ack_profile_clock(void);
 void do_ser_debug(void);
 int arch_get_params(char *parm, int max);
 void memory_init(void);
 void mem_clear_mapcache(void);
-void arch_proc_init(struct proc *pr, u32_t, u32_t, u32_t, char *);
+void arch_proc_init(struct proc *pr, uint32_t, uint32_t, uint32_t, char *);
 int arch_do_vmctl(message *m_ptr, struct proc *p);
 int vm_contiguous(const struct proc *targetproc, vir_bytes vir_buf,
 	size_t count);
 void proc_stacktrace(struct proc *proc);
 int vm_lookup(const struct proc *proc, vir_bytes virtual, phys_bytes
-	*result, u32_t *ptent);
+	*result, uint32_t *ptent);
 size_t vm_lookup_range(const struct proc *proc,
        vir_bytes vir_addr, phys_bytes *phys_addr, size_t bytes);
 void arch_do_syscall(struct proc *proc);

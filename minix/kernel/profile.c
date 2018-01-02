@@ -24,7 +24,7 @@ static irq_hook_t profile_clock_hook;
 /*===========================================================================*
  *			init_profile_clock				     *
  *===========================================================================*/
-void init_profile_clock(u32_t freq)
+void init_profile_clock(uint32_t freq)
 {
   int irq;
 

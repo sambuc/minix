@@ -7,8 +7,8 @@
 
 int _cpufeature(int cpufeature)
 {
-	u32_t eax, ebx, ecx, edx;
-	u32_t ef_eax = 0, ef_ebx = 0, ef_ecx = 0, ef_edx = 0;
+	uint32_t eax, ebx, ecx, edx;
+	uint32_t ef_eax = 0, ef_ebx = 0, ef_ecx = 0, ef_edx = 0;
 	unsigned int family, model, stepping;
 	int is_intel = 0, is_amd = 0;
 

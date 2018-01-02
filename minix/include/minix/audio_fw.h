@@ -11,7 +11,7 @@ int drv_init_hw(void);
 int drv_reset(void);
 int drv_start(int sub_dev, int DmaMode);
 int drv_stop(int sub_dev);
-int drv_set_dma(u32_t dma, u32_t length, int chan);
+int drv_set_dma(uint32_t dma, uint32_t length, int chan);
 int drv_reenable_int(int chan);
 int drv_int_sum(void);
 int drv_int(int sub_dev);
@@ -19,7 +19,7 @@ int drv_pause(int chan);
 int drv_resume(int chan);
 int drv_io_ctl(unsigned long request, void * val, int * len, int sub_dev);
 int drv_get_irq(char *irq);
-int drv_get_frag_size(u32_t *frag_size, int sub_dev);
+int drv_get_frag_size(uint32_t *frag_size, int sub_dev);
 
 
 
@@ -46,7 +46,7 @@ typedef struct {
 	cdev_id_t ReviveId;                       /* request ID */
 	cp_grant_id_t ReviveGrant;		  /* grant id associated with io */
 	endpoint_t SourceProcNr;                  /* process to send notify to (FS) */
-	u32_t FragSize;                           /* dma fragment size */
+	uint32_t FragSize;                           /* dma fragment size */
 	char *DmaBuf;        /* the dma buffer; extra space for 
 												  page alignment */
 	phys_bytes DmaPhys;                       /* physical address of dma buffer */

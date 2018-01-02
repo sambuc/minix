@@ -54,7 +54,7 @@ static long w_atapi_dma;
 static int w_testing = 0;
 static int w_silent = 0;
 
-static u32_t system_hz;
+static uint32_t system_hz;
 
 /* The struct wini is indexed by drive (0-3). */
 static struct wini {		/* main drive struct, one entry per drive */
@@ -358,7 +358,7 @@ static void w_init(int devind, uint16_t vid, uint16_t did)
   int r, irq, native_hook, compat_hook, is_ide, nhooks;
   uint8_t bcr, scr, interface;
   uint16_t cr;
-  u32_t base_cmd, base_ctl, base_dma;
+  uint32_t base_cmd, base_ctl, base_dma;
 
   bcr= pci_attr_r8(devind, PCI_BCR);
   scr= pci_attr_r8(devind, PCI_SCR);
@@ -552,10 +552,10 @@ static struct device *w_part(devminor_t device)
 #define id_byte(n)	(&tmp_buf[2 * (n)])
 #define id_word(n)	(((uint16_t) id_byte(n)[0] <<  0) \
 			|((uint16_t) id_byte(n)[1] <<  8))
-#define id_longword(n)	(((u32_t) id_byte(n)[0] <<  0) \
-			|((u32_t) id_byte(n)[1] <<  8) \
-			|((u32_t) id_byte(n)[2] << 16) \
-			|((u32_t) id_byte(n)[3] << 24))
+#define id_longword(n)	(((uint32_t) id_byte(n)[0] <<  0) \
+			|((uint32_t) id_byte(n)[1] <<  8) \
+			|((uint32_t) id_byte(n)[2] << 16) \
+			|((uint32_t) id_byte(n)[3] << 24))
 
 /*===========================================================================*
  *				check_dma				     *
@@ -563,7 +563,7 @@ static struct device *w_part(devminor_t device)
 static void
 check_dma(struct wini *wn)
 {
-	u32_t dma_status, dma_base;
+	uint32_t dma_status, dma_base;
 	int id_dma, ultra_dma;
 	uint16_t w;
 
@@ -683,7 +683,7 @@ static int w_identify(void)
 	wn->cylinders = id_word(1);
 	wn->heads = id_word(3);
 	wn->sectors = id_word(6);
-	size = (u32_t) wn->cylinders * wn->heads * wn->sectors;
+	size = (uint32_t) wn->cylinders * wn->heads * wn->sectors;
 
 	w= id_word(ID_CAPABILITIES);
 	if ((w & ID_CAP_LBA) && size > 512L*1024*2) {
@@ -944,7 +944,7 @@ static void stop_dma(const struct wini *wn)
 
 static void start_dma(const struct wini *wn, int do_write)
 {
-	u32_t v;
+	uint32_t v;
 	int r;
 
 	/* Assume disk reads. Start DMA */
@@ -961,7 +961,7 @@ static void start_dma(const struct wini *wn, int do_write)
 static int error_dma(const struct wini *wn)
 {
 	int r;
-	u32_t v;
+	uint32_t v;
 
 #define DMAERR(msg) \
 	printf("at_wini%ld: bad DMA: %s. Disabling DMA for drive %d.\n",	\
@@ -1007,7 +1007,7 @@ static ssize_t w_transfer(
   iovec_t *iop, *iov_end = iov + nr_req;
   int r, s, errors, do_dma;
   unsigned long block;
-  u32_t w_status;
+  uint32_t w_status;
   u64_t dv_size;
   unsigned int n, nbytes;
   unsigned dma_buf_offset;
@@ -1330,7 +1330,7 @@ static int setup_dma(
 	phys_bytes user_phys;
 	unsigned n, offset, size;
 	int i, j, r;
-	u32_t v;
+	uint32_t v;
 	struct wini *wn = w_wn;
 
 	/* First try direct scatter/gather to the supplied buffers */
@@ -1572,7 +1572,7 @@ static void w_intr_wait(void)
 /* Wait for a task completion interrupt. */
 
   int r;
-  u32_t w_status;
+  uint32_t w_status;
   message m;
   int ipc_status;
 
@@ -1627,7 +1627,7 @@ static int at_intr_wait(void)
 {
 /* Wait for an interrupt, study the status bits and return error/success. */
   int r, s;
-  u32_t inbval;
+  uint32_t inbval;
 
   w_intr_wait();
   if ((w_wn->w_status & (STATUS_BSY | STATUS_WF | STATUS_ERR)) == 0) {
@@ -1654,7 +1654,7 @@ int value;			/* required status */
 {
 /* Wait until controller is in the required state.  Return zero on timeout.
  */
-  u32_t w_status;
+  uint32_t w_status;
   spin_t spin;
   int s;
 
@@ -1680,7 +1680,7 @@ unsigned value;			/* required status */
 {
 /* Wait until controller is in the required state.  Return zero on timeout.
  */
-  u32_t w_status;
+  uint32_t w_status;
   spin_t spin;
   int s;
 
@@ -2116,7 +2116,7 @@ static void w_hw_int(unsigned int UNUSED(irqs))
 {
   /* Leftover interrupt(s) received; ack it/them.  For native drives only. */
   unsigned int drive;
-  u32_t w_status;
+  uint32_t w_status;
 
   for (drive = 0; drive < MAX_DRIVES; drive++) {
 	if (!(wini[drive].state & IGNORING) && wini[drive].native) {

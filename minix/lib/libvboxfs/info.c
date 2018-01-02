@@ -6,7 +6,7 @@
  * Get or set file information.
  */
 int
-vboxfs_getset_info(vboxfs_handle_t handle, u32_t flags, void *data,
+vboxfs_getset_info(vboxfs_handle_t handle, uint32_t flags, void *data,
 	size_t size)
 {
 	vbox_param_t param[5];

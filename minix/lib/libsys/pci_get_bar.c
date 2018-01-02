@@ -12,8 +12,8 @@ pci_get_bar.c
 int pci_get_bar(devind, port, base, size, ioflag)
 int devind;
 int port;
-u32_t *base;
-u32_t *size;
+uint32_t *base;
+uint32_t *size;
 int *ioflag;
 {
 	int r;

@@ -560,7 +560,7 @@ newcs:
 /*
  * Read the Model Specific Register (MSR) of IA32 architecture
  *
- * void ia32_msr_read(u32_t reg, u32_t * hi, u32_t * lo)
+ * void ia32_msr_read(uint32_t reg, uint32_t * hi, uint32_t * lo)
  */
 ENTRY(ia32_msr_read)
 	push	%ebp
@@ -579,7 +579,7 @@ ENTRY(ia32_msr_read)
 /*
  * Write the Model Specific Register (MSR) of IA32 architecture
  *
- * void ia32_msr_write(u32_t reg, u32_t hi, u32_t lo)
+ * void ia32_msr_write(uint32_t reg, uint32_t hi, uint32_t lo)
  */
 ENTRY(ia32_msr_write)
 	push	%ebp
@@ -722,7 +722,7 @@ ENTRY(smp_get_cores)
 /*===========================================================================*/
 /*				arch_spinlock_lock				    */
 /*===========================================================================*/
-/* void arch_spinlock_lock (u32_t  *lock_data)
+/* void arch_spinlock_lock (uint32_t  *lock_data)
  * {
  * 	while (test_and_set(lock_data) == 1)
  *		while (*lock_data == 1)

@@ -368,7 +368,7 @@ static void
 ds_event(void)
 {
 	char key[DS_MAX_KEYLEN];
-	u32_t value;
+	uint32_t value;
 	int type;
 	endpoint_t owner_endpoint;
 	int r;

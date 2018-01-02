@@ -121,7 +121,7 @@
 
 /* Host Bus Adapter (HBA) state. */
 static struct {
-	volatile u32_t *base;	/* base address of memory-mapped registers */
+	volatile uint32_t *base;	/* base address of memory-mapped registers */
 	size_t size;		/* size of memory-mapped register area */
 
 	int nr_ports;		/* addressable number of ports (1..NR_PORTS) */
@@ -141,16 +141,16 @@ static struct port_state {
 	int state;		/* port state */
 	unsigned int flags;	/* port flags */
 
-	volatile u32_t *reg;	/* memory-mapped port registers */
+	volatile uint32_t *reg;	/* memory-mapped port registers */
 
 	uint8_t *mem_base;		/* primary memory buffer virtual address */
 	phys_bytes mem_phys;	/* primary memory buffer physical address */
 	vir_bytes mem_size;	/* primary memory buffer size */
 
 	/* the FIS, CL, CT[0] and TMP buffers are all in the primary buffer */
-	u32_t *fis_base;	/* FIS receive buffer virtual address */
+	uint32_t *fis_base;	/* FIS receive buffer virtual address */
 	phys_bytes fis_phys;	/* FIS receive buffer physical address */
-	u32_t *cl_base;		/* command list buffer virtual address */
+	uint32_t *cl_base;		/* command list buffer virtual address */
 	phys_bytes cl_phys;	/* command list buffer physical address */
 	uint8_t *ct_base[NR_CMDS];	/* command table virtual address */
 	phys_bytes ct_phys[NR_CMDS];	/* command table physical address */
@@ -162,7 +162,7 @@ static struct port_state {
 	vir_bytes pad_size;	/* sector padding buffer size */
 
 	u64_t lba_count;	/* number of valid Logical Block Addresses */
-	u32_t sector_size;	/* medium sector size in bytes */
+	uint32_t sector_size;	/* medium sector size in bytes */
 
 	int open_count;		/* number of times this port is opened */
 
@@ -175,7 +175,7 @@ static struct port_state {
 				/* (only used for signature probing) */
 
 	int queue_depth;	/* NCQ queue depth */
-	u32_t pend_mask;	/* commands not yet complete */
+	uint32_t pend_mask;	/* commands not yet complete */
 	struct {
 		thread_id_t tid;/* ID of the worker thread */
 		minix_timer_t timer;	/* timer associated with each request */
@@ -202,7 +202,7 @@ static clock_t ahci_flush_timeout;
 /* Timeout environment variable names and default values. */
 static struct {
 	char *name;				/* environment variable name */
-	u32_t default_ms;			/* default in milliseconds */
+	uint32_t default_ms;			/* default in milliseconds */
 	clock_t *ptr;				/* clock ticks value pointer */
 } ahci_timevar[] = {
 	{ "ahci_init_timeout",   SPINUP_TIMEOUT,    &ahci_spinup_timeout   },
@@ -826,10 +826,10 @@ static void ct_set_prdt(uint8_t *ct, prd_t *prdt, int nr_prds)
 {
 	/* Fill in the PRDT part of a command table.
 	 */
-	u32_t *p;
+	uint32_t *p;
 	int i;
 
-	p = (u32_t *) &ct[AHCI_CT_PRDT_OFF];
+	p = (uint32_t *) &ct[AHCI_CT_PRDT_OFF];
 
 	for (i = 0; i < nr_prds; i++, prdt++) {
 		*p++ = prdt->vp_addr;
@@ -849,7 +849,7 @@ static void port_set_cmd(struct port_state *ps, int cmd, cmd_fis_t *fis,
 	 * table and setting up a command list entry pointing to the table.
 	 */
 	uint8_t *ct;
-	u32_t *cl;
+	uint32_t *cl;
 	vir_bytes size;
 
 	/* Set a port-specific flag that tells us if the command being
@@ -890,7 +890,7 @@ static void port_set_cmd(struct port_state *ps, int cmd, cmd_fis_t *fis,
 		(nr_prds > 0 || packet != NULL)) ? AHCI_CL_PREFETCHABLE : 0) |
 		(write ? AHCI_CL_WRITE : 0) |
 		((packet != NULL) ? AHCI_CL_ATAPI : 0) |
-		((size / sizeof(u32_t)) << AHCI_CL_CFL_SHIFT);
+		((size / sizeof(uint32_t)) << AHCI_CL_CFL_SHIFT);
 	cl[2] = ps->ct_phys[cmd];
 }
 
@@ -942,7 +942,7 @@ static void port_check_cmds(struct port_state *ps)
 {
 	/* Check what commands have completed, and finish them.
 	 */
-	u32_t mask, done;
+	uint32_t mask, done;
 	int i;
 
 	/* See which commands have completed. */
@@ -1237,7 +1237,7 @@ static void port_override(struct port_state *ps)
 	/* Override the port's BSY and/or DRQ flags. This may only be done
 	 * prior to starting the port.
 	 */
-	u32_t cmd;
+	uint32_t cmd;
 
 	cmd = port_read(ps, AHCI_PORT_CMD);
 	port_write(ps, AHCI_PORT_CMD, cmd | AHCI_PORT_CMD_CLO);
@@ -1256,7 +1256,7 @@ static void port_start(struct port_state *ps)
 	/* Start the given port, allowing for the execution of commands and the
 	 * transfer of data on that port.
 	 */
-	u32_t cmd;
+	uint32_t cmd;
 
 	/* Reset status registers. */
 	port_write(ps, AHCI_PORT_SERR, ~0);
@@ -1276,7 +1276,7 @@ static void port_stop(struct port_state *ps)
 {
 	/* Stop the given port, if not already stopped.
 	 */
-	u32_t cmd;
+	uint32_t cmd;
 
 	cmd = port_read(ps, AHCI_PORT_CMD);
 
@@ -1439,7 +1439,7 @@ static void port_connect(struct port_state *ps)
 	/* A device has been found to be attached to this port. Start the port,
 	 * and do timed polling for its signature to become available.
 	 */
-	u32_t status, sig;
+	uint32_t status, sig;
 
 	dprintf(V_INFO, ("%s: device connected\n", ahci_portname(ps)));
 
@@ -1524,7 +1524,7 @@ static void port_dev_check(struct port_state *ps)
 {
 	/* Perform device detection by means of polling.
 	 */
-	u32_t status, tfd;
+	uint32_t status, tfd;
 
 	assert(ps->state == STATE_WAIT_DEV);
 
@@ -1596,7 +1596,7 @@ static void port_intr(struct port_state *ps)
 {
 	/* Process an interrupt on this port.
 	 */
-	u32_t smask, emask;
+	uint32_t smask, emask;
 	int success;
 
 	if (ps->state == STATE_NO_PORT) {
@@ -1885,7 +1885,7 @@ static void port_alloc(struct port_state *ps)
 	 */
 	size_t fis_off, tmp_off, ct_off; int i;
 	size_t ct_offs[NR_CMDS];
-	u32_t cmd;
+	uint32_t cmd;
 
 	fis_off = AHCI_CL_SIZE + AHCI_FIS_SIZE - 1;
 	fis_off -= fis_off % AHCI_FIS_SIZE;
@@ -1908,11 +1908,11 @@ static void port_alloc(struct port_state *ps)
 		panic("unable to allocate port memory");
 	memset(ps->mem_base, 0, ps->mem_size);
 
-	ps->cl_base = (u32_t *) ps->mem_base;
+	ps->cl_base = (uint32_t *) ps->mem_base;
 	ps->cl_phys = ps->mem_phys;
 	assert(ps->cl_phys % AHCI_CL_SIZE == 0);
 
-	ps->fis_base = (u32_t *) (ps->mem_base + fis_off);
+	ps->fis_base = (uint32_t *) (ps->mem_base + fis_off);
 	ps->fis_phys = ps->mem_phys + fis_off;
 	assert(ps->fis_phys % AHCI_FIS_SIZE == 0);
 
@@ -1949,7 +1949,7 @@ static void port_free(struct port_state *ps)
 	/* Disable FIS receipt for the given port, and free previously
 	 * allocated memory.
 	 */
-	u32_t cmd;
+	uint32_t cmd;
 
 	/* Disable FIS receive. */
 	cmd = port_read(ps, AHCI_PORT_CMD);
@@ -1974,7 +1974,7 @@ static void port_init(struct port_state *ps)
 {
 	/* Initialize the given port.
 	 */
-	u32_t cmd;
+	uint32_t cmd;
 	int i;
 
 	/* Initialize the port state structure. */
@@ -1987,7 +1987,7 @@ static void port_init(struct port_state *ps)
 	for (i = 0; i < NR_CMDS; i++)
 		init_timer(&ps->cmd_info[i].timer);
 
-	ps->reg = (u32_t *) ((uint8_t *) hba_state.base +
+	ps->reg = (uint32_t *) ((uint8_t *) hba_state.base +
 		AHCI_MEM_BASE_SIZE + AHCI_MEM_PORT_SIZE * (ps - port_state));
 
 	/* Allocate memory for the port. */
@@ -2043,7 +2043,7 @@ static void ahci_reset(void)
 {
 	/* Reset the HBA. Do not enable AHCI mode afterwards.
 	 */
-	u32_t ghc;
+	uint32_t ghc;
 
 	ghc = hba_read(AHCI_HBA_GHC);
 
@@ -2064,7 +2064,7 @@ static void ahci_init(int devind)
 {
 	/* Initialize the device.
 	 */
-	u32_t base, size, cap, ghc, mask;
+	uint32_t base, size, cap, ghc, mask;
 	int r, port, ioflag;
 
 	if ((r = pci_get_bar(devind, PCI_BAR_6, &base, &size, &ioflag)) != OK)
@@ -2084,7 +2084,7 @@ static void ahci_init(int devind)
 	hba_state.nr_ports = (size - AHCI_MEM_BASE_SIZE) / AHCI_MEM_PORT_SIZE;
 
 	/* Map the register area into local memory. */
-	hba_state.base = (u32_t *) vm_map_phys(SELF, (void *) base, size);
+	hba_state.base = (uint32_t *) vm_map_phys(SELF, (void *) base, size);
 	hba_state.size = size;
 	if (hba_state.base == MAP_FAILED)
 		panic("unable to map HBA memory");
@@ -2190,7 +2190,7 @@ static void ahci_intr(unsigned int UNUSED(mask))
 	/* Process an interrupt.
 	 */
 	struct port_state *ps;
-	u32_t mask;
+	uint32_t mask;
 	int r, port;
 
 	/* Handle an interrupt for each port that has the interrupt bit set. */

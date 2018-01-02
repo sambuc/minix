@@ -172,7 +172,7 @@ kern_phys_fr_user_mapped(vir_bytes id, phys_bytes address)
 void
 omap3_frclock_init(void)
 {
-	u32_t tisr;
+	uint32_t tisr;
 
 	/* enable the clock */
 	if (BOARD_IS_BBXM(machine.board_id)) {
@@ -267,7 +267,7 @@ void
 bsp_timer_init(unsigned freq)
 {
 	/* we only support 1ms resolution */
-	u32_t tisr;
+	uint32_t tisr;
 	if (BOARD_IS_BBXM(machine.board_id)) {
 		timer = &dm37xx_timer;
 		kern_phys_map_ptr(timer->base, ARM_PAGE_SIZE,
@@ -333,7 +333,7 @@ bsp_timer_stop(void)
 	mmio_clear(timer->base + timer->regs->TCLR, OMAP3_TCLR_ST);
 }
 
-static u32_t
+static uint32_t
 read_frc(void)
 {
 	if (done == 0) {
@@ -357,10 +357,10 @@ read_frc(void)
  *   and high_frc.
  */
 static void
-frc_overflow_check(u32_t cur_frc)
+frc_overflow_check(uint32_t cur_frc)
 {
 	static int prev_frc_valid;
-	static u32_t prev_frc;
+	static uint32_t prev_frc;
 	if (prev_frc_valid && prev_frc > cur_frc) {
 		high_frc++;
 	}
@@ -372,7 +372,7 @@ void
 bsp_timer_int_handler(void)
 {
 	/* Clear all interrupts */
-	u32_t tisr, now;
+	uint32_t tisr, now;
 
 	/* when the kernel itself is running interrupts are disabled. We
 	 * should therefore also read the overflow counter to detect this as
@@ -389,7 +389,7 @@ bsp_timer_int_handler(void)
 void
 read_tsc_64(u64_t * t)
 {
-	u32_t now;
+	uint32_t now;
 	now = read_frc();
 	frc_overflow_check(now);
 	*t = (u64_t) now + (high_frc << 32);

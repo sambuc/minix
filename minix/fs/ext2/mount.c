@@ -22,7 +22,7 @@ int fs_mount(dev_t dev, unsigned int flags, struct fsdriver_node *root_node,
  */
   struct inode *root_ip;
   int r, readonly;
-  u32_t mask;
+  uint32_t mask;
 
   fs_dev = dev;
   readonly = (flags & REQ_RDONLY) ? 1 : 0;

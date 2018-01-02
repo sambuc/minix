@@ -19,7 +19,7 @@ static phys_bytes kern_phys_start = (phys_bytes) &_kern_phys_base;
 static phys_bytes kern_kernlen = (phys_bytes) &_kern_size;
 
 /* page directory we can use to map things */
-static u32_t pagedir[4096]  __aligned(16384);
+static uint32_t pagedir[4096]  __aligned(16384);
 
 void print_memmap(kinfo_t *cbi)
 {
@@ -110,11 +110,11 @@ void add_memmap(kinfo_t *cbi, u64_t addr, u64_t len)
 	panic("no available memmap slot");
 }
 
-u32_t *alloc_pagetable(phys_bytes *ph)
+uint32_t *alloc_pagetable(phys_bytes *ph)
 {
-	u32_t *ret;
+	uint32_t *ret;
 #define PG_PAGETABLES 24
-	static u32_t pagetables[PG_PAGETABLES][256]  __aligned(1024);
+	static uint32_t pagetables[PG_PAGETABLES][256]  __aligned(1024);
 	static int pt_inuse = 0;
 	if(pt_inuse >= PG_PAGETABLES) {
 		panic("no more pagetables");
@@ -143,7 +143,7 @@ phys_bytes pg_alloc_page(kinfo_t *cbi)
 		assert(!(mmap->mm_length % ARM_PAGE_SIZE));
 		assert(!(mmap->mm_base_addr % ARM_PAGE_SIZE));
 
-		u32_t addr = mmap->mm_base_addr;
+		uint32_t addr = mmap->mm_base_addr;
 		mmap->mm_base_addr += ARM_PAGE_SIZE;
 		mmap->mm_length  -= ARM_PAGE_SIZE;
 
@@ -167,7 +167,7 @@ void pg_identity(kinfo_t *cbi)
 
         /* Set up an identity mapping page directory */
 	 for(i = 0; i < ARM_VM_DIR_ENTRIES; i++) {
-		u32_t flags = ARM_VM_SECTION
+		uint32_t flags = ARM_VM_SECTION
 			| ARM_VM_SECTION_USER
 			| ARM_VM_SECTION_DOMAIN;
 
@@ -184,7 +184,7 @@ void pg_identity(kinfo_t *cbi)
 int pg_mapkernel(void)
 {
 	int pde;
-	u32_t mapped = 0, kern_phys = kern_phys_start;
+	uint32_t mapped = 0, kern_phys = kern_phys_start;
 
 	assert(!(kern_vir_start % ARM_SECTION_SIZE));
 	assert(!(kern_phys_start % ARM_SECTION_SIZE));
@@ -204,8 +204,8 @@ int pg_mapkernel(void)
 
 void vm_enable_paging(void)
 {
-	u32_t sctlr;
-	u32_t actlr;
+	uint32_t sctlr;
+	uint32_t actlr;
 
 	write_ttbcr(0);
 
@@ -265,7 +265,7 @@ void pg_map(phys_bytes phys, vir_bytes vaddr, vir_bytes vaddr_end,
 	kinfo_t *cbi)
 {
 	static int mapped_pde = -1;
-	static u32_t *pt = NULL;
+	static uint32_t *pt = NULL;
 	int pde, pte;
 
 	assert(kernel_may_alloc);
@@ -310,7 +310,7 @@ void pg_map(phys_bytes phys, vir_bytes vaddr, vir_bytes vaddr_end,
 	}
 }
 
-void pg_info(reg_t *pagedir_ph, u32_t **pagedir_v)
+void pg_info(reg_t *pagedir_ph, uint32_t **pagedir_v)
 {
 	*pagedir_ph = vir2phys(pagedir);
 	*pagedir_v = pagedir;

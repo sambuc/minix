@@ -7,7 +7,7 @@ server/ip/gen/tcp_io.h
 
 typedef struct nwio_tcpconf
 {
-	u32_t nwtc_flags;
+	uint32_t nwtc_flags;
 	ipaddr_t nwtc_locaddr;
 	ipaddr_t nwtc_remaddr;
 	tcpport_t nwtc_locport;
@@ -48,7 +48,7 @@ typedef struct nwio_tcpatt
 
 typedef struct nwio_tcpopt
 {
-	u32_t nwto_flags;
+	uint32_t nwto_flags;
 } nwio_tcpopt_t;
 
 #define NWTO_NOFLAG		0x0000L
@@ -71,7 +71,7 @@ typedef struct nwio_tcpopt
 
 typedef struct tcp_cookie
 {
-	u32_t tc_ref;
+	uint32_t tc_ref;
 	uint8_t tc_secret[TC_SECRET_SIZE];
 } tcp_cookie_t;
 

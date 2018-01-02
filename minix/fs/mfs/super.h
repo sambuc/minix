@@ -22,7 +22,7 @@
  */
 
 EXTERN struct super_block {
-  u32_t s_ninodes;		/* # usable inodes on the minor device */
+  uint32_t s_ninodes;		/* # usable inodes on the minor device */
   zone1_t  s_nzones;		/* total device size, including bit maps etc */
   short s_imap_blocks;		/* # of blocks used by inode bit map */
   short s_zmap_blocks;		/* # of blocks used by zone bit map */

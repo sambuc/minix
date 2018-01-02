@@ -19,7 +19,7 @@ static int dsp_set_speed(unsigned int speed);
 static int dsp_set_stereo(unsigned int stereo);
 static int dsp_set_bits(unsigned int bits);
 static int dsp_set_sign(unsigned int sign);
-static int dsp_get_max_frag_size(u32_t *val, int *len);
+static int dsp_get_max_frag_size(uint32_t *val, int *len);
 
 
 static unsigned int DspStereo = DEFAULT_STEREO;
@@ -190,7 +190,7 @@ int drv_stop(int sub_dev) {
 
 
 
-int drv_set_dma(u32_t dma, u32_t UNUSED(length), int UNUSED(chan)) {
+int drv_set_dma(uint32_t dma, uint32_t UNUSED(length), int UNUSED(chan)) {
 	Dprint(("drv_set_dma():\n"));
 	DmaPhys = dma;
 	return OK;
@@ -255,7 +255,7 @@ int drv_get_irq(char *irq) {
 
 
 
-int drv_get_frag_size(u32_t *frag_size, int UNUSED(sub_dev)) {
+int drv_get_frag_size(uint32_t *frag_size, int UNUSED(sub_dev)) {
 	Dprint(("drv_get_frag_size():\n"));
 	*frag_size = DspFragmentSize;
 	return OK;
@@ -267,11 +267,11 @@ static int dsp_ioctl(unsigned long request, void *val, int *len) {
 	int status;
 	
 	switch(request) {
-		case DSPIORATE:		status = dsp_set_speed(*((u32_t*) val)); break;
-		case DSPIOSTEREO:	status = dsp_set_stereo(*((u32_t*) val)); break;
-		case DSPIOBITS:		status = dsp_set_bits(*((u32_t*) val)); break;
-		case DSPIOSIZE:		status = dsp_set_size(*((u32_t*) val)); break;
-		case DSPIOSIGN:		status = dsp_set_sign(*((u32_t*) val)); break;
+		case DSPIORATE:		status = dsp_set_speed(*((uint32_t*) val)); break;
+		case DSPIOSTEREO:	status = dsp_set_stereo(*((uint32_t*) val)); break;
+		case DSPIOBITS:		status = dsp_set_bits(*((uint32_t*) val)); break;
+		case DSPIOSIZE:		status = dsp_set_size(*((uint32_t*) val)); break;
+		case DSPIOSIGN:		status = dsp_set_sign(*((uint32_t*) val)); break;
 		case DSPIOMAX:		status = dsp_get_max_frag_size(val, len); break;
 		case DSPIORESET:    status = drv_reset(); break;
 		default:            status = ENOTTY; break;
@@ -405,7 +405,7 @@ static int dsp_set_sign(unsigned int sign) {
 
 
 
-static int dsp_get_max_frag_size(u32_t *val, int *len) {
+static int dsp_get_max_frag_size(uint32_t *val, int *len) {
 	*len = sizeof(*val);
 	*val = sub_dev[AUDIO].DmaSize / sub_dev[AUDIO].NrOfDmaFragments;
 	return OK;
@@ -431,7 +431,7 @@ int dsp_command(int value) {
 
 int sb16_inb(int port) {	
 	int s;
-	u32_t value;
+	uint32_t value;
 
 	if ((s=sys_inb(port, &value)) != OK)
 		panic("sys_inb() failed: %d", s);

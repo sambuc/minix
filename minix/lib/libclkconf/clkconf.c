@@ -29,8 +29,8 @@ static struct log clk_log = {
 #define DM37XX_CM_BASE 0x48004000
 #define AM335X_CM_BASE 0x44E00000
 
-static u32_t base = 0;
-static u32_t use_count = 0;
+static uint32_t base = 0;
+static uint32_t use_count = 0;
 
 int
 clkconf_init()
@@ -38,7 +38,7 @@ clkconf_init()
 	use_count++;
 	struct machine machine;
 	sys_getmachine(&machine);
-	u32_t cm_base = 0;
+	uint32_t cm_base = 0;
 
 
 	if (base != 0) {
@@ -73,7 +73,7 @@ clkconf_init()
 }
 
 int
-clkconf_set(u32_t clk, u32_t mask, u32_t value)
+clkconf_set(uint32_t clk, uint32_t mask, uint32_t value)
 {
 	set32(base + clk, mask, value);
 	return OK;

@@ -245,7 +245,7 @@ sef_cb_lu_state_save(int UNUSED(result), int UNUSED(flags))
 static int
 lu_state_restore() {
 /* Restore the state. */
-	u32_t value;
+	uint32_t value;
 
 	ds_retrieve_u32("open_counter", &value);
 	ds_delete_u32("open_counter");
@@ -319,7 +319,7 @@ static int
 keep_displaying_restarted()
 {
 	u64_t delta;
-	u32_t micro_delta;
+	uint32_t micro_delta;
 
 	read_frclock_64(&has_restarted_t2);
 	delta = delta_frclock_64(has_restarted_t1, has_restarted_t2);
@@ -351,7 +351,7 @@ static void
 paint_centered(int minor, char *data, int width, int height)
 {
 	uint8_t pixel[3];
-	u32_t i, min_x, min_y, max_x, max_y, x_painted = 0, rows = 0;
+	uint32_t i, min_x, min_y, max_x, max_y, x_painted = 0, rows = 0;
 	int r, bytespp;
 	struct device dev;
 	struct fb_var_screeninfo fbvs;
@@ -370,7 +370,7 @@ paint_centered(int minor, char *data, int width, int height)
 	/* Paint on a white canvas */
 	bytespp = fbvs.bits_per_pixel / 8;
 	for (i = 0; i < fbvs.xres * fbvs.yres * bytespp; i+= bytespp)
-		*((u32_t *)((u32_t) dev.dv_base + i)) = 0x00FFFFFF;
+		*((uint32_t *)((uint32_t) dev.dv_base + i)) = 0x00FFFFFF;
 
 	/* First seek to start */
 	min_x = fbvs.xres / 2 - width / 2;
@@ -383,10 +383,10 @@ paint_centered(int minor, char *data, int width, int height)
 	for (i = ((min_y * fbvs.xres) + min_x) * bytespp; rows < height;) {
 		GET_PIXEL(data, pixel);
 
-		((unsigned char *)((u32_t) dev.dv_base + i))[0] = pixel[2];
-		((unsigned char *)((u32_t) dev.dv_base + i))[1] = pixel[1];
-                ((unsigned char *)((u32_t) dev.dv_base + i))[2] = pixel[0];
-		((unsigned char *)((u32_t) dev.dv_base + i))[3] = 0;
+		((unsigned char *)((uint32_t) dev.dv_base + i))[0] = pixel[2];
+		((unsigned char *)((uint32_t) dev.dv_base + i))[1] = pixel[1];
+                ((unsigned char *)((uint32_t) dev.dv_base + i))[2] = pixel[0];
+		((unsigned char *)((uint32_t) dev.dv_base + i))[3] = 0;
 
 		x_painted++;/* Keep tab of how many row pixels we've painted */
 		if (x_painted == width) {

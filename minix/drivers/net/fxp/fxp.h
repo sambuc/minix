@@ -169,7 +169,7 @@ struct ias
 {
 	uint16_t ias_status;
 	uint16_t ias_command;
-	u32_t ias_linkaddr;
+	uint32_t ias_linkaddr;
 	uint8_t ias_ethaddr[6];
 	uint8_t ias_reserved[2];
 };
@@ -180,7 +180,7 @@ struct cbl_conf
 {
 	uint16_t cc_status;
 	uint16_t cc_command;
-	u32_t cc_linkaddr;
+	uint32_t cc_linkaddr;
 	uint8_t cc_bytes[CC_BYTES_NR];
 };
 
@@ -424,8 +424,8 @@ struct tx
 {
 	uint16_t tx_status;
 	uint16_t tx_command;
-	u32_t tx_linkaddr;
-	u32_t tx_tbda;
+	uint32_t tx_linkaddr;
+	uint32_t tx_tbda;
 	uint16_t tx_size;
 	uint8_t tx_tthresh;
 	uint8_t tx_ntbd;
@@ -459,39 +459,39 @@ struct tx
 /* Statistical Counters */
 struct sc
 {
-	u32_t sc_tx_good;	/* Transmit Good Frames */
-	u32_t sc_tx_maxcol;	/* Transmit Maximum Collisions errors */
-	u32_t sc_tx_latecol;	/* Transmit Late Collisions errors */
-	u32_t sc_tx_underrun;	/* Transmit Underrun errors */
-	u32_t sc_tx_crs;	/* Transmit Lost Carrier Sense */
-	u32_t sc_tx_defered;	/* Transmit Defered */
-	u32_t sc_tx_scol;	/* Transmit Single Collision */
-	u32_t sc_tx_mcol;	/* Transmit Multiple Collisions */
-	u32_t sc_tx_totcol;	/* Transmit Total Collisions */
-	u32_t sc_rx_good;	/* Receive Good Frames */
-	u32_t sc_rx_crc;	/* Receive CRC errors */
-	u32_t sc_rx_align;	/* Receive Alignment errors */
-	u32_t sc_rx_resource;	/* Receive Resource errors */
-	u32_t sc_rx_overrun;	/* Receive Overrun errors */
-	u32_t sc_rx_cd;		/* Receive Collision Detect errors */
-	u32_t sc_rx_short;	/* Receive Short Frame errors */
+	uint32_t sc_tx_good;	/* Transmit Good Frames */
+	uint32_t sc_tx_maxcol;	/* Transmit Maximum Collisions errors */
+	uint32_t sc_tx_latecol;	/* Transmit Late Collisions errors */
+	uint32_t sc_tx_underrun;	/* Transmit Underrun errors */
+	uint32_t sc_tx_crs;	/* Transmit Lost Carrier Sense */
+	uint32_t sc_tx_defered;	/* Transmit Defered */
+	uint32_t sc_tx_scol;	/* Transmit Single Collision */
+	uint32_t sc_tx_mcol;	/* Transmit Multiple Collisions */
+	uint32_t sc_tx_totcol;	/* Transmit Total Collisions */
+	uint32_t sc_rx_good;	/* Receive Good Frames */
+	uint32_t sc_rx_crc;	/* Receive CRC errors */
+	uint32_t sc_rx_align;	/* Receive Alignment errors */
+	uint32_t sc_rx_resource;	/* Receive Resource errors */
+	uint32_t sc_rx_overrun;	/* Receive Overrun errors */
+	uint32_t sc_rx_cd;		/* Receive Collision Detect errors */
+	uint32_t sc_rx_short;	/* Receive Short Frame errors */
 
 				/* Short form ends here. The magic number will
 				 * be stored in the next field.
 				 */
 
-	u32_t sc_tx_fcp;	/* Transmit Flow Control Pause */
-	u32_t sc_rx_fcp;	/* Receive Flow Control Pause */
-	u32_t sc_rx_fcu;	/* Receive Flow Control Unsupported */
+	uint32_t sc_tx_fcp;	/* Transmit Flow Control Pause */
+	uint32_t sc_rx_fcp;	/* Receive Flow Control Pause */
+	uint32_t sc_rx_fcu;	/* Receive Flow Control Unsupported */
 
 				/* Longer form (82558 and later) ends here.
 				 * The magic number will be stored in the
 				 * next field.
 				 */
 
-	u32_t sc_tx_tco;	/* Transmit TCO frames */
-	u32_t sc_rx_tco;	/* Receive TCO frames */
-	u32_t sc_magic;		/* Dump of counters completed */
+	uint32_t sc_tx_tco;	/* Transmit TCO frames */
+	uint32_t sc_rx_tco;	/* Receive TCO frames */
+	uint32_t sc_magic;		/* Dump of counters completed */
 };
 
 #define SCM_DSC		0x0000A005	/* Magic for SC_CU_DUMP_SC command */
@@ -502,8 +502,8 @@ struct rfd
 {
 	uint16_t rfd_status;
 	uint16_t rfd_command;
-	u32_t rfd_linkaddr;
-	u32_t rfd_reserved;
+	uint32_t rfd_linkaddr;
+	uint32_t rfd_reserved;
 	uint16_t rfd_res;
 	uint16_t rfd_size;
 	uint8_t rfd_buf[NDEV_ETH_PACKET_MAX_TAGGED];

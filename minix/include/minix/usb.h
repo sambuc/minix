@@ -30,7 +30,7 @@ struct usb_driver {
 struct usb_device_id {
 	uint16_t idVendor;
 	uint16_t idProduct;
-	u32_t bcdDevice;
+	uint32_t bcdDevice;
 
 	uint8_t  bDeviceClass;
 	uint8_t  bDeviceSubClass;

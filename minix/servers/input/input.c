@@ -560,7 +560,7 @@ input_check(void)
 {
 	char key[DS_MAX_KEYLEN], *label;
 	const char *driver_prefix = "drv.inp.";
-	u32_t value;
+	uint32_t value;
 	size_t len;
 	int i, r, type;
 	endpoint_t owner;

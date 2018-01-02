@@ -129,9 +129,9 @@ static struct winsize winsize_defaults;	/* = all zeroes */
 tty_t tty_table[NR_CONS+NR_RS_LINES];
 int ccurrent;			/* currently active console */
 struct machine machine;		/* kernel environment variables */
-u32_t system_hz;
-u32_t consoleline = CONS_MINOR;
-u32_t kernel_msg_color = 0;
+uint32_t system_hz;
+uint32_t consoleline = CONS_MINOR;
+uint32_t kernel_msg_color = 0;
 
 static const char lined[TTLINEDNAMELEN] = "termios";	/* line discipline */
 

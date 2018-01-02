@@ -32,7 +32,7 @@ void smp_init(void);
 #define CPU_IS_READY	2
 
 struct cpu {
-	u32_t flags;
+	uint32_t flags;
 };
 
 EXTERN struct cpu cpus[CONFIG_MAX_CPUS];

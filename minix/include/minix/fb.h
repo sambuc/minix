@@ -8,26 +8,26 @@ struct fb_fix_screeninfo {
 	uint16_t xpanstep;
 	uint16_t ypanstep;
 	uint16_t ywrapstep;
-	u32_t line_length;
+	uint32_t line_length;
 	phys_bytes mmio_start;
 	size_t mmio_len;
 	uint16_t reserved[15];
 };
 
 struct fb_bitfield {
-	u32_t offset;
-	u32_t length;
-	u32_t msb_right;
+	uint32_t offset;
+	uint32_t length;
+	uint32_t msb_right;
 };
 
 struct fb_var_screeninfo {
-	u32_t xres;		/* visible resolution */
-	u32_t yres;
-	u32_t xres_virtual;	/* virtual resolution */
-	u32_t yres_virtual;
-	u32_t xoffset;		/* offset from virtual to visible */
-	u32_t yoffset;
-	u32_t bits_per_pixel;
+	uint32_t xres;		/* visible resolution */
+	uint32_t yres;
+	uint32_t xres_virtual;	/* virtual resolution */
+	uint32_t yres_virtual;
+	uint32_t xoffset;		/* offset from virtual to visible */
+	uint32_t yoffset;
+	uint32_t bits_per_pixel;
 	struct fb_bitfield red;	/* bitfield in fb mem if true color */
 	struct fb_bitfield green;
 	struct fb_bitfield blue;

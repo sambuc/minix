@@ -11,7 +11,7 @@ typedef void *sffs_file_t;		/* handle to open file */
 typedef void *sffs_dir_t;		/* handle to directory search */
 
 struct sffs_attr {
-  u32_t a_mask;				/* which fields to retrieve/set */
+  uint32_t a_mask;				/* which fields to retrieve/set */
   mode_t a_mode;			/* file type and permissions */
   u64_t a_size;				/* file size */
   struct timespec a_crtime;		/* file creation time */

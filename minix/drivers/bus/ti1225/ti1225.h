@@ -19,15 +19,15 @@ Created:	Dec 2005 by Philip Homburg
 /* CardBus Socket Registers */
 struct csr
 {
-/*00*/	u32_t csr_event;
-/*04*/	u32_t csr_mask;
-/*08*/	u32_t csr_present;
-/*0C*/	u32_t csr_force_event;
-/*10*/	u32_t csr_control;
-/*14*/	u32_t csr_res0;
-/*18*/	u32_t csr_res1;
-/*1C*/	u32_t csr_res2;
-/*20*/	u32_t csr_power;
+/*00*/	uint32_t csr_event;
+/*04*/	uint32_t csr_mask;
+/*08*/	uint32_t csr_present;
+/*0C*/	uint32_t csr_force_event;
+/*10*/	uint32_t csr_control;
+/*14*/	uint32_t csr_res0;
+/*18*/	uint32_t csr_res1;
+/*1C*/	uint32_t csr_res2;
+/*20*/	uint32_t csr_power;
 };
 
 /* csr_mask */

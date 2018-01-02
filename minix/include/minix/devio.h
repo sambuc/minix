@@ -10,7 +10,7 @@
 #define _DEVIO_H
 
 #include <minix/sys_config.h>     /* needed to include <minix/type.h> */
-#include <sys/types.h>        /* uint8_t, uint16_t, u32_t needed */
+#include <sys/types.h>        /* uint8_t, uint16_t, uint32_t needed */
 
 typedef uint16_t port_t;
 
@@ -20,11 +20,11 @@ typedef uint16_t port_t;
  */
 typedef struct { uint16_t port;  uint8_t value; } pvb_pair_t;
 typedef struct { uint16_t port; uint16_t value; } pvw_pair_t;
-typedef struct { uint16_t port; u32_t value; } pvl_pair_t;
+typedef struct { uint16_t port; uint32_t value; } pvl_pair_t;
 
 /* Macro shorthand to set (port,value)-pair. */
 #define pv_set(pv, p, v) do {					\
-	u32_t _p = (p), _v = (v);				\
+	uint32_t _p = (p), _v = (v);				\
 	(pv).port = _p;						\
 	(pv).value = _v;					\
 	if((pv).port != _p || (pv).value != _v) {		\

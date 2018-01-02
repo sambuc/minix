@@ -114,7 +114,7 @@ do_list(int fd)
 static int
 scan_hex64(char * input, u64_t * val)
 {
-	u32_t lo, hi;
+	uint32_t lo, hi;
 	char buf[9];
 	int len;
 

@@ -54,7 +54,7 @@ void time_get(struct timespec *tsp)
  * NULL, however, simply skip over the timestamp in the RPC buffer.
  */
   u64_t hgfstime;
-  u32_t time_lo, time_hi;
+  uint32_t time_lo, time_hi;
 
   if (tsp != NULL) {
 	time_lo = RPC_NEXT32;
@@ -65,5 +65,5 @@ void time_get(struct timespec *tsp)
 	tsp->tv_sec  = (unsigned long)(hgfstime / 10000000);
 	tsp->tv_nsec = (unsigned)(hgfstime % 10000000) * 100;
   }
-  else RPC_ADVANCE(sizeof(u32_t) * 2);
+  else RPC_ADVANCE(sizeof(uint32_t) * 2);
 }

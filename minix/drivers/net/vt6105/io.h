@@ -6,8 +6,8 @@
 #include "vt6105.h"
 
 /* I/O function */
-static uint8_t my_inb(u32_t port) {
-	u32_t value;
+static uint8_t my_inb(uint32_t port) {
+	uint32_t value;
 	int r;
 #ifdef DMA_BASE_IOMAP
 	value = *(volatile uint8_t *)(port);
@@ -19,8 +19,8 @@ static uint8_t my_inb(u32_t port) {
 }
 #define ndr_in8(port, offset) (my_inb((port) + (offset)))
 
-static uint16_t my_inw(u32_t port) {
-	u32_t value;
+static uint16_t my_inw(uint32_t port) {
+	uint32_t value;
 	int r;
 #ifdef DMA_BASE_IOMAP
 	value = *(volatile uint16_t *)(port);
@@ -32,11 +32,11 @@ static uint16_t my_inw(u32_t port) {
 }
 #define ndr_in16(port, offset) (my_inw((port) + (offset)))
 
-static u32_t my_inl(u32_t port) {
-	u32_t value;
+static uint32_t my_inl(uint32_t port) {
+	uint32_t value;
 	int r;
 #ifdef DMA_BASE_IOMAP
-	value = *(volatile u32_t *)(port);
+	value = *(volatile uint32_t *)(port);
 #else
 	if ((r = sys_inl(port, &value)) != OK)
 		printf("NDR: sys_inl failed: %d\n", r);
@@ -45,7 +45,7 @@ static u32_t my_inl(u32_t port) {
 }
 #define ndr_in32(port, offset) (my_inl((port) + (offset)))
 
-static void my_outb(u32_t port, u32_t value) {
+static void my_outb(uint32_t port, uint32_t value) {
 	int r;
 #ifdef DMA_BASE_IOMAP
 	*(volatile uint8_t *)(port) = value;
@@ -57,7 +57,7 @@ static void my_outb(u32_t port, u32_t value) {
 #define ndr_out8(port, offset, value) \
 				(my_outb(((port) + (offset)), (value)))
 
-static void my_outw(u32_t port, u32_t value) {
+static void my_outw(uint32_t port, uint32_t value) {
 	int r;
 #ifdef DMA_BASE_IOMAP
 	*(volatile uint16_t *)(port) = value;
@@ -69,10 +69,10 @@ static void my_outw(u32_t port, u32_t value) {
 #define ndr_out16(port, offset, value) \
 				(my_outw(((port) + (offset)), (value)))
 
-static void my_outl(u32_t port, u32_t value) {
+static void my_outl(uint32_t port, uint32_t value) {
 	int r;
 #ifdef DMA_BASE_IOMAP
-	*(volatile u32_t *)(port) = value;
+	*(volatile uint32_t *)(port) = value;
 #else
 	if ((r = sys_outl(port, value)) != OK)
 		printf("NDR: sys_outl failed: %d\n", r);

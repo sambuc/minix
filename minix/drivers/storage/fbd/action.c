@@ -7,12 +7,12 @@
 /*===========================================================================*
  *				get_rand				     *
  *===========================================================================*/
-static u32_t get_rand(u32_t max)
+static uint32_t get_rand(uint32_t max)
 {
 	/* Las Vegas algorithm for getting a random number in the range from
 	 * 0 to max, inclusive.
 	 */
-	u32_t val, top;
+	uint32_t val, top;
 
 	/* Get an initial random number. */
 	val = lrand48() ^ (lrand48() << 1);
@@ -24,7 +24,7 @@ static u32_t get_rand(u32_t max)
 	 * number from the range, throwing away any random numbers not below
 	 * this largest multiple.
 	 */
-	top = (((u32_t) -1) / max) * max;
+	top = (((uint32_t) -1) / max) * max;
 
 	while (val >= top)
 		val = lrand48() ^ (lrand48() << 1);
@@ -108,7 +108,7 @@ static void action_io_corrupt(struct fbd_rule *rule, char *buf, size_t size,
 	u64_t pos, int UNUSED(flag))
 {
 	u64_t skip;
-	u32_t val;
+	uint32_t val;
 
 	buf += get_range(rule, pos, &size, &skip);
 
@@ -128,7 +128,7 @@ static void action_io_corrupt(struct fbd_rule *rule, char *buf, size_t size,
 		val = ex64lo(skip);
 
 		for ( ; size >= sizeof(val); size -= sizeof(val)) {
-			*((u32_t *) buf) = val ^ 0xdeadbeefUL;
+			*((uint32_t *) buf) = val ^ 0xdeadbeefUL;
 
 			val += sizeof(val);
 			buf += sizeof(val);
@@ -180,7 +180,7 @@ static void action_pre_misdir(struct fbd_rule *rule, iovec_t *UNUSED(iov),
 	/* Randomize the request position to fall within the range (and have
 	 * the alignment) given by the rule.
 	 */
-	u32_t range, choice;
+	uint32_t range, choice;
 
 	/* Unfortunately, we cannot interpret 0 as end as "up to end of disk"
 	 * here, because we have no idea about the actual disk size, and the

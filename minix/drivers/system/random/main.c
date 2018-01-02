@@ -234,7 +234,7 @@ static void r_random(clock_t UNUSED(stamp))
   int s;
   static int bin = 0;
   static struct k_randomness_bin krandom_bin;
-  u32_t hi, lo;
+  uint32_t hi, lo;
   rand_t r;
   int nextperiod = random_isseeded() ? KRANDOM_PERIOD*500 : KRANDOM_PERIOD;
 

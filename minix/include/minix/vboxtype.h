@@ -22,7 +22,7 @@ typedef enum {
 typedef struct {
   vbox_type_t type;
   union {
-	u32_t u32;
+	uint32_t u32;
 	u64_t u64;
 	struct {
 		cp_grant_id_t grant;

@@ -139,7 +139,7 @@ int mem_cow(struct vir_region *region,
         struct phys_block *pb;
 
         if(new_page == MAP_NONE) {
-                u32_t allocflags;
+                uint32_t allocflags;
                 allocflags = vrallocflags(region->flags);
 
                 if((new_page_cl = alloc_mem(1, allocflags)) == NO_MEM)

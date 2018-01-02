@@ -14,8 +14,8 @@
 /*===========================================================================*
  *			helper functions for I/O										 *
  *===========================================================================*/
-u32_t pci_inb(uint16_t port) {
-	u32_t value;
+uint32_t pci_inb(uint16_t port) {
+	uint32_t value;
 	int s;
 	if ((s=sys_inb(port, &value)) !=OK)
 		printf("%s: warning, sys_inb failed: %d\n", DRIVER_NAME, s);
@@ -23,8 +23,8 @@ u32_t pci_inb(uint16_t port) {
 }
 
 
-u32_t pci_inw(uint16_t port) {
-	u32_t value;
+uint32_t pci_inw(uint16_t port) {
+	uint32_t value;
 	int s;
 	if ((s=sys_inw(port, &value)) !=OK)
 		printf("%s: warning, sys_inw failed: %d\n", DRIVER_NAME, s);
@@ -32,8 +32,8 @@ u32_t pci_inw(uint16_t port) {
 }
 
 
-u32_t pci_inl(uint16_t port) {
-	u32_t value;
+uint32_t pci_inl(uint16_t port) {
+	uint32_t value;
 	int s;
 	if ((s=sys_inl(port, &value)) !=OK)
 		printf("%s: warning, sys_inl failed: %d\n", DRIVER_NAME, s);
@@ -55,7 +55,7 @@ void pci_outw(uint16_t port, uint16_t value) {
 }
 
 
-void pci_outl(uint16_t port, u32_t value) {
+void pci_outl(uint16_t port, uint32_t value) {
 	int s;
 	if ((s=sys_outl(port, value)) !=OK)
 		printf("%s: warning, sys_outl failed: %d\n", DRIVER_NAME, s);

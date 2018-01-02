@@ -1523,7 +1523,7 @@ void m_read(int ev, int *biosdrive)
 {
 	int i, n, v;
 	struct part_entry *pe;
-	u32_t system_hz;
+	uint32_t system_hz;
 
 	if (ev != 'r' || device >= 0) return;
 
@@ -1536,7 +1536,7 @@ void m_read(int ev, int *biosdrive)
 		return;
 	}
 
-	system_hz = (u32_t) sysconf(_SC_CLK_TCK);
+	system_hz = (uint32_t) sysconf(_SC_CLK_TCK);
 	v = 2*system_hz;
 	ioctl(device, DIOCTIMEOUT, &v);
 

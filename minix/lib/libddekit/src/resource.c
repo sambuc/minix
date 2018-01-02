@@ -73,7 +73,7 @@ int ddekit_release_mem(ddekit_addr_t start, ddekit_addr_t size)
 /*      ddekit_inb                                                          */
 /****************************************************************************/
 unsigned char ddekit_inb(ddekit_addr_t port) { 
-	u32_t ret;
+	uint32_t ret;
 	if (sys_inb(port, &ret)) {
 		ddekit_panic("sys_inb failed.");
 	}
@@ -85,7 +85,7 @@ unsigned char ddekit_inb(ddekit_addr_t port) {
 /*      ddekit_inw                                                          */
 /****************************************************************************/
 unsigned short ddekit_inw(ddekit_addr_t port) { 
-	u32_t ret;
+	uint32_t ret;
 	if (sys_inw(port, &ret)) {
 		ddekit_panic("sys_inw failed.");
 	}
@@ -97,7 +97,7 @@ unsigned short ddekit_inw(ddekit_addr_t port) {
 /*      ddekit_inl                                                          */
 /****************************************************************************/
 unsigned long ddekit_inl(ddekit_addr_t port){ 
-	u32_t ret;
+	uint32_t ret;
 	if (sys_inl(port, &ret)) { 
 		ddekit_panic("sys_outl failed.");
 	}

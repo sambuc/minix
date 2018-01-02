@@ -72,7 +72,7 @@ void arch_proc_setcontext(struct proc *p, struct stackframe_s *state,
         }
 }
 
-void arch_set_secondary_ipc_return(struct proc *p, u32_t val)
+void arch_set_secondary_ipc_return(struct proc *p, uint32_t val)
 {
 	p->p_reg.r1 = val;
 }
@@ -84,7 +84,7 @@ int restore_fpu(struct proc *pr)
 
 void cpu_identify(void)
 {
-	u32_t midr;
+	uint32_t midr;
 	unsigned cpu = cpuid;
 
 	asm volatile("mrc p15, 0, %[midr], c0, c0, 0 @ read MIDR\n\t"
@@ -100,7 +100,7 @@ void cpu_identify(void)
 
 void arch_init(void)
 {
-        u32_t value;
+        uint32_t value;
 
 	k_stacks = (void*) &k_stacks_start;
 	assert(!((vir_bytes) k_stacks % K_STACK_SIZE));

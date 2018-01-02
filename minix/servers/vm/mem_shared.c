@@ -20,7 +20,7 @@ static int shared_pagefault(struct vmproc *vmp, struct vir_region *region,
 static int shared_sanitycheck(struct phys_region *pr, const char *file, int line);
 static int shared_writable(struct phys_region *pr);
 static void shared_delete(struct vir_region *region);
-static u32_t shared_regionid(struct vir_region *region);
+static uint32_t shared_regionid(struct vir_region *region);
 static int shared_copy(struct vir_region *vr, struct vir_region *newvr);
 static int shared_refcount(struct vir_region *vr);
 static int shared_pt_flags(struct vir_region *vr);
@@ -96,7 +96,7 @@ static int getsrc(struct vir_region *region,
 	return OK;
 }
 
-static u32_t shared_regionid(struct vir_region *vr)
+static uint32_t shared_regionid(struct vir_region *vr)
 {
 	struct vir_region *src_region;
 	struct vmproc *src_vmp;

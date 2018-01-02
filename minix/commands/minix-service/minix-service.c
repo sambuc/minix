@@ -289,7 +289,7 @@ static int parse_ipc_filter(char* str, int type_flag)
 /* Parse and verify correctness of arguments. Report problem and exit if an 
  * error is found. Store needed parameters in global variables.
  */
-static int parse_arguments(int argc, char **argv, u32_t *rss_flags)
+static int parse_arguments(int argc, char **argv, uint32_t *rss_flags)
 {
   struct stat stat_buf;
   char *hz, *buff;
@@ -415,7 +415,7 @@ static int parse_arguments(int argc, char **argv, u32_t *rss_flags)
 
   *rss_flags = 0;
   if (req_nr == RS_UP || req_nr == RS_UPDATE || req_nr == RS_EDIT) {
-      u32_t system_hz;
+      uint32_t system_hz;
 
       if (c_flag)
 	*rss_flags |= RSS_COPY;
@@ -511,7 +511,7 @@ static int parse_arguments(int argc, char **argv, u32_t *rss_flags)
       }
 
       /* Get HZ. */
-      system_hz = (u32_t) sysconf(_SC_CLK_TCK);
+      system_hz = (uint32_t) sysconf(_SC_CLK_TCK);
 
       /* Check optional arguments that come in pairs like "-args arglist". */
       for (i=optind+MIN_ARG_COUNT+1; i<argc; i=i+2) {
@@ -717,7 +717,7 @@ int main(int argc, char **argv)
   char *progname = NULL;
   /* Arguments for RS to start a new service */
   struct rs_config config;
-  u32_t rss_flags = 0;
+  uint32_t rss_flags = 0;
 
   /* Verify and parse the command line arguments. All arguments are checked
    * here. If an error occurs, the problem is reported and exit(2) is called. 

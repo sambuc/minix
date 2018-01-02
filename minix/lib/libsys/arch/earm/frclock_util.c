@@ -16,7 +16,7 @@
 static u64_t Hz;
 
 int
-micro_delay(u32_t micros)
+micro_delay(uint32_t micros)
 {
 	struct minix_kerninfo *minix_kerninfo;
         u64_t start, delta, delta_end;
@@ -48,28 +48,28 @@ micro_delay(u32_t micros)
         return 0;
 }
 
-u32_t frclock_64_to_micros(u64_t tsc)
+uint32_t frclock_64_to_micros(u64_t tsc)
 {
-        return (u32_t)
+        return (uint32_t)
             (tsc / (get_minix_kerninfo()->arm_frclock->hz / MICROHZ));
 }
 
 void
-read_frclock(u32_t *frclk)
+read_frclock(uint32_t *frclk)
 {
 	struct minix_kerninfo *minix_kerninfo = get_minix_kerninfo();
 
 	assert(frclk);
 	assert(minix_kerninfo->arm_frclock);
 	assert(minix_kerninfo->arm_frclock->tcrr);
-	*frclk = *(volatile u32_t *)((uint8_t *)
+	*frclk = *(volatile uint32_t *)((uint8_t *)
 	    minix_kerninfo->arm_frclock->tcrr);
 }
 
-u32_t
-delta_frclock(u32_t base, u32_t cur)
+uint32_t
+delta_frclock(uint32_t base, uint32_t cur)
 {
-	u32_t delta;
+	uint32_t delta;
 
 	if (cur < base) {
 		/* We have wrapped around, so delta is base to wrapping point
@@ -86,12 +86,12 @@ delta_frclock(u32_t base, u32_t cur)
 void
 read_frclock_64(u64_t *frclk)
 {
-	read_frclock((u32_t *) frclk);	
+	read_frclock((uint32_t *) frclk);	
 }
 
 u64_t
 delta_frclock_64(u64_t base, u64_t cur)
 {
-	return (u64_t) delta_frclock((u32_t) base, (u32_t) cur);
+	return (u64_t) delta_frclock((uint32_t) base, (uint32_t) cur);
 }
 

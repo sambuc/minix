@@ -88,7 +88,7 @@ typedef struct tty {
 /* Memory allocated in tty.c, so extern here. */
 extern tty_t tty_table[NR_CONS+NR_RS_LINES];
 extern int ccurrent;		/* currently visible console */
-extern u32_t system_hz;		/* system clock frequency */
+extern uint32_t system_hz;		/* system clock frequency */
 
 extern unsigned long kbd_irq_set;
 extern unsigned long rs_irq_set;

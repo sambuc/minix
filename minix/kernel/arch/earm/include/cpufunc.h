@@ -44,8 +44,8 @@ static inline void barrier(void)
 
 
 /* Read CLIDR, Cache Level ID Register */
-static inline u32_t read_clidr(void){
-	u32_t clidr;
+static inline uint32_t read_clidr(void){
+	uint32_t clidr;
 	asm volatile("mrc p15, 1, %[clidr], c0, c0 , 1 @ READ CLIDR\n\t"
 				: [clidr] "=r" (clidr));
 	return clidr;
@@ -53,47 +53,47 @@ static inline u32_t read_clidr(void){
 
 
 /* Read CSSELR, Cache Size Selection Register */
-static inline u32_t read_csselr(void){
-	u32_t csselr;
+static inline uint32_t read_csselr(void){
+	uint32_t csselr;
 	asm volatile("mrc p15, 2, %[csselr], c0, c0 , 0 @ READ CSSELR\n\t"
 				: [csselr] "=r" (csselr));
 	return csselr;
 }
 
 /* Write CSSELR, Cache Size Selection Register */
-static inline void write_csselr(u32_t csselr){
+static inline void write_csselr(uint32_t csselr){
 	asm volatile("mcr p15, 2, %[csselr], c0, c0 , 0 @ WRITE CSSELR\n\t"
 				: : [csselr] "r" (csselr));
 }
 
 /* Read Cache Size ID Register */
-static inline u32_t read_ccsidr(void)
+static inline uint32_t read_ccsidr(void)
 {
-	u32_t ccsidr;
+	uint32_t ccsidr;
 	asm volatile("mrc p15, 1, %[ccsidr], c0, c0, 0 @ Read CCSIDR\n\t"
 			: [ccsidr] "=r" (ccsidr));
 	return ccsidr;
 }
 
 /* Read TLBTR, TLB Type Register */
-static inline u32_t read_tlbtr(void)
+static inline uint32_t read_tlbtr(void)
 {
-	u32_t tlbtr;
+	uint32_t tlbtr;
 	asm volatile("mrc p15, 0, %[tlbtr], c0, c0, 3 @ Read TLBTR\n\t"
 			: [tlbtr] "=r" (tlbtr));
 	return tlbtr;
 }
 
 /* keesj:move these out */
-static inline u32_t ilog2(u32_t t)
+static inline uint32_t ilog2(uint32_t t)
 {
-	u32_t counter =0;
+	uint32_t counter =0;
 	while( (t = t >> 1) ) counter ++;
 	return counter;
 }
 
 /* keesj:move these out */
-static inline u32_t ipow2(u32_t t)
+static inline uint32_t ipow2(uint32_t t)
 {
 	return 1 << t;
 }
@@ -103,18 +103,18 @@ static inline u32_t ipow2(u32_t t)
  * type = 2 == INVALIDATE
  */
 static inline void dcache_maint(int type){
-	u32_t cache_level ;
-	u32_t clidr;
-	u32_t ctype;
-	u32_t  ccsidr;
-	u32_t  line_size,line_length;
-	u32_t  number_of_sets,number_of_ways;
-	u32_t  set,way;
+	uint32_t cache_level ;
+	uint32_t clidr;
+	uint32_t ctype;
+	uint32_t  ccsidr;
+	uint32_t  line_size,line_length;
+	uint32_t  number_of_sets,number_of_ways;
+	uint32_t  set,way;
 
 	clidr = read_clidr();
-	u32_t loc =  ( clidr >> 24) & 0x7;
-	u32_t louu =  ( clidr >> 27) & 0x7;
-	u32_t louis =  ( clidr >> 21) & 0x7;
+	uint32_t loc =  ( clidr >> 24) & 0x7;
+	uint32_t louu =  ( clidr >> 27) & 0x7;
+	uint32_t louis =  ( clidr >> 21) & 0x7;
 	for (cache_level =0 ; cache_level < loc; cache_level++){
 		/* get current cache type */
 		ctype = ( clidr >> cache_level*3) & 0x7;
@@ -127,15 +127,15 @@ static inline void dcache_maint(int type){
 		number_of_sets = ((ccsidr >> 13) & 0x7fff) + 1;
 		number_of_ways = ((ccsidr >> 3) & 0x3ff) + 1;
 
-		u32_t way_bits = ilog2(number_of_ways);
+		uint32_t way_bits = ilog2(number_of_ways);
 		if(ipow2(ilog2(number_of_ways) < number_of_ways) ) {
 			way_bits++;
 		}
 
-		u32_t l = ilog2(line_length);
+		uint32_t l = ilog2(line_length);
 		for (way =0 ; way < number_of_ways; way++) {
 			for (set =0 ; set < number_of_sets; set++) {
-				u32_t val = ( way << (32 - way_bits) ) |  (set << l) | (cache_level << 1 );
+				uint32_t val = ( way << (32 - way_bits) ) |  (set << l) | (cache_level << 1 );
 				if (type == 1) {
 					/* DCCISW, Data Cache Clean and Invalidate by Set/Way */
 					asm volatile("mcr p15, 0, %[set], c7, c14, 2 @ DCCISW" 
@@ -189,9 +189,9 @@ static inline void refresh_tlb(void)
 
 
 /* Read System Control Register */
-static inline u32_t read_sctlr(void)
+static inline uint32_t read_sctlr(void)
 {
-	u32_t ctl;
+	uint32_t ctl;
 
 	asm volatile("mrc p15, 0, %[ctl], c1, c0, 0 @ Read SCTLR\n\t"
 			: [ctl] "=r" (ctl));
@@ -200,7 +200,7 @@ static inline u32_t read_sctlr(void)
 }
 
 /* Write System Control Register */
-static inline void write_sctlr(u32_t ctl)
+static inline void write_sctlr(uint32_t ctl)
 {
 	asm volatile("mcr p15, 0, %[ctl], c1, c0, 0 @ Write SCTLR\n\t"
 			: : [ctl] "r" (ctl));
@@ -208,9 +208,9 @@ static inline void write_sctlr(u32_t ctl)
 }
 
 /* Read Translation Table Base Register 0 */
-static inline u32_t read_ttbr0(void)
+static inline uint32_t read_ttbr0(void)
 {
-	u32_t bar;
+	uint32_t bar;
 
 	asm volatile("mrc p15, 0, %[bar], c2, c0, 0 @ Read TTBR0\n\t"
 			: [bar] "=r" (bar));
@@ -219,14 +219,14 @@ static inline u32_t read_ttbr0(void)
 }
 
 /* Write Translation Table Base Register 0 */
-static inline void write_ttbr0(u32_t bar)
+static inline void write_ttbr0(uint32_t bar)
 {
 	barrier();
 	/* In our setup TTBR contains the base address *and* the flags
 	   but other pieces of the kernel code expect ttbr to be the 
 	   base address of the l1 page table. We therefore add the
 	   flags here and remove them in the read_ttbr0 */
-	u32_t v  =  (bar  & ARM_TTBR_ADDR_MASK ) | ARM_TTBR_FLAGS_CACHED;
+	uint32_t v  =  (bar  & ARM_TTBR_ADDR_MASK ) | ARM_TTBR_FLAGS_CACHED;
 	asm volatile("mcr p15, 0, %[bar], c2, c0, 0 @ Write TTBR0\n\t"
 			: : [bar] "r" (v));
 
@@ -241,9 +241,9 @@ static inline void reload_ttbr0(void)
 }
 
 /* Read Translation Table Base Register 1 */
-static inline u32_t read_ttbr1(void)
+static inline uint32_t read_ttbr1(void)
 {
-	u32_t bar;
+	uint32_t bar;
 
 	asm volatile("mrc p15, 0, %[bar], c2, c0, 1 @ Read TTBR1\n\t"
 			: [bar] "=r" (bar));
@@ -252,7 +252,7 @@ static inline u32_t read_ttbr1(void)
 }
 
 /* Write Translation Table Base Register 1 */
-static inline void write_ttbr1(u32_t bar)
+static inline void write_ttbr1(uint32_t bar)
 {
 	barrier();
 
@@ -271,9 +271,9 @@ static inline void reload_ttbr1(void)
 }
 
 /* Read Translation Table Base Control Register */
-static inline u32_t read_ttbcr(void)
+static inline uint32_t read_ttbcr(void)
 {
-	u32_t bcr;
+	uint32_t bcr;
 
 	asm volatile("mrc p15, 0, %[bcr], c2, c0, 2 @ Read TTBCR\n\t"
 			: [bcr] "=r" (bcr));
@@ -282,7 +282,7 @@ static inline u32_t read_ttbcr(void)
 }
 
 /* Write Translation Table Base Control Register */
-static inline void write_ttbcr(u32_t bcr)
+static inline void write_ttbcr(uint32_t bcr)
 {
 	asm volatile("mcr p15, 0, %[bcr], c2, c0, 2 @ Write TTBCR\n\t"
 			: : [bcr] "r" (bcr));
@@ -291,9 +291,9 @@ static inline void write_ttbcr(u32_t bcr)
 }
 
 /* Read Domain Access Control Register */
-static inline u32_t read_dacr(void)
+static inline uint32_t read_dacr(void)
 {
-	u32_t dacr;
+	uint32_t dacr;
 
 	asm volatile("mrc p15, 0, %[dacr], c3, c0, 0 @ Read DACR\n\t"
 			: [dacr] "=r" (dacr));
@@ -302,7 +302,7 @@ static inline u32_t read_dacr(void)
 }
 
 /* Write Domain Access Control Register */
-static inline void write_dacr(u32_t dacr)
+static inline void write_dacr(uint32_t dacr)
 {
 	asm volatile("mcr p15, 0, %[dacr], c3, c0, 0 @ Write DACR\n\t"
 			: : [dacr] "r" (dacr));
@@ -311,9 +311,9 @@ static inline void write_dacr(u32_t dacr)
 }
 
 /* Read Data Fault Status Register */
-static inline u32_t read_dfsr(void)
+static inline uint32_t read_dfsr(void)
 {
-	u32_t fsr;
+	uint32_t fsr;
 
 	asm volatile("mrc p15, 0, %[fsr], c5, c0, 0 @ Read DFSR\n\t"
 			: [fsr] "=r" (fsr));
@@ -322,7 +322,7 @@ static inline u32_t read_dfsr(void)
 }
 
 /* Write Data Fault Status Register */
-static inline void write_dfsr(u32_t fsr)
+static inline void write_dfsr(uint32_t fsr)
 {
 	asm volatile("mcr p15, 0, %[fsr], c5, c0, 0 @ Write DFSR\n\t"
 			: : [fsr] "r" (fsr));
@@ -331,9 +331,9 @@ static inline void write_dfsr(u32_t fsr)
 }
 
 /* Read Instruction Fault Status Register */
-static inline u32_t read_ifsr(void)
+static inline uint32_t read_ifsr(void)
 {
-	u32_t fsr;
+	uint32_t fsr;
 
 	asm volatile("mrc p15, 0, %[fsr], c5, c0, 1 @ Read IFSR\n\t"
 			: [fsr] "=r" (fsr));
@@ -342,7 +342,7 @@ static inline u32_t read_ifsr(void)
 }
 
 /* Write Instruction Fault Status Register */
-static inline void write_ifsr(u32_t fsr)
+static inline void write_ifsr(uint32_t fsr)
 {
 	asm volatile("mcr p15, 0, %[fsr], c5, c0, 1 @ Write IFSR\n\t"
 			: : [fsr] "r" (fsr));
@@ -351,9 +351,9 @@ static inline void write_ifsr(u32_t fsr)
 }
 
 /* Read Data Fault Address Register */
-static inline u32_t read_dfar(void)
+static inline uint32_t read_dfar(void)
 {
-	u32_t far;
+	uint32_t far;
 
 	asm volatile("mrc p15, 0, %[far], c6, c0, 0 @ Read DFAR\n\t"
 			: [far] "=r" (far));
@@ -362,7 +362,7 @@ static inline u32_t read_dfar(void)
 }
 
 /* Write Data Fault Address Register */
-static inline void write_dfar(u32_t far)
+static inline void write_dfar(uint32_t far)
 {
 	asm volatile("mcr p15, 0, %[far], c6, c0, 0 @ Write DFAR\n\t"
 			: : [far] "r" (far));
@@ -371,9 +371,9 @@ static inline void write_dfar(u32_t far)
 }
 
 /* Read Instruction Fault Address Register */
-static inline u32_t read_ifar(void)
+static inline uint32_t read_ifar(void)
 {
-	u32_t far;
+	uint32_t far;
 
 	asm volatile("mrc p15, 0, %[far], c6, c0, 2 @ Read IFAR\n\t"
 			: [far] "=r" (far));
@@ -382,7 +382,7 @@ static inline u32_t read_ifar(void)
 }
 
 /* Write Instruction Fault Address Register */
-static inline void write_ifar(u32_t far)
+static inline void write_ifar(uint32_t far)
 {
 	asm volatile("mcr p15, 0, %[far], c6, c0, 2 @ Write IFAR\n\t"
 			: : [far] "r" (far));
@@ -391,9 +391,9 @@ static inline void write_ifar(u32_t far)
 }
 
 /* Read Vector Base Address Register */
-static inline u32_t read_vbar(void)
+static inline uint32_t read_vbar(void)
 {
-	u32_t vbar;
+	uint32_t vbar;
 
 	asm volatile("mrc p15, 0, %[vbar], c12, c0, 0 @ Read VBAR\n\t"
 			: [vbar] "=r" (vbar));
@@ -402,7 +402,7 @@ static inline u32_t read_vbar(void)
 }
 
 /* Write Vector Base Address Register */
-static inline void write_vbar(u32_t vbar)
+static inline void write_vbar(uint32_t vbar)
 {
 	asm volatile("mcr p15, 0, %[vbar], c12, c0, 0 @ Write VBAR\n\t"
 			: : [vbar] "r" (vbar));
@@ -411,9 +411,9 @@ static inline void write_vbar(u32_t vbar)
 }
 
 /* Read the Main ID Register  */
-static inline u32_t read_midr(void)
+static inline uint32_t read_midr(void)
 {
-	u32_t id;
+	uint32_t id;
 
 	asm volatile("mrc p15, 0, %[id], c0, c0, 0 @ read MIDR\n\t"
 			: [id] "=r" (id));
@@ -422,9 +422,9 @@ static inline u32_t read_midr(void)
 }
 
 /* Read Auxiliary Control Register */
-static inline u32_t read_actlr(void)
+static inline uint32_t read_actlr(void)
 {
-	u32_t ctl;
+	uint32_t ctl;
 
 	asm volatile("mrc p15, 0, %[ctl], c1, c0, 1 @ Read ACTLR\n\t"
 			: [ctl] "=r" (ctl));
@@ -433,7 +433,7 @@ static inline u32_t read_actlr(void)
 }
 
 /* Write Auxiliary Control Register */
-static inline void write_actlr(u32_t ctl)
+static inline void write_actlr(uint32_t ctl)
 {
 //http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.ddi0344k/Babjbjbb.html
 	asm volatile("mcr p15, 0, %[ctl], c1, c0, 1 @ Write ACTLR\n\t"
@@ -443,9 +443,9 @@ static inline void write_actlr(u32_t ctl)
 }
 
 /* Read Current Program Status Register */
-static inline u32_t read_cpsr(void)
+static inline uint32_t read_cpsr(void)
 {
-	u32_t status;
+	uint32_t status;
 
 	asm volatile("mrs %[status], cpsr @ read CPSR"
 			: [status] "=r" (status));
@@ -454,7 +454,7 @@ static inline u32_t read_cpsr(void)
 }
 
 /* Write Current Program Status Register */
-static inline void write_cpsr(u32_t status)
+static inline void write_cpsr(uint32_t status)
 {
 	asm volatile("msr cpsr_c, %[status] @ write CPSR"
 			: : [status] "r" (status));

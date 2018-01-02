@@ -51,7 +51,7 @@ static int AC97_set_volume(const struct volume_level *level);
    if you change this ! */
    
 #define SRC_UNSYNCED 0xffffffffUL
-static u32_t SrcSyncState = 0x00010000UL;
+static uint32_t SrcSyncState = 0x00010000UL;
 static DEV_STRUCT *dev;
 
 
@@ -61,7 +61,7 @@ static void set_src_sync_state (int state)
     if (state < 0)
         SrcSyncState = SRC_UNSYNCED;
     else {
-        SrcSyncState = (u32_t)state << 16;
+        SrcSyncState = (uint32_t)state << 16;
         SrcSyncState &= 0x00070000Ul;
     }
 }
@@ -70,7 +70,7 @@ static void set_src_sync_state (int state)
 
 static int AC97_write (const DEV_STRUCT * pCC, uint16_t wAddr, uint16_t wData)
 {
-u32_t dtemp, i;
+uint32_t dtemp, i;
 uint16_t  wBaseAddr = pCC->base;
 
     /* wait for WIP bit (Write In Progress) to go away */
@@ -106,7 +106,7 @@ uint16_t  wBaseAddr = pCC->base;
 
     /* A test for 5880 - prime the PCI data bus */
     {
-        u32_t dat = ((u32_t) wAddr << 16) | wData;
+        uint32_t dat = ((uint32_t) wAddr << 16) | wData;
         char page = pci_inb(wBaseAddr + MEM_PAGE);
 
         pci_outl (wBaseAddr + MEM_PAGE, dat);
@@ -135,7 +135,7 @@ uint16_t  wBaseAddr = pCC->base;
 #if 0
 static int AC97_read (const DEV_STRUCT * pCC, uint16_t wAddr, uint16_t *data)
 {
-u32_t dtemp, i;
+uint32_t dtemp, i;
 uint16_t  base = pCC->base;
 
     /* wait for WIP to go away */
@@ -169,7 +169,7 @@ uint16_t  base = pCC->base;
     /* A test for 5880 - prime the PCI data bus */
     { 
         /* set bit 23, this means read in stead of write. */
-        u32_t dat = ((u32_t) wAddr << 16) | (1UL << 23);
+        uint32_t dat = ((uint32_t) wAddr << 16) | (1UL << 23);
         char page = pci_inb(base + MEM_PAGE);
 
         /* todo: why are we putting data in the mem page register??? */
@@ -215,7 +215,7 @@ static int AC97_write_unsynced (const DEV_STRUCT * pCC, uint16_t wAddr,
         return (AC97_ERR_WIP_TIMEOUT);
 
     /* write addr and data */
-    pci_outl(pCC->base + CODEC_READ, ((u32_t) wAddr << 16) | wData);
+    pci_outl(pCC->base + CODEC_READ, ((uint32_t) wAddr << 16) | wData);
     return 0;
 }
 
@@ -223,14 +223,14 @@ static int AC97_write_unsynced (const DEV_STRUCT * pCC, uint16_t wAddr,
 static int AC97_read_unsynced (const DEV_STRUCT * pCC, uint16_t wAddr,
     uint16_t *data)
 {
-u32_t dtemp;
+uint32_t dtemp;
 
     /* wait for WIP to go away */
     if (WaitBitd (pCC->base + CODEC_READ, 30, 0, WIP_TIMEOUT))
         return (AC97_ERR_WIP_TIMEOUT);
 
     /* write addr w/data=0 and assert read request */
-    pci_outl(pCC->base + CODEC_READ, ((u32_t) wAddr << 16) | (1UL << 23));
+    pci_outl(pCC->base + CODEC_READ, ((uint32_t) wAddr << 16) | (1UL << 23));
 
     /* now wait for the stinkin' data (RDY) */
     if (WaitBitd (pCC->base + CODEC_READ, 31, 1, DRDY_TIMEOUT))

@@ -7,14 +7,14 @@ server/ip/gen/ip_io.h
 
 typedef struct nwio_ipconf2
 {
-	u32_t	nwic_flags;
+	uint32_t	nwic_flags;
 	ipaddr_t nwic_ipaddr;
 	ipaddr_t nwic_netmask;
 } nwio_ipconf2_t;
 
 typedef struct nwio_ipconf
 {
-	u32_t	nwic_flags;
+	uint32_t	nwic_flags;
 	ipaddr_t nwic_ipaddr;
 	ipaddr_t nwic_netmask;
 	uint16_t nwic_mtu;
@@ -28,7 +28,7 @@ typedef struct nwio_ipconf
 
 typedef struct nwio_ipopt
 {
-	u32_t nwio_flags;
+	uint32_t nwio_flags;
 	ipaddr_t nwio_rem;
 	ip_hdropt_t nwio_hdropt;
 	uint8_t nwio_tos;

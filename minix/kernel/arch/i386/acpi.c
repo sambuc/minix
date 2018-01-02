@@ -28,7 +28,7 @@ static acpi_read_t read_func;
 
 static struct acpi_rsdt {
 	struct acpi_sdt_header	hdr;
-	u32_t			data[MAX_RSDT];
+	uint32_t			data[MAX_RSDT];
 } rsdt;
 	
 static struct {
@@ -56,7 +56,7 @@ static int acpi_check_signature(const char * orig, const char * match)
 	return strncmp(orig, match, ACPI_SDT_SIGNATURE_LEN);
 }
 
-static u32_t acpi_phys2vir(u32_t p)
+static uint32_t acpi_phys2vir(uint32_t p)
 {
 	if(!vm_running) {
 		DEBUGEXTRA(("acpi: returning 0x%lx as vir addr\n", p));
@@ -320,7 +320,7 @@ void acpi_init(void)
 	s = acpi_read_sdt_at(acpi_rsdp.rsdt_addr, (struct acpi_sdt_header *) &rsdt,
 			sizeof(struct acpi_rsdt), ACPI_SDT_SIGNATURE(RSDT));
 
-	sdt_count = (s - sizeof(struct acpi_sdt_header)) / sizeof(u32_t);
+	sdt_count = (s - sizeof(struct acpi_sdt_header)) / sizeof(uint32_t);
 
 	for (i = 0; i < sdt_count; i++) {
 		struct acpi_sdt_header hdr;

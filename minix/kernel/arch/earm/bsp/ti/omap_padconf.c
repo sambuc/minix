@@ -47,7 +47,7 @@ static struct omap_padconf *omap_padconf;
 static kern_phys_map padconf_phys_map;
 
 int
-bsp_padconf_set(u32_t padconf, u32_t mask, u32_t value)
+bsp_padconf_set(uint32_t padconf, uint32_t mask, uint32_t value)
 {
 	/* check that the value will be inside the padconf memory range */
 	if (padconf >= (omap_padconf->size - omap_padconf->offset)) {

@@ -16,7 +16,7 @@ mib_vm_loadavg(struct mib_call * call __unused,
 	struct loadavg loadavg;
 	struct loadinfo loadinfo;
 	unsigned long proc_load;
-	u32_t ticks_per_slot, ticks;
+	uint32_t ticks_per_slot, ticks;
 	unsigned int p;
 	int unfilled_ticks;
 	int h, slots, latest, slot;

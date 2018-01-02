@@ -38,7 +38,7 @@ static char *writtenblocks[MAXBLOCKS];
 /* Some functions used by testcache.c */
 
 int
-dowriteblock(int b, int blocksize, u32_t seed, char *data)
+dowriteblock(int b, int blocksize, uint32_t seed, char *data)
 {
 	struct buf *bp;
 	int r;
@@ -60,7 +60,7 @@ dowriteblock(int b, int blocksize, u32_t seed, char *data)
 }
 
 int
-readblock(int b, int blocksize, u32_t seed, char *data)
+readblock(int b, int blocksize, uint32_t seed, char *data)
 {
 	struct buf *bp;
 	int r;
@@ -220,19 +220,19 @@ int free_contig(void *addr, size_t len)
 	return 0;
 }
 
-u32_t sqrt_approx(u32_t v)
+uint32_t sqrt_approx(uint32_t v)
 {
-	return (u32_t) sqrt(v);
+	return (uint32_t) sqrt(v);
 }
 
 int vm_set_cacheblock(void *block, dev_t dev, off_t dev_offset,
-        ino_t ino, off_t ino_offset, u32_t *flags, int blocksize, int setflags)
+        ino_t ino, off_t ino_offset, uint32_t *flags, int blocksize, int setflags)
 {
 	return ENOSYS;
 }
 
 void *vm_map_cacheblock(dev_t dev, off_t dev_offset,
-        ino_t ino, off_t ino_offset, u32_t *flags, int blocksize)
+        ino_t ino, off_t ino_offset, uint32_t *flags, int blocksize)
 {
 	return MAP_FAILED;
 }

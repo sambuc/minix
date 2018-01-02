@@ -64,7 +64,7 @@ void fpu_init(void)
 		write_cr0(read_cr0() | CR0_MP_NE);
 		get_cpulocal_var(fpu_presence) = 1;
 		if(_cpufeature(_CPUF_I386_FXSR)) {
-			u32_t cr4 = read_cr4() | CR4_OSFXSR; /* Enable FXSR. */
+			uint32_t cr4 = read_cr4() | CR4_OSFXSR; /* Enable FXSR. */
 
 			/* OSXMMEXCPT if supported
 			 * FXSR feature can be available without SSE
@@ -181,7 +181,7 @@ void arch_proc_reset(struct proc *pr)
 	arch_proc_setcontext(pr, &reg, 0, KTS_FULLCONTEXT);
 }
 
-void arch_set_secondary_ipc_return(struct proc *p, u32_t val)
+void arch_set_secondary_ipc_return(struct proc *p, uint32_t val)
 {
 	p->p_reg.bx = val;
 }
@@ -211,7 +211,7 @@ int restore_fpu(struct proc *pr)
 
 void cpu_identify(void)
 {
-	u32_t eax, ebx, ecx, edx;
+	uint32_t eax, ebx, ecx, edx;
 	unsigned cpu = cpuid;
 	
 	eax = 0;
@@ -445,7 +445,7 @@ static void ser_dump_proc_cpu(void)
 
 #if SPROFILE
 
-int arch_init_profile_clock(const u32_t freq)
+int arch_init_profile_clock(const uint32_t freq)
 {
   int r;
   /* Set CMOS timer frequency. */

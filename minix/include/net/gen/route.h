@@ -7,15 +7,15 @@ server/ip/gen/route.h
 
 typedef struct nwio_route
 {
-	u32_t nwr_ent_no;
-	u32_t nwr_ent_count;
+	uint32_t nwr_ent_no;
+	uint32_t nwr_ent_count;
 	ipaddr_t nwr_dest;
 	ipaddr_t nwr_netmask;
 	ipaddr_t nwr_gateway;
-	u32_t nwr_dist;
-	u32_t nwr_flags;
-	u32_t nwr_pref;
-	u32_t nwr_mtu;		/* Ignored, compatibility with VMD */
+	uint32_t nwr_dist;
+	uint32_t nwr_flags;
+	uint32_t nwr_pref;
+	uint32_t nwr_mtu;		/* Ignored, compatibility with VMD */
 	ipaddr_t nwr_ifaddr;
 } nwio_route_t;
 

@@ -75,7 +75,7 @@
  * @param reg Register offset.
  */
 #define E1000_READ_FLASH_REG(e,reg) \
-    *(u32_t *) (((e)->flash) + (reg))
+    *(uint32_t *) (((e)->flash) + (reg))
 
 /**
  * Read a 16-bit word from flash memory.
@@ -92,7 +92,7 @@
  * @param value New value.
  */
 #define E1000_WRITE_FLASH_REG(e,reg,value) \
-    *((u32_t *) (((e)->flash) + (reg))) = (value)
+    *((uint32_t *) (((e)->flash) + (reg))) = (value)
 
 /**
  * Write a 16-bit word to flash memory.
@@ -116,7 +116,7 @@ typedef struct e1000
     int irq_hook;                 /**< Interrupt Request Vector Hook. */
     uint8_t *regs;		  	  /**< Memory mapped hardware registers. */
     uint8_t *flash;		  /**< Optional flash memory. */
-    u32_t flash_base_addr;	  /**< Flash base address. */
+    uint32_t flash_base_addr;	  /**< Flash base address. */
     uint16_t (*eeprom_read)(struct e1000 *, int reg);
 				  /**< Function to read the EEPROM. */
     int eeprom_done_bit;	  /**< Offset of the EERD.DONE bit. */    

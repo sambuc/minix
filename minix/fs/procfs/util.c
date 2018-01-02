@@ -9,7 +9,7 @@ int
 procfs_getloadavg(struct load * loadavg, int nelem)
 {
 	struct loadinfo loadinfo;
-	u32_t system_hz, ticks_per_slot;
+	uint32_t system_hz, ticks_per_slot;
 	int p, unfilled_ticks;
 	int h, slots, latest, slot;
 	int minutes[3] = { 1, 5, 15 };

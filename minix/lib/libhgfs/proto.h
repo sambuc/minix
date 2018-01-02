@@ -10,16 +10,16 @@ int hgfs_setattr(const char *path, struct sffs_attr *attr);
 #define backdoor PREFIX(backdoor)
 #define backdoor_in PREFIX(backdoor_in)
 #define backdoor_out PREFIX(backdoor_out)
-u32_t backdoor(u32_t ptr[6]);
-u32_t backdoor_in(u32_t ptr[6]);
-u32_t backdoor_out(u32_t ptr[6]);
+uint32_t backdoor(uint32_t ptr[6]);
+uint32_t backdoor_in(uint32_t ptr[6]);
+uint32_t backdoor_out(uint32_t ptr[6]);
 
 /* channel.c */
 #define channel_open PREFIX(channel_open)
 #define channel_close PREFIX(channel_close)
 #define channel_send PREFIX(channel_send)
 #define channel_recv PREFIX(channel_recv)
-int channel_open(struct channel *ch, u32_t type);
+int channel_open(struct channel *ch, uint32_t type);
 void channel_close(struct channel *ch);
 int channel_send(struct channel *ch, char *buf, int len);
 int channel_recv(struct channel *ch, char *buf, int max);

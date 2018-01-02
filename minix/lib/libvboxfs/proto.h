@@ -27,7 +27,7 @@ int vboxfs_open_file(const char *path, int flags, int mode,
 void vboxfs_close_file(vboxfs_handle_t handle);
 
 /* info.c */
-int vboxfs_getset_info(vboxfs_handle_t handle, u32_t flags, void *data,
+int vboxfs_getset_info(vboxfs_handle_t handle, uint32_t flags, void *data,
 	size_t size);
 int vboxfs_query_vol(const char *path, vboxfs_volinfo_t *volinfo);
 int vboxfs_queryvol(const char *path, u64_t *free, u64_t *total);

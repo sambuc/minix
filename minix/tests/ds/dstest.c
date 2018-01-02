@@ -11,7 +11,7 @@ char *key_label = "test_label";
 void test_u32(void)
 {
 	int r;
-	u32_t value;
+	uint32_t value;
 
 	/* Publish and retrieve. */
 	r = ds_publish_u32(key_u32, 1234, 0);

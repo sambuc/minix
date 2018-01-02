@@ -30,8 +30,8 @@
  */
 typedef struct e1000_rx_desc
 {
-    u32_t buffer;	/**< Address of the receive data buffer (64-bit). */
-    u32_t buffer_h;     /**< High 32-bits of the receive data buffer (unused). */
+    uint32_t buffer;	/**< Address of the receive data buffer (64-bit). */
+    uint32_t buffer_h;     /**< High 32-bits of the receive data buffer (unused). */
     uint16_t length;	/**< Size of the receive buffer. */
     uint16_t checksum;	/**< Packet checksum. */
     uint8_t  status;	/**< Descriptor status. */
@@ -45,8 +45,8 @@ e1000_rx_desc_t;
  */
 typedef struct e1000_tx_desc
 {
-    u32_t buffer;	/**< Address of the transmit buffer (64-bit). */
-    u32_t buffer_h;	/**< High 32-bits of the transmit buffer (unused). */
+    uint32_t buffer;	/**< Address of the transmit buffer (64-bit). */
+    uint32_t buffer_h;	/**< High 32-bits of the transmit buffer (unused). */
     uint16_t length;	/**< Size of the transmit buffer contents. */
     uint8_t  checksum_off; /**< Checksum Offset. */
     uint8_t  command;	/**< Command field. */

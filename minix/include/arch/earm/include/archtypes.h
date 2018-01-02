@@ -8,20 +8,20 @@
 
 typedef struct segframe {
 	reg_t	p_ttbr;		/* page table root */
-	u32_t	*p_ttbr_v;
+	uint32_t	*p_ttbr_v;
 	char	*fpu_state;
 } segframe_t;
 
 struct cpu_info {
-	u32_t	arch;
-	u32_t	implementer;
-	u32_t	part;
-	u32_t	variant;
-	u32_t	freq;		/* in MHz */
-	u32_t	revision;
+	uint32_t	arch;
+	uint32_t	implementer;
+	uint32_t	part;
+	uint32_t	variant;
+	uint32_t	freq;		/* in MHz */
+	uint32_t	revision;
 };
 
-typedef u32_t atomic_t;	/* access to an aligned 32bit value is atomic on ARM */
+typedef uint32_t atomic_t;	/* access to an aligned 32bit value is atomic on ARM */
 
 #endif /* #ifndef _ARM_TYPES_H */
 

@@ -33,14 +33,14 @@
 }
 
 #define hash_i_64(a, u, v) {				\
-	u32_t i1 = (a), i2 = ex64lo(u), i3 = ex64hi(u);	\
+	uint32_t i1 = (a), i2 = ex64lo(u), i3 = ex64hi(u);	\
 	hash_mix(i1, i2, i3);				\
 	hash_final(i1, i2, i3);				\
 	(v) = i3;					\
 }
 
 #define hash_32(n, v) {					\
-	u32_t i1 = 0xa5a5a5a5, i2 = 0x12345678, i3 = n;	\
+	uint32_t i1 = 0xa5a5a5a5, i2 = 0x12345678, i3 = n;	\
 	hash_mix(i1, i2, i3);				\
 	hash_final(i1, i2, i3);				\
 	(v) = i3;					\

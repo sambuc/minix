@@ -21,7 +21,7 @@ struct buf {
   char lmfs_count;             /* number of users of this buffer */
   char lmfs_needsetcache;      /* to be identified to VM */
   size_t lmfs_bytes;           /* size of this block (allocated and used) */
-  u32_t lmfs_flags;            /* Flags shared between VM and FS */
+  uint32_t lmfs_flags;            /* Flags shared between VM and FS */
 
   /* If any, which inode & offset does this block correspond to?
    * If none, VMC_NO_INODE

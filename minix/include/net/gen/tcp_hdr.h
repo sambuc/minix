@@ -9,8 +9,8 @@ typedef struct tcp_hdr
 {
 	tcpport_t th_srcport;
 	tcpport_t th_dstport;
-	u32_t th_seq_nr;
-	u32_t th_ack_nr;
+	uint32_t th_seq_nr;
+	uint32_t th_ack_nr;
 	uint8_t th_data_off;
 	uint8_t th_flags;
 	uint16_t th_window;

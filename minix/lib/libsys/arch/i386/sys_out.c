@@ -5,7 +5,7 @@
  *===========================================================================*/
 int sys_out(port, value, type)
 int port; 				/* port address to write to */
-u32_t value;				/* value to write */
+uint32_t value;				/* value to write */
 int type;				/* byte, word, long */
 {
     message m_io;

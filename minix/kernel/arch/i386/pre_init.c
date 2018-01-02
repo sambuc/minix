@@ -91,7 +91,7 @@ int overlaps(multiboot_module_t *mod, int n, int cmp_mod)
 	return 0;
 }
 
-void get_parameters(u32_t ebx, kinfo_t *cbi) 
+void get_parameters(uint32_t ebx, kinfo_t *cbi) 
 {
 	multiboot_memory_map_t *mmap;
 	multiboot_info_t *mbi = &cbi->mbi;
@@ -214,7 +214,7 @@ void get_parameters(u32_t ebx, kinfo_t *cbi)
 	}
 }
 
-kinfo_t *pre_init(u32_t magic, u32_t ebx)
+kinfo_t *pre_init(uint32_t magic, uint32_t ebx)
 {
 	assert(magic == MULTIBOOT_INFO_MAGIC);
 

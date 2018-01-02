@@ -93,7 +93,7 @@ _ASSERT_MSG_SIZE(mess_10);
 /* Helper union for DS messages */
 union	ds_val {
 	cp_grant_id_t	grant;
-	u32_t		u32;
+	uint32_t		u32;
 	endpoint_t	ep;
 };
 
@@ -1588,7 +1588,7 @@ typedef struct {
 	int fd;
 	endpoint_t forwhom;
 	void *retaddr;
-	u32_t padding[5];
+	uint32_t padding[5];
 } mess_mmap;
 _ASSERT_MSG_SIZE(mess_mmap);
 
@@ -2371,10 +2371,10 @@ typedef struct {
 	dev_t dev;
 	ino_t ino;
 	endpoint_t who;
-	u32_t vaddr;
-	u32_t len;
-	u32_t flags;
-	u32_t fd;
+	uint32_t vaddr;
+	uint32_t len;
+	uint32_t flags;
+	uint32_t fd;
 	uint16_t clearend;
 	uint8_t padding[8];
 } mess_vm_vfs_mmap;
@@ -2386,7 +2386,7 @@ typedef struct {
 	off_t ino_offset;
 	ino_t ino;
 	void *block;
-	u32_t *flags_ptr;
+	uint32_t *flags_ptr;
 	uint8_t pages;
 	uint8_t flags;
 	uint8_t padding[12];

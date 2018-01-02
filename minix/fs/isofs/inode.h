@@ -7,15 +7,15 @@ struct iso9660_dir_record {
 	 */
 	uint8_t length;                    /* The length of the record */
 	uint8_t ext_attr_rec_length;
-	u32_t loc_extent_l;             /* The same data (in this case loc_extent)is */
-	u32_t loc_extent_m;             /* saved in two ways. The first puts the le- */
-	u32_t data_length_l;            /* ast significant byte first, the second */
-	u32_t data_length_m;            /* does the opposite */
+	uint32_t loc_extent_l;             /* The same data (in this case loc_extent)is */
+	uint32_t loc_extent_m;             /* saved in two ways. The first puts the le- */
+	uint32_t data_length_l;            /* ast significant byte first, the second */
+	uint32_t data_length_m;            /* does the opposite */
 	uint8_t rec_date[7];               /* => recording date */
 	uint8_t file_flags;                /* => flags of the file */
 	uint8_t file_unit_size;            /* set of blocks in interleave mode */
 	uint8_t inter_gap_size;            /* gap between file units in interleave mode */
-	u32_t vol_seq_number;           /* volume sequence number: not used */
+	uint32_t vol_seq_number;           /* volume sequence number: not used */
 	uint8_t length_file_id;            /* Length name file */
 	char file_id[ISO9660_MAX_FILE_ID_LEN]; /* file name */
 } __attribute__((packed));
@@ -44,8 +44,8 @@ struct dir_extent {
 	/*
 	 * Extent (contiguous array of logical sectors).
 	 */
-	u32_t location;
-	u32_t length;
+	uint32_t location;
+	uint32_t length;
 	struct dir_extent *next;
 } ;
 

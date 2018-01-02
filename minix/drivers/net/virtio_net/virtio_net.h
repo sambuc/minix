@@ -137,7 +137,7 @@ typedef uint8_t virtio_net_ctrl_ack;
  * is available.
  */
 struct virtio_net_ctrl_mac {
-	u32_t entries;
+	uint32_t entries;
 #define ETH_ALEN 6
 	uint8_t macs[][ETH_ALEN];
 } __attribute__((packed));

@@ -17,7 +17,7 @@
 
 #define VBOXFS_INVALID_HANDLE	((vboxfs_handle_t) ~0LL)
 
-typedef u32_t vboxfs_root_t;
+typedef uint32_t vboxfs_root_t;
 typedef u64_t vboxfs_handle_t;
 
 typedef struct {
@@ -38,18 +38,18 @@ typedef struct {
 #define VBOXFS_OBJATTR_ADD_EATTR	3	/* extended attributes */
 
 typedef struct {
-	u32_t mode;
-	u32_t add;
+	uint32_t mode;
+	uint32_t add;
 	union {
 		struct {
-			u32_t uid;
-			u32_t gid;
-			u32_t nlinks;
-			u32_t dev;
+			uint32_t uid;
+			uint32_t gid;
+			uint32_t nlinks;
+			uint32_t dev;
 			u64_t inode;
-			u32_t flags;
-			u32_t gen;
-			u32_t rdev;
+			uint32_t flags;
+			uint32_t gen;
+			uint32_t rdev;
 		};
 		struct {
 			u64_t easize;
@@ -87,8 +87,8 @@ typedef struct {
 
 typedef struct {
 	vboxfs_handle_t handle;
-	u32_t result;
-	u32_t flags;
+	uint32_t result;
+	uint32_t flags;
 	vboxfs_objinfo_t info;
 } vboxfs_crinfo_t;
 
@@ -115,7 +115,7 @@ typedef struct {
 #define VBOXFS_RENAME_REPLACE	0x04	/* replace target if it exists */
 
 typedef struct {
-	u32_t namemax;
+	uint32_t namemax;
 	uint8_t remote;
 	uint8_t casesens;
 	uint8_t readonly;
@@ -128,9 +128,9 @@ typedef struct {
 typedef struct {
 	u64_t total;
 	u64_t free;
-	u32_t blocksize;
-	u32_t sectorsize;
-	u32_t serial;
+	uint32_t blocksize;
+	uint32_t sectorsize;
+	uint32_t serial;
 	vboxfs_fsprops_t props;
 } vboxfs_volinfo_t;
 

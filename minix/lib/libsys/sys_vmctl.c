@@ -1,6 +1,6 @@
 #include "syslib.h"
 
-int sys_vmctl(endpoint_t who, int param, u32_t value)
+int sys_vmctl(endpoint_t who, int param, uint32_t value)
 {
   message m;
   int r;
@@ -13,7 +13,7 @@ int sys_vmctl(endpoint_t who, int param, u32_t value)
 }
 
 /* Get page directory base register */
-int sys_vmctl_get_pdbr(endpoint_t who, u32_t *pdbr)
+int sys_vmctl_get_pdbr(endpoint_t who, uint32_t *pdbr)
 {
   message m;
   int r;

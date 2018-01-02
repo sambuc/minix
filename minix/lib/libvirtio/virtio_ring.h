@@ -62,7 +62,7 @@ struct vring_desc {
 	/* Address (guest-physical). */
 	u64_t addr;
 	/* Length. */
-	u32_t len;
+	uint32_t len;
 	/* The flags as indicated above. */
 	uint16_t flags;
 	/* We chain unused descriptors via this, too */
@@ -78,9 +78,9 @@ struct vring_avail {
 /* u32 is used here for ids for padding reasons. */
 struct vring_used_elem {
 	/* Index of start of used descriptor chain. */
-	u32_t id;
+	uint32_t id;
 	/* Total length of the descriptor chain which was used (written to) */
-	u32_t len;
+	uint32_t len;
 };
 
 struct vring_used {

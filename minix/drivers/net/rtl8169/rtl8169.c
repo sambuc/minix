@@ -27,30 +27,30 @@
 
 typedef struct re_desc
 {
-	u32_t status;		/* command/status */
-	u32_t vlan;		/* VLAN */
-	u32_t addr_low;		/* low 32-bits of physical buffer address */
-	u32_t addr_high;	/* high 32-bits of physical buffer address */
+	uint32_t status;		/* command/status */
+	uint32_t vlan;		/* VLAN */
+	uint32_t addr_low;		/* low 32-bits of physical buffer address */
+	uint32_t addr_high;	/* high 32-bits of physical buffer address */
 } re_desc;
 
 typedef struct re_dtcc
 {
-	u32_t	TxOk_low;	/* low 32-bits of Tx Ok packets */
-	u32_t	TxOk_high;	/* high 32-bits of Tx Ok packets */
-	u32_t	RxOk_low;	/* low 32-bits of Rx Ok packets */
-	u32_t	RxOk_high;	/* high 32-bits of Rx Ok packets */
-	u32_t	TxEr_low;	/* low 32-bits of Tx errors */
-	u32_t	TxEr_high;	/* high 32-bits of Tx errors */
-	u32_t	RxEr;		/* Rx errors */
+	uint32_t	TxOk_low;	/* low 32-bits of Tx Ok packets */
+	uint32_t	TxOk_high;	/* high 32-bits of Tx Ok packets */
+	uint32_t	RxOk_low;	/* low 32-bits of Rx Ok packets */
+	uint32_t	RxOk_high;	/* high 32-bits of Rx Ok packets */
+	uint32_t	TxEr_low;	/* low 32-bits of Tx errors */
+	uint32_t	TxEr_high;	/* high 32-bits of Tx errors */
+	uint32_t	RxEr;		/* Rx errors */
 	uint16_t	MissPkt;	/* Missed packets */
 	uint16_t	FAE;		/* Frame Alignment Error packets (MII only) */
-	u32_t	Tx1Col;		/* Tx Ok packets with 1 collision before Tx */
-	u32_t	TxMCol;		/* Tx Ok packets with 2..15 collisions */
-	u32_t	RxOkPhy_low;	/* low 32-bits of Rx Ok packets for us */
-	u32_t	RxOkPhy_high;	/* high 32-bits of Rx Ok packets for us */
-	u32_t	RxOkBrd_low;	/* low 32-bits of Rx Ok broadcast packets */
-	u32_t	RxOkBrd_high;	/* high 32-bits of Rx Ok broadcast packets */
-	u32_t	RxOkMul;	/* Rx Ok multicast packets */
+	uint32_t	Tx1Col;		/* Tx Ok packets with 1 collision before Tx */
+	uint32_t	TxMCol;		/* Tx Ok packets with 2..15 collisions */
+	uint32_t	RxOkPhy_low;	/* low 32-bits of Rx Ok packets for us */
+	uint32_t	RxOkPhy_high;	/* high 32-bits of Rx Ok packets for us */
+	uint32_t	RxOkBrd_low;	/* low 32-bits of Rx Ok broadcast packets */
+	uint32_t	RxOkBrd_high;	/* high 32-bits of Rx Ok broadcast packets */
+	uint32_t	RxOkMul;	/* Rx Ok multicast packets */
 	uint16_t	TxAbt;		/* Tx abort packets */
 	uint16_t	TxUndrn;	/* Tx underrun packets */
 } re_dtcc;
@@ -65,7 +65,7 @@ typedef struct re {
 	int re_report_link;
 	int re_need_reset;
 	int re_tx_alive;
-	u32_t re_mac;
+	uint32_t re_mac;
 	const char *re_model;
 
 	/* Rx */
@@ -92,15 +92,15 @@ typedef struct re {
 	int re_hook_id;		/* IRQ hook id at kernel */
 	phys_bytes dtcc_buf;	/* Dump Tally Counter buffer physical */
 	re_dtcc *v_dtcc_buf;	/* Dump Tally Counter buffer */
-	u32_t dtcc_counter;	/* DTCC update counter */
-	u32_t interrupts;
+	uint32_t dtcc_counter;	/* DTCC update counter */
+	uint32_t interrupts;
 } re_t;
 
 static re_t re_state;
 
 static unsigned my_inb(uint16_t port)
 {
-	u32_t value;
+	uint32_t value;
 	int s;
 	if ((s = sys_inb(port, &value)) != OK)
 		printf("RTL8169: warning, sys_inb failed: %d\n", s);
@@ -108,7 +108,7 @@ static unsigned my_inb(uint16_t port)
 }
 static unsigned my_inw(uint16_t port)
 {
-	u32_t value;
+	uint32_t value;
 	int s;
 	if ((s = sys_inw(port, &value)) != OK)
 		printf("RTL8169: warning, sys_inw failed: %d\n", s);
@@ -116,7 +116,7 @@ static unsigned my_inw(uint16_t port)
 }
 static unsigned my_inl(uint16_t port)
 {
-	u32_t value;
+	uint32_t value;
 	int s;
 	if ((s = sys_inl(port, &value)) != OK)
 		printf("RTL8169: warning, sys_inl failed: %d\n", s);
@@ -140,7 +140,7 @@ static void my_outw(uint16_t port, uint16_t value)
 	if ((s = sys_outw(port, value)) != OK)
 		printf("RTL8169: warning, sys_outw failed: %d\n", s);
 }
-static void my_outl(uint16_t port, u32_t value)
+static void my_outl(uint16_t port, uint32_t value)
 {
 	int s;
 
@@ -401,7 +401,7 @@ static int rl_probe(re_t *rep, unsigned int skip)
 {
 	int r, devind;
 	uint16_t vid, did;
-	u32_t bar;
+	uint32_t bar;
 	uint8_t ilr;
 #if VERBOSE
 	const char *dname;
@@ -677,7 +677,7 @@ static void rtl8169scd_phy_config(port_t port)
 static void rl_reset_hw(re_t *rep)
 {
 	port_t port;
-	u32_t t;
+	uint32_t t;
 	int i;
 
 	port = rep->re_base_port;
@@ -849,7 +849,7 @@ static void rl_set_hwaddr(const netdriver_addr_t *addr)
 {
 	re_t *rep;
 	port_t port;
-	u32_t w;
+	uint32_t w;
 	int i;
 
 	rep = &re_state;
@@ -873,8 +873,8 @@ static void rl_set_hwaddr(const netdriver_addr_t *addr)
 static void rl_rec_mode(re_t *rep)
 {
 	port_t port;
-	u32_t rcr;
-	u32_t mc_filter[2];		/* Multicast hash filter */
+	uint32_t rcr;
+	uint32_t mc_filter[2];		/* Multicast hash filter */
 
 	port = rep->re_base_port;
 
@@ -903,7 +903,7 @@ static ssize_t rl_recv(struct netdriver_data *data, size_t max)
 	port_t port;
 	unsigned totlen, packlen;
 	re_desc *desc;
-	u32_t rxstat;
+	uint32_t rxstat;
 	re_t *rep;
 
 	rep = &re_state;
@@ -1140,7 +1140,7 @@ static void rl_do_reset(re_t *rep)
 static void dump_phy(const re_t *rep)
 {
 	port_t port;
-	u32_t t;
+	uint32_t t;
 
 	port = rep->re_base_port;
 

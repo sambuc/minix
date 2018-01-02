@@ -8,7 +8,7 @@
 
 #ifdef ISO9660_OPTION_ROCKRIDGE
 
-void parse_susp_rock_ridge_plcl(struct rrii_dir_record *dir, u32_t block) {
+void parse_susp_rock_ridge_plcl(struct rrii_dir_record *dir, uint32_t block) {
 	struct inode *rep_inode;
 	struct buf *bp;
 	struct iso9660_dir_record *dir_rec;
@@ -142,10 +142,10 @@ int parse_susp_rock_ridge(struct rrii_dir_record *dir, char *buffer)
 	int rrii_name_append_size;
 	int rrii_tf_flags;
 	int rrii_tf_offset;
-	u32_t rrii_pn_rdev_major;
-	u32_t rrii_pn_rdev_minor;
+	uint32_t rrii_pn_rdev_major;
+	uint32_t rrii_pn_rdev_minor;
 	mode_t rrii_px_posix_mode;
-	u32_t rrii_pcl_block;
+	uint32_t rrii_pcl_block;
 
 	susp_signature[0] = buffer[0];
 	susp_signature[1] = buffer[1];
@@ -155,9 +155,9 @@ int parse_susp_rock_ridge(struct rrii_dir_record *dir, char *buffer)
 	if ((susp_signature[0] == 'P') && (susp_signature[1] == 'X') &&
 	    (susp_length >= 36) && (susp_version >= 1)) {
 		/* POSIX file mode, UID and GID. */
-		dir->d_mode = *((u32_t*)(buffer + 4));
-		dir->uid = *((u32_t*)(buffer + 20));
-		dir->gid = *((u32_t*)(buffer + 28));
+		dir->d_mode = *((uint32_t*)(buffer + 4));
+		dir->uid = *((uint32_t*)(buffer + 20));
+		dir->gid = *((uint32_t*)(buffer + 28));
 
 		return OK;
 	}
@@ -170,11 +170,11 @@ int parse_susp_rock_ridge(struct rrii_dir_record *dir, char *buffer)
 		 * investigate why makefs does that later.
 		 */
 #if 0
-		rrii_pn_rdev_major = *((u32_t*)(buffer + 4));
-		rrii_pn_rdev_minor = *((u32_t*)(buffer + 12));
+		rrii_pn_rdev_major = *((uint32_t*)(buffer + 4));
+		rrii_pn_rdev_minor = *((uint32_t*)(buffer + 12));
 #else
-		rrii_pn_rdev_major = *((u32_t*)(buffer + 12)) >> 8;
-		rrii_pn_rdev_minor = *((u32_t*)(buffer + 12)) & 0xFF;
+		rrii_pn_rdev_major = *((uint32_t*)(buffer + 12)) >> 8;
+		rrii_pn_rdev_minor = *((uint32_t*)(buffer + 12)) & 0xFF;
 #endif
 		dir->rdev = makedev(rrii_pn_rdev_major, rrii_pn_rdev_minor);
 
@@ -207,7 +207,7 @@ int parse_susp_rock_ridge(struct rrii_dir_record *dir, char *buffer)
 	else if ((susp_signature[0] == 'P') && (susp_signature[1] == 'L') &&
 	         (susp_length >= 12) && (susp_version >= 1)) {
 		/* Reparenting ".." directory entry. */
-		rrii_pcl_block = *((u32_t*)(buffer + 4));
+		rrii_pcl_block = *((uint32_t*)(buffer + 4));
 		parse_susp_rock_ridge_plcl(dir, rrii_pcl_block);
 
 		return OK;
@@ -215,7 +215,7 @@ int parse_susp_rock_ridge(struct rrii_dir_record *dir, char *buffer)
 	else if ((susp_signature[0] == 'C') && (susp_signature[1] == 'L') &&
 	         (susp_length >= 12) && (susp_version >= 1)) {
 		/* Reorganize deep directory entry. */
-		rrii_pcl_block = *((u32_t*)(buffer + 4));
+		rrii_pcl_block = *((uint32_t*)(buffer + 4));
 		parse_susp_rock_ridge_plcl(dir, rrii_pcl_block);
 
 		return OK;

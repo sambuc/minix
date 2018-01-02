@@ -53,15 +53,15 @@ static size_t fb_size;
 static int initialized = 0;
 
 struct panel_config {
-        u32_t timing_h;
-        u32_t timing_v;
-        u32_t pol_freq;
-        u32_t divisor;
-        u32_t lcd_size;
-        u32_t panel_type;
-        u32_t data_lines;
-        u32_t load_mode;
-        u32_t panel_color;
+        uint32_t timing_h;
+        uint32_t timing_v;
+        uint32_t pol_freq;
+        uint32_t divisor;
+        uint32_t lcd_size;
+        uint32_t panel_type;
+        uint32_t data_lines;
+        uint32_t load_mode;
+        uint32_t panel_color;
 };
 
 static const struct panel_config default_cfg = {
@@ -129,16 +129,16 @@ static struct log log = {
 	.log_func = default_log
 };
 
-static inline u32_t
+static inline uint32_t
 readw(vir_bytes addr)
 {
-        return *((volatile u32_t *) addr);
+        return *((volatile uint32_t *) addr);
 }
 
 static inline void
-writew(vir_bytes addr, u32_t val)
+writew(vir_bytes addr, uint32_t val)
 {
-        *((volatile u32_t *) addr) = val;
+        *((volatile uint32_t *) addr) = val;
 }
 
 static struct videomode *
@@ -236,7 +236,7 @@ static void
 arch_configure_display(int minor)
 {
 /* Tell hardware where frame buffer is and turn display on */
-	u32_t off, rdispc;
+	uint32_t off, rdispc;
 
 	if (!initialized) return;
 	if (minor != 0) return;
@@ -315,7 +315,7 @@ int
 arch_fb_init(int minor, struct edid_info *info)
 {
 	int r;
-	u32_t rdispc;
+	uint32_t rdispc;
 	struct minix_mem_range mr;
 
 	const struct panel_config *panel_cfg = &omap_cfg[minor];

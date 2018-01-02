@@ -80,8 +80,8 @@ struct rs_pci_id {
 #define NO_SUB_DID	0xffff
 
 struct rs_pci_class {
-	u32_t pciclass;
-	u32_t mask;
+	uint32_t pciclass;
+	uint32_t mask;
 };
 
 /* State-related data. */

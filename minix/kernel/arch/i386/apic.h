@@ -119,7 +119,7 @@ struct io_apic {
 EXTERN struct io_apic io_apic[MAX_NR_IOAPICS];
 EXTERN unsigned nioapics;
 
-EXTERN u32_t lapic_addr_vaddr; /* we remember the virtual address here until we
+EXTERN uint32_t lapic_addr_vaddr; /* we remember the virtual address here until we
 				  switch to paging */
 
 int lapic_enable(unsigned cpu);
@@ -131,8 +131,8 @@ EXTERN int ioapic_enabled;
 EXTERN unsigned nioapics;
 
 void lapic_microsec_sleep(unsigned count);
-void ioapic_disable_irqs(u32_t irqs);
-void ioapic_enable_irqs(u32_t irqs);
+void ioapic_disable_irqs(uint32_t irqs);
+void ioapic_enable_irqs(uint32_t irqs);
 
 int lapic_enable(unsigned cpu);
 void lapic_disable(void);
@@ -147,13 +147,13 @@ void apic_idt_init(int reset);
 int apic_send_startup_ipi(unsigned cpu, phys_bytes trampoline);
 int apic_send_init_ipi(unsigned cpu, phys_bytes trampoline);
 unsigned int apicid(void);
-void ioapic_set_id(u32_t addr, unsigned int id);
+void ioapic_set_id(uint32_t addr, unsigned int id);
 #else
 int apic_single_cpu_init(void);
 #endif
 
 void lapic_set_timer_periodic(const unsigned freq);
-void lapic_set_timer_one_shot(const u32_t value);
+void lapic_set_timer_one_shot(const uint32_t value);
 void lapic_stop_timer(void);
 void lapic_restart_timer(void);
 
@@ -161,7 +161,7 @@ void ioapic_set_irq(unsigned irq);
 void ioapic_unset_irq(unsigned irq);
 
 /* signal the end of interrupt handler to apic */
-#define apic_eoi() do { *((volatile u32_t *) lapic_eoi_addr) = 0; } while(0)
+#define apic_eoi() do { *((volatile uint32_t *) lapic_eoi_addr) = 0; } while(0)
 
 void ioapic_eoi(int irq);
 
@@ -191,9 +191,9 @@ void apic_ipi_halt_intr(void);
 
 #define cpu_feature_apic_on_chip() _cpufeature(_CPUF_I386_APIC_ON_CHIP)
 
-#define lapic_read(what)	(*((volatile u32_t *)((what))))
+#define lapic_read(what)	(*((volatile uint32_t *)((what))))
 #define lapic_write(what, data)	do {			\
-	(*((volatile u32_t *)((what)))) = data;		\
+	(*((volatile uint32_t *)((what)))) = data;		\
 } while(0)
 
 #endif /* __ASSEMBLY__ */

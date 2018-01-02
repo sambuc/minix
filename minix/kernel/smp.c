@@ -12,8 +12,8 @@ struct cpu cpus[CONFIG_MAX_CPUS];
 
 /* info passed to another cpu along with a sched ipi */
 struct sched_ipi_data {
-	volatile u32_t	flags;
-	volatile u32_t	data;
+	volatile uint32_t	flags;
+	volatile uint32_t	data;
 };
 
 static struct sched_ipi_data  sched_ipi_data[CONFIG_MAX_CPUS];
@@ -94,7 +94,7 @@ static void smp_schedule_sync(struct proc * p, unsigned task)
 		BKL_LOCK();
 	}
 
-	sched_ipi_data[cpu].data = (u32_t) p;
+	sched_ipi_data[cpu].data = (uint32_t) p;
 	sched_ipi_data[cpu].flags |= task;
 	__insn_barrier();
 	arch_send_smp_schedule_ipi(cpu);

@@ -28,17 +28,17 @@
 #define VMMDEV_GUEST_OS_OTHER	0x90000		/* this is L4 - close enough */
 
 struct VMMDevRequestHeader {
-	u32_t size;
-	u32_t version;
-	u32_t type;
+	uint32_t size;
+	uint32_t version;
+	uint32_t type;
 	i32_t result;
-	u32_t reserved[2];
+	uint32_t reserved[2];
 };
 
 struct VMMDevReportGuestInfo {
 	struct VMMDevRequestHeader header;
-	u32_t add_version;
-	u32_t os_type;
+	uint32_t add_version;
+	uint32_t os_type;
 };
 
 struct VMMDevReqHostTime {
@@ -50,14 +50,14 @@ struct VMMDevReqHostTime {
 
 struct VMMDevEvents {
 	struct VMMDevRequestHeader header;
-	u32_t events;
+	uint32_t events;
 };
 
 #define VMMDEV_HGCM_REQ_DONE	(1 << 0)
 
 struct VMMDevHGCMHeader {
 	struct VMMDevRequestHeader header;
-	u32_t flags;
+	uint32_t flags;
 	i32_t result;
 };
 
@@ -67,21 +67,21 @@ struct VMMDevHGCMHeader {
 
 struct VMMDevHGCMConnect {
 	struct VMMDevHGCMHeader header;
-	u32_t type;
+	uint32_t type;
 	char name[VMMDEV_HGCM_NAME_SIZE];
-	u32_t client_id;
+	uint32_t client_id;
 };
 
 struct VMMDevHGCMDisconnect {
 	struct VMMDevHGCMHeader header;
-	u32_t client_id;
+	uint32_t client_id;
 };
 
 #define VMMDEV_HGCM_FLAG_TO_HOST	0x01
 #define VMMDEV_HGCM_FLAG_FROM_HOST	0x02
 
 struct VMMDevHGCMPageList {
-	u32_t flags;
+	uint32_t flags;
 	uint16_t offset;
 	uint16_t count;
 	u64_t addr[1];
@@ -92,29 +92,29 @@ struct VMMDevHGCMPageList {
 #define VMMDEV_HGCM_PARAM_PAGELIST	10
 
 struct VMMDevHGCMParam {
-	u32_t type;
+	uint32_t type;
 	union {
-		u32_t u32;
+		uint32_t u32;
 		u64_t u64;
 		struct {
-			u32_t size;
+			uint32_t size;
 			union {
-				u32_t phys;
+				uint32_t phys;
 				void *vir;
 			} addr;
 		} ptr;
 		struct {
-			u32_t size;
-			u32_t offset;
+			uint32_t size;
+			uint32_t offset;
 		} pagelist;
 	};
 };
 
 struct VMMDevHGCMCall {
 	struct VMMDevHGCMHeader header;
-	u32_t client_id;
-	u32_t function;
-	u32_t count;
+	uint32_t client_id;
+	uint32_t function;
+	uint32_t count;
 };
 
 struct VMMDevHGCMCancel {

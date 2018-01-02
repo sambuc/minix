@@ -19,21 +19,21 @@
 static re_t re_state;
 
 static unsigned my_inb(uint16_t port) {
-	u32_t value;
+	uint32_t value;
 	int s;
 	if ((s=sys_inb(port, &value)) !=OK)
 		printf("RTL8139: warning, sys_inb failed: %d\n", s);
 	return value;
 }
 static unsigned my_inw(uint16_t port) {
-	u32_t value;
+	uint32_t value;
 	int s;
 	if ((s=sys_inw(port, &value)) !=OK)
 		printf("RTL8139: warning, sys_inw failed: %d\n", s);
 	return value;
 }
 static unsigned my_inl(uint16_t port) {
-	u32_t value;
+	uint32_t value;
 	int s;
 	if ((s=sys_inl(port, &value)) !=OK)
 		printf("RTL8139: warning, sys_inl failed: %d\n", s);
@@ -53,7 +53,7 @@ static void my_outw(uint16_t port, uint16_t value) {
 	if ((s=sys_outw(port, value)) !=OK)
 		printf("RTL8139: warning, sys_outw failed: %d\n", s);
 }
-static void my_outl(uint16_t port, u32_t value) {
+static void my_outl(uint16_t port, uint32_t value) {
 	int s;
 	if ((s=sys_outl(port, value)) !=OK)
 		printf("RTL8139: warning, sys_outl failed: %d\n", s);
@@ -259,7 +259,7 @@ static int rl_probe(re_t *rep, unsigned int skip)
 {
 	int r, devind;
 	uint16_t cr, vid, did;
-	u32_t bar;
+	uint32_t bar;
 	uint8_t ilr;
 #if VERBOSE
 	const char *dname;
@@ -406,7 +406,7 @@ static void rl_init_hw(re_t *rep, netdriver_addr_t *addr,
 static void rl_reset_hw(re_t *rep)
 {
 	port_t port;
-	u32_t t;
+	uint32_t t;
 	phys_bytes bus_buf;
 	int i;
 
@@ -515,7 +515,7 @@ static void rl_set_hwaddr(const netdriver_addr_t *addr)
 {
 	re_t *rep;
 	port_t port;
-	u32_t w;
+	uint32_t w;
 	int i;
 
 	rep = &re_state;
@@ -574,7 +574,7 @@ static void rl_confaddr(re_t *rep, netdriver_addr_t *addr,
 static void rl_rec_mode(re_t *rep)
 {
 	port_t port;
-	u32_t rcr;
+	uint32_t rcr;
 
 	port= rep->re_base_port;
 	rcr= rl_inl(port, RL_RCR);
@@ -599,7 +599,7 @@ static ssize_t rl_recv(struct netdriver_data *data, size_t max)
 	port_t port;
 	unsigned amount, totlen, packlen;
 	uint16_t d_start, d_end;
-	u32_t l, rxstat;
+	uint32_t l, rxstat;
 	re_t *rep;
 
 	rep= &re_state;
@@ -632,7 +632,7 @@ static ssize_t rl_recv(struct netdriver_data *data, size_t max)
 	else
 		amount= d_end+RX_BUFSIZE - d_start;
 
-	rxstat = *(u32_t *) (rep->v_re_rx_buf + d_start);
+	rxstat = *(uint32_t *) (rep->v_re_rx_buf + d_start);
 
 	/* Should convert from little endian to host byte order */
 
@@ -1175,7 +1175,7 @@ static void rl_do_reset(re_t *rep)
 static void dump_phy(re_t *rep)
 {
 	port_t port;
-	u32_t t;
+	uint32_t t;
 
 	port= rep->re_base_port;
 
@@ -1273,7 +1273,7 @@ static int rl_handler(re_t *rep)
 {
 	int i, port, tx_head, tx_tail, link_up;
 	uint16_t isr, tsad;
-	u32_t tsd, tcr, ertxth;
+	uint32_t tsd, tcr, ertxth;
 
 	port= rep->re_base_port;
 

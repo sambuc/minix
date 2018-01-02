@@ -29,19 +29,19 @@ typedef struct rip_entry
 		{
 			uint16_t re_family;
 			uint16_t re_zero0;
-			u32_t re_address;
-			u32_t re_zero1;
-			u32_t re_zero2;
-			u32_t re_metric;
+			uint32_t re_address;
+			uint32_t re_zero1;
+			uint32_t re_zero2;
+			uint32_t re_metric;
 		} v1;
 		struct rip_entry_v2
 		{
 			uint16_t re_family;
 			uint16_t re_tag;
-			u32_t re_address;
-			u32_t re_mask;
-			u32_t re_nexthop;
-			u32_t re_metric;
+			uint32_t re_address;
+			uint32_t re_mask;
+			uint32_t re_nexthop;
+			uint32_t re_metric;
 		} v2;
 	} u;
 } rip_entry_t;

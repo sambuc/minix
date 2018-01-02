@@ -5,14 +5,14 @@
 /* Opaque spin state structure. */
 typedef struct {
 	int s_state;
-	u32_t s_usecs;
+	uint32_t s_usecs;
 	u64_t s_base_tsc;
 	clock_t s_base_uptime;
 	int s_timeout;
 } spin_t;
 
 /* Functions. */
-void spin_init(spin_t *s, u32_t usecs);
+void spin_init(spin_t *s, uint32_t usecs);
 int spin_check(spin_t *s);
 
 /* Macros. */

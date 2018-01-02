@@ -14,7 +14,7 @@
 /* klib */
 __dead void reset(void);
 phys_bytes vir2phys(void *);
-vir_bytes phys_memset(phys_bytes ph, u32_t c, phys_bytes bytes);
+vir_bytes phys_memset(phys_bytes ph, uint32_t c, phys_bytes bytes);
 
 void __switch_address_space(struct proc *p, struct proc **__ptproc);
 #define switch_address_space(proc)	\
@@ -38,7 +38,7 @@ phys_bytes alloc_lowest(kinfo_t *cbi, phys_bytes len);
 void vm_enable_paging(void);
 void cut_memmap(kinfo_t *cbi, phys_bytes start, phys_bytes end);
 phys_bytes pg_roundup(phys_bytes b);
-void pg_info(reg_t *, u32_t **);
+void pg_info(reg_t *, uint32_t **);
 void pg_clear(void);
 void pg_identity(kinfo_t *);
 phys_bytes pg_load(void);

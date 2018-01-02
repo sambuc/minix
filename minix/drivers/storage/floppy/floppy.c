@@ -237,7 +237,7 @@ static uint8_t f_results[MAX_RESULTS];/* the controller can give lots of output 
  * floppy disk drive contains a 'fl_tmr_stop' timer. 
  */
 static minix_timer_t f_tmr_timeout;		/* timer for various timeouts */
-static u32_t system_hz;		/* system clock frequency */
+static uint32_t system_hz;		/* system clock frequency */
 static void f_expire_tmrs(clock_t stamp);
 static void stop_motor(int arg);
 static void f_timeout(int arg);
@@ -942,7 +942,7 @@ static int fdc_results(void)
  */
 
   int s, result_nr;
-  u32_t status;
+  uint32_t status;
   spin_t spin;
 
   /* Extract bytes from FDC until it says it has no more.  The loop is
@@ -959,7 +959,7 @@ static int fdc_results(void)
 		panic("Sys_inb in fdc_results() failed: %d", s);
 	status &= (MASTER | DIRECTION | CTL_BUSY);
 	if (status == (MASTER | DIRECTION | CTL_BUSY)) {
-		u32_t tmp_r;
+		uint32_t tmp_r;
 		if (result_nr >= MAX_RESULTS) break;	/* too many results */
 		if ((s=sys_inb(FDC_DATA, &tmp_r)) != OK)
 		   panic("Sys_inb in fdc_results() failed: %d", s);
@@ -1019,7 +1019,7 @@ static void fdc_out(
  */
   spin_t spin;
   int s;
-  u32_t status;
+  uint32_t status;
 
   if (need_reset) return;	/* if controller is not listening, return */
 

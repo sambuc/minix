@@ -55,7 +55,7 @@ int read_vds(struct iso9660_vol_pri_desc *v_pri, dev_t dev);
 
 /* susp.c */
 int parse_susp(struct rrii_dir_record *dir, char *buffer);
-void parse_susp_buffer(struct rrii_dir_record *dir, char *buffer, u32_t size);
+void parse_susp_buffer(struct rrii_dir_record *dir, char *buffer, uint32_t size);
 
 /* susp_rock_ridge.c */
 void parse_susp_rock_ridge_sl(struct rrii_dir_record *dir, char *buffer,

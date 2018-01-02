@@ -223,7 +223,7 @@ static void rs232_handler(rs232_t *rs);
 static int my_inb(port_t port)
 {
 	int r;
-	u32_t v = 0;
+	uint32_t v = 0;
 	r = sys_inb(port, &v);
 	if (r != OK)
 		printf("RS232 warning: failed inb 0x%x\n", port);
@@ -443,7 +443,7 @@ static void rs_config(rs232_t *rs)
 void rs_init(tty_t *tp)
 /* tp			which TTY */
 {
-  u32_t dummy;
+  uint32_t dummy;
 /* Initialize RS232 for one line. */
 
   register rs232_t *rs;
@@ -657,7 +657,7 @@ static int rs_break_on(tty_t *tp, int UNUSED(dummy))
 {
 /* Raise break condition. */
   rs232_t *rs = tp->tty_priv;
-  u32_t line_controls;
+  uint32_t line_controls;
   int s;
 
   if ((s = sys_inb(rs->line_ctl_port, &line_controls)) != OK)
@@ -673,7 +673,7 @@ static int rs_break_off(tty_t *tp, int UNUSED(dummy))
 {
 /* Clear break condition. */
   rs232_t *rs = tp->tty_priv;
-  u32_t line_controls;
+  uint32_t line_controls;
   int s;
 
   if ((s = sys_inb(rs->line_ctl_port, &line_controls)) != OK)
@@ -708,7 +708,7 @@ static void rs232_handler(struct rs232 *rs)
   int trying = 1000;
 
   while (trying--) {
-	u32_t v;
+	uint32_t v;
 	/* Loop to pick up ALL pending interrupts for device.
 	 * This usually just wastes time unless the hardware has a buffer
 	 * (and then we have to worry about being stuck in the loop too long).
@@ -754,7 +754,7 @@ static void in_int(register rs232_t *rs)
  * Set a flag for the clock interrupt handler to eventually notify TTY.
  */
   int s;
-  u32_t c;
+  uint32_t c;
 
 #if 0	/* Enable this if you want serial input in the kernel */
   return;
@@ -796,7 +796,7 @@ static void line_int(register rs232_t *rs)
 {
 /* Check for and record errors. */
   int r;
-  u32_t s;
+  uint32_t s;
 
   if ((r = sys_inb(rs->line_status_port, &s)) != OK)
 	printf("TTY: sys_inb() failed: %d", r);

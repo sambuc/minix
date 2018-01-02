@@ -25,7 +25,7 @@ server/ip/gen/in.h
 
 #define IP_MC_ALL_SYSTEMS	0xE0000001	/* 224.0.0.1 */
 
-typedef u32_t ipaddr_t;
+typedef uint32_t ipaddr_t;
 typedef uint8_t ipproto_t;
 typedef struct ip_hdropt
 {

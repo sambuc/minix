@@ -13,7 +13,7 @@
 #include <machine/vmparam.h>
 
 static int vm_cachecall(message *m, int call, void *addr, dev_t dev,
-	off_t dev_offset, ino_t ino, off_t ino_offset, u32_t *flags,
+	off_t dev_offset, ino_t ino, off_t ino_offset, uint32_t *flags,
 	int blocksize, int setflags)
 {
     if(blocksize % PAGE_SIZE)
@@ -45,7 +45,7 @@ static int vm_cachecall(message *m, int call, void *addr, dev_t dev,
 }
 
 void *vm_map_cacheblock(dev_t dev, off_t dev_offset,
-	ino_t ino, off_t ino_offset, u32_t *flags, int blocksize)
+	ino_t ino, off_t ino_offset, uint32_t *flags, int blocksize)
 {
 	message m;
 
@@ -57,7 +57,7 @@ void *vm_map_cacheblock(dev_t dev, off_t dev_offset,
 }
 
 int vm_set_cacheblock(void *block, dev_t dev, off_t dev_offset,
-	ino_t ino, off_t ino_offset, u32_t *flags, int blocksize, int setflags)
+	ino_t ino, off_t ino_offset, uint32_t *flags, int blocksize, int setflags)
 {
 	message m;
 

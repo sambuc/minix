@@ -841,7 +841,7 @@ static void lance_init_hw(ether_card_t *ec, netdriver_addr_t *addr,
 static uint8_t in_byte(port_t port)
 {
 	int r;
-	u32_t value;
+	uint32_t value;
 
 	r= sys_inb(port, &value);
 	if (r != OK)
@@ -855,7 +855,7 @@ static uint8_t in_byte(port_t port)
 static uint16_t in_word(port_t port)
 {
 	int r;
-	u32_t value;
+	uint32_t value;
 
 	r= sys_inw(port, &value);
 	if (r != OK)

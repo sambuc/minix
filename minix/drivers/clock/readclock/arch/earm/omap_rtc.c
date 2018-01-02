@@ -122,8 +122,8 @@ static struct log log = {
 	.log_func = default_log
 };
 
-static u32_t use_count = 0;
-static u32_t pwr_off_in_progress = 0;
+static uint32_t use_count = 0;
+static uint32_t pwr_off_in_progress = 0;
 
 static void omap_rtc_unlock(void);
 static void omap_rtc_lock(void);

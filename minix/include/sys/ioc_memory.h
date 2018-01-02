@@ -9,6 +9,6 @@
 
 #include <minix/ioctl.h>
 
-#define MIOCRAMSIZE	_IOW('m', 3, u32_t)
+#define MIOCRAMSIZE	_IOW('m', 3, uint32_t)
 
 #endif /* _S_I_MEMORY_H */

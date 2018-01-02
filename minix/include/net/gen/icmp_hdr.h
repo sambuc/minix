@@ -41,7 +41,7 @@ typedef struct icmp_hdr
 	uint16_t ih_chksum;
 	union
 	{
-		u32_t ihh_unused;
+		uint32_t ihh_unused;
 		icmp_id_seq_t ihh_idseq;
 		ipaddr_t ihh_gateway;
 		icmp_ram_t ihh_ram;

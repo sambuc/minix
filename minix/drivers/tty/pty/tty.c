@@ -85,7 +85,7 @@ static const char lined[TTLINEDNAMELEN] = "termios";	/* line discipline */
 
 /* Global variables for the TTY task (declared extern in tty.h). */
 tty_t tty_table[NR_PTYS];
-u32_t system_hz;
+uint32_t system_hz;
 int tty_gid;
 
 static struct optset optset_table[] = {

@@ -21,14 +21,14 @@ enum {
  *===========================================================================*/
 int channel_open(
 	struct channel *ch,	/* struct describing the new channel */
-	u32_t type         	/* channel type: CH_IN or CH_OUT */
+	uint32_t type         	/* channel type: CH_IN or CH_OUT */
 )
 {
 /* Open a new backdoor channel. Upon success, the given channel structure will
  * be filled with information and can be used in subsequent channel calls.
  * Return OK on success, or a negative error code on error.
  */
-  u32_t ptr[6];
+  uint32_t ptr[6];
 
   ptr[1] = type | 0x80000000;
   ptr[2] = MAKELONG(CMD_XFER, XFER_OPEN);
@@ -53,7 +53,7 @@ void channel_close(
 {
 /* Close a previously opened backdoor channel.
  */
-  u32_t ptr[6];
+  uint32_t ptr[6];
 
   ptr[2] = MAKELONG(CMD_XFER, XFER_CLOSE);
   ptr[3] = MAKELONG(0, ch->id);
@@ -75,7 +75,7 @@ int channel_send(
 /* Receive data over a backdoor channel. Return OK on success, or a negative
  * error code on error.
  */
-  u32_t ptr[7];
+  uint32_t ptr[7];
 
   ptr[1] = len;
   ptr[2] = MAKELONG(CMD_XFER, XFER_SENDLEN);
@@ -92,7 +92,7 @@ int channel_send(
   ptr[1] = MAKELONG(0, 1);
   ptr[2] = len;
   ptr[3] = MAKELONG(0, ch->id);
-  ptr[4] = (u32_t)buf;
+  ptr[4] = (uint32_t)buf;
   ptr[5] = ch->cookie2;
   ptr[6] = ch->cookie1;
 
@@ -113,7 +113,7 @@ int channel_recv(
 /* Receive data on a backdoor channel. Return the number of bytes received, or
  * a negative error code on error.
  */
-  u32_t ptr[7];
+  uint32_t ptr[7];
   int len;
 
   ptr[2] = MAKELONG(CMD_XFER, XFER_RECVLEN);
@@ -133,7 +133,7 @@ int channel_recv(
   ptr[2] = len;
   ptr[3] = MAKELONG(0, ch->id);
   ptr[4] = ch->cookie1;
-  ptr[5] = (u32_t)buf;
+  ptr[5] = (uint32_t)buf;
   ptr[6] = ch->cookie2;
 
   backdoor_in(ptr);

@@ -30,11 +30,11 @@ struct fbd_rule {
 		struct {
 			u64_t start;	/* start position of target area */
 			u64_t end;	/* end position of area (excl) */
-			u32_t align;	/* alignment to use in target area */
+			uint32_t align;	/* alignment to use in target area */
 		} misdir;
 
 		struct {
-			u32_t lead;	/* # bytes to process normally */
+			uint32_t lead;	/* # bytes to process normally */
 		} losttorn;
 	} params;
 };

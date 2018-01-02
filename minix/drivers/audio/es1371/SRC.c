@@ -6,7 +6,7 @@
 
 int SRCInit ( DEV_STRUCT * DSP )
 {
-    u32_t   i;
+    uint32_t   i;
     int     retVal;
 
     /* Clear all SRC RAM then init - keep SRC disabled until done */
@@ -57,7 +57,7 @@ int SRCInit ( DEV_STRUCT * DSP )
 
 int SRCRegRead(DEV_STRUCT * DSP, uint16_t reg, uint16_t *data)
 {
-    u32_t dtemp;
+    uint32_t dtemp;
 
     /* wait for ready */
     if (WaitBitd (reg(CONC_dSRCIO_OFF), SRC_BUSY_BIT, 0, 1000))
@@ -67,7 +67,7 @@ int SRCRegRead(DEV_STRUCT * DSP, uint16_t reg, uint16_t *data)
 
     /* assert a read request */
     pci_outl(reg(CONC_dSRCIO_OFF),
-            (dtemp & SRC_CTLMASK) | ((u32_t) reg << 25));
+            (dtemp & SRC_CTLMASK) | ((uint32_t) reg << 25));
 
     /* now wait for the data */
     if (WaitBitd (reg(CONC_dSRCIO_OFF), SRC_BUSY_BIT, 0, 1000))
@@ -82,7 +82,7 @@ int SRCRegRead(DEV_STRUCT * DSP, uint16_t reg, uint16_t *data)
 
 int SRCRegWrite(DEV_STRUCT * DSP, uint16_t reg, uint16_t val)
 {
-    u32_t dtemp;
+    uint32_t dtemp;
 
 
     /* wait for ready */
@@ -93,7 +93,7 @@ int SRCRegWrite(DEV_STRUCT * DSP, uint16_t reg, uint16_t val)
 
     /* assert the write request */
     pci_outl(reg(CONC_dSRCIO_OFF),
-            (dtemp & SRC_CTLMASK) | SRC_WENABLE | ((u32_t) reg << 25) | val);
+            (dtemp & SRC_CTLMASK) | SRC_WENABLE | ((uint32_t) reg << 25) | val);
 
     return 0;
 }
@@ -101,7 +101,7 @@ int SRCRegWrite(DEV_STRUCT * DSP, uint16_t reg, uint16_t val)
 
 void SRCSetRate(DEV_STRUCT * DSP, char base, uint16_t rate)
 {
-  u32_t    freq, dtemp, i;
+  uint32_t    freq, dtemp, i;
   uint16_t     N, truncM, truncStart, wtemp;
 
 
@@ -118,7 +118,7 @@ void SRCSetRate(DEV_STRUCT * DSP, char base, uint16_t rate)
   
       /* calculate new frequency and write it - preserve accum */
       /* please don't try to understand. */
-      freq = ((u32_t) rate << 16) / 3000U;
+      freq = ((uint32_t) rate << 16) / 3000U;
       SRCRegRead(DSP, base + SRC_INT_REGS_OFF, &wtemp);
       
       SRCRegWrite(DSP, base + SRC_INT_REGS_OFF,

@@ -394,7 +394,7 @@ static void
 omap_i2c_padconf(int i2c_bus_id)
 {
 	int r;
-	u32_t pinopts;
+	uint32_t pinopts;
 
 	if (omap_i2c_bus->bus_type == AM335X_I2C_BUS) {
 

@@ -50,8 +50,8 @@ static uint8_t dev_capptr;
 static uint8_t *table;
 
 static int find_dev(int *devindp, uint8_t *capaddrp);
-static u32_t read_reg(int function, int index);
-static void write_reg(int function, int index, u32_t value);
+static uint32_t read_reg(int function, int index);
+static void write_reg(int function, int index, uint32_t value);
 static void init_domain(int index);
 static void init_map(unsigned int ix);
 static int do_add4pci(const message *m);
@@ -119,7 +119,7 @@ static int sef_cb_init_fresh(int UNUSED(type), sef_init_info_t *UNUSED(info))
 /* Initialize the amddev driver. */
 	int r, n_maps, n_domains, revision;
 	uint16_t flags;
-	u32_t bits;
+	uint32_t bits;
 
 	printf("amddev: starting\n");
 
@@ -266,14 +266,14 @@ uint8_t *capaddrp;
 	return 0;
 }
 
-static u32_t read_reg(int function, int index)
+static uint32_t read_reg(int function, int index)
 {
 	pci_attr_w32(dev_devind, dev_capptr + DEV_OP, ((function <<
 		DEV_OP_FUNC_SHIFT) | index));
 	return pci_attr_r32(dev_devind, dev_capptr + DEV_DATA);
 }
 
-static void write_reg(int function, int index, u32_t value)
+static void write_reg(int function, int index, uint32_t value)
 {
 	pci_attr_w32(dev_devind, dev_capptr + DEV_OP, ((function <<
 		DEV_OP_FUNC_SHIFT) | index));
@@ -313,7 +313,7 @@ printf("init_domain: busaddr = 0x%lx\n", busaddr);
 
 static void init_map(unsigned int ix)
 {
-	u32_t v, dom, busno, unit0, unit1;
+	uint32_t v, dom, busno, unit0, unit1;
 
 	dom= 1;
 	busno= 7;
@@ -441,7 +441,7 @@ static void add_range(phys_bytes busaddr, phys_bytes size)
 
 	for (o= 0; o<size; o += PAGE_SIZE)
 	{
-		u32_t bit= (busaddr+o)/PAGE_SIZE;
+		uint32_t bit= (busaddr+o)/PAGE_SIZE;
 		table[bit/8] &= ~(1U << (bit % 8));
 	}
 }
@@ -457,7 +457,7 @@ static void del_range(phys_bytes busaddr, phys_bytes size)
 
 	for (o= 0; o<size; o += PAGE_SIZE)
 	{
-		u32_t bit= (busaddr+o)/PAGE_SIZE;
+		uint32_t bit= (busaddr+o)/PAGE_SIZE;
 		table[bit/8] |= (1 << (bit % 8));
 	}
 }
@@ -465,7 +465,7 @@ static void del_range(phys_bytes busaddr, phys_bytes size)
 
 static void report_exceptions(void)
 {
-	u32_t status;
+	uint32_t status;
 
 	status= read_reg(DEVF_ERR_STATUS, 0);
 	if (!(status & 0x80000000))

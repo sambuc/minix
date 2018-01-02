@@ -33,7 +33,7 @@
 struct pf_state {
         endpoint_t ep;
         vir_bytes vaddr;
-	u32_t err;
+	uint32_t err;
 };
 
 struct hm_state {
@@ -56,7 +56,7 @@ static void handle_memory_final(struct hm_state *state, int result);
 /*===========================================================================*
  *				pf_errstr	     		     	*
  *===========================================================================*/
-char *pf_errstr(u32_t err)
+char *pf_errstr(uint32_t err)
 {
 	static char buf[100];
 
@@ -73,7 +73,7 @@ static void pf_cont(struct vmproc *vmp, message *m, void *arg, void *statearg);
 
 static void handle_memory_continue(struct vmproc *vmp, message *m, void *arg, void *statearg);
 
-static void handle_pagefault(endpoint_t ep, vir_bytes addr, u32_t err, int retry)
+static void handle_pagefault(endpoint_t ep, vir_bytes addr, uint32_t err, int retry)
 {
 	struct vmproc *vmp;
 	int s, result;

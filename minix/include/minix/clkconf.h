@@ -12,7 +12,7 @@
 #define CM_WKUP_I2C0_CLKCTRL 0x4B8
 
 int clkconf_init(void);
-int clkconf_set(u32_t clk, u32_t mask, u32_t value);
+int clkconf_set(uint32_t clk, uint32_t mask, uint32_t value);
 int clkconf_release(void);
 
 #endif

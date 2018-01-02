@@ -38,7 +38,7 @@ int hgfs_readdir(sffs_dir_t handle, unsigned int index, char *buf,
   int r;
 
   RPC_REQUEST(HGFS_REQ_READDIR);
-  RPC_NEXT32 = (u32_t)handle;
+  RPC_NEXT32 = (uint32_t)handle;
   RPC_NEXT32 = index;
 
   /* EINVAL signifies end of directory. */
@@ -66,7 +66,7 @@ int hgfs_closedir(sffs_dir_t handle)
  */
 
   RPC_REQUEST(HGFS_REQ_CLOSEDIR);
-  RPC_NEXT32 = (u32_t)handle;
+  RPC_NEXT32 = (uint32_t)handle;
 
   return rpc_query();
 }

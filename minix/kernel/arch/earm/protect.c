@@ -25,7 +25,7 @@ phys_bytes vir2phys(void *vir)
 {
 	/* defined in kernel.lds */
 	extern char _kern_vir_base, _kern_phys_base;
-	u32_t offset = (vir_bytes) &_kern_vir_base -
+	uint32_t offset = (vir_bytes) &_kern_vir_base -
 	    (vir_bytes) &_kern_phys_base;
 	return (phys_bytes)vir - offset;
 }

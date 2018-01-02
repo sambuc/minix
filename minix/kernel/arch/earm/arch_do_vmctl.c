@@ -13,7 +13,7 @@
 
 #include "arch_proto.h"
 
-static void set_ttbr(struct proc *p, u32_t ttbr, u32_t *v)
+static void set_ttbr(struct proc *p, uint32_t ttbr, uint32_t *v)
 {
 	/* Set process TTBR. */
 	p->p_seg.p_ttbr = ttbr;
@@ -43,7 +43,7 @@ int arch_do_vmctl(
 		m_ptr->SVMCTL_VALUE = p->p_seg.p_ttbr;
 		return OK;
 	case VMCTL_SETADDRSPACE:
-		set_ttbr(p, m_ptr->SVMCTL_PTROOT, (u32_t *) m_ptr->SVMCTL_PTROOT_V);
+		set_ttbr(p, m_ptr->SVMCTL_PTROOT, (uint32_t *) m_ptr->SVMCTL_PTROOT_V);
 		return OK;
 	case VMCTL_FLUSHTLB:
 	{

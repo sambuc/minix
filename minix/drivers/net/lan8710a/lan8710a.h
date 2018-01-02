@@ -54,10 +54,10 @@
 
 typedef struct lan8710a_desc_t
 {
-	u32_t  next_pointer;
-	u32_t  buffer_pointer;
-	u32_t  buffer_length_off;
-	u32_t  pkt_len_flags;
+	uint32_t  next_pointer;
+	uint32_t  buffer_pointer;
+	uint32_t  buffer_length_off;
+	uint32_t  pkt_len_flags;
 } lan8710a_desc_t;
 
 typedef struct lan8710a_t
@@ -69,7 +69,7 @@ typedef struct lan8710a_t
 	int  irq_rx_hook;	/* Rx interrupt Request Vector Hook. */
 	int  irq_tx_hook;	/* Tx interrupt Request Vector Hook. */
 	uint8_t  *regs;
-	u32_t  phy_address;
+	uint32_t  phy_address;
 	uint8_t  *p_rx_buf;	/* pointer to the buffer with receive frames */
 	uint8_t  *p_tx_buf;	/* pointer to the buffer with transmit frames */
 

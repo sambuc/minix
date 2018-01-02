@@ -24,7 +24,7 @@
 #include "const.h"
 
 static off_t ext2_max_size(int block_size);
-static u32_t ext2_count_dirs(struct super_block *sp);
+static uint32_t ext2_count_dirs(struct super_block *sp);
 
 static void super_copy(register struct super_block *dest, register
 	struct super_block *source);
@@ -284,9 +284,9 @@ struct group_desc* get_group_desc(unsigned int bnum)
 }
 
 
-static u32_t ext2_count_dirs(struct super_block *sp)
+static uint32_t ext2_count_dirs(struct super_block *sp)
 {
-  u32_t count = 0;
+  uint32_t count = 0;
   unsigned int i;
 
   for (i = 0; i < sp->s_groups_count; i++) {

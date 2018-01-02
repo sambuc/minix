@@ -30,7 +30,7 @@ static int nfreepdes = 0;
 #define MAXFREEPDES	2
 static int freepdes[MAXFREEPDES];
 
-static u32_t phys_get32(phys_bytes v);
+static uint32_t phys_get32(phys_bytes v);
 
 void mem_clear_mapcache(void)
 {
@@ -38,7 +38,7 @@ void mem_clear_mapcache(void)
 	for(i = 0; i < nfreepdes; i++) {
 		struct proc *ptproc = get_cpulocal_var(ptproc);
 		int pde = freepdes[i];
-		u32_t *ptv;
+		uint32_t *ptv;
 		assert(ptproc);
 		ptv = ptproc->p_seg.p_cr3_v;
 		assert(ptv);
@@ -74,7 +74,7 @@ static phys_bytes createpde(
 	int *changed		/* If mapping is made, this is set to 1. */
 	)
 {
-	u32_t pdeval;
+	uint32_t pdeval;
 	phys_bytes offset;
 	int pde;
 
@@ -149,7 +149,7 @@ static int check_resumed_caller(struct proc *caller)
 static int lin_lin_copy(struct proc *srcproc, vir_bytes srclinaddr, 
 	struct proc *dstproc, vir_bytes dstlinaddr, vir_bytes bytes)
 {
-	u32_t addr;
+	uint32_t addr;
 	proc_nr_t procslot;
 
 	assert(get_cpulocal_var(ptproc));
@@ -229,9 +229,9 @@ static int lin_lin_copy(struct proc *srcproc, vir_bytes srclinaddr,
 }
 
 
-static u32_t phys_get32(phys_bytes addr)
+static uint32_t phys_get32(phys_bytes addr)
 {
-	u32_t v;
+	uint32_t v;
 	int r;
 
 	if((r=lin_lin_copy(NULL, addr, 
@@ -243,7 +243,7 @@ static u32_t phys_get32(phys_bytes addr)
 }
 
 #if 0
-static char *cr0_str(u32_t e)
+static char *cr0_str(uint32_t e)
 {
 	static char str[80];
 	strcpy(str, "");
@@ -259,7 +259,7 @@ static char *cr0_str(u32_t e)
 	return str;
 }
 
-static char *cr4_str(u32_t e)
+static char *cr4_str(uint32_t e)
 {
 	static char str[80];
 	strcpy(str, "");
@@ -323,11 +323,11 @@ phys_bytes umap_virtual(
  *                              vm_lookup                                    *
  *===========================================================================*/
 int vm_lookup(const struct proc *proc, const vir_bytes virtual,
- phys_bytes *physical, u32_t *ptent)
+ phys_bytes *physical, uint32_t *ptent)
 {
-	u32_t *root, *pt;
+	uint32_t *root, *pt;
 	int pde, pte;
-	u32_t pde_v, pte_v;
+	uint32_t pde_v, pte_v;
 
 	assert(proc);
 	assert(physical);
@@ -335,11 +335,11 @@ int vm_lookup(const struct proc *proc, const vir_bytes virtual,
 	assert(HASPT(proc));
 
 	/* Retrieve page directory entry. */
-	root = (u32_t *) proc->p_seg.p_cr3;
-	assert(!((u32_t) root % I386_PAGE_SIZE));
+	root = (uint32_t *) proc->p_seg.p_cr3;
+	assert(!((uint32_t) root % I386_PAGE_SIZE));
 	pde = I386_VM_PDE(virtual);
 	assert(pde >= 0 && pde < I386_VM_DIR_ENTRIES);
-	pde_v = phys_get32((u32_t) (root + pde));
+	pde_v = phys_get32((uint32_t) (root + pde));
 
 	if(!(pde_v & I386_VM_PRESENT)) {
 		return EFAULT;
@@ -352,11 +352,11 @@ int vm_lookup(const struct proc *proc, const vir_bytes virtual,
 		*physical += virtual & I386_VM_OFFSET_MASK_4MB;
 	} else {
 		/* Retrieve page table entry. */
-		pt = (u32_t *) I386_VM_PFA(pde_v);
-		assert(!((u32_t) pt % I386_PAGE_SIZE));
+		pt = (uint32_t *) I386_VM_PFA(pde_v);
+		assert(!((uint32_t) pt % I386_PAGE_SIZE));
 		pte = I386_VM_PTE(virtual);
 		assert(pte >= 0 && pte < I386_VM_PT_ENTRIES);
-		pte_v = phys_get32((u32_t) (pt + pte));
+		pte_v = phys_get32((uint32_t) (pt + pte));
 		if(!(pte_v & I386_VM_PRESENT)) {
 			return EFAULT;
 		}
@@ -448,7 +448,7 @@ int vm_check_range(struct proc *caller, struct proc *target,
 }
 
 #if 0
-static char *flagstr(u32_t e, const int dir)
+static char *flagstr(uint32_t e, const int dir)
 {
 	static char str[80];
 	strcpy(str, "");
@@ -465,16 +465,16 @@ static char *flagstr(u32_t e, const int dir)
 	return str;
 }
 
-static void vm_pt_print(u32_t *pagetable, const u32_t v)
+static void vm_pt_print(uint32_t *pagetable, const uint32_t v)
 {
 	int pte;
 	int col = 0;
 
-	assert(!((u32_t) pagetable % I386_PAGE_SIZE));
+	assert(!((uint32_t) pagetable % I386_PAGE_SIZE));
 
 	for(pte = 0; pte < I386_VM_PT_ENTRIES; pte++) {
-		u32_t pte_v, pfa;
-		pte_v = phys_get32((u32_t) (pagetable + pte));
+		uint32_t pte_v, pfa;
+		pte_v = phys_get32((uint32_t) (pagetable + pte));
 		if(!(pte_v & I386_VM_PRESENT))
 			continue;
 		pfa = I386_VM_PFA(pte_v);
@@ -489,25 +489,25 @@ static void vm_pt_print(u32_t *pagetable, const u32_t v)
 	return;
 }
 
-static void vm_print(u32_t *root)
+static void vm_print(uint32_t *root)
 {
 	int pde;
 
-	assert(!((u32_t) root % I386_PAGE_SIZE));
+	assert(!((uint32_t) root % I386_PAGE_SIZE));
 
 	printf("page table 0x%lx:\n", root);
 
 	for(pde = 0; pde < I386_VM_DIR_ENTRIES; pde++) {
-		u32_t pde_v;
-		u32_t *pte_a;
-		pde_v = phys_get32((u32_t) (root + pde));
+		uint32_t pde_v;
+		uint32_t *pte_a;
+		pde_v = phys_get32((uint32_t) (root + pde));
 		if(!(pde_v & I386_VM_PRESENT))
 			continue;
 		if(pde_v & I386_VM_BIGPAGE) {
 			printf("%4d: 0x%lx, flags %s\n",
 				pde, I386_VM_PFA(pde_v), flagstr(pde_v, 1));
 		} else {
-			pte_a = (u32_t *) I386_VM_PFA(pde_v);
+			pte_a = (uint32_t *) I386_VM_PFA(pde_v);
 			printf("%4d: pt %08lx %s\n",
 				pde, pte_a, flagstr(pde_v, 1));
 			vm_pt_print(pte_a, pde * I386_VM_PT_ENTRIES * I386_PAGE_SIZE);
@@ -526,7 +526,7 @@ static void vm_print(u32_t *root)
 int vm_memset(struct proc* caller, endpoint_t who, phys_bytes ph, int c,
 	phys_bytes count)
 {
-	u32_t pattern;
+	uint32_t pattern;
 	struct proc *whoptr = NULL;
 	phys_bytes cur_ph = ph;
 	phys_bytes left = count;
@@ -719,8 +719,8 @@ void memory_init(void)
 /*===========================================================================*
  *				arch_proc_init				     *
  *===========================================================================*/
-void arch_proc_init(struct proc *pr, const u32_t ip, const u32_t sp,
-	const u32_t ps_str, char *name)
+void arch_proc_init(struct proc *pr, const uint32_t ip, const uint32_t sp,
+	const uint32_t ps_str, char *name)
 {
 	arch_proc_reset(pr);
 	strlcpy(pr->p_name, name, sizeof(pr->p_name));
@@ -751,8 +751,8 @@ int arch_phys_map(const int index,
 	static int first = 1;
 	int freeidx = 0;
 	static char *ser_var = NULL;
-	u32_t glo_len = (u32_t) &usermapped_nonglo_start -
-			(u32_t) &usermapped_start;
+	uint32_t glo_len = (uint32_t) &usermapped_nonglo_start -
+			(uint32_t) &usermapped_start;
 
 	if(first) {
 		memset(&minix_kerninfo, 0, sizeof(minix_kerninfo));
@@ -799,8 +799,8 @@ int arch_phys_map(const int index,
 	}
 	else if(index == usermapped_index) {
 		*addr = vir2phys(&usermapped_nonglo_start);
-		*len = (u32_t) &usermapped_end -
-			(u32_t) &usermapped_nonglo_start;
+		*len = (uint32_t) &usermapped_end -
+			(uint32_t) &usermapped_nonglo_start;
 		*flags = VMMF_USER;
 		return OK;
 	}
@@ -870,10 +870,10 @@ int arch_phys_map_reply(const int index, const vir_bytes addr)
 		extern struct minix_ipcvecs minix_ipcvecs_sysenter,
 			minix_ipcvecs_syscall,
 			minix_ipcvecs_softint;
-		extern u32_t usermapped_offset;
-		assert(addr > (u32_t) &usermapped_start);
-		usermapped_offset = addr - (u32_t) &usermapped_start;
-#define FIXEDPTR(ptr) (void *) ((u32_t)ptr + usermapped_offset)
+		extern uint32_t usermapped_offset;
+		assert(addr > (uint32_t) &usermapped_start);
+		usermapped_offset = addr - (uint32_t) &usermapped_start;
+#define FIXEDPTR(ptr) (void *) ((uint32_t)ptr + usermapped_offset)
 #define FIXPTR(ptr) ptr = FIXEDPTR(ptr)
 #define ASSIGN(minixstruct) minix_kerninfo.minixstruct = FIXEDPTR(&minixstruct)
 		ASSIGN(kinfo);

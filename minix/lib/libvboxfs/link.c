@@ -72,7 +72,7 @@ rename_file(const char *opath, const char *npath, int dir)
 {
 	vbox_param_t param[4];
 	vboxfs_path_t opathbuf, npathbuf;
-	u32_t flags;
+	uint32_t flags;
 	int r;
 
 	if ((r = vboxfs_set_path(&opathbuf, opath)) != OK)

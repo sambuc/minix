@@ -51,7 +51,7 @@ static int anon_contig_pagefault(struct vmproc *vmp, struct vir_region *region,
 
 static int anon_contig_new(struct vir_region *region)
 {
-        u32_t allocflags;
+        uint32_t allocflags;
 	phys_bytes new_pages, new_page_cl, cur_ph;
 	phys_bytes p, pages;
 

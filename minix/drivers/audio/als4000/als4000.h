@@ -82,18 +82,18 @@
 #define CMD_REC_STEREO			0x20
 #define CMD_REC_SIGN			0x10
 
-static u32_t g_sample_rate[] = {
+static uint32_t g_sample_rate[] = {
 	5512, 11025, 22050, 44100, 8000, 16000, 32000, 48000
 };
 
 /* Driver Data Structure */
 typedef struct aud_sub_dev_conf_t {
-	u32_t stereo;
+	uint32_t stereo;
 	uint16_t sample_rate;
-	u32_t nr_of_bits;
-	u32_t sign;
-	u32_t busy;
-	u32_t fragment_size;
+	uint32_t nr_of_bits;
+	uint32_t sign;
+	uint32_t busy;
+	uint32_t fragment_size;
 	uint8_t format;
 } aud_sub_dev_conf_t;
 
@@ -101,14 +101,14 @@ typedef struct DEV_STRUCT {
 	char *name;
 	uint16_t vid;
 	uint16_t did;
-	u32_t devind;
-	u32_t base[6];
+	uint32_t devind;
+	uint32_t base[6];
 	char irq;
 	char revision;
-	u32_t intr_status;
+	uint32_t intr_status;
 } DEV_STRUCT;
 
-void dev_mixer_write(u32_t *base, u32_t reg, u32_t val);
-u32_t dev_mixer_read(u32_t *base, u32_t reg);
+void dev_mixer_write(uint32_t *base, uint32_t reg, uint32_t val);
+uint32_t dev_mixer_read(uint32_t *base, uint32_t reg);
 
 #endif

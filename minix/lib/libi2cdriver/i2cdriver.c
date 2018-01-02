@@ -120,7 +120,7 @@ i2cdriver_handle_bus_update(endpoint_t * bus_endpoint, uint32_t bus,
     i2c_addr_t address)
 {
 	char key[DS_MAX_KEYLEN];
-	u32_t value;
+	uint32_t value;
 	int type;
 	endpoint_t owner_endpoint, old_endpoint;
 	int r;

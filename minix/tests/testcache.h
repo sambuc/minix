@@ -11,8 +11,8 @@
 
 #define MAXBLOCKSIZE (4*PAGE_SIZE)
 
-int dowriteblock(int b, int blocksize, u32_t seed, char *block);
-int readblock(int b, int blocksize, u32_t seed, char *block);
+int dowriteblock(int b, int blocksize, uint32_t seed, char *block);
+int readblock(int b, int blocksize, uint32_t seed, char *block);
 void testend(void);
 int dotest(int blocksize, int nblocks, int iterations);
 void cachequiet(int quiet);

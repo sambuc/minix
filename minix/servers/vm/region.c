@@ -426,7 +426,7 @@ static struct vir_region *region_new(struct vmproc *vmp, vir_bytes startv, vir_b
 {
 	struct vir_region *newregion;
 	struct phys_region **newphysregions;
-	static u32_t id;
+	static uint32_t id;
 	int slots = phys_slot(length);
 
 	if(!(SLABALLOC(newregion))) {
@@ -461,7 +461,7 @@ USE(newregion,
  *				map_page_region				     *
  *===========================================================================*/
 struct vir_region *map_page_region(struct vmproc *vmp, vir_bytes minv,
-	vir_bytes maxv, vir_bytes length, u32_t flags, int mapflags,
+	vir_bytes maxv, vir_bytes length, uint32_t flags, int mapflags,
 	mem_type_t *memtype)
 {
 	struct vir_region *newregion;
@@ -642,9 +642,9 @@ struct vir_region *map_lookup(struct vmproc *vmp,
 	return NULL;
 }
 
-u32_t vrallocflags(u32_t flags)
+uint32_t vrallocflags(uint32_t flags)
 {
-	u32_t allocflags = 0;
+	uint32_t allocflags = 0;
 
 	if(flags & VR_PHYS64K)
 		allocflags |= PAF_ALIGN64K;
@@ -1300,7 +1300,7 @@ int map_unmap_range(struct vmproc *vmp, vir_bytes unmap_start, vir_bytes length)
 /*========================================================================*
  *			  map_region_lookup_type			  *
  *========================================================================*/
-struct vir_region* map_region_lookup_type(struct vmproc *vmp, u32_t type)
+struct vir_region* map_region_lookup_type(struct vmproc *vmp, uint32_t type)
 {
 	struct vir_region *vr;
 	struct phys_region *pr;

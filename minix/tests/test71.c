@@ -24,7 +24,7 @@
 #include "testcache.h"
 
 int
-dowriteblock(int b, int blocksize, u32_t seed, char *data)
+dowriteblock(int b, int blocksize, uint32_t seed, char *data)
 {
 	u64_t offset;
 	int fd;
@@ -40,7 +40,7 @@ dowriteblock(int b, int blocksize, u32_t seed, char *data)
 }
 
 int
-readblock(int b, int blocksize, u32_t seed, char *data)
+readblock(int b, int blocksize, uint32_t seed, char *data)
 {
 	u64_t offset;
 	int fd;
@@ -82,7 +82,7 @@ main(int argc, char *argv[])
 	if(dotest(PAGE_SIZE,  20000, iter)) e(5);
 
 	if(bigflag) {
-		u32_t totalmem, freemem, cachedmem;
+		uint32_t totalmem, freemem, cachedmem;
 		if(dotest(PAGE_SIZE,  150000, iter)) e(5);
 		getmem(&totalmem, &freemem, &cachedmem);
 		if(dotest(PAGE_SIZE,  totalmem*1.5, iter)) e(6);

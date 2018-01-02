@@ -40,7 +40,7 @@ static int src_reg_write(const DEV_STRUCT * DSP, uint16_t reg, uint16_t val);
 
 
 int src_init ( DEV_STRUCT * DSP ) {
-	u32_t   i;
+	uint32_t   i;
 	int     retVal;
 
 	/* Clear all SRC RAM then init - keep SRC disabled until done */
@@ -104,7 +104,7 @@ int src_init ( DEV_STRUCT * DSP ) {
 
 
 static int src_reg_read(const DEV_STRUCT * DSP, uint16_t reg, uint16_t *data) {
-	u32_t dtemp;
+	uint32_t dtemp;
 
 	/* wait for ready */
 	if (WaitBitd (reg(SAMPLE_RATE_CONV), SRC_BUSY_BIT, 0, 1000))
@@ -114,9 +114,9 @@ static int src_reg_read(const DEV_STRUCT * DSP, uint16_t reg, uint16_t *data) {
 
 	/* assert a read request */
 	/*pci_outl(reg(SAMPLE_RATE_CONV),
-	  (dtemp & SRC_CTLMASK) | ((u32_t) reg << 25));*/
+	  (dtemp & SRC_CTLMASK) | ((uint32_t) reg << 25));*/
 	pci_outl(reg(SAMPLE_RATE_CONV), (dtemp & 
-				(DIS_REC|DIS_P2|DIS_P1|SRC_DISABLE)) | ((u32_t) reg << 25));
+				(DIS_REC|DIS_P2|DIS_P1|SRC_DISABLE)) | ((uint32_t) reg << 25));
 
 	/* now wait for the data */
 	if (WaitBitd (reg(SAMPLE_RATE_CONV), SRC_BUSY_BIT, 0, 1000))
@@ -130,7 +130,7 @@ static int src_reg_read(const DEV_STRUCT * DSP, uint16_t reg, uint16_t *data) {
 
 
 static int src_reg_write(const DEV_STRUCT * DSP, uint16_t reg, uint16_t val) {
-	u32_t dtemp;
+	uint32_t dtemp;
 
 	/* wait for ready */
 	if (WaitBitd (reg(SAMPLE_RATE_CONV), SRC_BUSY_BIT, 0, 1000))
@@ -140,14 +140,14 @@ static int src_reg_write(const DEV_STRUCT * DSP, uint16_t reg, uint16_t val) {
 
 	/* assert the write request */
 	pci_outl(reg(SAMPLE_RATE_CONV),
-	  (dtemp & SRC_CTLMASK) | SRC_RAM_WE | ((u32_t) reg << 25) | val); 
+	  (dtemp & SRC_CTLMASK) | SRC_RAM_WE | ((uint32_t) reg << 25) | val); 
 
 	return 0;
 }
 
 
 void src_set_rate(const DEV_STRUCT * DSP, char base, uint16_t rate) {
-	u32_t    freq, dtemp, i;
+	uint32_t    freq, dtemp, i;
 	uint16_t     N, truncM, truncStart, wtemp;
 
 
@@ -164,7 +164,7 @@ void src_set_rate(const DEV_STRUCT * DSP, char base, uint16_t rate) {
 
 		/* calculate new frequency and write it - preserve accum */
 		/* please don't try to understand. */
-		freq = ((u32_t) rate << 16) / 3000U;
+		freq = ((uint32_t) rate << 16) / 3000U;
 		src_reg_read(DSP, base + SRC_INT_REGS_OFF, &wtemp);
 
 		src_reg_write(DSP, base + SRC_INT_REGS_OFF,

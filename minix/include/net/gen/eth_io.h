@@ -9,7 +9,7 @@ server/gen/ip/eth_io.h
 
 typedef struct nwio_ethopt
 {
-	u32_t nweo_flags;
+	uint32_t nweo_flags;
 	ether_addr_t nweo_multi, nweo_rem;
 	ether_type_t nweo_type;
 } nwio_ethopt_t;

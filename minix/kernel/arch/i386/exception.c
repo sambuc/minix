@@ -148,7 +148,7 @@ static void inkernel_disaster(struct proc *saved_proc,
 	frame->vector, frame->errcode, frame->eip,
 	frame->cs, frame->eflags, frame);
   printf("KERNEL registers :\n");
-#define REG(n) (((u32_t *)frame)[-n])
+#define REG(n) (((uint32_t *)frame)[-n])
   printf(
 		  "\t%%eax 0x%08x %%ebx 0x%08x %%ecx 0x%08x %%edx 0x%08x\n"
 		  "\t%%esp 0x%08x %%ebp 0x%08x %%esi 0x%08x %%edi 0x%08x\n",
@@ -332,7 +332,7 @@ static void proc_stacktrace_execute(struct proc *whichproc, reg_t v_bp, reg_t pc
  *===========================================================================*/
 void proc_stacktrace(struct proc *whichproc)
 {
-	u32_t use_bp;
+	uint32_t use_bp;
 
 	if(whichproc->p_seg.p_kern_trap_style == KTS_NONE) {
 		printf("WARNING: stacktrace of running process\n");
@@ -342,7 +342,7 @@ void proc_stacktrace(struct proc *whichproc)
 		case KTS_SYSENTER:
 		case KTS_SYSCALL:
 		{
-			u32_t sp = whichproc->p_reg.sp;
+			uint32_t sp = whichproc->p_reg.sp;
 
 			/* Full context is not available in the p_reg
 			 * struct. Obtain it from the user's stack.
@@ -374,7 +374,7 @@ void proc_stacktrace(struct proc *whichproc)
 
 void enable_fpu_exception(void)
 {
-	u32_t cr0 = read_cr0();
+	uint32_t cr0 = read_cr0();
 	if(!(cr0 & I386_CR0_TS))
 		write_cr0(cr0 | I386_CR0_TS);
 }

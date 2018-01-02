@@ -24,7 +24,7 @@
 
 static dpeth_t de_state;
 
-u32_t system_hz;
+uint32_t system_hz;
 
 /* Configuration */
 typedef struct dp_conf
@@ -935,7 +935,7 @@ static void map_hw_buffer(dpeth_t *dep)
 uint8_t inb(port_t port)
 {
 	int r;
-	u32_t value;
+	uint32_t value;
 
 	r= sys_inb(port, &value);
 	if (r != OK)
@@ -949,7 +949,7 @@ uint8_t inb(port_t port)
 uint16_t inw(port_t port)
 {
 	int r;
-	u32_t value;
+	uint32_t value;
 
 	r= sys_inw(port, &value);
 	if (r != OK)

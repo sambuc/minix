@@ -25,7 +25,7 @@ enum {
 static struct {
   int state;					/* connection state */
   endpoint_t endpt;				/* caller endpoint */
-  u32_t client_id;				/* VMMDev-given client ID */
+  uint32_t client_id;				/* VMMDev-given client ID */
   struct {
 	int busy;				/* is this request ongoing? */
 	struct VMMDevHGCMHeader *ptr;		/* request buffer */

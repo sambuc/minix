@@ -53,7 +53,7 @@ void _pci_rescan_bus(uint8_t busnr);
 const char *_pci_dev_name(uint16_t vid, uint16_t did);
 
 
-int _pci_get_bar(int devind, int port, u32_t *base, u32_t *size, int
+int _pci_get_bar(int devind, int port, uint32_t *base, uint32_t *size, int
 	*ioflag);
 int _pci_slot_name(int devind, char **cpp);
 int _pci_ids(int devind, uint16_t *vidp, uint16_t *didp);
@@ -61,12 +61,12 @@ int _pci_ids(int devind, uint16_t *vidp, uint16_t *didp);
 /* PCI Config Read functions */
 int _pci_attr_r8(int devind, int port, uint8_t *vp);
 int _pci_attr_r16(int devind, int port, uint16_t *vp);
-int _pci_attr_r32(int devind, int port, u32_t *vp);
+int _pci_attr_r32(int devind, int port, uint32_t *vp);
 
 /* PCI Config Write functions */
 int _pci_attr_w8(int devind, int port, uint8_t value);
 int _pci_attr_w16(int devind, int port, uint16_t value);
-int _pci_attr_w32(int devind, int port, u32_t value);
+int _pci_attr_w32(int devind, int port, uint32_t value);
 
 /* minix hooks into NetBSD PCI IDS DB */
 typedef uint32_t pcireg_t;

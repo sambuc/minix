@@ -68,7 +68,7 @@ static struct reserved_pages {
 		phys_bytes	phys;
 		void		*vir;
 	} slots[MAXRESERVEDPAGES];
-	u32_t magic;
+	uint32_t magic;
 } reservedqueues[MAXRESERVEDQUEUES], *first_reserved_inuse = NULL;
 
 int missing_spares = 0;
@@ -239,7 +239,7 @@ void alloc_cycle(void)
 /*===========================================================================*
  *				alloc_mem				     *
  *===========================================================================*/
-phys_clicks alloc_mem(phys_clicks clicks, u32_t memflags)
+phys_clicks alloc_mem(phys_clicks clicks, uint32_t memflags)
 {
 /* Allocate a block of memory from the free list using first fit. The block
  * consists of a sequence of contiguous bytes, whose length in clicks is
@@ -508,7 +508,7 @@ void usedpages_reset(void)
  *===========================================================================*/
 int usedpages_add_f(phys_bytes addr, phys_bytes len, const char *file, int line)
 {
-	u32_t pagestart, pages;
+	uint32_t pagestart, pages;
 
 	if(!incheck)
 		return OK;

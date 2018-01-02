@@ -381,7 +381,7 @@ static int
 lu_state_restore(void)
 {
 	/* Restore the state. */
-	u32_t value;
+	uint32_t value;
 
 	ds_retrieve_u32("bus", &value);
 	ds_delete_u32("bus");

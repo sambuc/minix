@@ -11,7 +11,7 @@
 #include "trace.h"
 
 #define NO_TRACEDEV		((devminor_t) -1)
-#define NO_TIME			((u32_t) -1)
+#define NO_TIME			((uint32_t) -1)
 
 static int trace_enabled	= FALSE;
 static devminor_t trace_dev	= NO_TRACEDEV;
@@ -30,7 +30,7 @@ static btrace_entry *trace_ptr[MAX_THREADS + 1] = { NULL };
 /*===========================================================================*
  *				trace_gettime				     *
  *===========================================================================*/
-static u32_t trace_gettime(void)
+static uint32_t trace_gettime(void)
 {
 /* Return the current time, in microseconds since the start of the trace.
  */

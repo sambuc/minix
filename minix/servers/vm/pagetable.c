@@ -37,9 +37,9 @@ static int vm_self_pages;
 #define MAX_PAGEDIR_PDES 5
 static struct pdm {
 	int		pdeno;
-	u32_t		val;
+	uint32_t		val;
 	phys_bytes	phys;
-	u32_t		*page_directories;
+	uint32_t		*page_directories;
 } pagedir_mappings[MAX_PAGEDIR_PDES];
 
 static multiboot_module_t *kern_mb_mod = NULL;
@@ -70,7 +70,7 @@ struct vmproc *vmprocess = &vmproc[VM_PROC_NR];
 #endif
 
 #ifdef __i386__
-static u32_t global_bit = 0;
+static uint32_t global_bit = 0;
 #endif
 
 #define SPAREPAGEDIRS 1
@@ -152,15 +152,15 @@ void pt_sanitycheck(pt_t *pt, const char *file, int line)
 /*===========================================================================*
  *				findhole		     		     *
  *===========================================================================*/
-static u32_t findhole(int pages)
+static uint32_t findhole(int pages)
 {
 /* Find a space in the virtual address space of VM. */
-	u32_t curv;
+	uint32_t curv;
 	int pde = 0, try_restart;
 	static void *lastv = 0;
 	pt_t *pt = &vmprocess->vm_pt;
 	vir_bytes vmin, vmax;
-	u32_t holev = NO_MEM;
+	uint32_t holev = NO_MEM;
 	int holesize = -1;
 
 	vmin = VM_OWN_MMAPBASE;
@@ -173,7 +173,7 @@ static u32_t findhole(int pages)
 	assert((vmax % VM_PAGE_SIZE) == 0);
 	assert(pages > 0);
 
-	curv = (u32_t) lastv;
+	curv = (uint32_t) lastv;
 	if(curv < vmin || curv >= vmax)
 		curv = vmin;
 
@@ -336,7 +336,7 @@ void *vm_allocpages(phys_bytes *phys, int reason, int pages)
 	phys_bytes newpage;
 	static int level = 0;
 	void *ret;
-	u32_t mem_flags = 0;
+	uint32_t mem_flags = 0;
 
 	assert(reason >= 0 && reason < VMP_CATEGORIES);
 
@@ -405,7 +405,7 @@ void vm_pagelock(void *vir, int lockflag)
 /* Mark a page allocated by vm_allocpage() unwritable, i.e. only for VM. */
 	vir_bytes m = (vir_bytes) vir;
 	int r;
-	u32_t flags = ARCH_VM_PTE_PRESENT | ARCH_VM_PTE_USER;
+	uint32_t flags = ARCH_VM_PTE_PRESENT | ARCH_VM_PTE_USER;
 	pt_t *pt;
 
 	pt = &vmprocess->vm_pt;
@@ -491,12 +491,12 @@ int vm_addrok(void *vir, int writeflag)
 /*===========================================================================*
  *				pt_ptalloc		     		     *
  *===========================================================================*/
-static int pt_ptalloc(pt_t *pt, int pde, u32_t flags)
+static int pt_ptalloc(pt_t *pt, int pde, uint32_t flags)
 {
 /* Allocate a page table and write its address into the page directory. */
 	int i;
 	phys_bytes pt_phys;
-	u32_t *p;
+	uint32_t *p;
 
 	/* Argument must make sense. */
 	assert(pde >= 0 && pde < ARCH_VM_DIR_ENTRIES);
@@ -543,7 +543,7 @@ static int pt_ptalloc(pt_t *pt, int pde, u32_t flags)
  *			    pt_ptalloc_in_range		     		     *
  *===========================================================================*/
 int pt_ptalloc_in_range(pt_t *pt, vir_bytes start, vir_bytes end,
-	u32_t flags, int verify)
+	uint32_t flags, int verify)
 {
 /* Allocate all the page tables in the range specified. */
 	int pde, first_pde, last_pde;
@@ -584,7 +584,7 @@ int pt_ptalloc_in_range(pt_t *pt, vir_bytes start, vir_bytes end,
 	return OK;
 }
 
-static const char *ptestr(u32_t pte)
+static const char *ptestr(uint32_t pte)
 {
 #define FLAG(constant, name) {						\
 	if(pte & (constant)) { strcat(str, name); strcat(str, " "); }	\
@@ -760,7 +760,7 @@ void pt_clearmapcache(void)
 
 int pt_writable(struct vmproc *vmp, vir_bytes v)
 {
-	u32_t entry;
+	uint32_t entry;
 	pt_t *pt = &vmp->vm_pt;
 	assert(!(v % VM_PAGE_SIZE));
 	int pde = ARCH_VM_PDE(v);
@@ -786,8 +786,8 @@ int pt_writemap(struct vmproc * vmp,
 			vir_bytes v,
 			phys_bytes physaddr,
 			size_t bytes,
-			u32_t flags,
-			u32_t writemapflags)
+			uint32_t flags,
+			uint32_t writemapflags)
 {
 /* Write mapping into page table. Allocate a new page table if necessary. */
 /* Page directory and table entries for this virtual address. */
@@ -836,7 +836,7 @@ int pt_writemap(struct vmproc * vmp,
 
 	/* Now write in them. */
 	for(p = 0; p < pages; p++) {
-		u32_t entry;
+		uint32_t entry;
 		int pde = ARCH_VM_PDE(v);
 		int pte = ARCH_VM_PTE(v);
 
@@ -875,7 +875,7 @@ int pt_writemap(struct vmproc * vmp,
 #endif
 
 		if(verify) {
-			u32_t maskedentry;
+			uint32_t maskedentry;
 			maskedentry = pt->pt_pt[pde][pte];
 #if defined(__i386__)
 			maskedentry &= ~(I386_VM_ACC|I386_VM_DIRTY);
@@ -1008,7 +1008,7 @@ int pt_new(pt_t *pt)
 		return ENOMEM;
 	}
 
-	assert(!((u32_t)pt->pt_dir_phys % ARCH_PAGEDIR_SIZE));
+	assert(!((uint32_t)pt->pt_dir_phys % ARCH_PAGEDIR_SIZE));
 
 	for(i = 0; i < ARCH_VM_DIR_ENTRIES; i++) {
 		pt->pt_dir[i] = 0; /* invalid entry (PRESENT bit = 0) */
@@ -1094,13 +1094,13 @@ void pt_init(void)
 #if defined(__arm__)
 	vir_bytes sparepagedirs_mem;
 #endif
-	static u32_t currentpagedir[ARCH_VM_DIR_ENTRIES];
+	static uint32_t currentpagedir[ARCH_VM_DIR_ENTRIES];
 	int m = kernel_boot_info.kern_mod;
 #if defined(__i386__)
 	int global_bit_ok = 0;
-	u32_t mypdbr; /* Page Directory Base Register (cr3) value */
+	uint32_t mypdbr; /* Page Directory Base Register (cr3) value */
 #elif defined(__arm__)
-	u32_t myttbr;
+	uint32_t myttbr;
 #endif
 
 	/* Find what the physical location of the kernel is. */
@@ -1176,7 +1176,7 @@ void pt_init(void)
 		int kernmap_pde;
 		phys_bytes addr, len;
 		int flags, pindex = 0;
-		u32_t offset = 0;
+		uint32_t offset = 0;
 
 		kernmap_pde = freepde();
 		offset = kernmap_pde * ARCH_BIG_PAGE_SIZE;
@@ -1276,7 +1276,7 @@ void pt_init(void)
 	 * mapping bits; just map in VM.
 	 */
 	for(p = 0; p < ARCH_VM_DIR_ENTRIES; p++) {
-		u32_t entry = currentpagedir[p];
+		uint32_t entry = currentpagedir[p];
 		phys_bytes ptaddr_kern, ptaddr_us;
 
 		/* BIGPAGEs are kernel mapping (do ourselves) or boot
@@ -1358,7 +1358,7 @@ void pt_init(void)
 int pt_bind(pt_t *pt, struct vmproc *who)
 {
 	int procslot, pdeslot;
-	u32_t phys;
+	uint32_t phys;
 	void *pdes;
 	int pagedir_pde;
 	int slots_per_pde;

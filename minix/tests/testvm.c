@@ -24,7 +24,7 @@ int memfd;
 
 static char *bdata = NULL;
 
-int dowriteblock(int b, int blocksize, u32_t seed, char *block)
+int dowriteblock(int b, int blocksize, uint32_t seed, char *block)
 {
 	int r;
 	char *bdata;
@@ -57,7 +57,7 @@ int dowriteblock(int b, int blocksize, u32_t seed, char *block)
 	return blocksize;
 }
 
-int readblock(int b, int blocksize, u32_t seed, char *block)
+int readblock(int b, int blocksize, uint32_t seed, char *block)
 {
 	char *bdata;
 	u64_t dev_off = (u64_t) b * blocksize;
@@ -142,7 +142,7 @@ main(int argc, char *argv[])
 {
 	struct info info;
 	int big;
-	u32_t totalmem, freemem, cachedmem;
+	uint32_t totalmem, freemem, cachedmem;
 
 	progname = argv[0];
 

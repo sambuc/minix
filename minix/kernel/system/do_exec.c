@@ -43,9 +43,9 @@ int do_exec(struct proc * caller, message * m_ptr)
 
   /* Set process state. */
   arch_proc_init(rp,
-	(u32_t) m_ptr->m_lsys_krn_sys_exec.ip,
-	(u32_t) m_ptr->m_lsys_krn_sys_exec.stack,
-	(u32_t) m_ptr->m_lsys_krn_sys_exec.ps_str, name);
+	(uint32_t) m_ptr->m_lsys_krn_sys_exec.ip,
+	(uint32_t) m_ptr->m_lsys_krn_sys_exec.stack,
+	(uint32_t) m_ptr->m_lsys_krn_sys_exec.ps_str, name);
 
   /* No reply to EXEC call */
   RTS_UNSET(rp, RTS_RECEIVING);

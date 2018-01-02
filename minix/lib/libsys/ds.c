@@ -43,7 +43,7 @@ int ds_publish_label(const char *ds_name, endpoint_t endpoint, int flags)
 	return do_invoke_ds(&m, DS_PUBLISH, ds_name);
 }
 
-int ds_publish_u32(const char *ds_name, u32_t value, int flags)
+int ds_publish_u32(const char *ds_name, uint32_t value, int flags)
 {
 	message m;
 
@@ -112,7 +112,7 @@ int ds_retrieve_label_endpt(const char *ds_name, endpoint_t *endpoint)
 	return r;
 }
 
-int ds_retrieve_u32(const char *ds_name, u32_t *value)
+int ds_retrieve_u32(const char *ds_name, uint32_t *value)
 {
 	message m;
 	int r;

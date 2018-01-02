@@ -307,7 +307,7 @@ void rw_inode(
   register struct super_block *sp;
   register struct group_desc *gd;
   register d_inode *dip;
-  u32_t block_group_number;
+  uint32_t block_group_number;
   block_t b, offset;
 
   /* Get the block where the inode resides. */

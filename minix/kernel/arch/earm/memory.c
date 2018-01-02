@@ -27,7 +27,7 @@ static int nfreepdes = 0;
 #define MAXFREEPDES	2
 static int freepdes[MAXFREEPDES];
 
-static u32_t phys_get32(phys_bytes v);
+static uint32_t phys_get32(phys_bytes v);
 
 /* list of requested physical mapping */
 static kern_phys_map *kern_phys_map_head;
@@ -38,7 +38,7 @@ void mem_clear_mapcache(void)
 	for(i = 0; i < nfreepdes; i++) {
 		struct proc *ptproc = get_cpulocal_var(ptproc);
 		int pde = freepdes[i];
-		u32_t *ptv;
+		uint32_t *ptv;
 		assert(ptproc);
 		ptv = ptproc->p_seg.p_ttbr_v;
 		assert(ptv);
@@ -74,7 +74,7 @@ static phys_bytes createpde(
 	int *changed		/* If mapping is made, this is set to 1. */
 	)
 {
-	u32_t pdeval;
+	uint32_t pdeval;
 	phys_bytes offset;
 	int pde;
 
@@ -154,7 +154,7 @@ static int check_resumed_caller(struct proc *caller)
 static int lin_lin_copy(struct proc *srcproc, vir_bytes srclinaddr, 
 	struct proc *dstproc, vir_bytes dstlinaddr, vir_bytes bytes)
 {
-	u32_t addr;
+	uint32_t addr;
 	proc_nr_t procslot;
 
 	assert(get_cpulocal_var(ptproc));
@@ -240,9 +240,9 @@ static int lin_lin_copy(struct proc *srcproc, vir_bytes srclinaddr,
 	return OK;
 }
 
-static u32_t phys_get32(phys_bytes addr)
+static uint32_t phys_get32(phys_bytes addr)
 {
-	u32_t v;
+	uint32_t v;
 	int r;
 
 	if((r=lin_lin_copy(NULL, addr, 
@@ -300,11 +300,11 @@ phys_bytes umap_virtual(
  *                              vm_lookup                                    *
  *===========================================================================*/
 int vm_lookup(const struct proc *proc, const vir_bytes virtual,
- phys_bytes *physical, u32_t *ptent)
+ phys_bytes *physical, uint32_t *ptent)
 {
-	u32_t *root, *pt;
+	uint32_t *root, *pt;
 	int pde, pte;
-	u32_t pde_v, pte_v;
+	uint32_t pde_v, pte_v;
 
 	assert(proc);
 	assert(physical);
@@ -312,11 +312,11 @@ int vm_lookup(const struct proc *proc, const vir_bytes virtual,
 	assert(HASPT(proc));
 
 	/* Retrieve page directory entry. */
-	root = (u32_t *) (proc->p_seg.p_ttbr & ARM_TTBR_ADDR_MASK);
-	assert(!((u32_t) root % ARM_PAGEDIR_SIZE));
+	root = (uint32_t *) (proc->p_seg.p_ttbr & ARM_TTBR_ADDR_MASK);
+	assert(!((uint32_t) root % ARM_PAGEDIR_SIZE));
 	pde = ARM_VM_PDE(virtual);
 	assert(pde >= 0 && pde < ARM_VM_DIR_ENTRIES);
-	pde_v = phys_get32((u32_t) (root + pde));
+	pde_v = phys_get32((uint32_t) (root + pde));
 
 	if(! ((pde_v & ARM_VM_PDE_PRESENT) 
 		|| (pde_v & ARM_VM_SECTION_PRESENT)
@@ -330,11 +330,11 @@ int vm_lookup(const struct proc *proc, const vir_bytes virtual,
 		*physical += virtual & ARM_VM_OFFSET_MASK_1MB;
 	} else  {
 		/* Retrieve page table entry. */
-		pt = (u32_t *) (pde_v & ARM_VM_PDE_MASK);
-		assert(!((u32_t) pt % ARM_PAGETABLE_SIZE));
+		pt = (uint32_t *) (pde_v & ARM_VM_PDE_MASK);
+		assert(!((uint32_t) pt % ARM_PAGETABLE_SIZE));
 		pte = ARM_VM_PTE(virtual);
 		assert(pte >= 0 && pte < ARM_VM_PT_ENTRIES);
-		pte_v = phys_get32((u32_t) (pt + pte));
+		pte_v = phys_get32((uint32_t) (pt + pte));
 		if(!(pte_v & ARM_VM_PTE_PRESENT)) {
 			return EFAULT;
 		}
@@ -431,7 +431,7 @@ int vm_check_range(struct proc *caller, struct proc *target,
 int vm_memset(struct proc* caller, endpoint_t who, phys_bytes ph, int c,
 	phys_bytes count)
 {
-	u32_t pattern;
+	uint32_t pattern;
 	struct proc *whoptr = NULL;
 	phys_bytes cur_ph = ph;
 	phys_bytes left = count;
@@ -624,8 +624,8 @@ void memory_init(void)
 /*===========================================================================*
  *				arch_proc_init				     *
  *===========================================================================*/
-void arch_proc_init(struct proc *pr, const u32_t ip, const u32_t sp,
-	const u32_t ps_str, char *name)
+void arch_proc_init(struct proc *pr, const uint32_t ip, const uint32_t sp,
+	const uint32_t ps_str, char *name)
 {
 	arch_proc_reset(pr);
 	strcpy(pr->p_name, name);
@@ -652,8 +652,8 @@ int arch_phys_map(const int index,
 	kern_phys_map *phys_maps;
 
 	int freeidx = 0;
-	u32_t glo_len = (u32_t) &usermapped_nonglo_start -
-			(u32_t) &usermapped_start;
+	uint32_t glo_len = (uint32_t) &usermapped_nonglo_start -
+			(uint32_t) &usermapped_start;
 
 	if(first) {
 		memset(&minix_kerninfo, 0, sizeof(minix_kerninfo));
@@ -684,8 +684,8 @@ int arch_phys_map(const int index,
 	}
 	else if(index == usermapped_index) {
 		*addr = vir2phys(&usermapped_nonglo_start);
-		*len = (u32_t) &usermapped_end -
-			(u32_t) &usermapped_nonglo_start;
+		*len = (uint32_t) &usermapped_end -
+			(uint32_t) &usermapped_nonglo_start;
 		*flags = VMMF_USER;
 		return OK;
 	}
@@ -710,10 +710,10 @@ int arch_phys_map_reply(const int index, const vir_bytes addr)
 	kern_phys_map *phys_maps;
 
 	if(index == first_um_idx) {
-		u32_t usermapped_offset;
-		assert(addr > (u32_t) &usermapped_start);
-		usermapped_offset = addr - (u32_t) &usermapped_start;
-#define FIXEDPTR(ptr) (void *) ((u32_t)ptr + usermapped_offset)
+		uint32_t usermapped_offset;
+		assert(addr > (uint32_t) &usermapped_start);
+		usermapped_offset = addr - (uint32_t) &usermapped_start;
+#define FIXEDPTR(ptr) (void *) ((uint32_t)ptr + usermapped_offset)
 #define FIXPTR(ptr) ptr = FIXEDPTR(ptr)
 #define ASSIGN(minixstruct) minix_kerninfo.minixstruct = FIXEDPTR(&minixstruct)
 		ASSIGN(kinfo);

@@ -27,7 +27,7 @@ static int anon_pagefault(struct vmproc *vmp, struct vir_region *region,
 static int anon_sanitycheck(struct phys_region *pr, const char *file, int line);
 static int anon_writable(struct phys_region *pr);
 static int anon_resize(struct vmproc *vmp, struct vir_region *vr, vir_bytes l);
-static u32_t anon_regionid(struct vir_region *region);
+static uint32_t anon_regionid(struct vir_region *region);
 static int anon_refcount(struct vir_region *vr);
 static int anon_pt_flags(struct vir_region *vr);
 
@@ -66,7 +66,7 @@ static int anon_pagefault(struct vmproc *vmp, struct vir_region *region,
 	int len, int *io)
 {
 	phys_bytes new_page, new_page_cl;
-	u32_t allocflags;
+	uint32_t allocflags;
 
 	allocflags = vrallocflags(region->flags);
 
@@ -129,7 +129,7 @@ static int anon_resize(struct vmproc *vmp, struct vir_region *vr, vir_bytes l)
 	return OK;
 }
 
-static u32_t anon_regionid(struct vir_region *region)
+static uint32_t anon_regionid(struct vir_region *region)
 {
 	return region->id;
 }

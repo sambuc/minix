@@ -16,7 +16,7 @@ static phys_bytes kern_phys_start = (phys_bytes) &_kern_phys_base;
 static phys_bytes kern_kernlen = (phys_bytes) &_kern_size;
 
 /* page directory we can use to map things */
-static u32_t pagedir[1024]  __aligned(4096);
+static uint32_t pagedir[1024]  __aligned(4096);
 
 void print_memmap(kinfo_t *cbi)
 {
@@ -120,11 +120,11 @@ void add_memmap(kinfo_t *cbi, u64_t addr, u64_t len)
         panic("no available memmap slot");
 }
 
-u32_t *alloc_pagetable(phys_bytes *ph)
+uint32_t *alloc_pagetable(phys_bytes *ph)
 {
-	u32_t *ret;
+	uint32_t *ret;
 #define PG_PAGETABLES 6
-	static u32_t pagetables[PG_PAGETABLES][1024]  __aligned(4096);
+	static uint32_t pagetables[PG_PAGETABLES][1024]  __aligned(4096);
 	static int pt_inuse = 0;
 	if(pt_inuse >= PG_PAGETABLES) panic("no more pagetables");
 	assert(sizeof(pagetables[pt_inuse]) == I386_PAGE_SIZE);
@@ -171,7 +171,7 @@ void pg_identity(kinfo_t *cbi)
 
         /* Set up an identity mapping page directory */
         for(i = 0; i < I386_VM_DIR_ENTRIES; i++) {
-		u32_t flags = I386_VM_PRESENT | I386_VM_BIGPAGE
+		uint32_t flags = I386_VM_PRESENT | I386_VM_BIGPAGE
 			| I386_VM_USER
 			| I386_VM_WRITE;
                 phys = i * I386_BIG_PAGE_SIZE;
@@ -186,7 +186,7 @@ void pg_identity(kinfo_t *cbi)
 int pg_mapkernel(void)
 {
 	int pde;
-	u32_t mapped = 0, kern_phys = kern_phys_start;
+	uint32_t mapped = 0, kern_phys = kern_phys_start;
 
         assert(!(kern_vir_start % I386_BIG_PAGE_SIZE));
         assert(!(kern_phys % I386_BIG_PAGE_SIZE));
@@ -203,7 +203,7 @@ int pg_mapkernel(void)
 
 void vm_enable_paging(void)
 {
-        u32_t cr0, cr4;
+        uint32_t cr0, cr4;
         int pgeok;
 
         pgeok = _cpufeature(_CPUF_I386_PGE);
@@ -268,7 +268,7 @@ void pg_map(phys_bytes phys, vir_bytes vaddr, vir_bytes vaddr_end,
 	kinfo_t *cbi)
 {
 	static int mapped_pde = -1;
-	static u32_t *pt = NULL;
+	static uint32_t *pt = NULL;
 	int pde, pte;
 
 	assert(kernel_may_alloc);
@@ -309,7 +309,7 @@ void pg_map(phys_bytes phys, vir_bytes vaddr, vir_bytes vaddr_end,
 	}
 }
 
-void pg_info(reg_t *pagedir_ph, u32_t **pagedir_v)
+void pg_info(reg_t *pagedir_ph, uint32_t **pagedir_v)
 {
 	*pagedir_ph = vir2phys(pagedir);
 	*pagedir_v = pagedir;

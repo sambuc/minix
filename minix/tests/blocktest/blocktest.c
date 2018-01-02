@@ -509,11 +509,11 @@ static void bad_read1(void)
 	cpf_revoke(grant);
 }
 
-static u32_t get_sum(uint8_t *ptr, size_t size)
+static uint32_t get_sum(uint8_t *ptr, size_t size)
 {
 	/* Compute a checksum over the given buffer.
 	 */
-	u32_t sum;
+	uint32_t sum;
 
 	for (sum = 0; size > 0; size--, ptr++)
 		sum = sum ^ (sum << 5) ^ *ptr;
@@ -521,7 +521,7 @@ static u32_t get_sum(uint8_t *ptr, size_t size)
 	return sum;
 }
 
-static u32_t fill_rand(uint8_t *ptr, size_t size)
+static uint32_t fill_rand(uint8_t *ptr, size_t size)
 {
 	/* Fill the given buffer with random data. Return a checksum over the
 	 * resulting data.
@@ -534,14 +534,14 @@ static u32_t fill_rand(uint8_t *ptr, size_t size)
 	return get_sum(ptr, size);
 }
 
-static void test_sum(uint8_t *ptr, size_t size, u32_t sum, int should_match,
+static void test_sum(uint8_t *ptr, size_t size, uint32_t sum, int should_match,
 	result_t *res)
 {
 	/* If the test succeeded so far, check whether the given buffer does
 	 * or does not match the given checksum, and adjust the test result
 	 * accordingly.
 	 */
-	u32_t sum2;
+	uint32_t sum2;
 
 	if (res->type != RESULT_OK)
 		return;
@@ -566,7 +566,7 @@ static void bad_read2(void)
 	uint8_t *buf_ptr, *buf2_ptr, *buf3_ptr, c1, c2;
 	size_t buf_size, buf2_size, buf3_size;
 	cp_grant_id_t buf_grant, buf2_grant, buf3_grant, grant;
-	u32_t buf_sum, buf2_sum, buf3_sum;
+	uint32_t buf_sum, buf2_sum, buf3_sum;
 	iovec_s_t iov[3], iovt[3];
 	result_t res;
 
@@ -838,7 +838,7 @@ static void bad_write(void)
 	size_t buf_size, buf2_size, buf3_size, sector_unalign;
 	cp_grant_id_t buf_grant, buf2_grant, buf3_grant;
 	cp_grant_id_t grant;
-	u32_t buf_sum, buf2_sum, buf3_sum;
+	uint32_t buf_sum, buf2_sum, buf3_sum;
 	iovec_s_t iov[3], iovt[3];
 	result_t res;
 
@@ -950,8 +950,8 @@ static void vector_and_large_sub(size_t small_size)
 
 	large_size = small_size * NR_IOREQS;
 
-	buf_size = large_size + sizeof(u32_t) * 2;
-	buf2_size = large_size + sizeof(u32_t) * (NR_IOREQS + 1);
+	buf_size = large_size + sizeof(uint32_t) * 2;
+	buf2_size = large_size + sizeof(uint32_t) * (NR_IOREQS + 1);
 
 	buf_ptr = alloc_dma_memory(buf_size);
 	buf2_ptr = alloc_dma_memory(buf2_size);
@@ -962,14 +962,14 @@ static void vector_and_large_sub(size_t small_size)
 	 * has dword-sized guards before each chunk and after the last chunk.
 	 * SPTR(n) points to the start of the nth small chunk.
 	 */
-#define SPTR(n) (buf2_ptr + sizeof(u32_t) + (n) * (sizeof(u32_t) + small_size))
-#define LPTR(n) (buf_ptr + sizeof(u32_t) + small_size * (n))
+#define SPTR(n) (buf2_ptr + sizeof(uint32_t) + (n) * (sizeof(uint32_t) + small_size))
+#define LPTR(n) (buf_ptr + sizeof(uint32_t) + small_size * (n))
 
 	/* Write one large chunk, if writing is allowed. */
 	if (may_write) {
 		fill_rand(buf_ptr, buf_size); /* don't need the checksum */
 
-		iovec[0].iov_addr = (vir_bytes) (buf_ptr + sizeof(u32_t));
+		iovec[0].iov_addr = (vir_bytes) (buf_ptr + sizeof(uint32_t));
 		iovec[0].iov_size = large_size;
 
 		vir_xfer(driver_minor, base_pos, iovec, 1, TRUE, large_size,
@@ -982,21 +982,21 @@ static void vector_and_large_sub(size_t small_size)
 	 * check checksums.
 	 */
 	for (i = 0; i < NR_IOREQS; i++) {
-		* (((u32_t *) SPTR(i)) - 1) = 0xDEADBEEFL + i;
+		* (((uint32_t *) SPTR(i)) - 1) = 0xDEADBEEFL + i;
 		iovec[i].iov_addr = (vir_bytes) SPTR(i);
 		iovec[i].iov_size = small_size;
 	}
-	* (((u32_t *) SPTR(i)) - 1) = 0xFEEDFACEL;
+	* (((uint32_t *) SPTR(i)) - 1) = 0xFEEDFACEL;
 
 	vir_xfer(driver_minor, base_pos, iovec, NR_IOREQS, FALSE, large_size,
 		&res);
 
 	if (res.type == RESULT_OK) {
 		for (i = 0; i < NR_IOREQS; i++) {
-			if (* (((u32_t *) SPTR(i)) - 1) != 0xDEADBEEFL + i)
+			if (* (((uint32_t *) SPTR(i)) - 1) != 0xDEADBEEFL + i)
 				set_result(&res, RESULT_OVERFLOW, 0);
 		}
-		if (* (((u32_t *) SPTR(i)) - 1) != 0xFEEDFACEL)
+		if (* (((uint32_t *) SPTR(i)) - 1) != 0xFEEDFACEL)
 			set_result(&res, RESULT_OVERFLOW, 0);
 	}
 
@@ -1029,18 +1029,18 @@ static void vector_and_large_sub(size_t small_size)
 	 * In both cases, the expected content is in the second buffer.
 	 */
 
-	* (u32_t *) buf_ptr = 0xCAFEBABEL;
-	* (u32_t *) (buf_ptr + sizeof(u32_t) + large_size) = 0xDECAFBADL;
+	* (uint32_t *) buf_ptr = 0xCAFEBABEL;
+	* (uint32_t *) (buf_ptr + sizeof(uint32_t) + large_size) = 0xDECAFBADL;
 
-	iovec[0].iov_addr = (vir_bytes) (buf_ptr + sizeof(u32_t));
+	iovec[0].iov_addr = (vir_bytes) (buf_ptr + sizeof(uint32_t));
 	iovec[0].iov_size = large_size;
 
 	vir_xfer(driver_minor, base_pos, iovec, 1, FALSE, large_size, &res);
 
 	if (res.type == RESULT_OK) {
-		if (* (u32_t *) buf_ptr != 0xCAFEBABEL)
+		if (* (uint32_t *) buf_ptr != 0xCAFEBABEL)
 			set_result(&res, RESULT_OVERFLOW, 0);
-		if (* (u32_t *) (buf_ptr + sizeof(u32_t) + large_size) !=
+		if (* (uint32_t *) (buf_ptr + sizeof(uint32_t) + large_size) !=
 				0xDECAFBADL)
 			set_result(&res, RESULT_OVERFLOW, 0);
 	}
@@ -1253,7 +1253,7 @@ static void read_limits(dev_t sub0_minor, dev_t sub1_minor, size_t sub_size)
 	 */
 	uint8_t *buf_ptr;
 	size_t buf_size;
-	u32_t sum, sum2, sum3;
+	uint32_t sum, sum2, sum3;
 	result_t res;
 
 	test_group("read around subpartition limits", TRUE);
@@ -1368,7 +1368,7 @@ static void write_limits(dev_t sub0_minor, dev_t sub1_minor, size_t sub_size)
 	 */
 	uint8_t *buf_ptr;
 	size_t buf_size;
-	u32_t sum, sum2, sum3, sub1_sum;
+	uint32_t sum, sum2, sum3, sub1_sum;
 	result_t res;
 
 	test_group("write around subpartition limits", may_write);
@@ -1739,7 +1739,7 @@ static void part_limits(void)
 }
 
 static void unaligned_size_io(u64_t base_pos, uint8_t *buf_ptr, size_t buf_size,
-	uint8_t *sec_ptr[2], int sectors, int pattern, u32_t ssum[5])
+	uint8_t *sec_ptr[2], int sectors, int pattern, uint32_t ssum[5])
 {
 	/* Perform a single small-element I/O read, write, readback test.
 	 * The number of sectors and the pattern varies with each call.
@@ -1747,7 +1747,7 @@ static void unaligned_size_io(u64_t base_pos, uint8_t *buf_ptr, size_t buf_size,
 	 * checksums on disk, if writing is enabled. Note that for
 	 */
 	iovec_t iov[3], iovt[3];
-	u32_t rsum[3];
+	uint32_t rsum[3];
 	result_t res;
 	size_t total_size;
 	int i, nr_req;
@@ -1914,7 +1914,7 @@ static void unaligned_size(void)
 	 */
 	uint8_t *buf_ptr, *sec_ptr[2];
 	size_t buf_size;
-	u32_t sum = 0L, ssum[5];
+	uint32_t sum = 0L, ssum[5];
 	u64_t base_pos;
 	result_t res;
 	int i;
@@ -2012,7 +2012,7 @@ static void unaligned_pos1(void)
 	 */
 	uint8_t *buf_ptr, *buf2_ptr;
 	size_t buf_size, buf2_size, size;
-	u32_t sum, sum2;
+	uint32_t sum, sum2;
 	u64_t base_pos;
 	result_t res;
 
@@ -2161,7 +2161,7 @@ static void unaligned_pos2(void)
 	 */
 	uint8_t *buf_ptr, *buf2_ptr;
 	size_t buf_size, buf2_size, max_block;
-	u32_t sum = 0L, sum2 = 0L, rsum[NR_IOREQS];
+	uint32_t sum = 0L, sum2 = 0L, rsum[NR_IOREQS];
 	u64_t base_pos;
 	iovec_t iov[NR_IOREQS];
 	result_t res;
@@ -2301,7 +2301,7 @@ static void sweep_area(u64_t base_pos)
 	 */
 	uint8_t *buf_ptr;
 	size_t buf_size;
-	u32_t sum = 0L, ssum[8];
+	uint32_t sum = 0L, ssum[8];
 	result_t res;
 	int i, j;
 
@@ -2391,7 +2391,7 @@ static void sweep_and_check(u64_t pos, int check_integ)
 	 */
 	uint8_t *buf_ptr;
 	size_t buf_size;
-	u32_t sum = 0L;
+	uint32_t sum = 0L;
 	result_t res;
 
 	if (check_integ) {

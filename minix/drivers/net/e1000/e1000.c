@@ -30,7 +30,7 @@ static void e1000_reg_unset(e1000_t *e, uint32_t reg, uint32_t value);
 static uint16_t eeprom_eerd(e1000_t *e, int reg);
 static uint16_t eeprom_ich(e1000_t *e, int reg);
 static int eeprom_ich_init(e1000_t *e);
-static int eeprom_ich_cycle(e1000_t *e, u32_t timeout);
+static int eeprom_ich_cycle(e1000_t *e, uint32_t timeout);
 
 static int e1000_instance;
 static e1000_t e1000_state;
@@ -102,7 +102,7 @@ e1000_init(unsigned int instance, netdriver_addr_t * addr, uint32_t * caps,
 static void
 e1000_map_flash(e1000_t * e, int devind, int did)
 {
-	u32_t flash_addr, gfpreg, sector_base_addr;
+	uint32_t flash_addr, gfpreg, sector_base_addr;
 	size_t flash_size;
 
 	/* The flash memory is pointed to by BAR2.  It may not be present. */
@@ -146,8 +146,8 @@ e1000_probe(e1000_t * e, int skip)
 {
 	int r, devind, ioflag;
 	uint16_t vid, did, cr;
-	u32_t status;
-	u32_t base, size;
+	uint32_t status;
+	uint32_t base, size;
 	const char *dname;
 
 	E1000_DEBUG(3, ("%s: probe()\n", netdriver_name()));
@@ -448,7 +448,7 @@ e1000_set_hwaddr(const netdriver_addr_t * hwaddr)
 	e = &e1000_state;
 
 	e1000_reg_write(e, E1000_REG_RAL,
-	    *(const u32_t *)(&hwaddr->na_addr[0]));
+	    *(const uint32_t *)(&hwaddr->na_addr[0]));
 	e1000_reg_write(e, E1000_REG_RAH,
 	    *(const uint16_t *)(&hwaddr->na_addr[4]));
 	e1000_reg_set(e, E1000_REG_RAH, E1000_REG_RAH_AV);
@@ -603,7 +603,7 @@ static void
 e1000_intr(unsigned int __unused mask)
 {
 	e1000_t *e;
-	u32_t cause;
+	uint32_t cause;
 
 	E1000_DEBUG(3, ("e1000: interrupt\n"));
 
@@ -687,7 +687,7 @@ e1000_reg_write(e1000_t * e, uint32_t reg, uint32_t value)
 	assert(reg < 0x1ffff);
 
 	/* Write to memory mapped register. */
-	*(volatile u32_t *)(e->regs + reg) = value;
+	*(volatile uint32_t *)(e->regs + reg) = value;
 }
 
 /*
@@ -726,7 +726,7 @@ e1000_reg_unset(e1000_t * e, uint32_t reg, uint32_t value)
 static uint16_t
 eeprom_eerd(e1000_t * e, int reg)
 {
-	u32_t data;
+	uint32_t data;
 
 	/* Request EEPROM read. */
 	e1000_reg_write(e, E1000_REG_EERD,
@@ -815,12 +815,12 @@ eeprom_ich_init(e1000_t * e)
  * Start ICH8 flash cycle.
  */
 static int
-eeprom_ich_cycle(e1000_t * e, u32_t timeout)
+eeprom_ich_cycle(e1000_t * e, uint32_t timeout)
 {
 	union ich8_hws_flash_ctrl hsflctl;
 	union ich8_hws_flash_status hsfsts;
 	int ret_val = -1;
-	u32_t i = 0;
+	uint32_t i = 0;
 
 	E1000_DEBUG(3, ("e1000_flash_cycle_ich8lan"));
 
@@ -851,8 +851,8 @@ eeprom_ich(e1000_t * e, int reg)
 {
 	union ich8_hws_flash_status hsfsts;
 	union ich8_hws_flash_ctrl hsflctl;
-	u32_t flash_linear_addr;
-	u32_t flash_data = 0;
+	uint32_t flash_linear_addr;
+	uint32_t flash_data = 0;
 	int ret_val = -1;
 	uint8_t count = 0;
 	uint16_t data = 0;

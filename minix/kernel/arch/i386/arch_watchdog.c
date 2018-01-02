@@ -17,7 +17,7 @@ static struct arch_watchdog amd_watchdog;
 static void intel_arch_watchdog_init(const unsigned cpu)
 {
 	u64_t cpuf;
-	u32_t val;
+	uint32_t val;
 
 	ia32_msr_write(INTEL_MSR_PERFMON_CRT0, 0, 0);
 
@@ -52,7 +52,7 @@ static void intel_arch_watchdog_reinit(const unsigned cpu)
 
 int arch_watchdog_init(void)
 {
-	u32_t eax, ebx, ecx, edx;
+	uint32_t eax, ebx, ecx, edx;
 	unsigned cpu = cpuid;
 
 	if (!lapic_addr) {
@@ -187,7 +187,7 @@ static struct arch_watchdog intel_arch_watchdog = {
 static void amd_watchdog_init(const unsigned cpu)
 {
 	u64_t cpuf;
-	u32_t val;
+	uint32_t val;
 
 	ia32_msr_write(AMD_MSR_EVENT_CTR0, 0, 0);
 

@@ -18,17 +18,17 @@
 #define MICROHZ		1000000		/* number of micros per second */
 #define MICROSPERTICK(h)	(MICROHZ/(h))	/* number of micros per HZ tick */
 
-static u32_t calib_hz = 600000000;
+static uint32_t calib_hz = 600000000;
 
-u32_t tsc_64_to_micros(u64_t tsc)
+uint32_t tsc_64_to_micros(u64_t tsc)
 {
 	u64_t tmp;
 
 	tmp =  tsc / calib_hz;
-	return (u32_t) tmp;
+	return (uint32_t) tmp;
 }
 
-u32_t tsc_to_micros(u32_t low, u32_t high)
+uint32_t tsc_to_micros(uint32_t low, uint32_t high)
 {
 	return tsc_64_to_micros(make64(low, high));
 }

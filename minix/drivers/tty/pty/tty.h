@@ -85,7 +85,7 @@ typedef struct tty {
 
 /* Memory allocated in tty.c, so extern here. */
 extern tty_t tty_table[NR_PTYS];
-extern u32_t system_hz;		/* system clock frequency */
+extern uint32_t system_hz;		/* system clock frequency */
 extern int tty_gid;		/* group ID of the "tty" group */
 
 /* Values for the fields. */

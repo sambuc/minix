@@ -238,7 +238,7 @@ static int map_service(const struct rprocpub *rpub)
 
   /* Set attributes. */
   strcpy(dsp->key, rpub->label);
-  dsp->u.u32 = (u32_t) rpub->endpoint;
+  dsp->u.u32 = (uint32_t) rpub->endpoint;
   strcpy(dsp->owner, "rs");
   dsp->flags = DSF_IN_USE | DSF_TYPE_LABEL;
 

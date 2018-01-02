@@ -75,8 +75,8 @@ static int fs_bufs_heuristic(int minbufs, fsblkcnt_t btotal,
 {
   struct vm_stats_info vsi;
   int bufs;
-  u32_t kbytes_used_fs, kbytes_total_fs, kbcache, kb_fsmax;
-  u32_t kbytes_remain_mem;
+  uint32_t kbytes_used_fs, kbytes_total_fs, kbcache, kb_fsmax;
+  uint32_t kbytes_remain_mem;
 
   /* set a reasonable cache size; cache at most a certain
    * portion of the used FS, and at most a certain %age of remaining

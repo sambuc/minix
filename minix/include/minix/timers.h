@@ -91,7 +91,7 @@ int tmrs_exptimers(minix_timer_t **tmrs, clock_t now, clock_t *new_head);
 	static u64_t _cum_spenttime, _cum_starttime;		\
 	static int _cum_instances;				\
 	u64_t _next_cum_spent, _starttime, _endtime, _dt, _cum_dt;	\
-	u32_t _dt_micros;					\
+	uint32_t _dt_micros;					\
 	read_tsc_64(&_starttime);				\
 	do { timed_code_block } while(0);			\
 	read_tsc_64(&_endtime);					\

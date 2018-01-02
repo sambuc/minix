@@ -6,7 +6,7 @@
 
 struct acpi_request_hdr {
 	endpoint_t 	m_source; /* message header */
-	u32_t		request;
+	uint32_t		request;
 };
 
 /*
@@ -15,32 +15,32 @@ struct acpi_request_hdr {
  */
 struct acpi_get_irq_req {
 	struct acpi_request_hdr	hdr;
-	u32_t			bus;
-	u32_t			dev;
-	u32_t			pin;
-	u32_t			__padding[4];
+	uint32_t			bus;
+	uint32_t			dev;
+	uint32_t			pin;
+	uint32_t			__padding[4];
 };
 
 /* response from acpi to acpi_get_irq_req */
 struct acpi_get_irq_resp {
 	endpoint_t 	m_source; /* message header */
 	i32_t		irq;
-	u32_t		__padding[7];
+	uint32_t		__padding[7];
 };
 
 /* message format for pci bridge mappings to acpi */
 struct acpi_map_bridge_req {
 	struct acpi_request_hdr	hdr;
-	u32_t	primary_bus;
-	u32_t	secondary_bus;
-	u32_t	device;
-	u32_t	__padding[4];
+	uint32_t	primary_bus;
+	uint32_t	secondary_bus;
+	uint32_t	device;
+	uint32_t	__padding[4];
 };
 
 struct acpi_map_bridge_resp {
 	endpoint_t 	m_source; /* message header */
 	int		err;
-	u32_t		__padding[7];
+	uint32_t		__padding[7];
 };
 
 int acpi_init(void);

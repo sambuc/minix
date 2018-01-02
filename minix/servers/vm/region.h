@@ -22,7 +22,7 @@
 
 struct phys_block {
 #if SANITYCHECKS
-	u32_t			seencount;
+	uint32_t			seencount;
 #endif
 	phys_bytes		phys;	/* physical memory */
 
