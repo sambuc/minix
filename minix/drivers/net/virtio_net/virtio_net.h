@@ -61,7 +61,7 @@ struct virtio_net_config {
 	/* The config defining mac address (if VIRTIO_NET_F_MAC) */
 	uint8_t mac[6];
 	/* See VIRTIO_NET_F_STATUS and VIRTIO_NET_S_* above */
-	u16_t status;
+	uint16_t status;
 } __attribute__((packed));
 
 /* This is the first element of the scatter-gather list.  If you don't
@@ -76,17 +76,17 @@ struct virtio_net_hdr {
 #define VIRTIO_NET_HDR_GSO_TCPV6	4	// GSO frame, IPv6 TCP
 #define VIRTIO_NET_HDR_GSO_ECN		0x80	// TCP has ECN set
 	uint8_t gso_type;
-	u16_t hdr_len;		/* Ethernet + IP + tcp/udp hdrs */
-	u16_t gso_size;		/* Bytes to append to hdr_len per frame */
-	u16_t csum_start;	/* Position to start checksumming from */
-	u16_t csum_offset;	/* Offset after that to place checksum */
+	uint16_t hdr_len;		/* Ethernet + IP + tcp/udp hdrs */
+	uint16_t gso_size;		/* Bytes to append to hdr_len per frame */
+	uint16_t csum_start;	/* Position to start checksumming from */
+	uint16_t csum_offset;	/* Offset after that to place checksum */
 };
 
 /* This is the version of the header to use when the MRG_RXBUF
  * feature has been negotiated. */
 struct virtio_net_hdr_mrg_rxbuf {
 	struct virtio_net_hdr hdr;
-	u16_t num_buffers;	/* Number of merged rx buffers */
+	uint16_t num_buffers;	/* Number of merged rx buffers */
 };
 
 /*

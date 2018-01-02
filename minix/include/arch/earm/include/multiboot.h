@@ -314,10 +314,10 @@ struct multiboot_info
 	/* Video */
 	u32_t vbe_control_info;
 	u32_t vbe_mode_info;
-	u16_t vbe_mode;
-	u16_t vbe_interface_seg;
-	u16_t vbe_interface_off;
-	u16_t vbe_interface_len;
+	uint16_t vbe_mode;
+	uint16_t vbe_interface_seg;
+	uint16_t vbe_interface_off;
+	uint16_t vbe_interface_len;
 };
 typedef struct multiboot_info multiboot_info_t;
 

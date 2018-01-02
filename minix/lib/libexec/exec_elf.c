@@ -174,7 +174,7 @@ int libexec_load_elf(struct exec_info *execi)
 		off_t foffset, fbytes;
 		Elf_Phdr *ph = &phdr[i];
 		int try_mmap = 1;
-		u16_t clearend = 0;
+		uint16_t clearend = 0;
 		int pagechunk;
 		int mmap_prot = PROT_READ;
 

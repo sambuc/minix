@@ -5,9 +5,9 @@
 #include "wait.h"
 
 int SRCInit(DEV_STRUCT * DSP);
-int SRCRegRead(DEV_STRUCT * DSP, u16_t reg, u16_t *data);
-int SRCRegWrite(DEV_STRUCT * DSP, u16_t reg, u16_t val);
-void SRCSetRate(DEV_STRUCT * DSP, char src_base, u16_t rate);
+int SRCRegRead(DEV_STRUCT * DSP, uint16_t reg, uint16_t *data);
+int SRCRegWrite(DEV_STRUCT * DSP, uint16_t reg, uint16_t val);
+void SRCSetRate(DEV_STRUCT * DSP, char src_base, uint16_t rate);
 
 
 /* register/base and control equates for the SRC RAM */

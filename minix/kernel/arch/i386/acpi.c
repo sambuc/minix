@@ -37,10 +37,10 @@ static struct {
 } sdt_trans[MAX_RSDT];
 
 static int sdt_count;
-static u16_t pm1a_cnt_blk = 0;
-static u16_t pm1b_cnt_blk = 0;
-static u16_t slp_typa = 0;
-static u16_t slp_typb = 0;
+static uint16_t pm1a_cnt_blk = 0;
+static uint16_t pm1b_cnt_blk = 0;
+static uint16_t slp_typa = 0;
+static uint16_t slp_typb = 0;
 
 static int acpi_check_csum(struct acpi_sdt_header * tb, size_t size)
 {
@@ -203,7 +203,7 @@ static int acpi_rsdp_test(void * buff)
 
 static int get_acpi_rsdp(void)
 {
-	u16_t ebda;
+	uint16_t ebda;
 	/*
 	 * Read 40:0Eh - to find the starting address of the EBDA.
 	 */

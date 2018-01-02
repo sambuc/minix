@@ -12,7 +12,7 @@ key+SHIFT, key+LEFT_ALT, key+RIGHT_ALT, key+ALT+SHIFT and key+CTRL) and
 NR_SCAN_CODES rows (MINIX assigns the value 0xE8 to NR_SCAN_CODES,
 corresponding to the range of defined USB HID key codes, which is the
 set of key codes that is to be provided by all keyboard drivers),
-and each element is 2 bytes in length (see u16_t in type definitions). 
+and each element is 2 bytes in length (see uint16_t in type definitions). 
 The low order byte corresponds to the character represented by the scan 
 code, and the high order byte corresponds to the special meaning (when 
 CAPS LOCK has effect, if it is a function key, etc.), which is converted to
@@ -24,7 +24,7 @@ utility.
 <sys/types.h> defines the
 .B uint8_t
 and
-.B u16_t
+.B uint16_t
 types, corresponding to 8 and 16 bit values.
 .SS "Keys: <minix/input.h>"
 This header file contains the list of keys, prefixed by a

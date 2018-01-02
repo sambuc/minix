@@ -94,10 +94,10 @@ void write_cr4(unsigned long value);
 void write_cr3(unsigned long value);
 unsigned long read_cpu_flags(void);
 phys_bytes vir2phys(void *);
-void phys_insb(u16_t port, phys_bytes buf, size_t count);
-void phys_insw(u16_t port, phys_bytes buf, size_t count);
-void phys_outsb(u16_t port, phys_bytes buf, size_t count);
-void phys_outsw(u16_t port, phys_bytes buf, size_t count);
+void phys_insb(uint16_t port, phys_bytes buf, size_t count);
+void phys_insw(uint16_t port, phys_bytes buf, size_t count);
+void phys_outsb(uint16_t port, phys_bytes buf, size_t count);
+void phys_outsw(uint16_t port, phys_bytes buf, size_t count);
 u32_t read_cr3(void);
 void reload_cr3(void);
 void i386_invlpg(phys_bytes linaddr);
@@ -190,8 +190,8 @@ struct tss_s {
   reg_t fs;
   reg_t gs;
   reg_t ldt;
-  u16_t trap;
-  u16_t iobase;
+  uint16_t trap;
+  uint16_t iobase;
 /* uint8_t iomap[0]; */
 } __attribute__((packed));
 

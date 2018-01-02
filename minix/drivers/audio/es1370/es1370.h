@@ -93,7 +93,7 @@
 
 typedef struct {
 	u32_t stereo;
-	u16_t sample_rate; 
+	uint16_t sample_rate; 
 	u32_t nr_of_bits;
 	u32_t sign;
 	u32_t busy;
@@ -111,8 +111,8 @@ typedef struct {
 
 typedef struct DEVSTRUCT {
 	char*     name;
-	u16_t     v_id;							/* vendor id */
-	u16_t     d_id;							/* device id */
+	uint16_t     v_id;							/* vendor id */
+	uint16_t     d_id;							/* device id */
 	u32_t     devind;						/* minix pci device id, for 
 											 * pci configuration space */
 	u32_t     base;							/* changed to 32 bits */

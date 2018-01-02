@@ -125,7 +125,7 @@
 #define EC_READ		0x0200
 #define EC_BUSY		0x8000
 
-static u16_t PhyParam[] = {
+static uint16_t PhyParam[] = {
 	(0x4000|(07*4)), 31, 0x0001, 27, 0x01e0, 31, 0x0002, 27, 0xeb8e, 31, 0x0000,
 					30, 0x005e, 9, 0x0700,
 	(0x4100|(07*4)), 31, 0x0001, 27, 0x01e0, 31, 0x0002, 27, 0xeb8e, 31, 0x0000,
@@ -146,7 +146,7 @@ typedef struct NDR_desc {
 /* Driver Data Structure */
 typedef struct NDR_driver {
 	char *dev_name;			/* Device name */
-	u16_t vid, did;			/* Vendor and device ID */
+	uint16_t vid, did;			/* Vendor and device ID */
 	u32_t devind;			/* Device index */
 	u32_t base[6];			/* Base address */
 	char irq;				/* IRQ number */

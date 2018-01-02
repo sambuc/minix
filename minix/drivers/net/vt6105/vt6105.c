@@ -461,7 +461,7 @@ static void NDR_intr(unsigned int mask) {
 /* Match the device and get base address */
 static int dev_probe(NDR_driver *pdev, int instance) {
 	int devind, ioflag, i;
-	u16_t cr, vid, did;
+	uint16_t cr, vid, did;
 	u32_t bar, size, base;
 	uint8_t irq, rev;
 	uint8_t *reg;

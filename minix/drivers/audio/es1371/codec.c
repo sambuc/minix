@@ -26,10 +26,10 @@ void CodecSetSrcSyncState (int state)
 }
 
 
-int CodecWrite (DEV_STRUCT * pCC, u16_t wAddr, u16_t wData)
+int CodecWrite (DEV_STRUCT * pCC, uint16_t wAddr, uint16_t wData)
 {
 u32_t dtemp, i;
-u16_t  wBaseAddr = pCC->base;
+uint16_t  wBaseAddr = pCC->base;
 
     /* wait for WIP bit (Write In Progress) to go away */
     /* remember, register CONC_dCODECCTL_OFF (0x14) 
@@ -89,10 +89,10 @@ u16_t  wBaseAddr = pCC->base;
     return 0;
 }
 
-int CodecRead (DEV_STRUCT * pCC, u16_t wAddr, u16_t *data)
+int CodecRead (DEV_STRUCT * pCC, uint16_t wAddr, uint16_t *data)
 {
 u32_t dtemp, i;
-u16_t  base = pCC->base;
+uint16_t  base = pCC->base;
 
     /* wait for WIP to go away */
     if (WaitBitd (base + CONC_dCODECCTL_OFF, 30, 0, WIP_TIMEOUT))
@@ -156,13 +156,13 @@ u16_t  base = pCC->base;
     dtemp = pci_inl(base + CONC_dCODECCTL_OFF);
 
     if (data)
-        *data = (u16_t) dtemp;
+        *data = (uint16_t) dtemp;
 
     return 0;
 }
 
 
-int CodecWriteUnsynced (DEV_STRUCT * pCC, u16_t wAddr, u16_t wData)
+int CodecWriteUnsynced (DEV_STRUCT * pCC, uint16_t wAddr, uint16_t wData)
 {
     /* wait for WIP to go away */
     if (WaitBitd (pCC->base + CONC_dCODECCTL_OFF, 30, 0, WIP_TIMEOUT))
@@ -174,7 +174,7 @@ int CodecWriteUnsynced (DEV_STRUCT * pCC, u16_t wAddr, u16_t wData)
 }
 
 
-int CodecReadUnsynced (DEV_STRUCT * pCC, u16_t wAddr, u16_t *data)
+int CodecReadUnsynced (DEV_STRUCT * pCC, uint16_t wAddr, uint16_t *data)
 {
 u32_t dtemp;
 
@@ -192,7 +192,7 @@ u32_t dtemp;
     dtemp = pci_inl(pCC->base + CONC_dCODECCTL_OFF);
 
     if (data)
-        *data = (u16_t) dtemp;
+        *data = (uint16_t) dtemp;
 
     return 0;
 }

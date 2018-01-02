@@ -9,12 +9,12 @@ Created:	Jan 15, 1992 by Philip Homburg
 
 #include <sys/types.h>
 
-unsigned inb(u16_t _port);
-unsigned inw(u16_t _port);
-unsigned inl(u16_t _port);
-void outb(u16_t _port, uint8_t _value);
-void outw(u16_t _port, u16_t _value);
-void outl(u16_t _port, u32_t _value);
+unsigned inb(uint16_t _port);
+unsigned inw(uint16_t _port);
+unsigned inl(uint16_t _port);
+void outb(uint16_t _port, uint8_t _value);
+void outw(uint16_t _port, uint16_t _value);
+void outl(uint16_t _port, u32_t _value);
 void intr_disable(void);
 void intr_enable(void);
 

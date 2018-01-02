@@ -605,8 +605,8 @@ hub_port_feature(int port_num, class_code code, class_feature feature)
 	/* Standard get endpoint request */
 	setup_buf.bRequestType = 0x23;
 	setup_buf.bRequest = (uint8_t)code;
-	setup_buf.wValue = (u16_t)feature;
-	setup_buf.wIndex = (u16_t)port_num;
+	setup_buf.wValue = (uint16_t)feature;
+	setup_buf.wIndex = (uint16_t)port_num;
 	setup_buf.wLength = 0;
 
 	/* Attach buffers to URB */
@@ -661,7 +661,7 @@ hub_get_port_status(int port_num, hub_port_status * p)
 	setup_buf.bRequestType = 0xA3;
 	setup_buf.bRequest = (uint8_t)GET_STATUS;
 	setup_buf.wValue = 0x00;
-	setup_buf.wIndex = (u16_t)port_num;
+	setup_buf.wIndex = (uint16_t)port_num;
 	setup_buf.wLength = sizeof(*p);
 
 	/* Attach buffers to URB */

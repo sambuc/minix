@@ -434,7 +434,7 @@ static int atapi_check_medium(struct port_state *ps, int cmd)
 /*===========================================================================*
  *				atapi_id_check				     *
  *===========================================================================*/
-static int atapi_id_check(struct port_state *ps, u16_t *buf)
+static int atapi_id_check(struct port_state *ps, uint16_t *buf)
 {
 	/* Determine whether we support this ATAPI device based on the
 	 * identification data it returned, and store some of its properties.
@@ -525,7 +525,7 @@ static int atapi_transfer(struct port_state *ps, int cmd, u64_t start_lba,
 /*===========================================================================*
  *				ata_id_check				     *
  *===========================================================================*/
-static int ata_id_check(struct port_state *ps, u16_t *buf)
+static int ata_id_check(struct port_state *ps, uint16_t *buf)
 {
 	/* Determine whether we support this ATA device based on the
 	 * identification data it returned, and store some of its properties.
@@ -734,7 +734,7 @@ static int gen_get_wcache(struct port_state *ps, int *val)
 		return r;
 
 	/* Return the current setting. */
-	*val = !!(((u16_t *) ps->tmp_base)[ATA_ID_ENA0] & ATA_ID_ENA0_WCACHE);
+	*val = !!(((uint16_t *) ps->tmp_base)[ATA_ID_ENA0] & ATA_ID_ENA0_WCACHE);
 
 	return OK;
 }
@@ -1332,7 +1332,7 @@ static void port_restart(struct port_state *ps)
 /*===========================================================================*
  *				print_string				     *
  *===========================================================================*/
-static void print_string(u16_t *buf, int start, int end)
+static void print_string(uint16_t *buf, int start, int end)
 {
 	/* Print a string that is stored as little-endian words and padded with
 	 * trailing spaces.
@@ -1359,7 +1359,7 @@ static void port_id_check(struct port_state *ps, int success)
 	 * Decide whether this device is usable or not, and store some of its
 	 * properties.
 	 */
-	u16_t *buf;
+	uint16_t *buf;
 
 	assert(ps->state == STATE_WAIT_ID);
 
@@ -1386,7 +1386,7 @@ static void port_id_check(struct port_state *ps, int success)
 	 * store some properties.
 	 */
 	if (success) {
-		buf = (u16_t *) ps->tmp_base;
+		buf = (uint16_t *) ps->tmp_base;
 
 		if (ps->flags & FLAG_ATAPI)
 			success = atapi_id_check(ps, buf);
@@ -2017,7 +2017,7 @@ static int ahci_probe(int skip)
 	/* Find a matching PCI device.
 	 */
 	int r, devind;
-	u16_t vid, did;
+	uint16_t vid, did;
 
 	pci_init();
 

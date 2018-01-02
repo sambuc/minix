@@ -117,7 +117,7 @@ root_meminfo(void)
 static void
 root_pci(void)
 {
-	u16_t vid, did, subvid, subdid;
+	uint16_t vid, did, subvid, subdid;
 	uint8_t bcr, scr, pifr, rev;
 	char *slot_name, *dev_name;
 	int r, devind;

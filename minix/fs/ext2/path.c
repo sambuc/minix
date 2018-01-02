@@ -204,7 +204,7 @@ int ftype;			 /* used when ENTER and INCOMPAT_FILETYPE */
 				 * correct, there is no way to spann a data block.
 				 */
 				if (prev_dp) {
-					u16_t temp = conv2(le_CPU,
+					uint16_t temp = conv2(le_CPU,
 							prev_dp->d_rec_len);
 					temp += conv2(le_CPU,
 							dp->d_rec_len);

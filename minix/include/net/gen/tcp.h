@@ -13,6 +13,6 @@ server/ip/gen/tcp.h
 
 #define TCPPORT_RESERVED	1024
 
-typedef u16_t tcpport_t;
+typedef uint16_t tcpport_t;
 
 #endif /* __SERVER__IP__GEN__TCP_H__ */

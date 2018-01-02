@@ -15,8 +15,8 @@ typedef struct udp_hdr
 {
 	udpport_t uh_src_port;
 	udpport_t uh_dst_port;
-	u16_t uh_length;
-	u16_t uh_chksum;
+	uint16_t uh_length;
+	uint16_t uh_chksum;
 } udp_hdr_t;
 
 #endif /* __SERVER__IP__GEN__UDP_HDR_H__ */

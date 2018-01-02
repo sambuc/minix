@@ -26,12 +26,12 @@ struct iso9660_vol_pri_desc {
 	u32_t volume_space_size_l;
 	u32_t volume_space_size_m;
 	uint8_t pad3[32];
-	u16_t volume_set_size_l;
-	u16_t volume_set_size_m;
-	u16_t volume_sequence_number_l;
-	u16_t volume_sequence_number_m;
-	u16_t logical_block_size_l;
-	u16_t logical_block_size_m;
+	uint16_t volume_set_size_l;
+	uint16_t volume_set_size_m;
+	uint16_t volume_sequence_number_l;
+	uint16_t volume_sequence_number_m;
+	uint16_t logical_block_size_l;
+	uint16_t logical_block_size_m;
 	u32_t path_table_size_l;
 	u32_t path_table_size_m;
 	u32_t loc_l_occ_path_table;

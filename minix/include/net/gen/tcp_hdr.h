@@ -13,9 +13,9 @@ typedef struct tcp_hdr
 	u32_t th_ack_nr;
 	uint8_t th_data_off;
 	uint8_t th_flags;
-	u16_t th_window;
-	u16_t th_chksum;
-	u16_t th_urgptr;
+	uint16_t th_window;
+	uint16_t th_chksum;
+	uint16_t th_urgptr;
 } tcp_hdr_t;
 
 #define TH_DO_MASK	0xf0

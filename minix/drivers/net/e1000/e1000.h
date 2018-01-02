@@ -83,7 +83,7 @@
  * @param reg Register offset.
  */
 #define E1000_READ_FLASH_REG16(e,reg) \
-    *(u16_t *) (((e)->flash) + (reg))
+    *(uint16_t *) (((e)->flash) + (reg))
 
 /**
  * Write a 16-bit word to flash memory.
@@ -101,7 +101,7 @@
  * @param value New value.
  */
 #define E1000_WRITE_FLASH_REG16(e,reg,value) \
-    *((u16_t *) (((e)->flash) + (reg))) = (value)
+    *((uint16_t *) (((e)->flash) + (reg))) = (value)
 
 /**
  * @}
@@ -117,7 +117,7 @@ typedef struct e1000
     uint8_t *regs;		  	  /**< Memory mapped hardware registers. */
     uint8_t *flash;		  /**< Optional flash memory. */
     u32_t flash_base_addr;	  /**< Flash base address. */
-    u16_t (*eeprom_read)(struct e1000 *, int reg);
+    uint16_t (*eeprom_read)(struct e1000 *, int reg);
 				  /**< Function to read the EEPROM. */
     int eeprom_done_bit;	  /**< Offset of the EERD.DONE bit. */    
     int eeprom_addr_off;	  /**< Offset of the EERD.ADDR field. */

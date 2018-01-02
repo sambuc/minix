@@ -57,7 +57,7 @@ static int mappedfile_unreference(struct phys_region *pr)
 }
 
 static int cow_block(struct vmproc *vmp, struct vir_region *region,
-	struct phys_region *ph, u16_t clearend)
+	struct phys_region *ph, uint16_t clearend)
 {
 	int r;
 
@@ -190,7 +190,7 @@ int mappedfile_copy(struct vir_region *vr, struct vir_region *newvr)
 
 int mappedfile_setfile(struct vmproc *owner,
 	struct vir_region *region, int fd, u64_t offset,
-	dev_t dev, ino_t ino, u16_t clearend, int prefill, int mayclosefd)
+	dev_t dev, ino_t ino, uint16_t clearend, int prefill, int mayclosefd)
 {
 	vir_bytes vaddr;
 	struct fdref *newref;

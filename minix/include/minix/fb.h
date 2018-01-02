@@ -5,13 +5,13 @@
 
 struct fb_fix_screeninfo {
 	char id[16];		/* Identification string */
-	u16_t xpanstep;
-	u16_t ypanstep;
-	u16_t ywrapstep;
+	uint16_t xpanstep;
+	uint16_t ypanstep;
+	uint16_t ywrapstep;
 	u32_t line_length;
 	phys_bytes mmio_start;
 	size_t mmio_len;
-	u16_t reserved[15];
+	uint16_t reserved[15];
 };
 
 struct fb_bitfield {
@@ -32,7 +32,7 @@ struct fb_var_screeninfo {
 	struct fb_bitfield green;
 	struct fb_bitfield blue;
 	struct fb_bitfield transp;	/* transparency */
-	u16_t reserved[10];
+	uint16_t reserved[10];
 };
 
 #endif /* __MINIX_FB_H_ */

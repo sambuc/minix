@@ -2375,7 +2375,7 @@ typedef struct {
 	u32_t len;
 	u32_t flags;
 	u32_t fd;
-	u16_t clearend;
+	uint16_t clearend;
 	uint8_t padding[8];
 } mess_vm_vfs_mmap;
 _ASSERT_MSG_SIZE(mess_vm_vfs_mmap);

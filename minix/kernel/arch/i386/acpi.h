@@ -45,7 +45,7 @@ struct acpi_fadt_header
 	u32_t dsdt;
 	uint8_t model;
 	uint8_t preferred_pm_profile;
-	u16_t sci_int;
+	uint16_t sci_int;
 	u32_t smi_cmd;
 	uint8_t acpi_enable;
 	uint8_t acpi_disable;
@@ -67,16 +67,16 @@ struct acpi_fadt_header
 	uint8_t gpe1_blk_len;
 	uint8_t gpe1_base;
 	uint8_t cst_cnt;
-	u16_t p_lvl2_lat;
-	u16_t p_lvl3_lat;
-	u16_t flush_size;
-	u16_t flush_stride;
+	uint16_t p_lvl2_lat;
+	uint16_t p_lvl3_lat;
+	uint16_t flush_size;
+	uint16_t flush_stride;
 	uint8_t duty_offset;
 	uint8_t duty_width;
 	uint8_t day_alrm;
 	uint8_t mon_alrm;
 	uint8_t century;
-	u16_t iapc_boot_arch;
+	uint16_t iapc_boot_arch;
 	uint8_t reserved1;
 	u32_t flags;
 	struct acpi_generic_address reset_reg;
@@ -137,12 +137,12 @@ struct acpi_madt_int_src {
 	uint8_t	bus;
 	uint8_t	bus_int;
 	u32_t	global_int;
-	u16_t	mps_flags;
+	uint16_t	mps_flags;
 };
 
 struct acpi_madt_nmi {
 	struct acpi_madt_item_hdr hdr;
-	u16_t	flags;
+	uint16_t	flags;
 	u32_t	global_int;
 };
 

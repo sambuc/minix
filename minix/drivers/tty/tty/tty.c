@@ -1252,7 +1252,7 @@ static int back_over(tp)
 register tty_t *tp;
 {
 /* Backspace to previous character on screen and erase it. */
-  u16_t *head;
+  uint16_t *head;
   int len;
 
   if (tp->tty_incount == 0) return(0);	/* queue empty */
@@ -1284,7 +1284,7 @@ register tty_t *tp;		/* pointer to tty struct */
  * messed up by output, or if REPRINT (^R) is typed.
  */
   int count;
-  u16_t *head;
+  uint16_t *head;
 
   tp->tty_reprint = FALSE;
 
@@ -1431,7 +1431,7 @@ static void setattr(tp)
 tty_t *tp;
 {
 /* Apply the new line attributes (raw/canonical, line speed, etc.) */
-  u16_t *inp;
+  uint16_t *inp;
   int count;
 
   if (!(tp->tty_termios.c_lflag & ICANON)) {

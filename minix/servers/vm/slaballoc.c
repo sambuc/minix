@@ -105,7 +105,7 @@ struct sdh {
 	int writable;	/* data item number or WRITABLE_* */
 	u32_t magic2;
 #endif
-	u16_t nused;	/* Number of data items used in this slab. */
+	uint16_t nused;	/* Number of data items used in this slab. */
 };
 
 #define DATABYTES	(VM_PAGE_SIZE-sizeof(struct sdh))

@@ -6,12 +6,12 @@
 
 /* AC97 Mixer and Mode control function prototypes */
 
-static int AC97_write(const DEV_STRUCT * pCC, u16_t wAddr, u16_t
+static int AC97_write(const DEV_STRUCT * pCC, uint16_t wAddr, uint16_t
 	wData);
-static int AC97_write_unsynced(const DEV_STRUCT * pCC, u16_t wAddr,
-	u16_t wData);
-static int AC97_read_unsynced(const DEV_STRUCT * pCC, u16_t wAddr,
-	u16_t *data);
+static int AC97_write_unsynced(const DEV_STRUCT * pCC, uint16_t wAddr,
+	uint16_t wData);
+static int AC97_read_unsynced(const DEV_STRUCT * pCC, uint16_t wAddr,
+	uint16_t *data);
 static void set_nice_volume(void);
 static int AC97_get_volume(struct volume_level *level);
 static int AC97_set_volume(const struct volume_level *level);
@@ -68,10 +68,10 @@ static void set_src_sync_state (int state)
 #endif
 
 
-static int AC97_write (const DEV_STRUCT * pCC, u16_t wAddr, u16_t wData)
+static int AC97_write (const DEV_STRUCT * pCC, uint16_t wAddr, uint16_t wData)
 {
 u32_t dtemp, i;
-u16_t  wBaseAddr = pCC->base;
+uint16_t  wBaseAddr = pCC->base;
 
     /* wait for WIP bit (Write In Progress) to go away */
     /* remember, register CODEC_READ (0x14) 
@@ -133,10 +133,10 @@ u16_t  wBaseAddr = pCC->base;
 
 
 #if 0
-static int AC97_read (const DEV_STRUCT * pCC, u16_t wAddr, u16_t *data)
+static int AC97_read (const DEV_STRUCT * pCC, uint16_t wAddr, uint16_t *data)
 {
 u32_t dtemp, i;
-u16_t  base = pCC->base;
+uint16_t  base = pCC->base;
 
     /* wait for WIP to go away */
     if (WaitBitd (base + CODEC_READ, 30, 0, WIP_TIMEOUT))
@@ -200,15 +200,15 @@ u16_t  base = pCC->base;
     dtemp = pci_inl(base + CODEC_READ);
 
     if (data)
-        *data = (u16_t) dtemp;
+        *data = (uint16_t) dtemp;
 
     return 0;
 }
 #endif
 
 
-static int AC97_write_unsynced (const DEV_STRUCT * pCC, u16_t wAddr,
-    u16_t wData)
+static int AC97_write_unsynced (const DEV_STRUCT * pCC, uint16_t wAddr,
+    uint16_t wData)
 {
     /* wait for WIP to go away */
     if (WaitBitd (pCC->base + CODEC_READ, 30, 0, WIP_TIMEOUT))
@@ -220,8 +220,8 @@ static int AC97_write_unsynced (const DEV_STRUCT * pCC, u16_t wAddr,
 }
 
 
-static int AC97_read_unsynced (const DEV_STRUCT * pCC, u16_t wAddr,
-    u16_t *data)
+static int AC97_read_unsynced (const DEV_STRUCT * pCC, uint16_t wAddr,
+    uint16_t *data)
 {
 u32_t dtemp;
 
@@ -239,7 +239,7 @@ u32_t dtemp;
     dtemp = pci_inl(pCC->base + CODEC_READ);
 
     if (data)
-        *data = (u16_t) dtemp;
+        *data = (uint16_t) dtemp;
 
     return 0;
 }
@@ -341,9 +341,9 @@ static void set_nice_volume(void) {
 
 
 static int get_volume(uint8_t *left, uint8_t *right, int cmd) {
-	u16_t value = 0;
+	uint16_t value = 0;
 
-	AC97_read_unsynced(dev, (u16_t)cmd, &value);
+	AC97_read_unsynced(dev, (uint16_t)cmd, &value);
 
 	*left = value>>8;
 	*right = value&0xff;
@@ -353,11 +353,11 @@ static int get_volume(uint8_t *left, uint8_t *right, int cmd) {
 
 
 static int set_volume(int left, int right, int cmd) {
-	u16_t waarde;
+	uint16_t waarde;
 
-	waarde = (u16_t)((left<<8)|right);
+	waarde = (uint16_t)((left<<8)|right);
 
-	AC97_write_unsynced(dev, (u16_t)cmd, waarde);
+	AC97_write_unsynced(dev, (uint16_t)cmd, waarde);
 
 	return OK;
 }

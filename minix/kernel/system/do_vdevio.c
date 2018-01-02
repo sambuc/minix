@@ -54,7 +54,7 @@ int do_vdevio(struct proc * caller, message * m_ptr)
 	break;
       case _DIO_WORD:
 	bytes = vec_size * sizeof(pvw_pair_t);
-	io_size= sizeof(u16_t);
+	io_size= sizeof(uint16_t);
 	break;
       case _DIO_LONG:
 	bytes = vec_size * sizeof(pvl_pair_t);

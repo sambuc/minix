@@ -21,8 +21,8 @@ typedef u32_t vboxfs_root_t;
 typedef u64_t vboxfs_handle_t;
 
 typedef struct {
-	u16_t size;
-	u16_t len;
+	uint16_t size;
+	uint16_t len;
 	char data[PATH_MAX];
 } vboxfs_path_t;
 
@@ -94,8 +94,8 @@ typedef struct {
 
 typedef struct {
 	vboxfs_objinfo_t info;
-	u16_t shortlen;
-	u16_t shortname[14];
+	uint16_t shortlen;
+	uint16_t shortname[14];
 	vboxfs_path_t name;	/* WARNING: name data size is dynamic! */
 } vboxfs_dirinfo_t;
 
@@ -122,7 +122,7 @@ typedef struct {
 	uint8_t unicode;
 	uint8_t fscomp;
 	uint8_t filecomp;
-	u16_t reserved;
+	uint16_t reserved;
 } vboxfs_fsprops_t;
 
 typedef struct {

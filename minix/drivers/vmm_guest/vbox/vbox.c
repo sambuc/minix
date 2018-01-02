@@ -87,7 +87,7 @@ static int vbox_init(int UNUSED(type), sef_init_info_t *UNUSED(info))
 {
 	/* Initialize the device. */
 	int devind;
-	u16_t vid, did;
+	uint16_t vid, did;
 	struct VMMDevReportGuestInfo *req;
 	int r;
 

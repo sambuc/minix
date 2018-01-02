@@ -82,8 +82,8 @@ struct VMMDevHGCMDisconnect {
 
 struct VMMDevHGCMPageList {
 	u32_t flags;
-	u16_t offset;
-	u16_t count;
+	uint16_t offset;
+	uint16_t count;
 	u64_t addr[1];
 };
 

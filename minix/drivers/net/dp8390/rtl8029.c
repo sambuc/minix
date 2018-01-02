@@ -21,9 +21,9 @@ Created:	April 2000 by Philip Homburg <philip@f-mnx.phicoh.com>
 
 static void rtl_init(struct dpeth *dep);
 #if 0
-static u16_t get_ee_word(dpeth_t *dep, int a);
+static uint16_t get_ee_word(dpeth_t *dep, int a);
 static void ee_wen(dpeth_t *dep);
-static void set_ee_word(dpeth_t *dep, int a, u16_t w);
+static void set_ee_word(dpeth_t *dep, int a, uint16_t w);
 static void ee_wds(dpeth_t *dep);
 #endif
 
@@ -32,7 +32,7 @@ struct dpeth *dep;
 int skip;
 {
 	int r, devind;
-	u16_t vid, did;
+	uint16_t vid, did;
 	u32_t bar;
 	uint8_t ilr;
 	const char *dname;
@@ -170,12 +170,12 @@ dpeth_t *dep;
 }
 
 #if 0
-static u16_t get_ee_word(dep, a)
+static uint16_t get_ee_word(dep, a)
 dpeth_t *dep;
 int a;
 {
 	int b, i, cmd;
-	u16_t w;
+	uint16_t w;
 
 	outb_reg0(dep, DP_CR, CR_PS_P3);	/* Bank 3 */
 
@@ -243,7 +243,7 @@ dpeth_t *dep;
 static void set_ee_word(dep, a, w)
 dpeth_t *dep;
 int a;
-u16_t w;
+uint16_t w;
 {
 	int b, i, cmd;
 

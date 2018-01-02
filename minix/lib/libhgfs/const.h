@@ -17,7 +17,7 @@
 /* RPC macros. These NEED NOT be portable. VMware only does x86(-64) anyway. */
 /* ..all this because ACK can't pack structures :( */
 #define RPC_NEXT8 *(((uint8_t*)(++rpc_ptr))-1)	/* get/set next byte */
-#define RPC_NEXT16 *(((u16_t*)(rpc_ptr+=2))-1)	/* get/set next short */
+#define RPC_NEXT16 *(((uint16_t*)(rpc_ptr+=2))-1)	/* get/set next short */
 #define RPC_NEXT32 *(((u32_t*)(rpc_ptr+=4))-1)	/* get/set next long */
 #define RPC_LEN (rpc_ptr - rpc_buf)		/* request length thus far */
 #define RPC_ADVANCE(n) rpc_ptr += n		/* skip n bytes in buffer */

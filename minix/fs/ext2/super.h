@@ -24,18 +24,18 @@ EXTERN struct super_block {
     u32_t  s_inodes_per_group;     /* # Inodes per group */
     u32_t  s_mtime;                /* Mount time */
     u32_t  s_wtime;                /* Write time */
-    u16_t  s_mnt_count;            /* Mount count */
-    u16_t  s_max_mnt_count;        /* Maximal mount count */
-    u16_t  s_magic;                /* Magic signature */
-    u16_t  s_state;                /* File system state */
-    u16_t  s_errors;               /* Behaviour when detecting errors */
-    u16_t  s_minor_rev_level;      /* minor revision level */
+    uint16_t  s_mnt_count;            /* Mount count */
+    uint16_t  s_max_mnt_count;        /* Maximal mount count */
+    uint16_t  s_magic;                /* Magic signature */
+    uint16_t  s_state;                /* File system state */
+    uint16_t  s_errors;               /* Behaviour when detecting errors */
+    uint16_t  s_minor_rev_level;      /* minor revision level */
     u32_t  s_lastcheck;            /* time of last check */
     u32_t  s_checkinterval;        /* max. time between checks */
     u32_t  s_creator_os;           /* OS */
     u32_t  s_rev_level;            /* Revision level */
-    u16_t  s_def_resuid;           /* Default uid for reserved blocks */
-    u16_t  s_def_resgid;           /* Default gid for reserved blocks */
+    uint16_t  s_def_resuid;           /* Default uid for reserved blocks */
+    uint16_t  s_def_resgid;           /* Default gid for reserved blocks */
     /*
      * These fields are for EXT2_DYNAMIC_REV superblocks only.
      *
@@ -50,8 +50,8 @@ EXTERN struct super_block {
      * things it doesn't understand...
      */
     u32_t  s_first_ino;            /* First non-reserved inode */
-    u16_t  s_inode_size;           /* size of inode structure */
-    u16_t  s_block_group_nr;       /* block group # of this superblock */
+    uint16_t  s_inode_size;           /* size of inode structure */
+    uint16_t  s_block_group_nr;       /* block group # of this superblock */
     u32_t  s_feature_compat;       /* compatible feature set */
     u32_t  s_feature_incompat;     /* incompatible feature set */
     u32_t  s_feature_ro_compat;    /* readonly-compatible feature set */
@@ -65,7 +65,7 @@ EXTERN struct super_block {
      */
     uint8_t    s_prealloc_blocks;      /* Nr of blocks to try to preallocate*/
     uint8_t    s_prealloc_dir_blocks;  /* Nr to preallocate for dirs */
-    u16_t   s_padding1;
+    uint16_t   s_padding1;
     /*
      * Journaling support valid if EXT3_FEATURE_COMPAT_HAS_JOURNAL set.
      */
@@ -76,7 +76,7 @@ EXTERN struct super_block {
     u32_t   s_hash_seed[4];         /* HTREE hash seed */
     uint8_t    s_def_hash_version;     /* Default hash version to use */
     uint8_t    s_reserved_char_pad;
-    u16_t   s_reserved_word_pad;
+    uint16_t   s_reserved_word_pad;
     u32_t   s_default_mount_opts;
     u32_t   s_first_meta_bg;        /* First metablock block group */
     u32_t   s_reserved[190];        /* Padding to the end of the block */
@@ -93,8 +93,8 @@ EXTERN struct super_block {
                                      */
     struct group_desc *s_group_desc; /* Group descriptors read into RAM */
 
-    u16_t   s_block_size;       /* block size in bytes. */
-    u16_t   s_sectors_in_block; /* s_block_size / 512 */
+    uint16_t   s_block_size;       /* block size in bytes. */
+    uint16_t   s_sectors_in_block; /* s_block_size / 512 */
     u32_t   s_max_size;         /* maximum file size on this device */
     dev_t   s_dev;              /* whose super block is this? */
     int     s_rd_only;          /* set to 1 if file sys mounted read only */
@@ -113,10 +113,10 @@ struct group_desc
     u32_t  block_bitmap;        /* Blocks bitmap block */
     u32_t  inode_bitmap;        /* Inodes bitmap block */
     u32_t  inode_table;         /* Inodes table block */
-    u16_t  free_blocks_count;   /* Free blocks count */
-    u16_t  free_inodes_count;   /* Free inodes count */
-    u16_t  used_dirs_count;     /* Directories count */
-    u16_t  pad;
+    uint16_t  free_blocks_count;   /* Free blocks count */
+    uint16_t  free_inodes_count;   /* Free inodes count */
+    uint16_t  used_dirs_count;     /* Directories count */
+    uint16_t  pad;
     u32_t  reserved[3];
 };
 

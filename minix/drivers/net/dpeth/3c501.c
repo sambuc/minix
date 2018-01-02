@@ -196,7 +196,7 @@ static void el1_stop(dpeth_t * dep)
 */
 static void el1_interrupt(dpeth_t * dep)
 {
-  u16_t csr, isr;
+  uint16_t csr, isr;
   int pktsize;
   buff_t *rxptr;
 

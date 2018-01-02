@@ -1,7 +1,7 @@
 #include "floppy.h"
 
 /* State management variables. */
-EXTERN u16_t f_busy;
+EXTERN uint16_t f_busy;
 EXTERN int motor_status;
 EXTERN unsigned f_drive;
 EXTERN int last_was_write;

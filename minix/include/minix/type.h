@@ -96,8 +96,8 @@ struct cpuavg {
 
 /* Runnable processes and other load-average information. */
 struct loadinfo {
-  u16_t proc_load_history[_LOAD_HISTORY];	/* history of proc_s_cur */
-  u16_t proc_last_slot;
+  uint16_t proc_load_history[_LOAD_HISTORY];	/* history of proc_s_cur */
+  uint16_t proc_last_slot;
   clock_t last_clock;
 };
 

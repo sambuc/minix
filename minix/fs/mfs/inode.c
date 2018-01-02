@@ -435,10 +435,10 @@ int norm;			/* TRUE = do not swap bytes; FALSE = swap */
 		rip->i_zone[i] = (zone_t) conv4(norm, (long) dip->d2_zone[i]);
   } else {
 	/* Copying V2.x inode to disk from the in-core table. */
-	dip->d2_mode   = (u16_t) conv2(norm,rip->i_mode);
+	dip->d2_mode   = (uint16_t) conv2(norm,rip->i_mode);
 	dip->d2_uid    = (i16_t) conv2(norm,rip->i_uid);
-	dip->d2_nlinks = (u16_t) conv2(norm,rip->i_nlinks);
-	dip->d2_gid    = (u16_t) conv2(norm,rip->i_gid);
+	dip->d2_nlinks = (uint16_t) conv2(norm,rip->i_nlinks);
+	dip->d2_gid    = (uint16_t) conv2(norm,rip->i_gid);
 	dip->d2_size   = (i32_t) conv4(norm,rip->i_size);
 	dip->d2_atime  = (i32_t) conv4(norm,rip->i_atime);
 	dip->d2_ctime  = (i32_t) conv4(norm,rip->i_ctime);

@@ -11,8 +11,8 @@ typedef struct dhcp {
 	uint8_t		hlen;		/* Hardware address length. */
 	uint8_t		hops;		/* Hop count when relaying. */
 	u32_t		xid;		/* Transaction ID. */
-	u16_t		secs;		/* Seconds past since client began. */
-	u16_t		flags;		/* Flags. */
+	uint16_t		secs;		/* Seconds past since client began. */
+	uint16_t		flags;		/* Flags. */
 	ipaddr_t	ciaddr;		/* Client IP address. */
 	ipaddr_t	yiaddr;		/* "Your" IP address. */
 	ipaddr_t	siaddr;		/* Boot server IP address. */

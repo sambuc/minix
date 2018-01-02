@@ -8,8 +8,8 @@
 #include <sys/cdefs.h>
 
 struct segdesc_s {		/* segment descriptor for protected mode */
-  u16_t limit_low;
-  u16_t base_low;
+  uint16_t limit_low;
+  uint16_t base_low;
   uint8_t base_middle;
   uint8_t access;		/* |P|DL|1|X|E|R|A| */
   uint8_t granularity;	/* |G|X|0|A|LIMT| */
@@ -17,15 +17,15 @@ struct segdesc_s {		/* segment descriptor for protected mode */
 } __attribute__((packed));
 
 struct gatedesc_s {
-  u16_t offset_low;
-  u16_t selector;
+  uint16_t offset_low;
+  uint16_t selector;
   uint8_t pad;                     /* |000|XXXXX| ig & trpg, |XXXXXXXX| task g */
   uint8_t p_dpl_type;              /* |P|DL|0|TYPE| */
-  u16_t offset_high;
+  uint16_t offset_high;
 } __attribute__((packed));
 
 struct desctableptr_s {
-  u16_t limit;
+  uint16_t limit;
   u32_t base;
 } __attribute__((packed));
 

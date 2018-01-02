@@ -21,7 +21,7 @@ static struct port
 {
 	int p_devind;
 	uint8_t p_cb_busnr;
-	u16_t p_exca_port;
+	uint16_t p_exca_port;
 #if USE_INTS
 	int p_irq;
 	int p_hook;
@@ -113,7 +113,7 @@ static int sef_cb_init_fresh(int UNUSED(type), sef_init_info_t *UNUSED(info))
  *===========================================================================*/
 static int hw_probe(int skip)
 {
-	u16_t vid, did;
+	uint16_t vid, did;
 	int devind;
 
 	pci_init();
@@ -139,7 +139,7 @@ static int hw_probe(int skip)
 static void hw_init(struct port *pp, int devind)
 {
 	uint8_t v8;
-	u16_t v16;
+	uint16_t v16;
 	u32_t v32;
 #if USE_INTS
 	int r, irq;
@@ -251,7 +251,7 @@ static void do_int(struct port *pp)
 	spin_t spin;
 	u32_t csr_event, csr_present, csr_control;
 	uint8_t v8;
-	u16_t v16;
+	uint16_t v16;
 #if USE_INTS
 	int r;
 #endif

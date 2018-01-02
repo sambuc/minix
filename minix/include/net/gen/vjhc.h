@@ -23,7 +23,7 @@ Created:	Nov 15, 1993 by Philip Homburg <philip@cs.vu.nl>
 
 #define VJHC_ENCODE(cp, n) \
 { \
-	if ((u16_t)(n) >= 256) \
+	if ((uint16_t)(n) >= 256) \
 	{ \
 		*(cp)++= 0; \
 		*(cp)++= (n >> 8); \
@@ -35,7 +35,7 @@ Created:	Nov 15, 1993 by Philip Homburg <philip@cs.vu.nl>
 
 #define VJHC_ENCODEZ(cp, n) \
 { \
-	if ((u16_t)(n) == 0 || (u16_t)(n) >= 256) \
+	if ((uint16_t)(n) == 0 || (uint16_t)(n) >= 256) \
 	{ \
 		*(cp)++= 0; \
 		*(cp)++= (n >> 8); \
@@ -64,7 +64,7 @@ Created:	Nov 15, 1993 by Philip Homburg <philip@cs.vu.nl>
 		(cp) += 3; \
 	} \
 	else \
-		(s)= htons(ntohs((s)) + (u16_t)*(cp)++); \
+		(s)= htons(ntohs((s)) + (uint16_t)*(cp)++); \
 }
 
 #define VJHC_DECODEU(cp, s) \
@@ -75,7 +75,7 @@ Created:	Nov 15, 1993 by Philip Homburg <philip@cs.vu.nl>
 		(cp) += 3; \
 	} \
 	else \
-		(s)= htons((u16_t)*(cp)++); \
+		(s)= htons((uint16_t)*(cp)++); \
 }
 
 #endif /* __NET__GEN__VJHC_H__ */

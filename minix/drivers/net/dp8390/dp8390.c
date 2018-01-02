@@ -602,7 +602,7 @@ static ssize_t do_recv(struct netdriver_data *data, size_t max)
 	unsigned pageno, curr, next;
 	size_t length;
 	int packet_processed;
-	u16_t eth_type;
+	uint16_t eth_type;
 
 	dep = &de_state;
 
@@ -946,7 +946,7 @@ uint8_t inb(port_t port)
 	return value;
 }
 
-u16_t inw(port_t port)
+uint16_t inw(port_t port)
 {
 	int r;
 	u32_t value;
@@ -954,7 +954,7 @@ u16_t inw(port_t port)
 	r= sys_inw(port, &value);
 	if (r != OK)
 		panic("sys_inw failed: %d", r);
-	return (u16_t) value;
+	return (uint16_t) value;
 }
 
 void outb(port_t port, uint8_t value)
@@ -966,7 +966,7 @@ void outb(port_t port, uint8_t value)
 		panic("sys_outb failed: %d", r);
 }
 
-void outw(port_t port, u16_t value)
+void outw(port_t port, uint16_t value)
 {
 	int r;
 

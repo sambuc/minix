@@ -51,7 +51,7 @@ struct virtio_device;
 /* Find a virtio device with subdevice id subdevid. Returns a pointer
  * to an opaque virtio_device instance.
  */
-struct virtio_device *virtio_setup_device(u16_t subdevid,
+struct virtio_device *virtio_setup_device(uint16_t subdevid,
 		const char *name,
 		struct virtio_feature *features,
 		int feature_count,
@@ -116,10 +116,10 @@ int virtio_had_irq(struct virtio_device *dev);
 
 
 u32_t virtio_read32(struct virtio_device *dev, i32_t offset);
-u16_t virtio_read16(struct virtio_device *dev, i32_t offset);
+uint16_t virtio_read16(struct virtio_device *dev, i32_t offset);
 uint8_t virtio_read8(struct virtio_device *dev, i32_t offset);
 void virtio_write32(struct virtio_device *dev, i32_t offset, u32_t val);
-void virtio_write16(struct virtio_device *dev, i32_t offset, u16_t val);
+void virtio_write16(struct virtio_device *dev, i32_t offset, uint16_t val);
 void virtio_write8(struct virtio_device *dev, i32_t offset, uint8_t val);
 
 
@@ -131,10 +131,10 @@ void virtio_write8(struct virtio_device *dev, i32_t offset, uint8_t val);
  * read(off) --> readX(20 + (msi ? 4 : 0) + off)
  */
 u32_t virtio_sread32(struct virtio_device *dev, i32_t offset);
-u16_t virtio_sread16(struct virtio_device *dev, i32_t offset);
+uint16_t virtio_sread16(struct virtio_device *dev, i32_t offset);
 uint8_t virtio_sread8(struct virtio_device *dev, i32_t offset);
 void virtio_swrite32(struct virtio_device *dev, i32_t offset, u32_t val);
-void virtio_swrite16(struct virtio_device *dev, i32_t offset, u16_t val);
+void virtio_swrite16(struct virtio_device *dev, i32_t offset, uint16_t val);
 void virtio_swrite8(struct virtio_device *dev, i32_t offset, uint8_t val);
 
 #endif /* _MINIX_VIRTIO_H */

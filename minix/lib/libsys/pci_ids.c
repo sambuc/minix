@@ -11,8 +11,8 @@ pci_ids.c
  *===========================================================================*/
 void pci_ids(devind, vidp, didp)
 int devind;
-u16_t *vidp;
-u16_t *didp;
+uint16_t *vidp;
+uint16_t *didp;
 {
 	int r;
 	message m;

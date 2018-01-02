@@ -34,9 +34,9 @@
 
 
 
-static int src_reg_read(const DEV_STRUCT * DSP, u16_t reg, u16_t
+static int src_reg_read(const DEV_STRUCT * DSP, uint16_t reg, uint16_t
 	*data);
-static int src_reg_write(const DEV_STRUCT * DSP, u16_t reg, u16_t val);
+static int src_reg_write(const DEV_STRUCT * DSP, uint16_t reg, uint16_t val);
 
 
 int src_init ( DEV_STRUCT * DSP ) {
@@ -53,7 +53,7 @@ int src_init ( DEV_STRUCT * DSP ) {
 	/* from the opensound system driver, no idea where the specification is */
 	/* there are indeed 7 bits for the addresses of the SRC */
 	for( i = 0; i < 0x80; ++i ) {
-		if (SRC_SUCCESS != (retVal = src_reg_write(DSP, (u16_t)i, 0U)))
+		if (SRC_SUCCESS != (retVal = src_reg_write(DSP, (uint16_t)i, 0U)))
 			return (retVal);
 	}
 
@@ -103,7 +103,7 @@ int src_init ( DEV_STRUCT * DSP ) {
 }
 
 
-static int src_reg_read(const DEV_STRUCT * DSP, u16_t reg, u16_t *data) {
+static int src_reg_read(const DEV_STRUCT * DSP, uint16_t reg, uint16_t *data) {
 	u32_t dtemp;
 
 	/* wait for ready */
@@ -123,13 +123,13 @@ static int src_reg_read(const DEV_STRUCT * DSP, u16_t reg, u16_t *data) {
 		return (SRC_ERR_NOT_BUSY_TIMEOUT);
 
 	if (NULL != data)
-		*data = (u16_t) pci_inl(reg(SAMPLE_RATE_CONV));
+		*data = (uint16_t) pci_inl(reg(SAMPLE_RATE_CONV));
 
 	return 0;
 }
 
 
-static int src_reg_write(const DEV_STRUCT * DSP, u16_t reg, u16_t val) {
+static int src_reg_write(const DEV_STRUCT * DSP, uint16_t reg, uint16_t val) {
 	u32_t dtemp;
 
 	/* wait for ready */
@@ -146,9 +146,9 @@ static int src_reg_write(const DEV_STRUCT * DSP, u16_t reg, u16_t val) {
 }
 
 
-void src_set_rate(const DEV_STRUCT * DSP, char base, u16_t rate) {
+void src_set_rate(const DEV_STRUCT * DSP, char base, uint16_t rate) {
 	u32_t    freq, dtemp, i;
-	u16_t     N, truncM, truncStart, wtemp;
+	uint16_t     N, truncM, truncStart, wtemp;
 
 
 	if( base != SRC_ADC_BASE )
@@ -169,9 +169,9 @@ void src_set_rate(const DEV_STRUCT * DSP, char base, u16_t rate) {
 
 		src_reg_write(DSP, base + SRC_INT_REGS_OFF,
 				(wtemp & 0x00ffU) |
-				((u16_t) (freq >> 6) & 0xfc00));
+				((uint16_t) (freq >> 6) & 0xfc00));
 
-		src_reg_write(DSP, base + SRC_VFREQ_FRAC_OFF, (u16_t) freq >> 1);
+		src_reg_write(DSP, base + SRC_VFREQ_FRAC_OFF, (uint16_t) freq >> 1);
 
 		/* un-freeze the channel */
 		dtemp = base == SRC_SYNTH_BASE ? SRC_SYNTHFREEZE : SRC_DACFREEZE;
@@ -225,8 +225,8 @@ void src_set_rate(const DEV_STRUCT * DSP, char base, u16_t rate) {
 		src_reg_read(DSP, base + SRC_INT_REGS_OFF, &wtemp);
 		src_reg_write(DSP, base + SRC_INT_REGS_OFF,
 				(wtemp & 0x00ffU) |
-				((u16_t) (freq >> 6) & 0xfc00));
-		src_reg_write(DSP, base + SRC_VFREQ_FRAC_OFF, (u16_t) freq >> 1);
+				((uint16_t) (freq >> 6) & 0xfc00));
+		src_reg_write(DSP, base + SRC_VFREQ_FRAC_OFF, (uint16_t) freq >> 1);
 
 		/* un-freeze the channel */
 		for( i = 0; i < SRC_IOPOLL_COUNT; ++i )

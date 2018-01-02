@@ -13,9 +13,9 @@ int el2_probe(struct dpeth* dep);
 
 /* dp8390.c */
 uint8_t inb(port_t port);
-u16_t inw(port_t port);
+uint16_t inw(port_t port);
 void outb(port_t port, uint8_t v);
-void outw(port_t port, u16_t v);
+void outw(port_t port, uint16_t v);
 
 /* ne2000.c */
 int ne_probe(struct dpeth *dep);

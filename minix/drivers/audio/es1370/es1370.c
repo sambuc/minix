@@ -107,8 +107,8 @@ int drv_init(void) {
 
 
 int drv_init_hw (void) {
-	u16_t i, j;
-	u16_t chip_sel_ctrl_reg;
+	uint16_t i, j;
+	uint16_t chip_sel_ctrl_reg;
 
 	/* First, detect the hardware */
 	if (detect_hw() != OK) {
@@ -170,7 +170,7 @@ int drv_init_hw (void) {
 static int detect_hw(void) {
 	u32_t device;
 	int devind;
-	u16_t v_id, d_id;
+	uint16_t v_id, d_id;
 
 	/* detect_hw tries to find device and get IRQ and base address
 	   with a little (much) help from the PCI library. 
@@ -399,7 +399,7 @@ int drv_int(int sub_dev) {
 
 
 int drv_reenable_int(int chan) {
-	u16_t ser_interface, int_en_bit;
+	uint16_t ser_interface, int_en_bit;
 
 	switch(chan) {
 		case ADC1_CHAN: int_en_bit = R1_INT_EN; break;
@@ -457,7 +457,7 @@ int drv_resume(int sub_dev) {
 
 static int set_bits(u32_t nr_of_bits, int sub_dev) {
 	/* set format bits for specified channel. */
-	u16_t size_16_bit, ser_interface;
+	uint16_t size_16_bit, ser_interface;
 
 	switch(sub_dev) {
 		case ADC1_CHAN: size_16_bit = R1_S_EB; break;
@@ -481,7 +481,7 @@ static int set_bits(u32_t nr_of_bits, int sub_dev) {
 
 static int set_stereo(u32_t stereo, int sub_dev) {
 	/* set format bits for specified channel. */
-	u16_t stereo_bit, ser_interface;
+	uint16_t stereo_bit, ser_interface;
 
 	switch(sub_dev) {
 		case ADC1_CHAN: stereo_bit = R1_S_MB; break;
@@ -541,7 +541,7 @@ static int set_int_cnt(int chan) {
 	   After <DspFragmentSize> bytes, an interrupt will be generated  */
 
 	int sample_count; 
-	u16_t int_cnt_reg;
+	uint16_t int_cnt_reg;
 
 	if (aud_conf[chan].fragment_size > 
 			(sub_dev[chan].DmaSize / sub_dev[chan].NrOfDmaFragments) 
@@ -582,7 +582,7 @@ static int get_max_frag_size(u32_t * val, int * len, int sub_dev_nr) {
 
 
 static int disable_int(int chan) {
-	u16_t ser_interface, int_en_bit;
+	uint16_t ser_interface, int_en_bit;
 
 	switch(chan) {
 		case ADC1_CHAN: int_en_bit = R1_INT_EN; break;
@@ -598,9 +598,9 @@ static int disable_int(int chan) {
 
 
 static int get_samples_in_buf (u32_t *samples_in_buf, int *len, int chan) {
-	u16_t samp_ct_reg; 
-	u16_t curr_samp_ct_reg;
-	u16_t curr_samp_ct; /* counts back from SAMP_CT till 0 */
+	uint16_t samp_ct_reg; 
+	uint16_t curr_samp_ct_reg;
+	uint16_t curr_samp_ct; /* counts back from SAMP_CT till 0 */
 
 	*len = sizeof(*samples_in_buf);
 

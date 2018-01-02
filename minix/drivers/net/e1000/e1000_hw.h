@@ -32,11 +32,11 @@ typedef struct e1000_rx_desc
 {
     u32_t buffer;	/**< Address of the receive data buffer (64-bit). */
     u32_t buffer_h;     /**< High 32-bits of the receive data buffer (unused). */
-    u16_t length;	/**< Size of the receive buffer. */
-    u16_t checksum;	/**< Packet checksum. */
+    uint16_t length;	/**< Size of the receive buffer. */
+    uint16_t checksum;	/**< Packet checksum. */
     uint8_t  status;	/**< Descriptor status. */
     uint8_t  errors;	/**< Descriptor errors. */
-    u16_t special;	/**< VLAN information. */    
+    uint16_t special;	/**< VLAN information. */    
 }
 e1000_rx_desc_t;
 
@@ -47,12 +47,12 @@ typedef struct e1000_tx_desc
 {
     u32_t buffer;	/**< Address of the transmit buffer (64-bit). */
     u32_t buffer_h;	/**< High 32-bits of the transmit buffer (unused). */
-    u16_t length;	/**< Size of the transmit buffer contents. */
+    uint16_t length;	/**< Size of the transmit buffer contents. */
     uint8_t  checksum_off; /**< Checksum Offset. */
     uint8_t  command;	/**< Command field. */
     uint8_t  status;	/**< Status field. */
     uint8_t  checksum_st;  /**< Checksum Start. */
-    u16_t special;	/**< Optional special bits. */
+    uint16_t special;	/**< Optional special bits. */
 }
 e1000_tx_desc_t;
 
@@ -74,7 +74,7 @@ union ich8_hws_flash_status
         unsigned fldesvalid :1; /**< bit 14 Flash Descriptor Valid */
         unsigned flockdn    :1; /**< bit 15 Flash Config Lock-Down */
     } hsf_status;
-    u16_t regval;
+    uint16_t regval;
 };
         
 /**
@@ -91,7 +91,7 @@ union ich8_hws_flash_ctrl
         unsigned fldbcount  :2;   /**< 9:8 Flash Data Byte Count */
         unsigned flockdn    :6;   /**< 15:10 Reserved */
     } hsf_ctrl;
-    u16_t regval;
+    uint16_t regval;
 };
                 
 /**
@@ -107,7 +107,7 @@ union ich8_hws_flash_regacc
         unsigned gmrag     :8; /**< 23:16 GbE Master Read Access Grant */
         unsigned gmwag     :8; /**< 31:24 GbE Master Write Access Grant */
     } hsf_flregacc;
-    u16_t regval;
+    uint16_t regval;
 };
 
 /**

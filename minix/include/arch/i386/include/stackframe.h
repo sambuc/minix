@@ -15,10 +15,10 @@ typedef reg_t segdesc_t;
  * used for the larger registers to avoid differences in the code.
  */
 struct stackframe_s {
-	u16_t gs;                     /* last item pushed by save */
-	u16_t fs;                     /*  ^ */
-	u16_t es;                     /*  | */
-	u16_t ds;                     /*  | */
+	uint16_t gs;                     /* last item pushed by save */
+	uint16_t fs;                     /*  ^ */
+	uint16_t es;                     /*  | */
+	uint16_t ds;                     /*  | */
 	reg_t di;                     /* di through cx are not accessed in C */
 	reg_t si;                     /* order is to match pusha/popa */
 	reg_t fp;                     /* bp */

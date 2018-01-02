@@ -55,7 +55,7 @@ static void dev_set_tx_desc_done(u32_t *base, NDR_desc *desc, int index);
 
 /* ======= Developer implemented function ======= */
 /* ====== Self-defined function ======*/
-static u16_t read_eeprom(u32_t base, int addr) {
+static uint16_t read_eeprom(u32_t base, int addr) {
 	u32_t ret, data, val;
 	int i;
 
@@ -74,7 +74,7 @@ static u16_t read_eeprom(u32_t base, int addr) {
 	return ret;
 }
 
-static u16_t read_phy_reg(u32_t base, int phy_addr, int phy_reg) {
+static uint16_t read_phy_reg(u32_t base, int phy_addr, int phy_reg) {
 	int i, j, fieldlen[8];
 	u32_t field[8];
 	uint8_t data, polar;
@@ -127,7 +127,7 @@ static u16_t read_phy_reg(u32_t base, int phy_addr, int phy_reg) {
 	return field[6];
 }
 
-static void write_phy_reg(u32_t base, int phy_addr, int phy_reg, u16_t val) {
+static void write_phy_reg(u32_t base, int phy_addr, int phy_reg, uint16_t val) {
 	int i, j, fieldlen[8];
 	u32_t field[8];
 	uint8_t data, polar;
@@ -213,8 +213,8 @@ static int dev_init_io(u32_t *base) {
 static int dev_init_mii(u32_t *base) {
 	int i, phyaddr;
 	uint8_t revision;
-	u16_t phyctrl, cr1000, length, address, value;
-	u16_t *param;
+	uint16_t phyctrl, cr1000, length, address, value;
+	uint16_t *param;
 	u32_t status, base0 = base[0];
 
 	for (i = 0; i < 32; i++) {
@@ -653,7 +653,7 @@ static void NDR_intr(unsigned int mask) {
 /* Match the device and get base address */
 static int dev_probe(NDR_driver *pdev, int instance) {
 	int devind, ioflag, i;
-	u16_t cr, vid, did;
+	uint16_t cr, vid, did;
 	u32_t bar, size, base;
 	uint8_t irq, rev;
 	uint8_t *reg;

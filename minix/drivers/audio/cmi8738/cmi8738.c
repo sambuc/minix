@@ -22,7 +22,7 @@ static int free_buf(u32_t *val, int *len, int num);
 static int dev_reset(u32_t *base);
 static void dev_configure(u32_t *base);
 static void dev_init_mixer(u32_t *base);
-static void dev_set_sample_rate(u32_t *base, u16_t sample_rate);
+static void dev_set_sample_rate(u32_t *base, uint16_t sample_rate);
 static void dev_set_format(u32_t *base, u32_t bits, u32_t sign,
 							u32_t stereo, u32_t sample_count);
 static void dev_start_channel(u32_t *base, int sub_dev);
@@ -96,7 +96,7 @@ static void dev_init_mixer(u32_t *base) {
 }
 
 /* Set DAC and ADC sample rate (### SET_SAMPLE_RATE ###) */
-static void dev_set_sample_rate(u32_t *base, u16_t sample_rate) {
+static void dev_set_sample_rate(u32_t *base, uint16_t sample_rate) {
 	int i;
 	u32_t data, rate = 0, base0 = base[0];
 	for (i = 0; i < 8; i++) {
@@ -225,7 +225,7 @@ static void dev_intr_enable(u32_t *base, int flag) {
 static int dev_probe(void) {
 	int devind, i, ioflag;
 	u32_t device, bar, size, base;
-	u16_t vid, did, temp;
+	uint16_t vid, did, temp;
 	uint8_t *reg;
 
 	pci_init();

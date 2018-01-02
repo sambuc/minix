@@ -18,21 +18,21 @@
 
 static re_t re_state;
 
-static unsigned my_inb(u16_t port) {
+static unsigned my_inb(uint16_t port) {
 	u32_t value;
 	int s;
 	if ((s=sys_inb(port, &value)) !=OK)
 		printf("RTL8139: warning, sys_inb failed: %d\n", s);
 	return value;
 }
-static unsigned my_inw(u16_t port) {
+static unsigned my_inw(uint16_t port) {
 	u32_t value;
 	int s;
 	if ((s=sys_inw(port, &value)) !=OK)
 		printf("RTL8139: warning, sys_inw failed: %d\n", s);
 	return value;
 }
-static unsigned my_inl(u16_t port) {
+static unsigned my_inl(uint16_t port) {
 	u32_t value;
 	int s;
 	if ((s=sys_inl(port, &value)) !=OK)
@@ -43,17 +43,17 @@ static unsigned my_inl(u16_t port) {
 #define rl_inw(port, offset)	(my_inw((port) + (offset)))
 #define rl_inl(port, offset)	(my_inl((port) + (offset)))
 
-static void my_outb(u16_t port, uint8_t value) {
+static void my_outb(uint16_t port, uint8_t value) {
 	int s;
 	if ((s=sys_outb(port, value)) !=OK)
 		printf("RTL8139: warning, sys_outb failed: %d\n", s);
 }
-static void my_outw(u16_t port, u16_t value) {
+static void my_outw(uint16_t port, uint16_t value) {
 	int s;
 	if ((s=sys_outw(port, value)) !=OK)
 		printf("RTL8139: warning, sys_outw failed: %d\n", s);
 }
-static void my_outl(u16_t port, u32_t value) {
+static void my_outl(uint16_t port, u32_t value) {
 	int s;
 	if ((s=sys_outl(port, value)) !=OK)
 		printf("RTL8139: warning, sys_outl failed: %d\n", s);
@@ -83,8 +83,8 @@ static void rl_intr(unsigned int mask);
 static void rl_check_ints(re_t *rep);
 #if VERBOSE
 static void rl_report_link(re_t *rep);
-static void mii_print_techab(u16_t techab);
-static void mii_print_stat_speed(u16_t stat, u16_t extstat);
+static void mii_print_techab(uint16_t techab);
+static void mii_print_stat_speed(uint16_t stat, uint16_t extstat);
 #endif
 static void rl_clear_rx(re_t *rep);
 static void rl_do_reset(re_t *rep);
@@ -258,7 +258,7 @@ static int rl_init(unsigned int instance, netdriver_addr_t *addr,
 static int rl_probe(re_t *rep, unsigned int skip)
 {
 	int r, devind;
-	u16_t cr, vid, did;
+	uint16_t cr, vid, did;
 	u32_t bar;
 	uint8_t ilr;
 #if VERBOSE
@@ -598,7 +598,7 @@ static ssize_t rl_recv(struct netdriver_data *data, size_t max)
 	int o, s;
 	port_t port;
 	unsigned amount, totlen, packlen;
-	u16_t d_start, d_end;
+	uint16_t d_start, d_end;
 	u32_t l, rxstat;
 	re_t *rep;
 
@@ -799,7 +799,7 @@ static unsigned int rl_get_link(uint32_t *media)
 {
 	port_t port;
 	uint8_t msr;
-	u16_t mii_ctrl;
+	uint16_t mii_ctrl;
 	re_t *rep;
 
 	rep = &re_state;
@@ -831,7 +831,7 @@ static unsigned int rl_get_link(uint32_t *media)
 static void rl_report_link(re_t *rep)
 {
 	port_t port;
-	u16_t mii_ctrl, mii_status, mii_ana, mii_anlpa, mii_ane, mii_extstat;
+	uint16_t mii_ctrl, mii_status, mii_ana, mii_anlpa, mii_ane, mii_extstat;
 	uint8_t msr;
 	int f, link_up;
 
@@ -947,7 +947,7 @@ resspeed:
 
 }
 
-static void mii_print_techab(u16_t techab)
+static void mii_print_techab(uint16_t techab)
 {
 	int fs, ft;
 	if ((techab & MII_ANA_SEL_M) != MII_ANA_SEL_802_3)
@@ -1019,7 +1019,7 @@ static void mii_print_techab(u16_t techab)
 	}
 }
 
-static void mii_print_stat_speed(u16_t stat, u16_t extstat)
+static void mii_print_stat_speed(uint16_t stat, uint16_t extstat)
 {
 	int fs, ft;
 	fs= 1;
@@ -1272,7 +1272,7 @@ static void dump_phy(re_t *rep)
 static int rl_handler(re_t *rep)
 {
 	int i, port, tx_head, tx_tail, link_up;
-	u16_t isr, tsad;
+	uint16_t isr, tsad;
 	u32_t tsd, tcr, ertxth;
 
 	port= rep->re_base_port;

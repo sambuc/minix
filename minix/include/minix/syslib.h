@@ -230,20 +230,20 @@ int sys_padconf(u32_t padconf, u32_t mask, u32_t value);
 
 /* pci.c */
 void pci_init(void);
-int pci_first_dev(int *devindp, u16_t *vidp, u16_t *didp);
-int pci_next_dev(int *devindp, u16_t *vidp, u16_t *didp);
+int pci_first_dev(int *devindp, uint16_t *vidp, uint16_t *didp);
+int pci_next_dev(int *devindp, uint16_t *vidp, uint16_t *didp);
 int pci_find_dev(uint8_t bus, uint8_t dev, uint8_t func, int *devindp);
 void pci_reserve(int devind);
 int pci_reserve_ok(int devind);
-void pci_ids(int devind, u16_t *vidp, u16_t *didp);
+void pci_ids(int devind, uint16_t *vidp, uint16_t *didp);
 void pci_rescan_bus(uint8_t busnr);
 uint8_t pci_attr_r8(int devind, int port);
-u16_t pci_attr_r16(int devind, int port);
+uint16_t pci_attr_r16(int devind, int port);
 u32_t pci_attr_r32(int devind, int port);
 void pci_attr_w8(int devind, int port, uint8_t value);
-void pci_attr_w16(int devind, int port, u16_t value);
+void pci_attr_w16(int devind, int port, uint16_t value);
 void pci_attr_w32(int devind, int port, u32_t value);
-char *pci_dev_name(u16_t vid, u16_t did);
+char *pci_dev_name(uint16_t vid, uint16_t did);
 char *pci_slot_name(int devind);
 int pci_set_acl(struct rs_pci *rs_pci);
 int pci_del_acl(endpoint_t proc_ep);

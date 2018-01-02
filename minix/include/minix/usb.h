@@ -28,8 +28,8 @@ struct usb_driver {
 };
 
 struct usb_device_id {
-	u16_t idVendor;
-	u16_t idProduct;
+	uint16_t idVendor;
+	uint16_t idProduct;
 	u32_t bcdDevice;
 
 	uint8_t  bDeviceClass;
@@ -98,9 +98,9 @@ struct usb_urb {
 struct usb_ctrlrequest {
         uint8_t bRequestType; 
         uint8_t bRequest;
-        u16_t wValue;
-		u16_t wIndex;
-        u16_t wLength;
+        uint16_t wValue;
+		uint16_t wIndex;
+        uint16_t wLength;
 } __attribute__ ((packed));
 
 #ifdef DEBUG

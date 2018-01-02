@@ -96,7 +96,7 @@ void free_inode(
   register struct super_block *sp;
   dev_t dev = rip->i_dev;
   bit_t b = rip->i_num;
-  u16_t mode = rip->i_mode;
+  uint16_t mode = rip->i_mode;
 
   /* Locate the appropriate super_block. */
   sp = get_super(dev);

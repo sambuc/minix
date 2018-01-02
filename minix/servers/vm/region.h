@@ -38,7 +38,7 @@ typedef struct vir_region {
 	vir_bytes	vaddr;	/* virtual address, offset from pagetable */
 	vir_bytes	length;	/* length in bytes */
 	struct phys_region	**physblocks;
-	u16_t		flags;
+	uint16_t		flags;
 	struct vmproc *parent;	/* Process that owns this vir_region. */
 	mem_type_t	*def_memtype; /* Default instantiated memory type. */
 	int		remaps;
@@ -56,7 +56,7 @@ typedef struct vir_region {
 			int	inited;
 			struct fdref	*fdref;
 			u64_t	offset;
-			u16_t	clearend;
+			uint16_t	clearend;
 		} file;
 	} param;
 

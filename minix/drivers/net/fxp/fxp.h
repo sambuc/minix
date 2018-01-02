@@ -167,8 +167,8 @@ Created:	Nov 2004 by Philip Homburg <philip@f-mnx.phicoh.com>
 /* Individual Address Setup (1) */
 struct ias
 {
-	u16_t ias_status;
-	u16_t ias_command;
+	uint16_t ias_status;
+	uint16_t ias_command;
 	u32_t ias_linkaddr;
 	uint8_t ias_ethaddr[6];
 	uint8_t ias_reserved[2];
@@ -178,8 +178,8 @@ struct ias
 #define CC_BYTES_NR	22	/* Number of configuration bytes */
 struct cbl_conf
 {
-	u16_t cc_status;
-	u16_t cc_command;
+	uint16_t cc_status;
+	uint16_t cc_command;
 	u32_t cc_linkaddr;
 	uint8_t cc_bytes[CC_BYTES_NR];
 };
@@ -422,11 +422,11 @@ struct cbl_conf
 /* Transmit (4) */
 struct tx
 {
-	u16_t tx_status;
-	u16_t tx_command;
+	uint16_t tx_status;
+	uint16_t tx_command;
 	u32_t tx_linkaddr;
 	u32_t tx_tbda;
-	u16_t tx_size;
+	uint16_t tx_size;
 	uint8_t tx_tthresh;
 	uint8_t tx_ntbd;
 	uint8_t tx_buf[NDEV_ETH_PACKET_MAX_TAGGED];
@@ -500,12 +500,12 @@ struct sc
 /* Receive Frame Descriptor (RFD) */
 struct rfd
 {
-	u16_t rfd_status;
-	u16_t rfd_command;
+	uint16_t rfd_status;
+	uint16_t rfd_command;
 	u32_t rfd_linkaddr;
 	u32_t rfd_reserved;
-	u16_t rfd_res;
-	u16_t rfd_size;
+	uint16_t rfd_res;
+	uint16_t rfd_size;
 	uint8_t rfd_buf[NDEV_ETH_PACKET_MAX_TAGGED];
 };
 

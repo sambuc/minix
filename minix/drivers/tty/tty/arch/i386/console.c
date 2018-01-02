@@ -84,7 +84,7 @@ typedef struct console {
   char c_esc_intro;		/* Distinguishing character following ESC */
   int *c_esc_parmp;		/* pointer to current escape parameter */
   int c_esc_parmv[MAX_ESC_PARMS];	/* list of escape parameters */
-  u16_t c_ramqueue[CONS_RAM_WORDS];	/* buffer for video RAM */
+  uint16_t c_ramqueue[CONS_RAM_WORDS];	/* buffer for video RAM */
   int c_line;			/* line no */
 } console_t;
 
@@ -912,7 +912,7 @@ tty_t *tp;
 {
 /* Initialize the screen driver. */
   console_t *cons;
-  u16_t bios_columns, bios_crtbase, bios_fontlines;
+  uint16_t bios_columns, bios_crtbase, bios_fontlines;
   uint8_t bios_rows;
   int line;
   int s;
@@ -1185,12 +1185,12 @@ static int cons_ioctl(tty_t *tp, int UNUSED(try))
  *===========================================================================*/
 static void mem_vid_copy(vir_bytes src, int dst_index, int count)
 {
-	u16_t *src_mem = (u16_t *) src;
+	uint16_t *src_mem = (uint16_t *) src;
 	while(count > 0) {
 		int i, subcount = count;
-		u16_t *dst_mem;
+		uint16_t *dst_mem;
 		LIMITINDEX(vid_mask, dst_index, vid_size, subcount);
-		dst_mem = (u16_t *) console_memory + dst_index;
+		dst_mem = (uint16_t *) console_memory + dst_index;
 		if(!src)
 			for(i = 0; i < subcount; i++)
 				*dst_mem++ = blank_color;
@@ -1212,11 +1212,11 @@ static void vid_vid_copy(int src_index, int dst_index, int count)
 		backwards = 1;
 	while(count > 0) {
 		int i, subcount = count;
-		u16_t *dst_mem, *src_mem;
+		uint16_t *dst_mem, *src_mem;
 		LIMITINDEX(vid_mask, src_index, vid_size, subcount);
 		LIMITINDEX(vid_mask, dst_index, vid_size, subcount);
-		src_mem = (u16_t *) console_memory + src_index;
-		dst_mem = (u16_t *) console_memory + dst_index;
+		src_mem = (uint16_t *) console_memory + src_index;
+		dst_mem = (uint16_t *) console_memory + dst_index;
 		if(backwards) {
 			src_mem += subcount - 1;
 			dst_mem += subcount - 1;

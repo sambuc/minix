@@ -226,7 +226,7 @@ static struct floppy *f_fp;	/* current drive */
 static struct density *f_dp;	/* current density parameters */
 static struct density *prev_dp;/* previous density parameters */
 static unsigned f_sectors;	/* equal to f_dp->secpt (needed a lot) */
-u16_t f_busy;		/* BSY_IDLE, BSY_IO, BSY_WAKEN */
+uint16_t f_busy;		/* BSY_IDLE, BSY_IO, BSY_WAKEN */
 static struct device *f_dv;	/* device's base and size */
 static struct disk_parameter_s fmt_param; /* parameters for format */
 static uint8_t f_results[MAX_RESULTS];/* the controller can give lots of output */

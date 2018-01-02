@@ -12,10 +12,10 @@ struct nmi_frame {
 	reg_t	ebp;
 	reg_t	esi;
 	reg_t	edi;
-	u16_t	gs;
-	u16_t	fs;
-	u16_t	es;
-	u16_t	ds;
+	uint16_t	gs;
+	uint16_t	fs;
+	uint16_t	es;
+	uint16_t	ds;
 	reg_t	pc;	/* arch independent name for program counter */
 	reg_t	cs;
 	reg_t	eflags;

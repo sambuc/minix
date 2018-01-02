@@ -19,16 +19,16 @@ static uint8_t my_inb(u32_t port) {
 }
 #define sdr_in8(port, offset) (my_inb((port) + (offset)))
 
-static u16_t my_inw(u32_t port) {
+static uint16_t my_inw(u32_t port) {
 	u32_t value;
 	int r;
 #ifdef DMA_BASE_IOMAP
-	value = *(volatile u16_t *)(port);
+	value = *(volatile uint16_t *)(port);
 #else
 	if ((r = sys_inw(port, &value)) != OK)
 		printf("SDR: sys_inw failed: %d\n", r);
 #endif
-	return (u16_t)value;
+	return (uint16_t)value;
 }
 #define sdr_in16(port, offset) (my_inw((port) + (offset)))
 
@@ -60,9 +60,9 @@ static void my_outb(u32_t port, u32_t value) {
 static void my_outw(u32_t port, u32_t value) {
 	int r;
 #ifdef DMA_BASE_IOMAP
-	*(volatile u16_t *)(port) = value;
+	*(volatile uint16_t *)(port) = value;
 #else
-	if ((r = sys_outw(port, (u16_t)value)) != OK)
+	if ((r = sys_outw(port, (uint16_t)value)) != OK)
 		printf("SDR: sys_outw failed: %d\n", r);
 #endif
 }

@@ -71,10 +71,10 @@ struct rss_label
 };
 
 struct rs_pci_id {
-	u16_t vid;
-	u16_t did;
-	u16_t sub_vid;
-	u16_t sub_did;
+	uint16_t vid;
+	uint16_t did;
+	uint16_t sub_vid;
+	uint16_t sub_did;
 };
 #define NO_SUB_VID	0xffff
 #define NO_SUB_DID	0xffff

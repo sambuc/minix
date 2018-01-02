@@ -97,7 +97,7 @@ static phys_bytes dma_buf_phys;
 struct prdte
 {
 	phys_bytes prdte_base;
-	u16_t prdte_count;
+	uint16_t prdte_count;
 	uint8_t prdte_reserved;
 	uint8_t prdte_flags;
 };
@@ -108,8 +108,8 @@ static phys_bytes prdt_phys;
 
 #define PRDTE_FL_EOT	0x80	/* End of table */
 
-static int w_probe(int skip, u16_t *vidp, u16_t *didp);
-static void w_init(int devind, u16_t vid, u16_t did);
+static int w_probe(int skip, uint16_t *vidp, uint16_t *didp);
+static void w_init(int devind, uint16_t vid, uint16_t did);
 static int init_params(void);
 static int w_do_open(devminor_t minor, int access);
 static struct device *w_prepare(devminor_t dev);
@@ -199,7 +199,7 @@ static int sef_cb_init_fresh(int type, sef_init_info_t *UNUSED(info))
 {
 /* Initialize the at_wini driver. */
   int skip, devind;
-  u16_t vid, did;
+  uint16_t vid, did;
 
   system_hz = sys_hz();
 
@@ -311,7 +311,7 @@ static void init_drive(int drive, int base_cmd, int base_ctl, int base_dma,
 /*===========================================================================*
  *				w_probe					     *
  *===========================================================================*/
-static int w_probe(int skip, u16_t *vidp, u16_t *didp)
+static int w_probe(int skip, uint16_t *vidp, uint16_t *didp)
 {
 /* Go through the PCI devices that have been made visible to us, skipping as
  * many as requested and then reserving the first one after that. We assume
@@ -339,7 +339,7 @@ static int w_probe(int skip, u16_t *vidp, u16_t *didp)
 /*===========================================================================*
  *				w_init					     *
  *===========================================================================*/
-static void w_init(int devind, u16_t vid, u16_t did)
+static void w_init(int devind, uint16_t vid, uint16_t did)
 {
 /* Initialize drives on the controller that we found and reserved. Each
  * controller has two channels, each of which may have up to two disks
@@ -357,7 +357,7 @@ static void w_init(int devind, u16_t vid, u16_t did)
  */
   int r, irq, native_hook, compat_hook, is_ide, nhooks;
   uint8_t bcr, scr, interface;
-  u16_t cr;
+  uint16_t cr;
   u32_t base_cmd, base_ctl, base_dma;
 
   bcr= pci_attr_r8(devind, PCI_BCR);
@@ -550,8 +550,8 @@ static struct device *w_part(devminor_t device)
 }
 
 #define id_byte(n)	(&tmp_buf[2 * (n)])
-#define id_word(n)	(((u16_t) id_byte(n)[0] <<  0) \
-			|((u16_t) id_byte(n)[1] <<  8))
+#define id_word(n)	(((uint16_t) id_byte(n)[0] <<  0) \
+			|((uint16_t) id_byte(n)[1] <<  8))
 #define id_longword(n)	(((u32_t) id_byte(n)[0] <<  0) \
 			|((u32_t) id_byte(n)[1] <<  8) \
 			|((u32_t) id_byte(n)[2] << 16) \
@@ -565,7 +565,7 @@ check_dma(struct wini *wn)
 {
 	u32_t dma_status, dma_base;
 	int id_dma, ultra_dma;
-	u16_t w;
+	uint16_t w;
 
 	wn->dma= 0;
 
@@ -652,7 +652,7 @@ static int w_identify(void)
   struct wini *wn = w_wn;
   struct command cmd;
   int s;
-  u16_t w;
+  uint16_t w;
   unsigned long size;
   int prev_wakeup;
   int r;

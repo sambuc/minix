@@ -8,8 +8,8 @@ typedef struct udp_io_hdr
 	ipaddr_t uih_dst_addr;
 	udpport_t uih_src_port;
 	udpport_t uih_dst_port;
-	u16_t uih_ip_opt_len;
-	u16_t uih_data_len;
+	uint16_t uih_ip_opt_len;
+	uint16_t uih_data_len;
 } udp_io_hdr_t;
 
 

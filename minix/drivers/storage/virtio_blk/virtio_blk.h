@@ -53,7 +53,7 @@ struct virtio_blk_config {
 	u32_t seg_max;
 	/* geometry the device (if VIRTIO_BLK_F_GEOMETRY) */
 	struct virtio_blk_geometry {
-		u16_t cylinders;
+		uint16_t cylinders;
 		uint8_t heads;
 		uint8_t sectors;
 	} geometry;
@@ -67,7 +67,7 @@ struct virtio_blk_config {
 	/* alignment offset in logical blocks. */
 	uint8_t alignment_offset;
 	/* minimum I/O size without performance penalty in logical blocks. */
-	u16_t min_io_size;
+	uint16_t min_io_size;
 	/* optimal sustained I/O size in logical blocks. */
 	u32_t opt_io_size;
 

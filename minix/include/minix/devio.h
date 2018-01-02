@@ -10,17 +10,17 @@
 #define _DEVIO_H
 
 #include <minix/sys_config.h>     /* needed to include <minix/type.h> */
-#include <sys/types.h>        /* uint8_t, u16_t, u32_t needed */
+#include <sys/types.h>        /* uint8_t, uint16_t, u32_t needed */
 
-typedef u16_t port_t;
+typedef uint16_t port_t;
 
 /* We have different granularities of port I/O: 8, 16, 32 bits.
  * Also see <ibm/portio.h>, which has functions for bytes, words,  
  * and longs. Hence, we need different (port,value)-pair types. 
  */
-typedef struct { u16_t port;  uint8_t value; } pvb_pair_t;
-typedef struct { u16_t port; u16_t value; } pvw_pair_t;
-typedef struct { u16_t port; u32_t value; } pvl_pair_t;
+typedef struct { uint16_t port;  uint8_t value; } pvb_pair_t;
+typedef struct { uint16_t port; uint16_t value; } pvw_pair_t;
+typedef struct { uint16_t port; u32_t value; } pvl_pair_t;
 
 /* Macro shorthand to set (port,value)-pair. */
 #define pv_set(pv, p, v) do {					\

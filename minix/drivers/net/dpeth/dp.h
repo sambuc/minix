@@ -79,7 +79,7 @@ typedef void (*dp_user2nicf_t)(struct dpeth *, int, struct netdriver_data *,
 	size_t);
 typedef void (*dp_nic2userf_t)(struct dpeth *, int, struct netdriver_data *,
 	size_t);
-typedef void (*dp_getblock_t)(struct dpeth *, u16_t, int, void *);
+typedef void (*dp_getblock_t)(struct dpeth *, uint16_t, int, void *);
 #endif
 
 #define SENDQ_NR	2	/* Size of the send queue	 */
@@ -169,7 +169,7 @@ typedef struct dpeth {
   /* For use by 3Com Etherlink (3c501 and 3c509) driver */
   buff_t *de_recvq_head;
   buff_t *de_recvq_tail;
-  u16_t de_recv_mode;
+  uint16_t de_recv_mode;
   clock_t de_xmit_start;
 #endif
 

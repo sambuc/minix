@@ -66,7 +66,7 @@
 #define ATA_SECTOR_SIZE		512		/* default sector size */
 #define ATA_MAX_SECTORS		0x10000		/* max sectors per transfer */
 
-#define ATA_ID_SIZE	(256 * sizeof(u16_t))	/* IDENTIFY result size */
+#define ATA_ID_SIZE	(256 * sizeof(uint16_t))	/* IDENTIFY result size */
 
 #define ATA_ID_GCAP		0		/* General capabililties */
 #define ATA_ID_GCAP_ATAPI_MASK	0xC000		/* ATAPI device mask */

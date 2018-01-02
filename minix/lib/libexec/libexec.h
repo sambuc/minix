@@ -17,7 +17,7 @@ typedef int (*libexec_allocfunc_t)(struct exec_info *execi,
 typedef int (*libexec_procclearfunc_t)(struct exec_info *execi);
 
 typedef int (*libexec_mmap_t)(struct exec_info *execi,
-	vir_bytes vaddr, vir_bytes len, vir_bytes foffset, u16_t clearend,
+	vir_bytes vaddr, vir_bytes len, vir_bytes foffset, uint16_t clearend,
 	int protflags);
 
 struct exec_info {

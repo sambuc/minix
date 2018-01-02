@@ -159,13 +159,13 @@ static int get_read_vp(struct vfs_exec_info *execi,
 	} while(0)
 
 static int vfs_memmap(struct exec_info *execi,
-        vir_bytes vaddr, vir_bytes len, vir_bytes foffset, u16_t clearend,
+        vir_bytes vaddr, vir_bytes len, vir_bytes foffset, uint16_t clearend,
 	int protflags)
 {
 	struct vfs_exec_info *vi = (struct vfs_exec_info *) execi->opaque;
 	struct vnode *vp = ((struct vfs_exec_info *) execi->opaque)->vp;
 	int r;
-	u16_t flags = 0;
+	uint16_t flags = 0;
 
 	if(protflags & PROT_WRITE)
 		flags |= MVM_WRITABLE;

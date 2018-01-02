@@ -17,7 +17,7 @@ typedef struct nwio_ipconf
 	u32_t	nwic_flags;
 	ipaddr_t nwic_ipaddr;
 	ipaddr_t nwic_netmask;
-	u16_t nwic_mtu;
+	uint16_t nwic_mtu;
 } nwio_ipconf_t;
 
 #define NWIC_NOFLAGS		0x0

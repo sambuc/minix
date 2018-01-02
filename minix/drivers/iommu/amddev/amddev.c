@@ -118,7 +118,7 @@ static int sef_cb_init_fresh(int UNUSED(type), sef_init_info_t *UNUSED(info))
 {
 /* Initialize the amddev driver. */
 	int r, n_maps, n_domains, revision;
-	u16_t flags;
+	uint16_t flags;
 	u32_t bits;
 
 	printf("amddev: starting\n");
@@ -204,7 +204,7 @@ uint8_t *capaddrp;
 {
 	int r, devind, first;
 	uint8_t capptr, type, next, subtype;
-	u16_t vid, did, status;
+	uint16_t vid, did, status;
 
 	pci_init();
 

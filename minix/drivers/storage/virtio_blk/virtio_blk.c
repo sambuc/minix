@@ -70,10 +70,10 @@ static phys_bytes hdrs_phys;
 /* Status bytes for requests.
  *
  * Usually a status is only one byte in length, but we need the lowest bit
- * to propagate writable. For this reason we take u16_t and use a mask for
+ * to propagate writable. For this reason we take uint16_t and use a mask for
  * the lower byte later.
  */
-static u16_t *status_vir;
+static uint16_t *status_vir;
 static phys_bytes status_phys;
 
 /* Prototypes */

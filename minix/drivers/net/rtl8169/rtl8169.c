@@ -42,8 +42,8 @@ typedef struct re_dtcc
 	u32_t	TxEr_low;	/* low 32-bits of Tx errors */
 	u32_t	TxEr_high;	/* high 32-bits of Tx errors */
 	u32_t	RxEr;		/* Rx errors */
-	u16_t	MissPkt;	/* Missed packets */
-	u16_t	FAE;		/* Frame Alignment Error packets (MII only) */
+	uint16_t	MissPkt;	/* Missed packets */
+	uint16_t	FAE;		/* Frame Alignment Error packets (MII only) */
 	u32_t	Tx1Col;		/* Tx Ok packets with 1 collision before Tx */
 	u32_t	TxMCol;		/* Tx Ok packets with 2..15 collisions */
 	u32_t	RxOkPhy_low;	/* low 32-bits of Rx Ok packets for us */
@@ -51,8 +51,8 @@ typedef struct re_dtcc
 	u32_t	RxOkBrd_low;	/* low 32-bits of Rx Ok broadcast packets */
 	u32_t	RxOkBrd_high;	/* high 32-bits of Rx Ok broadcast packets */
 	u32_t	RxOkMul;	/* Rx Ok multicast packets */
-	u16_t	TxAbt;		/* Tx abort packets */
-	u16_t	TxUndrn;	/* Tx underrun packets */
+	uint16_t	TxAbt;		/* Tx abort packets */
+	uint16_t	TxUndrn;	/* Tx underrun packets */
 } re_dtcc;
 
 typedef struct re {
@@ -98,7 +98,7 @@ typedef struct re {
 
 static re_t re_state;
 
-static unsigned my_inb(u16_t port)
+static unsigned my_inb(uint16_t port)
 {
 	u32_t value;
 	int s;
@@ -106,7 +106,7 @@ static unsigned my_inb(u16_t port)
 		printf("RTL8169: warning, sys_inb failed: %d\n", s);
 	return value;
 }
-static unsigned my_inw(u16_t port)
+static unsigned my_inw(uint16_t port)
 {
 	u32_t value;
 	int s;
@@ -114,7 +114,7 @@ static unsigned my_inw(u16_t port)
 		printf("RTL8169: warning, sys_inw failed: %d\n", s);
 	return value;
 }
-static unsigned my_inl(u16_t port)
+static unsigned my_inl(uint16_t port)
 {
 	u32_t value;
 	int s;
@@ -126,21 +126,21 @@ static unsigned my_inl(u16_t port)
 #define rl_inw(port, offset)	(my_inw((port) + (offset)))
 #define rl_inl(port, offset)	(my_inl((port) + (offset)))
 
-static void my_outb(u16_t port, uint8_t value)
+static void my_outb(uint16_t port, uint8_t value)
 {
 	int s;
 
 	if ((s = sys_outb(port, value)) != OK)
 		printf("RTL8169: warning, sys_outb failed: %d\n", s);
 }
-static void my_outw(u16_t port, u16_t value)
+static void my_outw(uint16_t port, uint16_t value)
 {
 	int s;
 
 	if ((s = sys_outw(port, value)) != OK)
 		printf("RTL8169: warning, sys_outw failed: %d\n", s);
 }
-static void my_outl(u16_t port, u32_t value)
+static void my_outl(uint16_t port, u32_t value)
 {
 	int s;
 
@@ -243,7 +243,7 @@ static void rl_stop(void)
 	rl_outb(rep->re_base_port, RL_CR, RL_CR_RST);
 }
 
-static void mdio_write(u16_t port, int regaddr, int value)
+static void mdio_write(uint16_t port, int regaddr, int value)
 {
 	int i;
 
@@ -262,7 +262,7 @@ static void mdio_write(u16_t port, int regaddr, int value)
 	}
 }
 
-static int mdio_read(u16_t port, int regaddr)
+static int mdio_read(uint16_t port, int regaddr)
 {
 	int i, value = -1;
 
@@ -400,7 +400,7 @@ static void rl_set_mode(unsigned int mode,
 static int rl_probe(re_t *rep, unsigned int skip)
 {
 	int r, devind;
-	u16_t vid, did;
+	uint16_t vid, did;
 	u32_t bar;
 	uint8_t ilr;
 #if VERBOSE
@@ -1344,7 +1344,7 @@ static void rl_intr(unsigned int __unused mask)
 static void rl_handler(re_t *rep)
 {
 	int i, port, tx_head, tx_tail, link_up;
-	u16_t isr;
+	uint16_t isr;
 	re_desc *desc;
 
 	port = rep->re_base_port;

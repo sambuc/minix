@@ -73,8 +73,8 @@ typedef struct lan8710a_t
 	uint8_t  *p_rx_buf;	/* pointer to the buffer with receive frames */
 	uint8_t  *p_tx_buf;	/* pointer to the buffer with transmit frames */
 
-	u16_t  tx_desc_idx;	/* index of the next transmit desciptor */
-	u16_t  rx_desc_idx;	/* index of the next receive desciptor */
+	uint16_t  tx_desc_idx;	/* index of the next transmit desciptor */
+	uint16_t  rx_desc_idx;	/* index of the next receive desciptor */
 
 	/* register mapping */
 	vir_bytes  regs_cp_per;

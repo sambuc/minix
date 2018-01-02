@@ -1054,9 +1054,9 @@ int apic_send_init_ipi(unsigned cpu, phys_bytes trampoline)
 
 	/* set the warm reset vector */
 	ptr = (u32_t)(trampoline & 0xF);
-	phys_copy(0x467, vir2phys(&ptr), sizeof(u16_t ));
+	phys_copy(0x467, vir2phys(&ptr), sizeof(uint16_t ));
 	ptr = (u32_t)(trampoline >> 4);
-	phys_copy(0x469, vir2phys(&ptr), sizeof(u16_t ));
+	phys_copy(0x469, vir2phys(&ptr), sizeof(uint16_t ));
 
 	/* set shutdown code */
 	outb (RTC_INDEX, 0xF);

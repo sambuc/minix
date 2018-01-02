@@ -42,10 +42,10 @@ static void lance_init_hw(ether_card_t *ec, netdriver_addr_t *addr,
 
 /* Accesses Lance Control and Status Registers */
 static uint8_t in_byte(port_t port);
-static u16_t in_word(port_t port);
-static void out_word(port_t port, u16_t value);
-static u16_t read_csr(port_t ioaddr, u16_t csrno);
-static void write_csr(port_t ioaddr, u16_t csrno, u16_t value);
+static uint16_t in_word(port_t port);
+static void out_word(port_t port, uint16_t value);
+static uint16_t read_csr(port_t ioaddr, uint16_t csrno);
+static void write_csr(port_t ioaddr, uint16_t csrno, uint16_t value);
 
 static ether_card_t ec_state;
 
@@ -661,7 +661,7 @@ static int lance_probe(ether_card_t *ec, unsigned int skip)
    unsigned short    ioaddr;
    int               lance_version, chip_version;
    int devind, r;
-   u16_t vid, did;
+   uint16_t vid, did;
 
    pci_init();
 
@@ -852,7 +852,7 @@ static uint8_t in_byte(port_t port)
 /*===========================================================================*
  *                              in_word                                      *
  *===========================================================================*/
-static u16_t in_word(port_t port)
+static uint16_t in_word(port_t port)
 {
 	int r;
 	u32_t value;
@@ -867,7 +867,7 @@ static u16_t in_word(port_t port)
 /*===========================================================================*
  *                              out_word                                     *
  *===========================================================================*/
-static void out_word(port_t port, u16_t value)
+static void out_word(port_t port, uint16_t value)
 {
 	int r;
 
@@ -879,7 +879,7 @@ static void out_word(port_t port, u16_t value)
 /*===========================================================================*
  *                              read_csr                                     *
  *===========================================================================*/
-static u16_t read_csr(port_t ioaddr, u16_t csrno)
+static uint16_t read_csr(port_t ioaddr, uint16_t csrno)
 {
    out_word(ioaddr+LANCE_ADDR, csrno);
    return in_word(ioaddr+LANCE_DATA);
@@ -888,7 +888,7 @@ static u16_t read_csr(port_t ioaddr, u16_t csrno)
 /*===========================================================================*
  *                              write_csr                                    *
  *===========================================================================*/
-static void write_csr(port_t ioaddr, u16_t csrno, u16_t value)
+static void write_csr(port_t ioaddr, uint16_t csrno, uint16_t value)
 {
    out_word(ioaddr+LANCE_ADDR, csrno);
    out_word(ioaddr+LANCE_DATA, value);

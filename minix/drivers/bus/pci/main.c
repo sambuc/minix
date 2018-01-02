@@ -62,7 +62,7 @@ static void
 do_first_dev(message *mp)
 {
 	int r, devind;
-	u16_t vid, did;
+	uint16_t vid, did;
 	struct rs_pci *aclp;
 
 	aclp= find_acl(mp->m_source);
@@ -91,7 +91,7 @@ static void
 do_next_dev(message *mp)
 {
 	int r, devind;
-	u16_t vid, did;
+	uint16_t vid, did;
 	struct rs_pci *aclp;
 
 	devind= mp->m1_i1;
@@ -139,7 +139,7 @@ static void
 do_ids(message *mp)
 {
 	int r, devind;
-	u16_t vid, did;
+	uint16_t vid, did;
 
 	devind= mp->m1_i1;
 
@@ -165,7 +165,7 @@ static void
 do_dev_name(message *mp)
 {
 	int r, name_len, len;
-	u16_t vid, did;
+	uint16_t vid, did;
 	cp_grant_id_t name_gid;
 	const char *name;
 
@@ -367,7 +367,7 @@ static void
 do_attr_r16(message *mp)
 {
 	int r, devind, port;
-	u16_t v;
+	uint16_t v;
 
 	devind= mp->m2_i1;
 	port= mp->m2_i2;
@@ -439,7 +439,7 @@ static void
 do_attr_w16(message *mp)
 {
 	int r, devind, port;
-	u16_t v;
+	uint16_t v;
 
 	devind= mp->m2_i1;
 	port= mp->m2_i2;

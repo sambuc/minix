@@ -58,7 +58,7 @@
 extern struct machine machine;
 
 
-static u32_t pci_inb(u16_t port) {
+static u32_t pci_inb(uint16_t port) {
 	u32_t value;
 	int s;
 	if ((s=sys_inb(port, &value)) !=OK)
@@ -66,7 +66,7 @@ static u32_t pci_inb(u16_t port) {
 	return value;
 }
 
-static u32_t pci_inw(u16_t port) {
+static u32_t pci_inw(uint16_t port) {
 	u32_t value;
 	int s;
 	if ((s=sys_inw(port, &value)) !=OK)
@@ -74,7 +74,7 @@ static u32_t pci_inw(u16_t port) {
 	return value;
 }
 
-static u32_t pci_inl(u16_t port) {
+static u32_t pci_inl(uint16_t port) {
 	u32_t value;
 	int s;
 	if ((s=sys_inl(port, &value)) !=OK)
@@ -82,19 +82,19 @@ static u32_t pci_inl(u16_t port) {
 	return value;
 }
 
-static void pci_outb(u16_t port, uint8_t value) {
+static void pci_outb(uint16_t port, uint8_t value) {
 	int s;
 	if ((s=sys_outb(port, value)) !=OK)
 		printf("ACPI: warning, sys_outb failed: %d\n", s);
 }
 
-static void pci_outw(u16_t port, u16_t value) {
+static void pci_outw(uint16_t port, uint16_t value) {
 	int s;
 	if ((s=sys_outw(port, value)) !=OK)
 		printf("ACPI: warning, sys_outw failed: %d\n", s);
 }
 
-static void pci_outl(u16_t port, u32_t value) {
+static void pci_outl(uint16_t port, u32_t value) {
 	int s;
 	if ((s=sys_outl(port, value)) !=OK)
 		printf("ACPI: warning, sys_outl failed: %d\n", s);
@@ -962,7 +962,7 @@ AcpiOsReadPciConfiguration (
 					PciId->Function, Register);
 			break;
 		case 16:
-			*(u16_t *)Value = PCII_RREG16_(PciId->Bus, PciId->Device,
+			*(uint16_t *)Value = PCII_RREG16_(PciId->Bus, PciId->Device,
 					PciId->Function, Register);
 			break;
 		case 32:

@@ -71,7 +71,7 @@ typedef struct fxp
 	/* Link status */
 	int fxp_report_link;
 	int fxp_link_up;
-	u16_t fxp_mii_scr;
+	uint16_t fxp_mii_scr;
 
 	irq_hook_t fxp_hook;
 	struct sc fxp_stat;
@@ -120,9 +120,9 @@ static void fxp_tick(void);
 static int fxp_link_changed(fxp_t *fp);
 static unsigned int fxp_get_link(uint32_t *media);
 static void fxp_report_link(fxp_t *fp);
-static u16_t eeprom_read(fxp_t *fp, int reg);
+static uint16_t eeprom_read(fxp_t *fp, int reg);
 static void eeprom_addrsize(fxp_t *fp);
-static u16_t mii_read(fxp_t *fp, int reg);
+static uint16_t mii_read(fxp_t *fp, int reg);
 static uint8_t do_inb(port_t port);
 static u32_t do_inl(port_t port);
 static void do_outb(port_t port, uint8_t v);
@@ -234,7 +234,7 @@ static int fxp_init(unsigned int instance, netdriver_addr_t *addr,
 static int fxp_probe(fxp_t *fp, int skip)
 {
 	int r, devind;
-	u16_t vid, did, cr;
+	uint16_t vid, did, cr;
 	u32_t bar;
 	uint8_t ilr, rev;
 	const char *str;
@@ -726,7 +726,7 @@ static int fxp_send(struct netdriver_data *data, size_t size)
 {
 	int prev_head;
 	int fxp_tx_nbuf, fxp_tx_head;
-	u16_t tx_command;
+	uint16_t tx_command;
 	fxp_t *fp;
 	struct tx *txp, *prev_txp;
 
@@ -822,8 +822,8 @@ static ssize_t fxp_recv(struct netdriver_data *data, size_t max)
 	int fxp_rx_head, fxp_rx_nbuf;
 	port_t port;
 	unsigned packlen;
-	u16_t rfd_status;
-	u16_t rfd_res;
+	uint16_t rfd_status;
+	uint16_t rfd_res;
 	fxp_t *fp;
 	struct rfd *rfdp, *prev_rfdp;
 
@@ -1079,7 +1079,7 @@ static void fxp_update_stats(void)
 static void fxp_handler(fxp_t *fp)
 {
 	int port;
-	u16_t isr;
+	uint16_t isr;
 
 	port= fp->fxp_base_port;
 
@@ -1127,7 +1127,7 @@ static void fxp_check_ints(fxp_t *fp)
 	int fxp_tx_tail, fxp_tx_nbuf, fxp_tx_threshold;
 	port_t port;
 	u32_t busaddr;
-	u16_t tx_status;
+	uint16_t tx_status;
 	uint8_t scb_status;
 	struct tx *txp;
 
@@ -1279,7 +1279,7 @@ static void fxp_tick(void)
  *===========================================================================*/
 static int fxp_link_changed(fxp_t *fp)
 {
-	u16_t scr;
+	uint16_t scr;
 
 	scr= mii_read(fp, MII_SCR);
 	scr &= ~(MII_SCR_RES|MII_SCR_RES_1);
@@ -1293,7 +1293,7 @@ static int fxp_link_changed(fxp_t *fp)
 static unsigned int fxp_get_link(uint32_t *media)
 {
 	fxp_t *fp;
-	u16_t mii_status, scr;
+	uint16_t mii_status, scr;
 
 	fp = fxp_state;
 
@@ -1323,7 +1323,7 @@ static unsigned int fxp_get_link(uint32_t *media)
  *===========================================================================*/
 static void fxp_report_link(fxp_t *fp)
 {
-	u16_t mii_ctrl, mii_status, mii_id1, mii_id2,
+	uint16_t mii_ctrl, mii_status, mii_id1, mii_id2,
 		mii_ana, mii_anlpa, mii_ane, mii_extstat,
 		mii_ms_ctrl, mii_ms_status, scr;
 	u32_t oui;
@@ -1561,10 +1561,10 @@ resspeed:
 /*===========================================================================*
  *				eeprom_read				     *
  *===========================================================================*/
-static u16_t eeprom_read(fxp_t *fp, int reg)
+static uint16_t eeprom_read(fxp_t *fp, int reg)
 {
 	port_t port;
-	u16_t v;
+	uint16_t v;
 	int b, i, alen;
 
 	alen= fp->fxp_ee_addrlen;
@@ -1622,7 +1622,7 @@ static u16_t eeprom_read(fxp_t *fp, int reg)
 static void eeprom_addrsize(fxp_t *fp)
 {
 	port_t port;
-	u16_t v;
+	uint16_t v;
 	int b, i;
 
 	port= fp->fxp_base_port;
@@ -1676,7 +1676,7 @@ static void eeprom_addrsize(fxp_t *fp)
 /*===========================================================================*
  *				mii_read				     *
  *===========================================================================*/
-static u16_t mii_read(fxp_t *fp, int reg)
+static uint16_t mii_read(fxp_t *fp, int reg)
 {
 	spin_t spin;
 	port_t port;

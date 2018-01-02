@@ -522,7 +522,7 @@ static void do_io(config_t *cpe, struct rs_start *rs_start)
 
 static void do_pci_device(config_t *cpe, struct rs_start *rs_start)
 {
-	u16_t vid, did, sub_vid, sub_did;
+	uint16_t vid, did, sub_vid, sub_did;
 	char *check, *check2;
 
 	/* Process a list of PCI device IDs */

@@ -191,7 +191,7 @@ int data_copy_vmcheck(struct proc *, endpoint_t from, vir_bytes
 	from_addr, endpoint_t to, vir_bytes to_addr, size_t bytes);
 phys_bytes umap_virtual(struct proc* rp, int seg, vir_bytes vir_addr,
 	vir_bytes bytes);
-phys_bytes seg2phys(u16_t);
+phys_bytes seg2phys(uint16_t);
 int vm_memset(struct proc *caller, endpoint_t who, phys_bytes dst,
 	int pattern, phys_bytes count);
 int intr_init(int);

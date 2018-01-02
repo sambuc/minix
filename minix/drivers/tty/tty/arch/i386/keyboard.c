@@ -23,7 +23,7 @@
 #include <assert.h>
 #include "tty.h"
 
-static u16_t keymap[NR_SCAN_CODES][MAP_COLS] = {
+static uint16_t keymap[NR_SCAN_CODES][MAP_COLS] = {
 #include "keymaps/us-std.src"
 };
 
@@ -92,7 +92,7 @@ int scode;
 /* Map a scan code to an ASCII code. */
 
   int caps, column, lk;
-  u16_t *keyrow;
+  uint16_t *keyrow;
 
   keyrow = keymap[scode];
 

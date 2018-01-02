@@ -84,7 +84,7 @@ static struct vir_region *mmap_region(struct vmproc *vmp, vir_bytes addr,
 static int mmap_file(struct vmproc *vmp,
 	int vmfd, off_t file_offset, int flags,
 	ino_t ino, dev_t dev, u64_t filesize, vir_bytes addr, vir_bytes len,
-	vir_bytes *retaddr, u16_t clearend, int writable, int mayclosefd)
+	vir_bytes *retaddr, uint16_t clearend, int writable, int mayclosefd)
 {
 /* VFS has replied to a VMVFSREQ_FDLOOKUP request. */
 	struct vir_region *vr;
@@ -137,7 +137,7 @@ int do_vfs_mmap(message *m)
 	vir_bytes v;
 	struct vmproc *vmp;
 	int r, n;
-	u16_t clearend, flags = 0;
+	uint16_t clearend, flags = 0;
 
 	/* It might be disabled */
 	if(!enable_filemap) return ENXIO;

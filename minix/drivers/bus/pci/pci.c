@@ -49,13 +49,13 @@ static struct pcibus
 	int pb_devind;
 	int pb_busnr;
 	uint8_t (*pb_rreg8)(int busind, int devind, int port);
-	u16_t (*pb_rreg16)(int busind, int devind, int port);
+	uint16_t (*pb_rreg16)(int busind, int devind, int port);
 	u32_t (*pb_rreg32)(int busind, int devind, int port);
 	void (*pb_wreg8)(int busind, int devind, int port, uint8_t value);
-	void (*pb_wreg16)(int busind, int devind, int port, u16_t value);
+	void (*pb_wreg16)(int busind, int devind, int port, uint16_t value);
 	void (*pb_wreg32)(int busind, int devind, int port, u32_t value);
-	u16_t (*pb_rsts)(int busind);
-	void (*pb_wsts)(int busind, u16_t value);
+	uint16_t (*pb_rsts)(int busind);
+	void (*pb_wsts)(int busind, uint16_t value);
 } pcibus[NR_PCIBUS];
 static int nr_pcibus= 0;
 
@@ -67,10 +67,10 @@ static struct pcidev
 	uint8_t pd_baseclass;
 	uint8_t pd_subclass;
 	uint8_t pd_infclass;
-	u16_t pd_vid;
-	u16_t pd_did;
-	u16_t pd_sub_vid;
-	u16_t pd_sub_did;
+	uint16_t pd_vid;
+	uint16_t pd_did;
+	uint16_t pd_sub_vid;
+	uint16_t pd_sub_did;
 	uint8_t pd_ilr;
 
 	uint8_t pd_inuse;
@@ -98,7 +98,7 @@ static struct machine machine;
  *			helper functions for I/O			     *
  *===========================================================================*/
 static unsigned
-pci_inb(u16_t port) {
+pci_inb(uint16_t port) {
 	u32_t value;
 	int s;
 	if ((s=sys_inb(port, &value)) !=OK)
@@ -107,7 +107,7 @@ pci_inb(u16_t port) {
 }
 
 static unsigned
-pci_inw(u16_t port) {
+pci_inw(uint16_t port) {
 	u32_t value;
 	int s;
 	if ((s=sys_inw(port, &value)) !=OK)
@@ -116,7 +116,7 @@ pci_inw(u16_t port) {
 }
 
 static unsigned
-pci_inl(u16_t port) {
+pci_inl(uint16_t port) {
 	u32_t value;
 	int s;
 	if ((s=sys_inl(port, &value)) !=OK)
@@ -125,21 +125,21 @@ pci_inl(u16_t port) {
 }
 
 static void
-pci_outb(u16_t port, uint8_t value) {
+pci_outb(uint16_t port, uint8_t value) {
 	int s;
 	if ((s=sys_outb(port, value)) !=OK)
 		printf("PCI: warning, sys_outb failed: %d\n", s);
 }
 
 static void
-pci_outw(u16_t port, u16_t value) {
+pci_outw(uint16_t port, uint16_t value) {
 	int s;
 	if ((s=sys_outw(port, value)) !=OK)
 		printf("PCI: warning, sys_outw failed: %d\n", s);
 }
 
 static void
-pci_outl(u16_t port, u32_t value) {
+pci_outl(uint16_t port, u32_t value) {
 	int s;
 	if ((s=sys_outl(port, value)) !=OK)
 		printf("PCI: warning, sys_outl failed: %d\n", s);
@@ -165,10 +165,10 @@ pcii_rreg8(int busind, int devind, int port)
 	return v;
 }
 
-static u16_t
+static uint16_t
 pcii_rreg16(int busind, int devind, int port)
 {
-	u16_t v;
+	uint16_t v;
 	int s;
 
 	v= PCII_RREG16_(pcibus[busind].pb_busnr,
@@ -223,7 +223,7 @@ pcii_wreg8(int busind, int devind, int port, uint8_t value)
 }
 
 static void
-pcii_wreg16(int busind, int devind, int port, u16_t value)
+pcii_wreg16(int busind, int devind, int port, uint16_t value)
 {
 	int s;
 #if 0
@@ -322,7 +322,7 @@ __pci_attr_r8(int devind, int port)
 	return pcibus[busind].pb_rreg8(busind, devind, port);
 }
 
-static u16_t
+static uint16_t
 __pci_attr_r16(int devind, int port)
 {
 	int busnr, busind;
@@ -353,7 +353,7 @@ __pci_attr_w8(int devind, int port, uint8_t value)
 }
 
 static void
-__pci_attr_w16(int devind, int port, u16_t value)
+__pci_attr_w16(int devind, int port, uint16_t value)
 {
 	int busnr, busind;
 
@@ -375,7 +375,7 @@ __pci_attr_w32(int devind, int port, u32_t value)
 /*===========================================================================*
  *				helpers					     *
  *===========================================================================*/
-static u16_t
+static uint16_t
 pci_attr_rsts(int devind)
 {
 	int busnr, busind;
@@ -386,7 +386,7 @@ pci_attr_rsts(int devind)
 }
 
 static void
-pci_attr_wsts(int devind, u16_t value)
+pci_attr_wsts(int devind, uint16_t value)
 {
 	int busnr, busind;
 
@@ -395,10 +395,10 @@ pci_attr_wsts(int devind, u16_t value)
 	pcibus[busind].pb_wsts(busind, value);
 }
 
-static u16_t
+static uint16_t
 pcii_rsts(int busind)
 {
-	u16_t v;
+	uint16_t v;
 	int s;
 
 	v= PCII_RREG16_(pcibus[busind].pb_busnr, 0, 0, PCI_SR);
@@ -408,7 +408,7 @@ pcii_rsts(int busind)
 }
 
 static void
-pcii_wsts(int busind, u16_t value)
+pcii_wsts(int busind, uint16_t value)
 {
 	int s;
 	PCII_WREG16_(pcibus[busind].pb_busnr, 0, 0, PCI_SR, value);
@@ -453,7 +453,7 @@ get_freebus(void)
 }
 
 static const char *
-pci_vid_name(u16_t vid)
+pci_vid_name(uint16_t vid)
 {
 	static char vendor[PCI_VENDORSTR_LEN];
 	pci_findvendor(vendor, sizeof(vendor), vid);
@@ -466,7 +466,7 @@ static void
 print_hyper_cap(int devind, uint8_t capptr)
 {
 	u32_t v;
-	u16_t cmd;
+	uint16_t cmd;
 	int type0, type1;
 
 	printf("\n");
@@ -583,7 +583,7 @@ static void
 update_bridge4dev_io(int devind, u32_t io_base, u32_t io_size)
 {
 	int busnr, busind, type, br_devind;
-	u16_t v16;
+	uint16_t v16;
 
 	busnr= pcidev[devind].pd_busnr;
 	busind= get_busind(busnr);
@@ -660,7 +660,7 @@ do_amd_isabr(int devind)
 {
 	int i, busnr, dev, func, xdevind, irq, edge;
 	uint8_t levmask;
-	u16_t pciirq;
+	uint16_t pciirq;
 
 	/* Find required function */
 	func= AMD_ISABR_FUNC;
@@ -788,7 +788,7 @@ static int
 do_isabridge(int busind)
 {
 	int i, j, r, type, busnr, unknown_bridge, bridge_dev;
-	u16_t vid, did;
+	uint16_t vid, did;
 	u32_t t3;
 	const char *dstr;
 
@@ -1010,7 +1010,7 @@ record_bar(int devind, int bar_nr, int last)
 {
 	int reg, prefetch, type, dev_bar_nr, width;
 	u32_t bar, bar2;
-	u16_t cmd;
+	uint16_t cmd;
 
 	/* Start by assuming that this is a 32-bit bar, taking up one DWORD. */
 	width = 1;
@@ -1522,7 +1522,7 @@ probe_bus(int busind)
 #if 0
 	uint32_t t3;
 #endif
-	u16_t vid, did, sts, sub_vid, sub_did;
+	uint16_t vid, did, sts, sub_vid, sub_did;
 	uint8_t headt;
 	uint8_t baseclass, subclass, infclass;
 	int devind, busnr;
@@ -1678,7 +1678,7 @@ probe_bus(int busind)
 }
 
 
-static u16_t
+static uint16_t
 pcibr_std_rsts(int busind)
 {
 	int devind;
@@ -1688,7 +1688,7 @@ pcibr_std_rsts(int busind)
 }
 
 static void
-pcibr_std_wsts(int busind, u16_t value)
+pcibr_std_wsts(int busind, uint16_t value)
 {
 	int devind;
 	devind= pcibus[busind].pb_devind;
@@ -1700,7 +1700,7 @@ pcibr_std_wsts(int busind, u16_t value)
 	__pci_attr_w16(devind, PPB_SSTS, value);
 }
 
-static u16_t
+static uint16_t
 pcibr_cb_rsts(int busind)
 {
 	int devind;
@@ -1710,7 +1710,7 @@ pcibr_cb_rsts(int busind)
 }
 
 static void
-pcibr_cb_wsts(int busind, u16_t value)
+pcibr_cb_wsts(int busind, uint16_t value)
 {
 	int devind;
 	devind= pcibus[busind].pb_devind;
@@ -1722,14 +1722,14 @@ pcibr_cb_wsts(int busind, u16_t value)
 	__pci_attr_w16(devind, CBB_SSTS, value);
 }
 
-static u16_t
+static uint16_t
 pcibr_via_rsts(int busind)
 {
 	return 0;
 }
 
 static void
-pcibr_via_wsts(int busind, u16_t value)
+pcibr_via_wsts(int busind, uint16_t value)
 {
 #if 0
 	int devind;
@@ -1784,7 +1784,7 @@ do_pcibridge(int busind)
 {
 	int devind, busnr;
 	int ind, type;
-	u16_t vid, did;
+	uint16_t vid, did;
 	uint8_t sbusn, baseclass, subclass, infclass, headt;
 	u32_t t3;
 
@@ -1928,7 +1928,7 @@ pci_intel_init(void)
 	 * PCI controller.
 	 */
 	u32_t bus, dev, func;
-	u16_t vid, did;
+	uint16_t vid, did;
 	int s, i, r, busind, busnr;
 	const char *dstr;
 
@@ -2038,7 +2038,7 @@ report_vga(int devind)
 static int
 visible(struct rs_pci *aclp, int devind)
 {
-	u16_t acl_sub_vid, acl_sub_did;
+	uint16_t acl_sub_vid, acl_sub_did;
 	int i;
 	u32_t class_id;
 
@@ -2210,8 +2210,8 @@ _pci_find_dev(uint8_t bus, uint8_t dev, uint8_t func, int *devindp)
  *				_pci_first_dev				     *
  *===========================================================================*/
 int
-_pci_first_dev(struct rs_pci *aclp, int *devindp, u16_t *vidp,
-	u16_t *didp)
+_pci_first_dev(struct rs_pci *aclp, int *devindp, uint16_t *vidp,
+	uint16_t *didp)
 {
 	int devind;
 
@@ -2233,7 +2233,7 @@ _pci_first_dev(struct rs_pci *aclp, int *devindp, u16_t *vidp,
  *				_pci_next_dev				     *
  *===========================================================================*/
 int
-_pci_next_dev(struct rs_pci *aclp, int *devindp, u16_t *vidp, u16_t *didp)
+_pci_next_dev(struct rs_pci *aclp, int *devindp, uint16_t *vidp, uint16_t *didp)
 {
 	int devind;
 
@@ -2365,7 +2365,7 @@ _pci_release(endpoint_t proc)
  *				_pci_ids				     *
  *===========================================================================*/
 int
-_pci_ids(int devind, u16_t *vidp, u16_t *didp)
+_pci_ids(int devind, uint16_t *vidp, uint16_t *didp)
 {
 	if (devind < 0 || devind >= nr_pcidev)
 		return EINVAL;
@@ -2430,7 +2430,7 @@ _pci_slot_name(int devind, char **cpp)
  *				_pci_dev_name				     *
  *===========================================================================*/
 const char *
-_pci_dev_name(u16_t vid, u16_t did)
+_pci_dev_name(uint16_t vid, uint16_t did)
 {
 	static char product[PCI_PRODUCTSTR_LEN];
 	pci_findproduct(product, sizeof(product), vid, did);
@@ -2487,7 +2487,7 @@ _pci_attr_r8(int devind, int port, uint8_t *vp)
  *				_pci_attr_r16				     *
  *===========================================================================*/
 int
-_pci_attr_r16(int devind, int port, u16_t *vp)
+_pci_attr_r16(int devind, int port, uint16_t *vp)
 {
 	if (devind < 0 || devind >= nr_pcidev)
 		return EINVAL;
@@ -2532,7 +2532,7 @@ _pci_attr_w8(int devind, int port, uint8_t value)
  *				_pci_attr_w16				     *
  *===========================================================================*/
 int
-_pci_attr_w16(int devind, int port, u16_t value)
+_pci_attr_w16(int devind, int port, uint16_t value)
 {
 	if (devind < 0 || devind >= nr_pcidev)
 		return EINVAL;

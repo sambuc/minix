@@ -11,7 +11,7 @@ server/ip/gen/ether.h
 #define ETH_HDR_SIZE			  14
 #define ETH_CRC_SIZE			   4
 
-typedef u16_t ether_type_t;
+typedef uint16_t ether_type_t;
 
 #define ETH_ARP_PROTO	 0x806
 #define ETH_IP_PROTO	 0x800

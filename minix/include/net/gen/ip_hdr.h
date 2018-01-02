@@ -9,12 +9,12 @@ typedef struct ip_hdr
 {
 	uint8_t ih_vers_ihl,
 		ih_tos;
-	u16_t ih_length,
+	uint16_t ih_length,
 		ih_id,
 		ih_flags_fragoff;
 	uint8_t ih_ttl,
 		ih_proto;
-	u16_t ih_hdr_chk;
+	uint16_t ih_hdr_chk;
 	ipaddr_t ih_src,
 		ih_dst;
 } ip_hdr_t;

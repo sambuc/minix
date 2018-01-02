@@ -13,7 +13,7 @@ typedef struct rip_hdr
 {
 	uint8_t rh_command;
 	uint8_t rh_version;
-	u16_t rh_zero;
+	uint16_t rh_zero;
 } rip_hdr_t;
 
 #define RHC_REQUEST	1
@@ -27,8 +27,8 @@ typedef struct rip_entry
 	{
 		struct rip_entry_v1
 		{
-			u16_t re_family;
-			u16_t re_zero0;
+			uint16_t re_family;
+			uint16_t re_zero0;
 			u32_t re_address;
 			u32_t re_zero1;
 			u32_t re_zero2;
@@ -36,8 +36,8 @@ typedef struct rip_entry
 		} v1;
 		struct rip_entry_v2
 		{
-			u16_t re_family;
-			u16_t re_tag;
+			uint16_t re_family;
+			uint16_t re_tag;
 			u32_t re_address;
 			u32_t re_mask;
 			u32_t re_nexthop;

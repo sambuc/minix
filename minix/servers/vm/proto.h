@@ -242,7 +242,7 @@ int do_vfs_reply(message *m);
 /* mem_file.c */
 int mappedfile_setfile(struct vmproc *owner, struct vir_region *region,
 	int fd, u64_t offset,
-	dev_t dev, ino_t ino, u16_t clearend, int prefill, int mayclose);
+	dev_t dev, ino_t ino, uint16_t clearend, int prefill, int mayclose);
 
 /* fdref.c */
 struct fdref *fdref_new(struct vmproc *owner, ino_t ino, dev_t dev, int fd);

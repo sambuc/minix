@@ -17,8 +17,8 @@
 
 #include "dec21140A.h"
 
-static u32_t io_inl(u16_t);
-static void io_outl(u16_t, u32_t);
+static u32_t io_inl(uint16_t);
+static void io_outl(uint16_t, u32_t);
 
 static int do_init(unsigned int, netdriver_addr_t *, uint32_t *,
 	unsigned int *);
@@ -34,7 +34,7 @@ static void de_reset(const dpeth_t *);
 static void de_hw_conf(const dpeth_t *);
 static void de_start(const dpeth_t *);
 static void de_setup_frame(const dpeth_t *, const netdriver_addr_t *);
-static u16_t de_read_rom(const dpeth_t *, uint8_t, uint8_t);
+static uint16_t de_read_rom(const dpeth_t *, uint8_t, uint8_t);
 
 static dpeth_t de_state;
 
@@ -96,7 +96,7 @@ static int do_init(unsigned int instance, netdriver_addr_t *addr,
 static int de_probe(dpeth_t *dep, unsigned int skip)
 {
   int r, devind;
-  u16_t vid, did;
+  uint16_t vid, did;
 
   DEBUG(printf("PROBING..."));
 
@@ -137,9 +137,9 @@ static int de_probe(dpeth_t *dep, unsigned int skip)
   return TRUE;
 }
 
-static u16_t de_read_rom(const dpeth_t *dep, uint8_t addr, uint8_t nbAddrBits)
+static uint16_t de_read_rom(const dpeth_t *dep, uint8_t addr, uint8_t nbAddrBits)
 {
-  u16_t retVal = 0;
+  uint16_t retVal = 0;
   int i;
   u32_t csr = 0;
   u32_t csr2 = 0; /* csr2 is used to hold constant values that are
@@ -256,7 +256,7 @@ static ssize_t do_recv(struct netdriver_data *data, size_t max)
 
 static void de_conf_addr(dpeth_t *dep, netdriver_addr_t *addr)
 {
-  u16_t temp16;
+  uint16_t temp16;
   int i;
 
   DEBUG(printf("Reading SROM...\n"));
@@ -492,7 +492,7 @@ static int do_send(struct netdriver_data *data, size_t size)
   return OK;
 }
 
-static u32_t io_inl(u16_t port)
+static u32_t io_inl(uint16_t port)
 {
   u32_t value;
   int rc;
@@ -501,7 +501,7 @@ static u32_t io_inl(u16_t port)
   return value;
 }
 
-static void io_outl(u16_t port, u32_t value)
+static void io_outl(uint16_t port, u32_t value)
 {
   int rc;
   if ((rc = sys_outl(port, value)) != OK)

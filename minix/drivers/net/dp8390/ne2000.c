@@ -267,7 +267,7 @@ uint8_t *pat;
 
 	for (i= 0; i<4; i += 2)
 	{
-		outw_ne(dep, NE_DATA, *(u16_t *)(pat+i));
+		outw_ne(dep, NE_DATA, *(uint16_t *)(pat+i));
 	}
 
 	for (i= 0; i<N; i++)
@@ -293,7 +293,7 @@ uint8_t *pat;
 
 	for (i= 0; i<4; i += 2)
 	{
-		*(u16_t *)(buf+i)= inw_ne(dep, NE_DATA);
+		*(uint16_t *)(buf+i)= inw_ne(dep, NE_DATA);
 	}
 
 	r= (memcmp(buf, pat, 4) == 0);

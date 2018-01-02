@@ -23,7 +23,7 @@
 **  Name:	ns_rw_setup
 **  Function:	Sets the board for reading/writing.
 */
-static void ns_rw_setup(const dpeth_t *dep, int mode, int size, u16_t offset)
+static void ns_rw_setup(const dpeth_t *dep, int mode, int size, uint16_t offset)
 {
 
   if (mode == CR_DM_RW) outb_reg0(dep, DP_ISR, ISR_RDC);
@@ -52,7 +52,7 @@ static void ns_start_xmit(const dpeth_t * dep, int size, int pageno)
 **  Name:	mem_getblock
 **  Function:	Reads a block of packet from board (shared memory).
 */
-static void mem_getblock(dpeth_t *dep, u16_t offset, int size, void *dst)
+static void mem_getblock(dpeth_t *dep, uint16_t offset, int size, void *dst)
 {
 
   assert(size >= 0);
@@ -101,7 +101,7 @@ static void mem_user2nic(dpeth_t *dep, int pageno, struct netdriver_data *data,
 **  Name:	pio_getblock
 **  Function:	Reads a block of packet from board (Prog. I/O).
 */
-static void pio_getblock(dpeth_t *dep, u16_t offset, int size, void *dst)
+static void pio_getblock(dpeth_t *dep, uint16_t offset, int size, void *dst)
 {
 
   /* Sets up board for reading */
@@ -278,7 +278,7 @@ static ssize_t ns_recv(dpeth_t *dep, struct netdriver_data *data, size_t max)
   size_t length;
   int packet_processed = FALSE;
 #ifdef ETH_IGN_PROTO
-  u16_t eth_type;
+  uint16_t eth_type;
 #endif
 
   pageno = inb_reg0(dep, DP_BNRY) + 1;

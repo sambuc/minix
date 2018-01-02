@@ -28,11 +28,11 @@ void CodecSetVendorId (char *tbuf);
 
 /* CODEC Mixer and Mode control function prototypes */
 
-int  CodecRead (DEV_STRUCT * pCC, u16_t wAddr, u16_t *data);
-int  CodecWrite (DEV_STRUCT * pCC, u16_t wAddr, u16_t wData);
+int  CodecRead (DEV_STRUCT * pCC, uint16_t wAddr, uint16_t *data);
+int  CodecWrite (DEV_STRUCT * pCC, uint16_t wAddr, uint16_t wData);
 void CodecSetSrcSyncState (int state);
-int  CodecWriteUnsynced (DEV_STRUCT * pCC, u16_t wAddr, u16_t wData);
-int  CodecReadUnsynced (DEV_STRUCT * pCC, u16_t wAddr, u16_t *data);
+int  CodecWriteUnsynced (DEV_STRUCT * pCC, uint16_t wAddr, uint16_t wData);
+int  CodecReadUnsynced (DEV_STRUCT * pCC, uint16_t wAddr, uint16_t *data);
 
 /*
   This function initializes the CODEC to a default mode.

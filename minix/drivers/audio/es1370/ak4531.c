@@ -31,10 +31,10 @@ static int ak4531_finished(void);
 static int set_volume(struct volume_level *level, int cmd_left, int
 	cmd_right, int max_level);
 
-static u16_t base_address; 
-static u16_t status_register;
-static u16_t status_bit;
-static u16_t poll_address;
+static uint16_t base_address; 
+static uint16_t status_register;
+static uint16_t status_bit;
+static uint16_t poll_address;
 
 uint8_t mixer_values[0x20] = {
 	0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, /* 0x00 - 0x07 */
@@ -55,7 +55,7 @@ uint8_t mixer_values[0x20] = {
 
 static int ak4531_finished(void) {
 	int i;
-	u16_t cstat;
+	uint16_t cstat;
 	for (i = 0; i < 0x40000; i++) {
 		cstat = pci_inw(status_register);
 		if (!(cstat & status_bit)) {
@@ -67,12 +67,12 @@ static int ak4531_finished(void) {
 
 
 static int ak4531_write (uint8_t address, uint8_t data) {
-	u16_t to_be_written;
+	uint16_t to_be_written;
 
 
 	if (address > MIC_AMP_GAIN) return -1;
 
-	to_be_written = (u16_t)((address << 8) | data);
+	to_be_written = (uint16_t)((address << 8) | data);
 
 	if (!ak4531_finished()) return -1;
 	pci_outw(base_address, to_be_written);
@@ -80,8 +80,8 @@ static int ak4531_write (uint8_t address, uint8_t data) {
 }
 
 
-int ak4531_init(u16_t base, u16_t status_reg, u16_t bit, 
-		u16_t poll) {
+int ak4531_init(uint16_t base, uint16_t status_reg, uint16_t bit, 
+		uint16_t poll) {
 	int i;
 
 	base_address = base;

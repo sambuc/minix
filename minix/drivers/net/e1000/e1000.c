@@ -27,8 +27,8 @@ static uint32_t e1000_reg_read(e1000_t *e, uint32_t reg);
 static void e1000_reg_write(e1000_t *e, uint32_t reg, uint32_t value);
 static void e1000_reg_set(e1000_t *e, uint32_t reg, uint32_t value);
 static void e1000_reg_unset(e1000_t *e, uint32_t reg, uint32_t value);
-static u16_t eeprom_eerd(e1000_t *e, int reg);
-static u16_t eeprom_ich(e1000_t *e, int reg);
+static uint16_t eeprom_eerd(e1000_t *e, int reg);
+static uint16_t eeprom_ich(e1000_t *e, int reg);
 static int eeprom_ich_init(e1000_t *e);
 static int eeprom_ich_cycle(e1000_t *e, u32_t timeout);
 
@@ -145,7 +145,7 @@ static int
 e1000_probe(e1000_t * e, int skip)
 {
 	int r, devind, ioflag;
-	u16_t vid, did, cr;
+	uint16_t vid, did, cr;
 	u32_t status;
 	u32_t base, size;
 	const char *dname;
@@ -250,7 +250,7 @@ e1000_init_addr(e1000_t * e, netdriver_addr_t * addr)
 {
 	static char eakey[] = E1000_ENVVAR "#_EA";
 	static char eafmt[] = "x:x:x:x:x:x";
-	u16_t word;
+	uint16_t word;
 	int i;
 	long v;
 
@@ -450,7 +450,7 @@ e1000_set_hwaddr(const netdriver_addr_t * hwaddr)
 	e1000_reg_write(e, E1000_REG_RAL,
 	    *(const u32_t *)(&hwaddr->na_addr[0]));
 	e1000_reg_write(e, E1000_REG_RAH,
-	    *(const u16_t *)(&hwaddr->na_addr[4]));
+	    *(const uint16_t *)(&hwaddr->na_addr[4]));
 	e1000_reg_set(e, E1000_REG_RAH, E1000_REG_RAH_AV);
 }
 
@@ -723,7 +723,7 @@ e1000_reg_unset(e1000_t * e, uint32_t reg, uint32_t value)
 /*
  * Read from EEPROM.
  */
-static u16_t
+static uint16_t
 eeprom_eerd(e1000_t * e, int reg)
 {
 	u32_t data;
@@ -846,7 +846,7 @@ eeprom_ich_cycle(e1000_t * e, u32_t timeout)
 /*
  * Read from ICH8 flash.
  */
-static u16_t
+static uint16_t
 eeprom_ich(e1000_t * e, int reg)
 {
 	union ich8_hws_flash_status hsfsts;
@@ -855,14 +855,14 @@ eeprom_ich(e1000_t * e, int reg)
 	u32_t flash_data = 0;
 	int ret_val = -1;
 	uint8_t count = 0;
-	u16_t data = 0;
+	uint16_t data = 0;
 
 	E1000_DEBUG(3, ("e1000_read_flash_data_ich8lan"));
 
 	if (reg > ICH_FLASH_LINEAR_ADDR_MASK)
 		return data;
 
-	reg *= sizeof(u16_t);
+	reg *= sizeof(uint16_t);
 	flash_linear_addr = (ICH_FLASH_LINEAR_ADDR_MASK & reg) +
 	    e->flash_base_addr;
 
@@ -891,7 +891,7 @@ eeprom_ich(e1000_t * e, int reg)
 		 */
 		if (ret_val == 0) {
 			flash_data = E1000_READ_FLASH_REG(e, ICH_FLASH_FDATA0);
-			data = (u16_t)(flash_data & 0x0000FFFF);
+			data = (uint16_t)(flash_data & 0x0000FFFF);
 			break;
 		} else {
 			/*

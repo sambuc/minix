@@ -57,14 +57,14 @@ struct virtio_queue {
 	phys_bytes paddr;			/* physical addr of ring */
 	u32_t page;				/* physical guest page */
 
-	u16_t num;				/* number of descriptors */
+	uint16_t num;				/* number of descriptors */
 	u32_t ring_size;			/* size of ring in bytes */
 	struct vring vring;
 
-	u16_t free_num;				/* free descriptors */
-	u16_t free_head;			/* next free descriptor */
-	u16_t free_tail;			/* last free descriptor */
-	u16_t last_used;			/* we checked in used */
+	uint16_t free_num;				/* free descriptors */
+	uint16_t free_head;			/* next free descriptor */
+	uint16_t free_tail;			/* last free descriptor */
+	uint16_t last_used;			/* we checked in used */
 
 	void **data;				/* points to pointers */
 };
@@ -73,13 +73,13 @@ struct virtio_device {
 
 	const char *name;			/* for debugging */
 
-	u16_t  port;				/* io port */
+	uint16_t  port;				/* io port */
 
 	struct virtio_feature *features;	/* host / guest features */
 	uint8_t num_features;			/* max 32 */
 
 	struct virtio_queue *queues;		/* our queues */
-	u16_t num_queues;
+	uint16_t num_queues;
 
 	int irq;				/* interrupt line */
 	int irq_hook;				/* hook id */
@@ -91,7 +91,7 @@ struct virtio_device {
 	int num_indirect;
 };
 
-static int is_matching_device(u16_t expected_sdid, u16_t vid, u16_t sdid);
+static int is_matching_device(uint16_t expected_sdid, uint16_t vid, uint16_t sdid);
 static int init_device(int devind, struct virtio_device *dev);
 static int init_phys_queues(struct virtio_device *dev);
 static int exchange_features(struct virtio_device *dev);
@@ -106,12 +106,12 @@ static int wants_kick(struct virtio_queue *q);
 static void kick_queue(struct virtio_device *dev, int qidx);
 
 struct virtio_device *
-virtio_setup_device(u16_t subdevid, const char *name,
+virtio_setup_device(uint16_t subdevid, const char *name,
 		struct virtio_feature *features, int num_features,
 		int threads, int skip)
 {
 	int r, devind;
-	u16_t vid, did, sdid;
+	uint16_t vid, did, sdid;
 	struct virtio_device *ret;
 
 	/* bogus values? */
@@ -572,7 +572,7 @@ static void
 set_direct_descriptors(struct virtio_queue *q, struct vumap_phys *bufs,
 	size_t num)
 {
-	u16_t i;
+	uint16_t i;
 	size_t count;
 	struct vring *vring = &q->vring;
 	struct vring_desc *vd;
@@ -606,7 +606,7 @@ int
 virtio_to_queue(struct virtio_device *dev, int qidx, struct vumap_phys *bufs,
 	size_t num, void *data)
 {
-	u16_t free_first;
+	uint16_t free_first;
 	int left;
 	struct virtio_queue *q = &dev->queues[qidx];
 	struct vring *vring = &q->vring;
@@ -654,8 +654,8 @@ virtio_from_queue(struct virtio_device *dev, int qidx, void **data,
 	struct vring_used_elem *uel;
 	struct vring_desc *vd;
 	int count = 0;
-	u16_t idx;
-	u16_t used_idx;
+	uint16_t idx;
+	uint16_t used_idx;
 
 	assert(0 <= qidx && qidx < dev->num_queues);
 
@@ -781,7 +781,7 @@ kick_queue(struct virtio_device *dev, int qidx)
 }
 
 static int
-is_matching_device(u16_t expected_sdid, u16_t vid, u16_t sdid)
+is_matching_device(uint16_t expected_sdid, uint16_t vid, uint16_t sdid)
 {
 	return vid == VIRTIO_VENDOR_ID && sdid == expected_sdid;
 }

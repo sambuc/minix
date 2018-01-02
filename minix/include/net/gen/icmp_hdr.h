@@ -7,7 +7,7 @@ server/ip/gen/icmp_hdr.h
 
 typedef struct icmp_id_seq
 {
-	u16_t	iis_id, iis_seq;
+	uint16_t	iis_id, iis_seq;
 } icmp_id_seq_t;
 
 typedef struct icmp_ip_id
@@ -20,7 +20,7 @@ typedef struct icmp_ram		/* RFC 1256 */
 {
 	uint8_t	iram_na;
 	uint8_t	iram_aes;
-	u16_t	iram_lt;
+	uint16_t	iram_lt;
 } icmp_ram_t;
 
 typedef struct icmp_pp
@@ -31,14 +31,14 @@ typedef struct icmp_pp
 
 typedef struct icmp_mtu		/* RFC 1191 */
 {
-	u16_t	im_unused;
-	u16_t	im_mtu;
+	uint16_t	im_unused;
+	uint16_t	im_mtu;
 } icmp_mtu_t;
 
 typedef struct icmp_hdr
 {
 	uint8_t ih_type, ih_code;
-	u16_t ih_chksum;
+	uint16_t ih_chksum;
 	union
 	{
 		u32_t ihh_unused;

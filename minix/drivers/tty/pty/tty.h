@@ -26,8 +26,8 @@ typedef struct tty {
   int tty_index;		/* index into TTY table */
 
   /* Input queue.  Typed characters are stored here until read by a program. */
-  u16_t *tty_inhead;		/* pointer to place where next char goes */
-  u16_t *tty_intail;		/* pointer to next char to be given to prog */
+  uint16_t *tty_inhead;		/* pointer to place where next char goes */
+  uint16_t *tty_intail;		/* pointer to next char to be given to prog */
   int tty_incount;		/* # chars in the input queue */
   int tty_eotct;		/* number of "line breaks" in input queue */
   devfun_t tty_devread;		/* routine to read from low level buffers */
@@ -79,7 +79,7 @@ typedef struct tty {
   struct termios tty_termios;	/* terminal attributes */
   struct winsize tty_winsize;	/* window size (#lines and #columns) */
 
-  u16_t tty_inbuf[TTY_IN_BYTES];/* tty input buffer */
+  uint16_t tty_inbuf[TTY_IN_BYTES];/* tty input buffer */
 
 } tty_t;
 

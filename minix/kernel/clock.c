@@ -259,7 +259,7 @@ void reset_kernel_timer(
  *===========================================================================*/
 static void load_update(void)
 {
-	u16_t slot;
+	uint16_t slot;
 	int enqueued = 0, q;
 	struct proc *p;
 	struct proc **rdy_head;

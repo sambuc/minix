@@ -16,7 +16,7 @@ int SRCInit ( DEV_STRUCT * DSP )
     pci_outl(reg(CONC_dSRCIO_OFF), SRC_DISABLE);
 
     for( i = 0; i < 0x80; ++i )
-        if (SRC_SUCCESS != (retVal = SRCRegWrite(DSP, (u16_t)i, 0U)))
+        if (SRC_SUCCESS != (retVal = SRCRegWrite(DSP, (uint16_t)i, 0U)))
             return (retVal);
 
     if (SRC_SUCCESS != (retVal = SRCRegWrite(DSP, SRC_SYNTH_BASE + SRC_TRUNC_N_OFF, 16 << 4)))
@@ -55,7 +55,7 @@ int SRCInit ( DEV_STRUCT * DSP )
 }
 
 
-int SRCRegRead(DEV_STRUCT * DSP, u16_t reg, u16_t *data)
+int SRCRegRead(DEV_STRUCT * DSP, uint16_t reg, uint16_t *data)
 {
     u32_t dtemp;
 
@@ -74,13 +74,13 @@ int SRCRegRead(DEV_STRUCT * DSP, u16_t reg, u16_t *data)
         return (SRC_ERR_NOT_BUSY_TIMEOUT);
 
     if (NULL != data)
-        *data = (u16_t) pci_inl(reg(CONC_dSRCIO_OFF));
+        *data = (uint16_t) pci_inl(reg(CONC_dSRCIO_OFF));
 
     return 0;
 }
 
 
-int SRCRegWrite(DEV_STRUCT * DSP, u16_t reg, u16_t val)
+int SRCRegWrite(DEV_STRUCT * DSP, uint16_t reg, uint16_t val)
 {
     u32_t dtemp;
 
@@ -99,10 +99,10 @@ int SRCRegWrite(DEV_STRUCT * DSP, u16_t reg, u16_t val)
 }
 
 
-void SRCSetRate(DEV_STRUCT * DSP, char base, u16_t rate)
+void SRCSetRate(DEV_STRUCT * DSP, char base, uint16_t rate)
 {
   u32_t    freq, dtemp, i;
-  u16_t     N, truncM, truncStart, wtemp;
+  uint16_t     N, truncM, truncStart, wtemp;
 
 
   if( base != SRC_ADC_BASE )
@@ -123,9 +123,9 @@ void SRCSetRate(DEV_STRUCT * DSP, char base, u16_t rate)
       
       SRCRegWrite(DSP, base + SRC_INT_REGS_OFF,
               (wtemp & 0x00ffU) |
-              (u16_t) (freq >> 6) & 0xfc00);
+              (uint16_t) (freq >> 6) & 0xfc00);
               
-      SRCRegWrite(DSP, base + SRC_VFREQ_FRAC_OFF, (u16_t) freq >> 1);
+      SRCRegWrite(DSP, base + SRC_VFREQ_FRAC_OFF, (uint16_t) freq >> 1);
       
       /* un-freeze the channel */
       dtemp = base == SRC_SYNTH_BASE ? SRC_SYNTHFREEZE : SRC_DACFREEZE;
@@ -179,8 +179,8 @@ void SRCSetRate(DEV_STRUCT * DSP, char base, u16_t rate)
     SRCRegRead(DSP, base + SRC_INT_REGS_OFF, &wtemp);
     SRCRegWrite(DSP, base + SRC_INT_REGS_OFF,
             (wtemp & 0x00ffU) |
-            (u16_t) (freq >> 6) & 0xfc00);
-    SRCRegWrite(DSP, base + SRC_VFREQ_FRAC_OFF, (u16_t) freq >> 1);
+            (uint16_t) (freq >> 6) & 0xfc00);
+    SRCRegWrite(DSP, base + SRC_VFREQ_FRAC_OFF, (uint16_t) freq >> 1);
 
     /* un-freeze the channel */
     for( i = 0; i < SRC_IOPOLL_COUNT; ++i )

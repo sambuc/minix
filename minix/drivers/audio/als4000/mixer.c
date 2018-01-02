@@ -205,8 +205,8 @@ int get_set_volume(u32_t *base, struct volume_level *level, int flag) {
 	else {
 		/* ### READ_MIXER_REG ### */
 		data = dev_mixer_read(base, cmd);
-		level->left = (u16_t)(data >> 8);
-		level->right = (u16_t)(data & 0xff);
+		level->left = (uint16_t)(data >> 8);
+		level->right = (uint16_t)(data & 0xff);
 		if (level->right < 0)
 			level->right = 0;
 		else if (level->right > max_level)

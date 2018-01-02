@@ -89,7 +89,7 @@ static u32_t g_sample_rate[] = {
 /* Driver Data Structure */
 typedef struct aud_sub_dev_conf_t {
 	u32_t stereo;
-	u16_t sample_rate;
+	uint16_t sample_rate;
 	u32_t nr_of_bits;
 	u32_t sign;
 	u32_t busy;
@@ -99,8 +99,8 @@ typedef struct aud_sub_dev_conf_t {
 
 typedef struct DEV_STRUCT {
 	char *name;
-	u16_t vid;
-	u16_t did;
+	uint16_t vid;
+	uint16_t did;
 	u32_t devind;
 	u32_t base[6];
 	char irq;

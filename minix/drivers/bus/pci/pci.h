@@ -6,8 +6,8 @@ Created:	Jan 2000 by Philip Homburg <philip@cs.vu.nl>
 
 struct pci_isabridge
 {
-	u16_t vid;
-	u16_t did;
+	uint16_t vid;
+	uint16_t did;
 	int checkclass;
 	int type;
 };
@@ -43,29 +43,29 @@ int _pci_grant_access(int devind, endpoint_t proc);
 int _pci_reserve(int devind, endpoint_t proc, struct rs_pci *aclp);
 void _pci_release(endpoint_t proc);
 
-int _pci_first_dev(struct rs_pci *aclp, int *devindp, u16_t *vidp,
-	u16_t *didp);
-int _pci_next_dev(struct rs_pci *aclp, int *devindp, u16_t *vidp, u16_t
+int _pci_first_dev(struct rs_pci *aclp, int *devindp, uint16_t *vidp,
+	uint16_t *didp);
+int _pci_next_dev(struct rs_pci *aclp, int *devindp, uint16_t *vidp, uint16_t
 	*didp);
 int _pci_find_dev(uint8_t bus, uint8_t dev, uint8_t func, int *devindp);
 
 void _pci_rescan_bus(uint8_t busnr);
-const char *_pci_dev_name(u16_t vid, u16_t did);
+const char *_pci_dev_name(uint16_t vid, uint16_t did);
 
 
 int _pci_get_bar(int devind, int port, u32_t *base, u32_t *size, int
 	*ioflag);
 int _pci_slot_name(int devind, char **cpp);
-int _pci_ids(int devind, u16_t *vidp, u16_t *didp);
+int _pci_ids(int devind, uint16_t *vidp, uint16_t *didp);
 
 /* PCI Config Read functions */
 int _pci_attr_r8(int devind, int port, uint8_t *vp);
-int _pci_attr_r16(int devind, int port, u16_t *vp);
+int _pci_attr_r16(int devind, int port, uint16_t *vp);
 int _pci_attr_r32(int devind, int port, u32_t *vp);
 
 /* PCI Config Write functions */
 int _pci_attr_w8(int devind, int port, uint8_t value);
-int _pci_attr_w16(int devind, int port, u16_t value);
+int _pci_attr_w16(int devind, int port, uint16_t value);
 int _pci_attr_w32(int devind, int port, u32_t value);
 
 /* minix hooks into NetBSD PCI IDS DB */
