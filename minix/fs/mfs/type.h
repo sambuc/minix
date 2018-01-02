@@ -7,7 +7,7 @@
 typedef struct {		/* V2.x disk inode */
   uint16_t d2_mode;		/* file type, protection, etc. */
   uint16_t d2_nlinks;		/* how many links to this file. HACK! */
-  i16_t d2_uid;			/* user id of the file's owner. */
+  int16_t d2_uid;			/* user id of the file's owner. */
   uint16_t d2_gid;			/* group number HACK! */
   int32_t d2_size;		/* current file size in bytes */
   int32_t d2_atime;		/* when was file data last accessed */

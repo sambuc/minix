@@ -436,7 +436,7 @@ int norm;			/* TRUE = do not swap bytes; FALSE = swap */
   } else {
 	/* Copying V2.x inode to disk from the in-core table. */
 	dip->d2_mode   = (uint16_t) conv2(norm,rip->i_mode);
-	dip->d2_uid    = (i16_t) conv2(norm,rip->i_uid);
+	dip->d2_uid    = (int16_t) conv2(norm,rip->i_uid);
 	dip->d2_nlinks = (uint16_t) conv2(norm,rip->i_nlinks);
 	dip->d2_gid    = (uint16_t) conv2(norm,rip->i_gid);
 	dip->d2_size   = (int32_t) conv4(norm,rip->i_size);
