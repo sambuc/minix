@@ -45,9 +45,7 @@ FILESNAME_${XZSRCDIR}/po/${lang}.gmo=	xz.mo
 .endfor
 .endif
 
-.if !defined(__MINIX)
 LDADD+=	-lpthread
 DPADD+=	${LIBPTHREAD}
-.endif # !defined(__MINIX)
 
 .include <bsd.prog.mk>

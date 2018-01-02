@@ -5,7 +5,6 @@ SUBDIR=	 libevent .WAIT
 .if ${MKCRYPTO} != "no"
 SUBDIR+=	libevent_openssl
 .endif
-# MINIX3: insufficient pthreads support in the base system for now
-#SUBDIR+= libevent_pthreads
+SUBDIR+= libevent_pthreads
 
 .include <bsd.subdir.mk>

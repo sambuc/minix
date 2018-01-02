@@ -20,21 +20,13 @@ DSTOBJDIR!=cd ${.PARSEDIR}/lib/dst && ${PRINTOBJDIR}
 .if (${USE_INET6} != "no")
 CPPFLAGS+=	-DDHCPv6
 .endif
-.if !defined(__MINIX)
 CPPFLAGS+= -DISC_PLATFORM_USETHREADS -DHAVE_CONFIG_H
-.else # defined(__MINIX)
-CPPFLAGS+= -DHAVE_CONFIG_H
-.endif # defined(__MINIX)
 CPPFLAGS+= -I${DIST} -I${DIST}/includes -I${DIST}/../include
 CPPFLAGS+= -I${BIND} -I${BIND}/includes -I${BIND}/../include
 .for dir in isc dns irs
 CPPFLAGS+= -I${BIND}/lib/${dir}/include
 CPPFLAGS+= -I${BIND}/lib/${dir}/unix/include
-.if !defined(__MINIX)
 CPPFLAGS+= -I${BIND}/lib/${dir}/pthreads/include
-.else # defined(__MINIX)
-CPPFLAGS+= -I${BIND}/lib/${dir}/nothreads/include
-.endif # defined(__MINIX)
 .endfor
 CPPFLAGS+= -DLOCALSTATEDIR='"/var"'
 LDADD+= ${COBJDIR}/libdhcp.a
@@ -43,9 +35,7 @@ LDADD+= ${OMOBJDIR}/libomapi.a ${DSTOBJDIR}/libdst.a
 LDADD+=-Wl,-Bstatic
 .endif
 LDADD+= -lirs -lisccfg -ldns -lisc
-.if !defined(__MINIX)
 LDADD+=-lpthread
-.endif # !defined(__MINIX)
 .if (${MKCRYPTO} != "no")
 .if (${MKKERBEROS} != "no")
 LDADD+= -lgssapi -lkrb5 -lhx509 -lheimntlm -lheimbase \
@@ -71,6 +61,4 @@ LDADD+=-Wl,-Bdynamic
 DPADD+= ${COBJDIR}/libdhcp.a
 DPADD+= ${OMOBJDIR}/libomapi.a ${DSTOBJDIR}/libdst.a
 DPADD+=	${LIBDNS} ${LIBISC}
-.if !defined(__MINIX)
 DPADD+= ${LIBPTHREAD}
-.endif # !defined(__MINIX)

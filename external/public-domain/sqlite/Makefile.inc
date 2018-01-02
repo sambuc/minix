@@ -23,7 +23,6 @@ CPPFLAGS+=	\
 
 .if defined(__MINIX)
 CPPFLAGS+=	\
-		-DSQLITE_THREADSAFE=0 \
 		-DSQLITE_OMIT_WAL
 .endif # defined(__MINIX)
 

@@ -7879,9 +7879,7 @@ void minix::Link::ConstructJob(Compilation &C, const JobAction &JA,
     if (D.CCCIsCXX()) {
       getToolChain().AddCXXStdlibLibArgs(Args, CmdArgs);
       CmdArgs.push_back("-lm");
-
-      /* LSC: Hack as lc++ is linked against mthread. */
-      CmdArgs.push_back("-lmthread");
+      CmdArgs.push_back("-lpthread");
     }
     if (Args.hasArg(options::OPT_pthread))
       CmdArgs.push_back("-lpthread");

@@ -33,18 +33,16 @@ SRCS+=	tuklib_physmem.c tuklib_cpucores.c
 SRCS+=	check.c crc32_table.c crc64_table.c
 SRCS+=	crc32_fast.c crc64_fast.c
 
-#__MINIX: No pthreads:
-#         hardware_cputhreads.c outqueue.c stream_encoder_mt.c
 .PATH:	${XZSRCDIR}/src/liblzma/common
 SRCS+=	common.c block_util.c easy_preset.c filter_common.c \
-	hardware_physmem.c index.c \
+	hardware_physmem.c hardware_cputhreads.c index.c \
 	stream_flags_common.c vli_size.c \
 	alone_encoder.c block_buffer_encoder.c block_encoder.c \
 	block_header_encoder.c easy_buffer_encoder.c easy_encoder.c \
 	easy_encoder_memusage.c filter_buffer_encoder.c \
 	filter_encoder.c filter_flags_encoder.c index_encoder.c \
-	stream_buffer_encoder.c stream_encoder.c \
-	stream_flags_encoder.c vli_encoder.c \
+	stream_buffer_encoder.c stream_encoder.c stream_encoder_mt.c \
+	stream_flags_encoder.c vli_encoder.c outqueue.c \
 	alone_decoder.c auto_decoder.c block_buffer_decoder.c \
 	block_decoder.c block_header_decoder.c easy_decoder_memusage.c \
 	filter_buffer_decoder.c filter_decoder.c filter_flags_decoder.c \
@@ -87,9 +85,7 @@ liblzma.pc:	${XZSRCDIR}/src/liblzma/liblzma.pc.in
 
 CLEANFILES+=	liblzma.pc
 
-.if !defined(__MINIX)
 LDADD+=	-lpthread
 DPADD+=	${LIBPTHREAD}
-.endif # defined(__MINIX)
 
 .include <bsd.lib.mk>

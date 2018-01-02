@@ -10,12 +10,7 @@ SUBDIR+=	../external/gpl3/${EXTERNAL_GCC_SUBDIR}/lib/libgcc .WAIT
 .endif
 
 .if defined(__MINIX)
-#LSC MINIX libc depends on
-# - libmthread because of sys/lib/libunwind
-SUBDIR+=	.WAIT
-
 SUBDIR+=	../minix/lib/libsys
-SUBDIR+=	../minix/lib/libmthread
 SUBDIR+=	.WAIT
 .endif # defined(__MINIX)
 SUBDIR+=	libc
@@ -35,6 +30,7 @@ SUBDIR+=	../minix/lib/libasyn \
 		../minix/lib/liblwip \
 		../minix/lib/libminc \
 		../minix/lib/libminixfs \
+		../minix/lib/libmthread \
 		../minix/lib/libnetdriver \
 		../minix/lib/libsffs \
 		../minix/lib/libsockdriver \

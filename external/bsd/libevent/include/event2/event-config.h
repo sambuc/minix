@@ -21,12 +21,8 @@
 /* Define if libevent should not allow replacing the mm functions */
 /* #undef _EVENT_DISABLE_MM_REPLACEMENT */
 
-#if !defined(__minix)
 /* Define if libevent should not be compiled with thread support */
 /* #undef _EVENT_DISABLE_THREAD_SUPPORT */
-#else
-#define _EVENT_DISABLE_THREAD_SUPPORT 1
-#endif /* !defined(__minix) */
 
 /* Define to 1 if you have the `arc4random' function. */
 #define _EVENT_HAVE_ARC4RANDOM 1
@@ -178,10 +174,8 @@
 /* Define if you have POSIX threads libraries and header files. */
 /* #undef _EVENT_HAVE_PTHREAD */
 
-#if !defined(__minix)
 /* Define if we have pthreads on this system */
 #define _EVENT_HAVE_PTHREADS 1
-#endif /* !defined(__minix) */
 
 /* Define to 1 if you have the `putenv' function. */
 #define _EVENT_HAVE_PUTENV 1
@@ -425,14 +419,13 @@
 /* The size of `off_t', as computed by sizeof. */
 #define _EVENT_SIZEOF_OFF_T 8
 
-#if !defined(__minix)
 /* The size of `pthread_t', as computed by sizeof. */
 #ifdef _LP64
 #define _EVENT_SIZEOF_PTHREAD_T 8
 #else
 #define _EVENT_SIZEOF_PTHREAD_T 4
 #endif
-#endif /* !defined(__minix) */
+
 /* The size of `short', as computed by sizeof. */
 #define _EVENT_SIZEOF_SHORT 2
 

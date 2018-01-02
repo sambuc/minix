@@ -22,14 +22,7 @@
 #include <dlfcn.h>
 #include <elf.h>
 #include <link.h>
-#if !defined(__minix)
 #include <pthread.h>
-#else
-#define pthread_rwlock_init(l, d) /* nothing */
-#define pthread_rwlock_rdlock(l) /* nothing */
-#define pthread_rwlock_wrlock(l) /* nothing */
-#define pthread_rwlock_unlock(l) /* nothing */
-#endif /* !defined(__minix) */
 
 #include "dwarf2.h"
 
@@ -351,9 +344,7 @@ public:
 private:
   findPCRange_t findPCRange;
   bool needsReload;
-#if !defined(__minix)
   pthread_rwlock_t fdeTreeLock;
-#endif /* !defined(__minix) */
   rb_tree_t segmentTree;
   rb_tree_t dsoTree;
 

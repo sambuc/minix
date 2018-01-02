@@ -46,7 +46,7 @@ CPPFLAGS+=	-D_LIBC -D_REENTRANT
 .if defined(MLIBDIR)
 CPPFLAGS+=	-DMLIBDIR=\"${MLIBDIR}\"
 .endif
-.endif # !defined(__minix)
+.endif # !defined(__MINIX)
 
 .if (${USE_HESIOD} != "no")
 CPPFLAGS+=	-DHESIOD

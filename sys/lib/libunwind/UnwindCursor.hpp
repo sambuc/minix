@@ -14,9 +14,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#if !defined(__minix)
 #include <pthread.h>
-#endif /* !defined(__minix) */
 
 #include "AddressSpace.hpp"
 #include "DwarfInstructions.hpp"
