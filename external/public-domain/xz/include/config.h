@@ -46,10 +46,8 @@
 /* Define to 1 if sha256 integrity check is enabled. */
 #define HAVE_CHECK_SHA256 1
 
-#if !defined(__minix)
 /* Define to 1 if you have the `clock_gettime' function. */
 #define HAVE_CLOCK_GETTIME 1
-#endif /* !defined(__minix) */
 
 /* Define to 1 if you have the <CommonCrypto/CommonDigest.h> header file. */
 /* #undef HAVE_COMMONCRYPTO_COMMONDIGEST_H */
@@ -58,11 +56,9 @@
    */
 /* #undef HAVE_DCGETTEXT */
 
-#if !defined(__minix)
 /* Define to 1 if you have the declaration of `CLOCK_MONOTONIC', and to 0 if
    you don't. */
 #define HAVE_DECL_CLOCK_MONOTONIC 1
-#endif /* !defined(__minix) */
 
 /* Define to 1 if you have the declaration of `program_invocation_name', and
    to 0 if you don't. */
@@ -195,10 +191,10 @@
 #if !defined(__minix)
 /* Define to 1 if you have the `posix_fadvise' function. */
 #define HAVE_POSIX_FADVISE 1
+#endif /* !defined(__minix) */
 
 /* Define to 1 if you have the `pthread_condattr_setclock' function. */
 #define HAVE_PTHREAD_CONDATTR_SETCLOCK 1
-#endif /* !defined(__minix) */
 
 /* Have PTHREAD_PRIO_INHERIT. */
 /* #undef HAVE_PTHREAD_PRIO_INHERIT */
@@ -302,10 +298,8 @@
 /* Define to the sub-directory where libtool stores uninstalled libraries. */
 #define LT_OBJDIR ".libs/"
 
-#if !defined(__minix)
 /* Define to 1 when using POSIX threads (pthreads). */
 #define MYTHREAD_POSIX 1
-#endif /* !defined(__minix) */
 
 /* Define to 1 when using Windows Vista compatible threads. This uses features
    that are not available on Windows XP. */
