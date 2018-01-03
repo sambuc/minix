@@ -1510,6 +1510,9 @@
 ./usr/include/protocols/rwhod.h                         minix-comp
 ./usr/include/protocols/talkd.h                         minix-comp
 ./usr/include/protocols/timed.h                         minix-comp
+./usr/include/pthread.h                                 minix-comp
+./usr/include/pthread_queue.h                           minix-comp
+./usr/include/pthread_types.h                           minix-comp
 ./usr/include/puffs.h                                   minix-comp
 ./usr/include/pwd.h                                     minix-comp
 ./usr/include/quota.h                                   minix-comp
@@ -2052,6 +2055,11 @@
 ./usr/lib/libelf_pic.a                                  minix-comp
 ./usr/lib/libevent.a                                    minix-comp
 ./usr/lib/libevent_pic.a                                minix-comp
+./usr/lib/libevent_pthreads.a                           minix-comp
+./usr/lib/libevent_pthreads.so                          minix-comp
+./usr/lib/libevent_pthreads.so.4                        minix-comp
+./usr/lib/libevent_pthreads.so.4.0                      minix-comp
+./usr/lib/libevent_pthreads_pic.a                       minix-comp
 ./usr/lib/libexec.a                                     minix-comp
 ./usr/lib/libexec_pic.a                                 minix-comp
 ./usr/lib/libexecinfo.a                                 minix-comp
@@ -2119,6 +2127,11 @@
 ./usr/lib/libpci_pic.a                                  minix-comp
 ./usr/lib/libprop.a                                     minix-comp
 ./usr/lib/libprop_pic.a                                 minix-comp
+./usr/lib/libpthread.a                                  minix-comp
+./usr/lib/libpthread.so                                 minix-comp
+./usr/lib/libpthread.so.1                               minix-comp
+./usr/lib/libpthread.so.1.2                             minix-comp
+./usr/lib/libpthread_pic.a                              minix-comp
 ./usr/lib/libpuffs.a                                    minix-comp
 ./usr/lib/libpuffs_pic.a                                minix-comp
 ./usr/lib/librefuse.a                                   minix-comp
