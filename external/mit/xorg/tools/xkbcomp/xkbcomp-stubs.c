@@ -157,7 +157,7 @@ _XGetRequest(Display *dpy, CARD8 type, size_t len)
 	return NULL;
 }
 
-#if defined(__minix) && defined(XTHREADS)
+#if defined(XTHREADS) /* defined(__minix) */
 void (*_XCreateMutex_fn)(LockInfoPtr) = NULL;
 void (**_XFreeMutex_fn_p)(LockInfoPtr) = &_XFreeMutex_fn;
 
@@ -181,4 +181,4 @@ void (*_XUnlockMutex_fn)(
     , int /* line */
 #endif
     ) = NULL;
-#endif /* defined(__minix)  && defined(XTHREADS) */
+#endif /* defined(XTHREADS) && defined(__minix)*/
