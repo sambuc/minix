@@ -6319,11 +6319,11 @@
 ./usr/X11R7/lib/libxcb-randr_p.a			-unknown-	profile,xorg,compatx11file
 ./usr/X11R7/lib/libxcb-record.a				-unknown-	xorg,compatx11file
 ./usr/X11R7/lib/libxcb-record_p.a			-unknown-	profile,xorg,compatx11file
-./usr/X11R7/lib/libxcb-render-util.a			-unknown-	xorg,compatx11file,minix-false
+./usr/X11R7/lib/libxcb-render-util.a			-unknown-	xorg,compatx11file
 ./usr/X11R7/lib/libxcb-render-util_p.a			-unknown-	profile,xorg,compatx11file
 ./usr/X11R7/lib/libxcb-render.a				-unknown-	xorg,compatx11file
 ./usr/X11R7/lib/libxcb-render_p.a			-unknown-	profile,xorg,compatx11file
-./usr/X11R7/lib/libxcb-reply.a				-unknown-	xorg,compatx11file,minix-false
+./usr/X11R7/lib/libxcb-reply.a				-unknown-	xorg,compatx11file
 ./usr/X11R7/lib/libxcb-reply_p.a			-unknown-	profile,xorg,compatx11file
 ./usr/X11R7/lib/libxcb-res.a				-unknown-	xorg,compatx11file
 ./usr/X11R7/lib/libxcb-res_p.a				-unknown-	profile,xorg,compatx11file
@@ -6422,8 +6422,8 @@
 ./usr/X11R7/lib/pkgconfig/xcb-randr.pc			-unknown-	xorg
 ./usr/X11R7/lib/pkgconfig/xcb-record.pc			-unknown-	xorg
 ./usr/X11R7/lib/pkgconfig/xcb-render.pc			-unknown-	xorg
-./usr/X11R7/lib/pkgconfig/xcb-renderutil.pc		-unknown-	xorg,minix-false
-./usr/X11R7/lib/pkgconfig/xcb-reply.pc			-unknown-	xorg,minix-false
+./usr/X11R7/lib/pkgconfig/xcb-renderutil.pc		-unknown-	xorg
+./usr/X11R7/lib/pkgconfig/xcb-reply.pc			-unknown-	xorg
 ./usr/X11R7/lib/pkgconfig/xcb-res.pc			-unknown-	xorg
 ./usr/X11R7/lib/pkgconfig/xcb-screensaver.pc		-unknown-	xorg
 ./usr/X11R7/lib/pkgconfig/xcb-shape.pc			-unknown-	xorg

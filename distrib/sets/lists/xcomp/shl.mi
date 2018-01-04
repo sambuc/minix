@@ -125,9 +125,9 @@
 ./usr/X11R7/lib/libxcb-property_pic.a			-unknown-	xorg,picinstall,compatx11file
 ./usr/X11R7/lib/libxcb-randr_pic.a			-unknown-	xorg,picinstall,compatx11file
 ./usr/X11R7/lib/libxcb-record_pic.a			-unknown-	xorg,picinstall,compatx11file
-./usr/X11R7/lib/libxcb-render-util_pic.a		-unknown-	xorg,picinstall,compatx11file,minix-false
+./usr/X11R7/lib/libxcb-render-util_pic.a		-unknown-	xorg,picinstall,compatx11file
 ./usr/X11R7/lib/libxcb-render_pic.a			-unknown-	xorg,picinstall,compatx11file
-./usr/X11R7/lib/libxcb-reply_pic.a			-unknown-	xorg,picinstall,compatx11file,minix-false
+./usr/X11R7/lib/libxcb-reply_pic.a			-unknown-	xorg,picinstall,compatx11file
 ./usr/X11R7/lib/libxcb-res_pic.a			-unknown-	xorg,picinstall,compatx11file
 ./usr/X11R7/lib/libxcb-screensaver_pic.a		-unknown-	xorg,picinstall,compatx11file
 ./usr/X11R7/lib/libxcb-shape_pic.a			-unknown-	xorg,picinstall,compatx11file
