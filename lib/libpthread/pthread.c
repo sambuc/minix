@@ -1344,7 +1344,6 @@ pthread__initmain(pthread_t *newt)
 		    4 * pthread__pagesize / 1024);
 
 	*newt = pthread__main;
-#if defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II) || defined(__minix)
 #if defined(_PTHREAD_GETTCB_EXT)
 	pthread__main->pt_tls = _PTHREAD_GETTCB_EXT();
 #elif defined(__HAVE___LWP_GETTCB_FAST)
@@ -1353,7 +1352,6 @@ pthread__initmain(pthread_t *newt)
 	pthread__main->pt_tls = _lwp_getprivate();
 #endif
 	pthread__main->pt_tls->tcb_pthread = pthread__main;
-#endif /* defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II) || defined(__minix) */
 }
 
 static signed int

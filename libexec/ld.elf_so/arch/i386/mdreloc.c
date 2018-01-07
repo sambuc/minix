@@ -120,7 +120,7 @@ _rtld_relocate_nonplt_objects(Obj_Entry *obj)
 			rdbg(("COPY (avoid in main)"));
 			break;
 
-#if defined(__minix) && defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II)
+#if defined(__minix) && (defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II))
 		case R_TYPE(TLS_TPOFF):
 			def = _rtld_find_symdef(symnum, obj, &defobj, false);
 			if (def == NULL)
@@ -176,7 +176,7 @@ _rtld_relocate_nonplt_objects(Obj_Entry *obj)
 			    obj->path, (void *)*where));
 
 			break;
-#endif /* defined(__minix) && defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II) */
+#endif /* defined(__minix) && (defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II)) */
 
 		default:
 			rdbg(("sym = %lu, type = %lu, offset = %p, "
@@ -283,7 +283,7 @@ _rtld_relocate_plt_objects(const Obj_Entry *obj)
 	return err;
 }
 
-#if defined(__minix) && defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II)
+#if defined(__minix) && (defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II))
 /*
  * i386 specific GNU variant of __tls_get_addr using register based
  * argument passing.
@@ -305,4 +305,4 @@ ___tls_get_addr(void *arg_)
 
 	return _rtld_tls_get_addr(tcb, idx, offset);
 }
-#endif /* defined(__minix) && defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II) */
+#endif /* defined(__minix) && (defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II)) */

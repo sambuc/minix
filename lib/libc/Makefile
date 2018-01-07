@@ -105,11 +105,10 @@ SUBDIR+= pkgconfig
 .include "${.CURDIR}/time/Makefile.inc"
 .if defined(__MINIX)
 .include "${NETBSDSRCDIR}/minix/lib/libc/sys/Makefile.inc"
-.else
+.endif # defined(__MINIX)
 .if ${RUMPRUN} != "yes"
 .include "${.CURDIR}/tls/Makefile.inc"
 .endif
-.endif # defined(__MINIX)
 .include "${.CURDIR}/sys/Makefile.inc"
 .if ${HAVE_LIBGCC_EH} == "no"
 .include "${NETBSDSRCDIR}/sys/lib/libunwind/Makefile.inc"

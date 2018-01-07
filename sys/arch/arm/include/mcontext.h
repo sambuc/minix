@@ -156,6 +156,10 @@ __BEGIN_DECLS
 static __inline void *
 __lwp_getprivate_fast(void)
 {
+#if defined(__minix)
+	extern void *_lwp_getprivate(void);
+	return _lwp_getprivate();
+#else
 #if !defined(__thumb__) || defined(_ARM_ARCH_T2)
 	extern void *_lwp_getprivate(void);
 	void *rv;
@@ -173,6 +177,7 @@ __lwp_getprivate_fast(void)
 	extern void *__aeabi_read_tp(void);
 	return __aeabi_read_tp();
 #endif /* !__thumb__ || _ARM_ARCH_T2 */
+#endif /* defined(__minix) */
 }
 
 #if defined(_KERNEL)

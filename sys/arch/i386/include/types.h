@@ -124,9 +124,7 @@ typedef	unsigned char		__cpu_simple_lock_nv_t;
 #define	__HAVE_INTR_CONTROL
 #define	__HAVE_MM_MD_OPEN
 #define	__HAVE___LWP_GETPRIVATE_FAST
-#if !defined(__minix)
 #define	__HAVE_TLS_VARIANT_II
-#endif /* !defined(__minix) */
 #define	__HAVE_COMMON___TLS_GET_ADDR
 
 #if defined(_KERNEL)

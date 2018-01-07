@@ -99,14 +99,12 @@ _libc_init(void)
 #if defined(__minix) && defined(_REENTRANT)
 	/* Atomic operations */
 	__libc_atomic_init();
-#endif /* defined(__minix) && defined(_REENTRANT) */
 
 #if defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II)
 	/* Initialize TLS for statically linked programs. */
 	__libc_static_tls_setup();
 #endif
 
-#if defined(__minix) && defined(_REENTRANT)
 	/* Threads */
 	__libc_thr_init();
 #endif /* defined(__minix) && defined(_REENTRANT) */

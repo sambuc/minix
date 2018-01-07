@@ -111,9 +111,9 @@ static void    *auxinfo;
 char           *__progname;
 char          **environ;
 
-#if !defined(__minix)
+#if defined(__minix) && (defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II))
 static volatile bool _rtld_mutex_may_recurse;
-#endif /* !defined(__minix) */
+#endif /* !defined(__minix) && (defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II)) */
 
 #if defined(RTLD_DEBUG)
 #ifndef __sh__
@@ -1524,7 +1524,7 @@ _rtld_objlist_remove(Objlist *list, Obj_Entry *obj)
 	}
 }
 
-#if defined(__minix)
+#if defined(__minix) && !(defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II))
 void _rtld_shared_enter(void) {}
 void _rtld_shared_exit(void) {}
 void _rtld_exclusive_enter(sigset_t *mask) {}
@@ -1655,4 +1655,4 @@ _rtld_exclusive_exit(sigset_t *mask)
 
 	sigprocmask(SIG_SETMASK, mask, NULL);
 }
-#endif /* !defined(__minix) */
+#endif /* defined(__minix) && !(defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II)) */

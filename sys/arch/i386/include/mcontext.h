@@ -148,11 +148,16 @@ int getmcontext(mcontext_t *mcp);
 static __inline void *
 __lwp_getprivate_fast(void)
 {
+#if defined(__minix)
+	extern void *_lwp_getprivate(void);
+	return _lwp_getprivate();
+#else
 	void *__tmp;
 
 	__asm volatile("movl %%gs:0, %0" : "=r" (__tmp));
 
 	return __tmp;
+#endif /* defined(__minix) */
 }
 
 #endif	/* !_I386_MCONTEXT_H_ */

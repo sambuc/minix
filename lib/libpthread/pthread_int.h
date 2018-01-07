@@ -95,7 +95,7 @@ struct pthread_lock_ops {
 
 struct	__pthread_st {
 	pthread_t	pt_self;	/* Must be first. */
-#if defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II) || defined(__minix)
+#if defined(__HAVE_TLS_VARIANT_I) || defined(__HAVE_TLS_VARIANT_II)
 	struct tls_tcb	*pt_tls;	/* Thread Local Storage area */
 #endif
 	unsigned int	pt_magic;	/* Magic number */
@@ -255,26 +255,17 @@ int	pthread__find(pthread_t) PTHREAD_HIDE;
 	_INITCONTEXT_U_MD(ucp)						\
 	} while (/*CONSTCOND*/0)
 
-#if !defined(__minix)
 #if !defined(__HAVE_TLS_VARIANT_I) && !defined(__HAVE_TLS_VARIANT_II)
 #error Either __HAVE_TLS_VARIANT_I or __HAVE_TLS_VARIANT_II must be defined
 #endif
-#endif /* !defined(__minix) */
 
 #ifdef _PTHREAD_GETTCB_EXT
 struct tls_tcb *_PTHREAD_GETTCB_EXT(void);
 #endif
 
-#if defined(__minix)
-struct tls_tcb {
-	void *tcb_pthread;
-};
-#endif /* !defined(__minix) */
-
 static inline pthread_t __constfunc
 pthread__self(void)
 {
-#if !defined(__minix)
 #if defined(_PTHREAD_GETTCB_EXT)
 	struct tls_tcb * const tcb = _PTHREAD_GETTCB_EXT();
 #elif defined(__HAVE___LWP_GETTCB_FAST)
@@ -282,9 +273,6 @@ pthread__self(void)
 #else
 	struct tls_tcb * const tcb = __lwp_getprivate_fast();
 #endif
-#else
-	struct tls_tcb * const tcb = _lwp_getprivate();
-#endif /* defined(__minix) */
 	return (pthread_t)tcb->tcb_pthread;
 }
 
