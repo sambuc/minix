@@ -55,11 +55,6 @@ COMPATDIR=${.CURDIR}/compat
 CPPFLAGS+=	-D__BUILD_LEGACY
 .endif
 
-.if defined(__MINIX) && 0
-SUBDIR+= pkgconfig
-.include <bsd.subdir.mk>
-.endif # defined(__MINIX)
-
 .include "${.CURDIR}/../../common/lib/libc/Makefile.inc"
 .include "${.CURDIR}/atomic/Makefile.inc"
 .include "${.CURDIR}/cdb/Makefile.inc"
