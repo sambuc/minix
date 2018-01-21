@@ -1,10 +1,6 @@
 #include <sys/cdefs.h>
 #include "namespace.h"
 
-#ifdef __weak_alias
-__weak_alias(sprofile, _sprofile)
-#endif
-
 #include <lib.h>
 #include <string.h>
 #include <minix/profile.h>
