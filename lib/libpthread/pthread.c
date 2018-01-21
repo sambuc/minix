@@ -161,6 +161,8 @@ static union hashlock {
  * to work properly (thread-specific data is an application-visible example;
  * spinlock counts for mutexes is an internal example).
  */
+
+void __pthread_init_userspace(void);
 void
 pthread__init(void)
 {
@@ -168,6 +170,10 @@ pthread__init(void)
 	char *p;
 	int i;
 	extern int __isthreaded;
+
+#if defined(__minix)
+	__pthread_init_userspace();
+#endif /* defined(__minix) */
 
 	/*
 	 * Allocate pthread_keys descriptors before

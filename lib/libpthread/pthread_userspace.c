@@ -41,29 +41,35 @@ int pthread__cancel_stub_binder;
 extern void
 __minix_schedule(int signal __unused);
 
-void __pthread_init_minix(void) __attribute__((__constructor__, __used__));
+void __pthread_init_userspace(void);
+
 void 
-__pthread_init_minix(void)
+__pthread_init_userspace(void)
 {
 	int r;
-        static struct sigaction old_action;
-        static struct sigaction new_action;
+	static struct tls_tcb main_tls;
+	static struct sigaction old_action;
+	static struct sigaction new_action;
 
-        struct itimerval nit;
-        struct itimerval oit;
+	struct itimerval nit;
+	struct itimerval oit;
+
+	print("__pthread_init_minix\n");
+	_lwp_setprivate(&main_tls);
+	__minix_setup_main();
 
 	memset(&old_action, 0, sizeof(old_action));
 	memset(&new_action, 0, sizeof(new_action));
 
-        new_action.sa_handler = __minix_schedule;
-        new_action.sa_flags = 0;
-        r = sigaction(SIGVTALRM, &new_action, &old_action);
+	new_action.sa_handler = __minix_schedule;
+	new_action.sa_flags = 0;
+	r = sigaction(SIGVTALRM, &new_action, &old_action);
 
-        nit.it_value.tv_sec = 0;
-        nit.it_value.tv_usec = 1;
-        nit.it_interval.tv_sec = 0;
-        nit.it_interval.tv_usec = 10;
-        r = setitimer(ITIMER_VIRTUAL, &nit, &oit);
+	nit.it_value.tv_sec = 0;
+	nit.it_value.tv_usec = 1;
+	nit.it_interval.tv_sec = 0;
+	nit.it_interval.tv_usec = 10;
+	r = setitimer(ITIMER_VIRTUAL, &nit, &oit);
 }
 
 int

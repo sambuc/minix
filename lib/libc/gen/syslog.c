@@ -294,10 +294,10 @@ vsyslogp_r(int pri, struct syslog_data *data, const char *msgid,
 #endif
 	}
 
-#if !defined(__minix)
+#if defined(__minix) && defined(_REENTRANT)
 	if (data == &sdata)
 		mutex_lock(&syslog_mutex);
-#endif /* !defined(__minix) */
+#endif /* defined(__minix) && defined(_REENTRANT) */
 
 	if (data->log_hostname[0] == '\0' && gethostname(data->log_hostname,
 	    sizeof(data->log_hostname)) == -1) {
@@ -316,10 +316,10 @@ vsyslogp_r(int pri, struct syslog_data *data, const char *msgid,
 	prlen = snprintf_ss(p, tbuf_left, "%s ",
 	    data->log_tag ? data->log_tag : "-");
 
-#if !defined(__minix)
+#if defined(__minix) && defined(_REENTRANT)
 	if (data == &sdata)
 		mutex_unlock(&syslog_mutex);
-#endif /* !defined(__minix) */
+#endif /* defined(__minix) && defined(_REENTRANT) */
 
 	if (data->log_stat & (LOG_PERROR|LOG_CONS)) {
 		iovcnt = 0;
@@ -430,10 +430,10 @@ vsyslogp_r(int pri, struct syslog_data *data, const char *msgid,
 	}
 
 	/* Get connected, output the message to the local logger. */
-#if !defined(__minix)
+#if defined(__minix) && defined(_REENTRANT)
 	if (data == &sdata)
 		mutex_lock(&syslog_mutex);
-#endif /* !defined(__minix) */
+#endif /* defined(__minix) && defined(_REENTRANT) */
 	opened = !data->log_opened;
 	if (opened)
 		openlog_unlocked_r(data->log_tag, data->log_stat, 0, data);
@@ -471,10 +471,10 @@ vsyslogp_r(int pri, struct syslog_data *data, const char *msgid,
 		(void)close(fd);
 	}
 
-#if !defined(__minix)
+#if defined(__minix) && defined(_REENTRANT)
 	if (data == &sdata)
 		mutex_unlock(&syslog_mutex);
-#endif /* !defined(__minix) */
+#endif /* defined(__minix) && defined(_REENTRANT) */
 
 	if (data != &sdata && opened) {
 		/* preserve log tag */
@@ -518,8 +518,7 @@ connectlog_r(struct syslog_data *data)
 	if (!data->log_connected) {
 		if (connect(data->log_file,
 		    (const struct sockaddr *)(const void *)&sun,
-		    (socklen_t)sizeof(sun)) == -1)
-		{
+		    (socklen_t)sizeof(sun)) == -1) {
 			(void)close(data->log_file);
 			data->log_file = -1;
 		} else
@@ -546,32 +545,32 @@ openlog_unlocked_r(const char *ident, int logstat, int logfac,
 void
 openlog_r(const char *ident, int logstat, int logfac, struct syslog_data *data)
 {
-#if !defined(__minix)
+#if defined(__minix) && defined(_REENTRANT)
 	if (data == &sdata)
 		mutex_lock(&syslog_mutex);
-#endif /* !defined(__minix) */
+#endif /* defined(__minix) && defined(_REENTRANT) */
 	openlog_unlocked_r(ident, logstat, logfac, data);
-#if !defined(__minix)
+#if defined(__minix) && defined(_REENTRANT)
 	if (data == &sdata)
 		mutex_unlock(&syslog_mutex);
-#endif /* !defined(__minix) */
+#endif /* defined(__minix) && defined(_REENTRANT) */
 }
 
 void
 closelog_r(struct syslog_data *data)
 {
-#if !defined(__minix)
+#if defined(__minix) && defined(_REENTRANT)
 	if (data == &sdata)
 		mutex_lock(&syslog_mutex);
-#endif /* !defined(__minix) */
+#endif /* defined(__minix) && defined(_REENTRANT) */
 	(void)close(data->log_file);
 	data->log_file = -1;
 	data->log_connected = 0;
 	data->log_tag = NULL;
-#if !defined(__minix)
+#if defined(__minix) && defined(_REENTRANT)
 	if (data == &sdata)
 		mutex_unlock(&syslog_mutex);
-#endif /* !defined(__minix) */
+#endif /* defined(__minix) && defined(_REENTRANT) */
 }
 
 int

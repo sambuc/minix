@@ -28,18 +28,20 @@ struct lwp {
 
 static struct lwp lwp_threads[MAX_THREAD_POOL];
 static volatile lwpid_t current_thread = 0;
+static int initialized = 0;
 
-void
-__minix_schedule(int signal __unused);
+void __minix_setup_main(void);
+void __minix_schedule(int signal __unused);
 
 #if 0
-#define print(msg) \
-	{ \
-		const char m[] = msg; \
-		write(2, m, sizeof(m)); \
-	}
+#define print(args...) \
+{ \
+	char buffer[200]; \
+	snprintf(buffer, 200, args); \
+	write(2, buffer, strlen(buffer)); \
+}
 #else
-#define print(m) /**/
+#define print(m...) /**/
 #endif
 
 static int
@@ -56,11 +58,26 @@ __minix_runnable(struct lwp* thread)
 }
 
 void
+__minix_setup_main(void)
+{
+	lwp_threads[0].flags = SLOT_IN_USE | LW_UNPARKED;
+}
+
+void
 __minix_schedule(int signal __unused)
 {
+	extern int __isthreaded;
 	static int last_pos = 0;
 	struct lwp* old = &lwp_threads[current_thread];
 	int pos;
+
+	/* This will be set to 1 in pthread.c, when the main thread is ready. */
+	if (0 == __isthreaded)
+	{
+		return;
+	}
+
+//FIXME: LSC ADD A BARRIER TO PREVENT TWO EXECUTIONS OF THE SCHEDULE AT THE SAME TIME
 
 	/* Select Next thread to run. 
 	 * Simply scan the array looking for a schedulable thread, and
@@ -115,8 +132,9 @@ _lwp_makecontext(ucontext_t *context, void (*start_routine)(void *),
 int
 _lwp_create(const ucontext_t *context, unsigned long flags, lwpid_t *new_lwp)
 {
-	size_t i = 0;
+	size_t i = 1; // Skip slot 0 which is main thread
 
+	print("_lwp_create\n");
 	while ((i < MAX_THREAD_POOL) &&
 		(SLOT_IN_USE == (lwp_threads[i].flags & SLOT_IN_USE))) {
 		i++;
@@ -236,15 +254,16 @@ _lwp_getname(lwpid_t target, char * name, size_t len)
 void *
 _lwp_getprivate(void)
 {
-//	print("_lwp_getprivate\n");
+//	print("_lwp_getprivate %08x %08x %08x\n", lwp_threads, &lwp_threads[current_thread], lwp_threads[current_thread].tls);
 	return lwp_threads[current_thread].tls;
 }
 
 void
 _lwp_setprivate(void *cookie)
 {
-	print("_lwp_setprivate\n");
+//	print("_lwp_setprivate %08x\n", cookie);
 	lwp_threads[current_thread].tls = cookie;
+//	print("_lwp_setprivate %08x %08x %08x %08x\n", lwp_threads, &lwp_threads[current_thread], lwp_threads[current_thread].tls, cookie);
 }
 
 int

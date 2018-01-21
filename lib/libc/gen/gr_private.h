@@ -46,7 +46,7 @@
 	 * back-end implementations, which may not be reentrant.
 	 */
 extern 	mutex_t		__grmutex;
-#endif /* defined(__minix) */
+#endif /* defined(__minix) && defined(_REENTRANT) */
 
 	/*
 	 * files methods
