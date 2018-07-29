@@ -547,12 +547,10 @@ arc4random_initialize(void)
 	if (!arc4random_global.initialized) {
 		if (crypto_core_selftest() != 0)
 			abort();
-#if !defined(__minix)
 		if (pthread_atfork(&arc4random_atfork_prepare,
 			&arc4random_atfork_parent, &arc4random_atfork_child)
 		    != 0)
 			abort();
-#endif /* !defined(__minix) */
 #ifdef _REENTRANT
 		if (thr_keycreate(&arc4random_global.thread_key,
 			&arc4random_tsd_destructor) != 0)

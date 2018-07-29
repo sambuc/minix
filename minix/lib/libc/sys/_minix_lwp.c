@@ -33,12 +33,18 @@ static int initialized = 0;
 void __minix_setup_main(void);
 void __minix_schedule(int signal __unused);
 
+#define print_dbg(args...) \
+{ \
+	char buffer[200]; \
+	snprintf(buffer, 200, args); \
+	write(2, buffer, strlen(buffer)); \
+}
 #if 0
 #define print(args...) \
 { \
 	char buffer[200]; \
 	snprintf(buffer, 200, args); \
-	write(2, buffer, strlen(buffer)); \
+	write(1, buffer, strlen(buffer)); \
 }
 #else
 #define print(m...) /**/
@@ -113,6 +119,7 @@ _lwp_self(void)
 {
 	return current_thread;
 }
+
 #if 0
 void
 _lwp_makecontext(ucontext_t *context, void (*start_routine)(void *),
@@ -129,6 +136,7 @@ _lwp_makecontext(ucontext_t *context, void (*start_routine)(void *),
 	makecontext(context, start_routine, 1, arg);
 }
 #endif
+
 int
 _lwp_create(const ucontext_t *context, unsigned long flags, lwpid_t *new_lwp)
 {
@@ -174,7 +182,7 @@ _lwp_suspend(lwpid_t lwp)
 	if ((MAX_THREAD_POOL <= lwp) || (lwp < 0)) {
 		return ESRCH;
 	}
-	
+
 	lwp_threads[lwp].flags |= LW_WSUSPEND;
 
 	return 0;
@@ -312,17 +320,76 @@ _lwp_park(clockid_t clock_id, int i, const struct timespec * ts, lwpid_t thread,
 int
 _lwp_wait(lwpid_t wlwp, lwpid_t *rlwp)
 {
+	int nb_lwp = 0;
+	const lwpid_t _lwp = wlwp;
+
 	print("_lwp_wait\n");
+
+	if ((MAX_THREAD_POOL <= wlwp) || (wlwp <= 0)) {
+		errno = ESRCH;
+		return -1;
+	}
+
+	for (size_t i = 0; i < MAX_THREAD_POOL; i++) {
+		if (SLOT_IN_USE == (lwp_threads[i].flags & SLOT_IN_USE)) {
+			nb_lwp++;
+		}
+	}
+
+	if (1 < nb_lwp) {
+		return EDEADLK;
+	}
+
+	if ((0 != wlwp) && (current_thread == wlwp)) {
+		errno = EDEADLK;
+		return -1;
+	}
+
+	if (LWP_DETACHED == (lwp_threads[wlwp].flags & LWP_DETACHED)) {
+		errno = ESRCH;
+		return -1;
+	}
+
+	if (0 == wlwp) {
+		for (size_t i = 0; i < MAX_THREAD_POOL; i++) {
+			if (LWP_DETACHED != (lwp_threads[i].flags & LWP_DETACHED)) {
+				_lwp = i;
+			}
+		}
+	}
+
 	// FIXME
+
+	// Do stuff in _lwp
+	if (NULL != rlwp) {
+		*rlwp = _lwp;
+	}
+
 	return -1;
 }
 
 int
-_lwp_kill(lwpid_t thread, int signal)
+_lwp_kill(lwpid_t lwp, int signal)
 {
 	print("_lwp_kill\n");
-	// FIXME
-	errno = ESRCH;
+
+	if ((MAX_THREAD_POOL <= lwp) || (lwp < 0)) {
+		errno = ESRCH;
+		return -1;
+	}
+
+	if ((0 < signal) || (32 < signal)) {
+		errno = EINVAL;
+		return -1;
+	}
+
+	if (0 == signal) {
+		return 0;
+	}
+
+	// TODO
+	// Need to do something with the signal...
+	errno = EINVAL;
 	return -1;
 }
 
