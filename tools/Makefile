@@ -45,12 +45,10 @@ TOOLCHAIN_BITS+= binutils .WAIT
 .if defined(HAVE_GCC) && ${HAVE_GCC} > 0
 . if ${TOOLCHAIN_MISSING} == "no"
 TOOLCHAIN_BITS+= gcc
-.if !defined(__MINIX)
 # The following test is broken as it still tries to create the directory
 .  if ${MKCROSSGDB:Uno} != "no" || make(obj)
 TOOLCHAIN_BITS+= gdb
 .  endif
-.endif # !defined(__MINIX)
 TOOLCHAIN_BITS+= .WAIT
 . endif
 .endif
