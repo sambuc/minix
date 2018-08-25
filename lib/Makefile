@@ -135,13 +135,10 @@ SUBDIR+=	../external/public-domain/sqlite/lib
 #SUBDIR+=	../gnu/lib/libmalloc
 
 .if (${MKGCC} != "no")
-. if !defined(__MINIX) || ${MKLIBSTDCXX} == "yes"
 SUBDIR+=	../external/gpl3/${EXTERNAL_GCC_SUBDIR}/lib/libobjc
 SUBDIR+=	../external/gpl3/${EXTERNAL_GCC_SUBDIR}/lib/libgomp
-#SUBDIR+=	../external/gpl3/${EXTERNAL_GCC_SUBDIR}/lib/libmudflap
-#SUBDIR+=	../external/gpl3/${EXTERNAL_GCC_SUBDIR}/lib/libmudflapth
-. endif # !defined(__MINIX) || ${MKLIBSTDCXX} == "yes"
-. if !defined(__MINIX) || ${MKLIBSTDCXX} == "yes"
+SUBDIR+=	../external/gpl3/${EXTERNAL_GCC_SUBDIR}/lib/libmudflap
+SUBDIR+=	../external/gpl3/${EXTERNAL_GCC_SUBDIR}/lib/libmudflapth
 # Should probably move GMP, MPFR and MPC builds into the GCC >= 4.5
 # specific build area, but we get better parallelism this way.
 # We don't build compat versions of these.
@@ -149,7 +146,6 @@ SUBDIR+=	../external/gpl3/${EXTERNAL_GCC_SUBDIR}/lib/libgomp
 SUBDIR+=	../external/lgpl3/gmp/lib/libgmp
 SUBDIR+=	../external/lgpl3/mpfr/lib/libmpfr
 SUBDIR+=	../external/lgpl3/mpc/lib/libmpc
-.   endif # !defined(__MINIX) || ${MKLIBSTDCXX} == "yes"
 . endif
 .endif
 
