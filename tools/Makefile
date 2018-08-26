@@ -39,7 +39,9 @@ TOOLCHAIN_BITS+= mpc .WAIT
 .endif
 
 .if ${TOOLCHAIN_MISSING} == "no"
+.  if defined(__MINIX) && ${MKBINUTILS} != "no"
 TOOLCHAIN_BITS+= binutils .WAIT
+.  endif # defined(__MINIX) && ${MKBINUTILS} != "no"
 .endif
 
 .if defined(HAVE_GCC) && ${HAVE_GCC} > 0
@@ -113,7 +115,7 @@ SUBDIR+=  gencat \
 SUBDIR+= cat join lorder m4 mkdep tsort .WAIT yacc .WAIT awk .WAIT lex
 
 .if ${TOOLS_BUILDRUMP} == "no"
-SUBDIR += .WAIT texinfo \
+SUBDIR += .WAIT \
 	.WAIT tic \
 	.WAIT pax \
 	.WAIT ${TOOLCHAIN_BITS} \
