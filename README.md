@@ -11,3 +11,4 @@ Kept around for reference if I start working on this again:
  * lldb: an import of the LLVM debugger, need to be rebased on top of the current NetBSD work as soon as it is completed
  * lld: Trying to import one of the LLVM linker, with the end goal of completly removing our dependency on Binutils.
  * smp_might_even_compile: This is a couple of fixes I have when I was trying to get SMP back into working shape.
+ * gpl-free: Trying to compile minix without any GPL dependencies
